@@ -11,6 +11,10 @@
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
 		1889F12E2EF9214B00886186 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12D2EF9214B00886186 /* Preview Assets.xcassets */; };
+		63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92228B25C99537B2CD47D806 /* Pods_Perapera.framework */; };
+		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
+		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
+		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +23,12 @@
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1889F12A2EF9214B00886186 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1889F12D2EF9214B00886186 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.release.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.release.xcconfig"; sourceTree = "<group>"; };
+		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.debug.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.debug.xcconfig"; sourceTree = "<group>"; };
+		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
+		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,6 +48,8 @@
 			children = (
 				1889F1252EF9214800886186 /* Perapera */,
 				1889F1242EF9214800886186 /* Products */,
+				C0897F491922CD8EFA017C71 /* Pods */,
+				6003A9B52417A3737F56402B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -51,6 +64,7 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBE732EF937CA0090F990 /* Views */,
 				1889F1262EF9214800886186 /* PeraperaApp.swift */,
 				1889F1282EF9214800886186 /* ContentView.swift */,
 				1889F12A2EF9214B00886186 /* Assets.xcassets */,
@@ -67,6 +81,58 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		6003A9B52417A3737F56402B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				92228B25C99537B2CD47D806 /* Pods_Perapera.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C0897F491922CD8EFA017C71 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */,
+				491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		ECACBE732EF937CA0090F990 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBE762EF938410090F990 /* SettingsView */,
+				ECACBE752EF938340090F990 /* PodcastView */,
+				ECACBE742EF9380B0090F990 /* HomeView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		ECACBE742EF9380B0090F990 /* HomeView */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBE6D2EF937930090F990 /* HomeView.swift */,
+			);
+			path = HomeView;
+			sourceTree = "<group>";
+		};
+		ECACBE752EF938340090F990 /* PodcastView */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBE6E2EF937930090F990 /* PodcastView.swift */,
+			);
+			path = PodcastView;
+			sourceTree = "<group>";
+		};
+		ECACBE762EF938410090F990 /* SettingsView */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBE6F2EF937930090F990 /* SettingsView.swift */,
+			);
+			path = SettingsView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -74,6 +140,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1889F1312EF9214B00886186 /* Build configuration list for PBXNativeTarget "Perapera" */;
 			buildPhases = (
+				51796E56EBE3DCDF26FDAEEA /* [CP] Check Pods Manifest.lock */,
 				1889F11F2EF9214800886186 /* Sources */,
 				1889F1202EF9214800886186 /* Frameworks */,
 				1889F1212EF9214800886186 /* Resources */,
@@ -132,6 +199,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		51796E56EBE3DCDF26FDAEEA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Perapera-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1889F11F2EF9214800886186 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -139,6 +231,9 @@
 			files = (
 				1889F1292EF9214800886186 /* ContentView.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
+				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
+				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
+				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,13 +361,14 @@
 		};
 		1889F1322EF9214B00886186 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
-				DEVELOPMENT_TEAM = 8P7A765852;
+				DEVELOPMENT_TEAM = 49LG6W98ZJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -285,7 +381,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = jeanwang.Perapera;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sishun.sunny;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -295,13 +391,14 @@
 		};
 		1889F1332EF9214B00886186 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
-				DEVELOPMENT_TEAM = 8P7A765852;
+				DEVELOPMENT_TEAM = 49LG6W98ZJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -314,7 +411,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = jeanwang.Perapera;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sishun.sunny;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
