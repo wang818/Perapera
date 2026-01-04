@@ -15,4 +15,8 @@
 "home_sheet_list_subtitle2" = "从本地存储导入媒体文件，无需复制";
 "home_sheet_list_title3" = "相册";
 "home_sheet_list_subtitle3" = "从您的相册导入媒体文件";
+"home_Youtube_Alert_title" = "Youtube网址";
+"home_Youtube_Alert_textFiled_placeholder" = "请输入网址";
+"colse" = "关闭";
+"save" = "保存";
 
