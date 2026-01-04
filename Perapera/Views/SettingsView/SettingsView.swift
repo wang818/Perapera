@@ -80,7 +80,7 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section(header: Text("settings_about".localized())) {
+                Section(header: Text("settings_help".localized())) {
                     SettingsRowView(imageName: "questionmark.circle", title: "settings_faq_title".localized(), subtitle: "") {
                         if let url = URL(string: "https://www.perapera.com/faq") {
                             UIApplication.shared.open(url)
