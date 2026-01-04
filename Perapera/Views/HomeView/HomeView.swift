@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import PhotosUI
 
 struct HomeView: View {
     // Sample data
@@ -8,6 +9,8 @@ struct HomeView: View {
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
+    @State private var showingPhotoPicker = false
+    @State private var selectedVideoItem: PhotosPickerItem?
     @State private var youtubeUrl = ""
 
     var body: some View {
@@ -110,6 +113,9 @@ struct HomeView: View {
                             Button(action: {
                                 print("Item 3 tapped")
                                 showingSheet = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    showingPhotoPicker = true
+                                }
                             }) {
                                 HStack(spacing: 15) {
                                     Image(systemName: "doc")
@@ -156,6 +162,17 @@ struct HomeView: View {
                         }
                     case .failure(let error):
                         print("File selection error: \(error.localizedDescription)")
+                    }
+                }
+                .photosPicker(isPresented: $showingPhotoPicker, selection: $selectedVideoItem, matching: .videos)
+                .onChange(of: selectedVideoItem) { newItem in
+                    if let newItem = newItem {
+                        Task {
+                            // Example of loading the video
+                            // Note: Loading actual video data or URL might require more steps depending on needs
+                            print("Selected video item: \(newItem)")
+                            // Reset selection if needed or handle the file
+                        }
                     }
                 }
             }
