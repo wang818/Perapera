@@ -8,23 +8,26 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("AppLanguage") private var appLanguage = "en"
+    
     var body: some View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("tab_home".localized(), systemImage: "house")
                 }
             
             PodcastView()
                 .tabItem {
-                    Label("Podcast", systemImage: "mic")
+                    Label("tab_podcast".localized(), systemImage: "mic")
                 }
             
             SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gear")
+                    Label("tab_settings".localized(), systemImage: "gear")
                 }
         }
+        .id(appLanguage)
     }
 }
 

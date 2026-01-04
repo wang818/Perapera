@@ -1,47 +1,6 @@
 import SwiftUI
 import Combine
 
-struct LanguageManager {
-    static let languageNames: [String: String] = [
-        "en": "English",
-        "zh-Hans": "简体中文",
-        "zh-Hant": "繁體中文",
-        "ja": "日本語",
-        "ko": "한국어",
-        "vi": "Tiếng Việt"
-    ]
-    
-    static func setAppLanguage(_ code: String) {
-        PUserDefault.setValueForKey(code, key: "AppLanguage")
-    }
-    
-    static func getCurrentAppLanguage() -> String {
-        // 1. Check if user has manually set a language in UserDefaults
-        if let storedLanguageCode = UserDefaults.standard.string(forKey: "AppLanguage"),
-           let languageName = languageNames[storedLanguageCode] {
-            return languageName
-        }
-        
-        // 2. Fallback to the language the App is currently running in
-        let resolvedLanguage = Bundle.main.preferredLocalizations.first ?? "en"
-        
-        // Logic: If the app resolved to English, but the user's phone language is NOT English,
-        // it means the user's phone language is not supported by the app.
-        // In this case, we default to English and save it as the App's setting.
-        if resolvedLanguage == "en" {
-            // Check user's primary preferred language (e.g. "fr-FR", "zh-Hans-CN")
-            if let primaryLang = Locale.preferredLanguages.first,
-               !primaryLang.lowercased().hasPrefix("en") {
-                // Phone language not supported -> Set default to en
-                setAppLanguage("en")
-                return languageNames["en"] ?? "English"
-            }
-        }
-        
-        return languageNames[resolvedLanguage] ?? "English"
-    }
-}
-
 struct LanguageSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
@@ -51,6 +10,8 @@ struct LanguageSettingsView: View {
     @State private var aiLanguage = "American"
     @State private var sourceLanguage = "English"
     @State private var learningLanguage = "Japanese"
+    
+    @State private var showAppLanguageSelection = false
     
     var body: some View {
         List {
@@ -62,6 +23,7 @@ struct LanguageSettingsView: View {
                 ) {
                     // Action for App Language
                     print("App Language tapped")
+                    showAppLanguageSelection = true
                 }
                 
                 languageRow(
@@ -95,8 +57,13 @@ struct LanguageSettingsView: View {
         .navigationTitle("settings_language_title".localized())
         .listStyle(InsetGroupedListStyle())
         .toolbarRole(.editor)
+        .sheet(isPresented: $showAppLanguageSelection) {
+            LanguageSelectionSheet(
+                isPresented: $showAppLanguageSelection,
+                currentLanguage: $appLanguage
+            )
+        }
     }
-    
     private func languageRow(title: String, subtitle: String, currentValue: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
@@ -124,6 +91,60 @@ struct LanguageSettingsView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct LanguageSelectionSheet: View {
+    @Binding var isPresented: Bool
+    @Binding var currentLanguage: String
+    
+    // Sort languages to ensure consistent order
+    private let languages = LanguageManager.languageNames.sorted(by: { $0.key < $1.key })
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("settings_lang_app_title".localized())
+                .foregroundColor(.ex.text1)
+                .font(.headline)
+                .padding(.top, 40)
+                .padding(.leading, 25)
+            
+            Text("settings_lang_app_subtitle".localized())
+                .foregroundColor(.ex.text1)
+                .font(.subheadline)
+                .padding(.leading, 25)
+                .padding(.bottom, 20)
+            
+            ScrollView {
+                VStack(spacing: 15) {
+                    ForEach(languages, id: \.key) { key, value in
+                        Button(action: {
+                            LanguageManager.setAppLanguage(key)
+                            currentLanguage = value
+                            isPresented = false
+                        }) {
+                            HStack {
+                                Text(value)
+                                    .font(.headline)
+                                    .foregroundColor(.ex.text1)
+                                Spacer()
+                                if currentLanguage == value {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            .padding()
+                            .background(Color.ex("bg2"))
+                            .cornerRadius(10)
+                        }
+                        .padding(.horizontal, 25)
+                    }
+                }
+                .padding(.bottom, 30)
+            }
+        }
+        .presentationDetents([.height(500)])
+        .presentationDragIndicator(.visible)
     }
 }
 

@@ -8,11 +8,11 @@ struct PodcastView: View {
                     .resizable()
                     .frame(width: 100, height: 100)
                     .foregroundColor(.purple)
-                Text("Podcast")
+                Text("podcast_title".localized())
                     .font(.largeTitle)
                     .padding()
             }
-            .navigationTitle("Podcast")
+            .navigationTitle("podcast_title".localized())
         }
     }
 }

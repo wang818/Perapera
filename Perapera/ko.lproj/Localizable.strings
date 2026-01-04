@@ -21,6 +21,11 @@
 "colse" = "닫기";
 "save" = "저장";
 
+// Tab
+"tab_home" = "홈";
+"tab_podcast" = "팟캐스트";
+"tab_settings" = "설정";
+
 // Settings
 "settings_account_header" = "계정";
 "settings_account_not_logged_in" = "로그인 안 됨";
@@ -55,3 +60,8 @@
 "login_next_button" = "다음";
 "login_email_invalid" = "유효한 이메일 주소를 입력하세요";
 "login_code_sent" = "인증 코드가 발송되었습니다";
+
+// Navigation
+"podcast_title" = "팟캐스트";
+"settings_title" = "설정";
+"settings_about" = "정보";

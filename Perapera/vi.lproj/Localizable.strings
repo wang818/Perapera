@@ -21,6 +21,11 @@
 "colse" = "Đóng";
 "save" = "Lưu";
 
+// Tab
+"tab_home" = "Trang chủ";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Cài đặt";
+
 // Settings
 "settings_account_header" = "Tài khoản";
 "settings_account_not_logged_in" = "Chưa đăng nhập";
@@ -55,3 +60,8 @@
 "login_next_button" = "Tiếp theo";
 "login_email_invalid" = "Vui lòng nhập địa chỉ email hợp lệ";
 "login_code_sent" = "Mã xác minh đã được gửi";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Cài đặt";
+"settings_about" = "Giới thiệu";

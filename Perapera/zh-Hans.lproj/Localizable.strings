@@ -21,6 +21,11 @@
 "colse" = "关闭";
 "save" = "保存";
 
+// Tab
+"tab_home" = "首页";
+"tab_podcast" = "播客";
+"tab_settings" = "设置";
+
 // Settings
 "settings_account_header" = "账户";
 "settings_account_not_logged_in" = "未登录";
@@ -55,3 +60,8 @@
 "login_next_button" = "下一步";
 "login_email_invalid" = "请输入有效的邮箱地址";
 "login_code_sent" = "验证码已发送";
+
+// Navigation
+"podcast_title" = "播客";
+"settings_title" = "设置";
+"settings_about" = "关于";

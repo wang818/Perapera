@@ -21,6 +21,11 @@
 "colse" = "Close";
 "save" = "Save";
 
+// Tab
+"tab_home" = "Home";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Settings";
+
 // Settings
 "settings_account_header" = "Account";
 "settings_account_not_logged_in" = "Not Logged In";
@@ -55,3 +60,8 @@
 "login_next_button" = "Next";
 "login_email_invalid" = "Enter a valid email address";
 "login_code_sent" = "Verification code sent";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Settings";
+"settings_about" = "About";

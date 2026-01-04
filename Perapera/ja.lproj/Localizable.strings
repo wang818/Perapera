@@ -21,6 +21,11 @@
 "colse" = "閉じる";
 "save" = "保存";
 
+// Tab
+"tab_home" = "ホーム";
+"tab_podcast" = "ポッドキャスト";
+"tab_settings" = "設定";
+
 // Settings
 "settings_account_header" = "アカウント";
 "settings_account_not_logged_in" = "未ログイン";
@@ -55,3 +60,8 @@
 "login_next_button" = "次へ";
 "login_email_invalid" = "有効なメールアドレスを入力してください";
 "login_code_sent" = "認証コードを送信しました";
+
+// Navigation
+"podcast_title" = "ポッドキャスト";
+"settings_title" = "設定";
+"settings_about" = "情報";

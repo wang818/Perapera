@@ -70,14 +70,14 @@ struct SettingsView: View {
                 }
                 
                 
-                Section(header: Text("About")) {
+                Section(header: Text("settings_about".localized())) {
                     Text("Version 1.0.0")
                 }
                 
                 
                 
             }
-            .navigationTitle("Settings")
+            .navigationTitle("settings_title".localized())
             .background(
                 NavigationLink(
                     destination: LanguageSettingsView(),

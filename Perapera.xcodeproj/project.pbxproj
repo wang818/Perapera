@@ -24,6 +24,7 @@
 		ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE942F0A38490090F990 /* EXThemeColor.swift */; };
 		ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */; };
 		ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9D2F0A59430090F990 /* PUserDefault.swift */; };
+		ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		ECACBE962F0A38490090F990 /* EXThemeColorLight.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorLight.json; sourceTree = "<group>"; };
 		ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingsView.swift; sourceTree = "<group>"; };
 		ECACBE9D2F0A59430090F990 /* PUserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PUserDefault.swift; sourceTree = "<group>"; };
+		ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
 				ECACBE852EFA58BB0090F990 /* Extensions */,
 			);
@@ -303,6 +306,7 @@
 				1889F1292EF9214800886186 /* ContentView.swift in Sources */,
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
+				ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */,
 				ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
 				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,

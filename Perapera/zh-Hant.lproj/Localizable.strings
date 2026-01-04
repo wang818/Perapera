@@ -21,6 +21,11 @@
 "colse" = "關閉";
 "save" = "儲存";
 
+// Tab
+"tab_home" = "首頁";
+"tab_podcast" = "播客";
+"tab_settings" = "設定";
+
 // Settings
 "settings_account_header" = "帳戶";
 "settings_account_not_logged_in" = "未登入";
@@ -55,3 +60,8 @@
 "login_next_button" = "下一步";
 "login_email_invalid" = "請輸入有效的電子郵件地址";
 "login_code_sent" = "驗證碼已發送";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "設定";
+"settings_about" = "關於";
