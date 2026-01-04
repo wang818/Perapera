@@ -18,6 +18,9 @@
 		ECACBE7E2EFA57210090F990 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE7C2EFA57210090F990 /* Localizable.strings */; };
 		ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE842EFA58BB0090F990 /* String+Extension.swift */; };
 		ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE882F0A15DF0090F990 /* LoginView.swift */; };
+		ECACBE982F0A38490090F990 /* EXThemeColorDark.json in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE952F0A38490090F990 /* EXThemeColorDark.json */; };
+		ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE962F0A38490090F990 /* EXThemeColorLight.json */; };
+		ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE942F0A38490090F990 /* EXThemeColor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +43,9 @@
 		ECACBE842EFA58BB0090F990 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		ECACBE872EFA5D4D0090F990 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		ECACBE882F0A15DF0090F990 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		ECACBE942F0A38490090F990 /* EXThemeColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXThemeColor.swift; sourceTree = "<group>"; };
+		ECACBE952F0A38490090F990 /* EXThemeColorDark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorDark.json; sourceTree = "<group>"; };
+		ECACBE962F0A38490090F990 /* EXThemeColorLight.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorLight.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +155,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBE972F0A38490090F990 /* Theme */,
 				ECACBE852EFA58BB0090F990 /* Extensions */,
 			);
 			path = Tools;
@@ -168,6 +175,16 @@
 				ECACBE882F0A15DF0090F990 /* LoginView.swift */,
 			);
 			path = LoginView;
+			sourceTree = "<group>";
+		};
+		ECACBE972F0A38490090F990 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBE942F0A38490090F990 /* EXThemeColor.swift */,
+				ECACBE952F0A38490090F990 /* EXThemeColorDark.json */,
+				ECACBE962F0A38490090F990 /* EXThemeColorLight.json */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -237,6 +254,8 @@
 				1889F12E2EF9214B00886186 /* Preview Assets.xcassets in Resources */,
 				ECACBE7E2EFA57210090F990 /* Localizable.strings in Resources */,
 				1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */,
+				ECACBE982F0A38490090F990 /* EXThemeColorDark.json in Resources */,
+				ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +295,7 @@
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
+				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,

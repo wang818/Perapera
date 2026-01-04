@@ -19,8 +19,9 @@ struct HomeView: View {
                 List(items, id: \.self) { item in
                     HStack {
                         Image(systemName: "doc.text")
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color.ex.text1)
                         Text(item)
+                            .foregroundColor(Color.ex.main1)
                     }
                     .frame(height: 150)
                 }
@@ -75,7 +76,7 @@ struct HomeView: View {
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.gray.opacity(0.1))
+                                .background(Color.ex("bg2"))
                                 .cornerRadius(10)
                             }
                             .padding(.horizontal, 25)

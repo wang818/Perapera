@@ -1,0 +1,832 @@
+[
+    {
+      "category" : "填充色Fill",
+      "desc" : "背景灰色",
+      "color" : "#0B0F08",
+      "name" : "bg1",
+      "version" : "6.0"
+    },
+    {
+      "category" : "填充色Fill",
+      "desc" : "背景灰色",
+      "color" : "#101010",
+      "name" : "bg2",
+      "version" : "6.0"
+    },
+    {
+      "category" : "填充色Fill",
+      "desc" : "背景灰色",
+      "color" : "#3A3A38",
+      "name" : "bg3",
+      "version" : "6.0"
+    },
+    {
+        "category" : "填充色Fill",
+        "desc" : "首页查看更多的背景色",
+        "color" : "#101010",
+        "name" : "bg4",
+        "version" : "6.0"
+    },
+    {
+        "category" : "填充色Fill",
+        "desc" : "首页背景色",
+        "color" : "#0B0F08",
+        "name" : "homepagebg",
+        "version" : "6.0"
+    },
+    
+    {
+        "color" : "#000000",
+        "name" : "tabbar_bg",
+    },
+
+    {
+        "category" : "辅助色",
+        "desc" : "首页查看更多边框颜色",
+        "color" : "#464646",
+        "name" : "morebuttonborderColor",
+        "version" : "6.0"
+    },
+    {
+      "category" : "按钮标题颜色",
+      "color" : "#0B0F08",
+      "name" : "buttonTitle",
+      "version" : "6.0"
+    },
+
+    
+
+  {
+    "category" : "填充色Fill",
+    "desc" : "背景灰色",
+    "color" : "#141414",
+    "name" : "fill1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "卡片色一",
+    "color" : "#1D1D1D",
+    "name" : "fill2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "卡片色二",
+    "color" : "#3A3A38",
+    "name" : "fill3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "间隔色",
+    "color" : "#888888",
+    "name" : "fill4",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "二级按钮点击色",
+    "color" : "#9BE453",
+    "name" : "fill5",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "弹窗背景",
+    "color" : "#171717",
+    "name" : "fill6",
+    "version" : "6.0"
+  },
+  {
+    "alpha" : "0.5",
+    "category" : "填充色Fill",
+    "desc" : "黑色遮罩色",
+    "color" : "#000000",
+    "name" : "fill7",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "Toast提示背景色",
+    "color" : "#303133",
+    "name" : "fill8",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "Toast背景色",
+    "color" : "#141414",
+    "name" : "toast_bg",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "Toast背景色",
+    "color" : "#1E1E1E",
+    "name" : "toast_shadow",
+    "version" : "6.0"
+  },
+
+
+  {
+    "category" : "填充色Fill",
+    "desc" : "标签背景色",
+    "color" : "#1A1A1A",
+    "name" : "fill9",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "标签背景色",
+    "color" : "#1E1E1E",
+    "name" : "fill10",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "标签背景色",
+    "color" : "#3A3A3B",
+    "name" : "fill11",
+    "version" : "6.0"
+  },
+  
+  {
+    "category" : "填充色Fill",
+    "desc" : "标签背景色",
+    "color" : "#1D1D1D",
+    "name" : "fill12",
+    "version" : "6.0"
+  },
+  {
+    "category" : "填充色Fill",
+    "desc" : "标签背景色",
+    "color" : "#3A3A3B",
+    "name" : "fill13",
+    "version" : "6.0"
+  },
+  
+  {
+    "category" : "填充色Fill",
+    "desc" : "标签背景色",
+    "color" : "#192621",
+    "name" : "fill14",
+    "version" : "6.0"
+  },
+
+  {
+    "category" : "state/Success1",
+    "color" : "#00A943",
+    "name" : "textStateSuccess1",
+    "version" : "6.0"
+  },
+  
+  {
+    "category" : "文字色Text",
+    "desc" : "一级颜色",
+    "color" : "#FFFFFF",
+    "name" : "text1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "文字色Text",
+    "desc" : "二级颜色",
+    "color" : "#BDBDBD",
+    "name" : "text2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "文字色Text",
+    "desc" : "三级颜色",
+    "color" : "#909090",
+    "name" : "text3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "文字色Text",
+    "desc" : "四级颜色",
+    "color" : "#585858",
+    "name" : "text4",
+    "version" : "6.0"
+  },
+  {
+    "category" : "文字色Text",
+    "desc" : "四级颜色",
+    "color" : "#000000",
+    "name" : "text5",
+    "version" : "6.0"
+  },
+  {
+    "category" : "特殊色Special",
+    "desc" : "背景色",
+    "color" : "#1D1D1D",
+    "name" : "special1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "特殊色Special",
+    "desc" : "背景色",
+    "color" : "#232326",
+    "name" : "special2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "特殊色Special",
+    "desc" : "卡片色一",
+    "color" : "#232326",
+    "name" : "special3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "特殊色Special",
+    "desc" : "卡片色一",
+    "color" : "#909399",
+    "name" : "special4",
+    "version" : "6.0"
+  },
+  {
+    "category" : "主色",
+    "desc" : "蓝色常规",
+    "color" : "#9BE453",
+    "name" : "main1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "主色",
+    "desc" : "按钮点击",
+    "color" : "#5581FF",
+    "name" : "main2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "主色",
+    "desc" : "标签背景色",
+    "color" : "#151D35",
+    "name" : "main3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "主色",
+    "desc" : "文字按钮色",
+    "color" : "#4071FF",
+    "name" : "main4",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "上涨绿色",
+    "color" : "#00A943",
+    "name" : "rise1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "按钮点击",
+    "color" : "#26C0A4",
+    "name" : "rise2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "绿色图表色",
+    "color" : "#0E2A25",
+    "name" : "rise3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "下跌红色",
+    "color" : "#DA2C63",
+    "name" : "fall1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "标签背景色",
+    "color" : "#D75E75",
+    "name" : "fall2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "红色图表色",
+    "color" : "#2E181D",
+    "name" : "fall3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/涨跌色",
+    "desc" : "行情下跌色",
+    "color" : "#DA2C63",
+    "name" : "fall4",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/功能色",
+    "desc" : "警示/提醒色",
+    "color" : "#E9A92A",
+    "name" : "warning1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/功能色",
+    "desc" : "黄色警示图表色",
+    "color" : "#272014",
+    "name" : "warning2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/功能色",
+    "desc" : "红色错误提示",
+    "color" : "#D1425E",
+    "name" : "error1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/K线指标色",
+    "desc" : "指标黄",
+    "color" : "#1E1E1E",
+    "name" : "line1",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/K线指标色",
+    "desc" : "指标绿",
+    "color" : "#303030",
+    "name" : "line2",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/K线指标色",
+    "desc" : "指标紫",
+    "color" : "#B8B8B8",
+    "name" : "line3",
+    "version" : "6.0"
+  },
+  {
+    "category" : "辅助色/K线指标色",
+    "desc" : "指标红",
+    "color" : "#FFA693",
+    "name" : "line4",
+    "version" : "6.0"
+  },
+  {
+      "category":"骨架渐变色",
+      "desc" : "渐变色",
+      "colors" : [
+          "#232326",
+          "#373737",
+          "#232326"
+      ],
+      "name" : "gradient.skeleton",
+      "version" : "6.0"
+  },
+  {
+    "category" : "按钮标题",
+    "color" : "#0B0F08",
+    "name" : "secondaryG100",
+    "version" : "6.0"
+  },
+  
+  {
+    "category" : "按钮标题",
+    "desc" : "标签背景色",
+    "color" : "#3A3A3B",
+    "name" : "secondaryG80",
+    "version" : "6.0"
+  },
+  
+  {
+    "category" : "按钮标题",
+    "desc" : "标签背景色",
+    "color" : "#676A72",
+    "name" : "secondaryG50",
+    "version" : "6.0"
+  },
+
+  {
+    "color" : "#CCD1425E",
+    "name" : "state.fail80"
+  },
+  {
+    "redirect" : "fill8",
+    "name" : "state.normal"
+  },
+  {
+    "redirect" : "fall1",
+    "name" : "state.fail"
+  },
+  {
+    "color" : "#CC303133",
+    "name" : "state.normal80"
+  },
+  {
+    "color" : "#CCEDBB7A",
+    "name" : "state.warning80"
+  },
+  {
+    "redirect" : "rise1",
+    "name" : "state.success"
+  },
+  {
+    "color" : "#CC00B595",
+    "name" : "state.success80"
+  },
+  {
+    "redirect" : "warning1",
+    "name" : "state.warning"
+  },
+  {
+    "redirect" : "special3",
+    "name" : "searchpage.searchbarbg"
+  },
+  {
+    "redirect" : "special1",
+    "name" : "searchpage.bg"
+  },
+  {
+    "redirect" : "text4",
+    "name" : "label.white"
+  },
+  {
+    "redirect" : "main1",
+    "name" : "label.colorHighlight"
+  },
+  {
+    "redirect" : "text1",
+    "name" : "label.colorLite"
+  },
+  {
+    "redirect" : "text2",
+    "name" : "label.colorMedium"
+  },
+  {
+    "color" : "#E5D2AC",
+    "name" : "label.share"
+  },
+  {
+    "redirect" : "text3",
+    "name" : "label.colorDark"
+  },
+  {
+    "redirect" : "text3",
+    "name" : "kline.labelcolorDark"
+  },
+  {
+    "color" : "#802B61FF",
+    "name" : "kline.viewhighlight50"
+  },
+  {
+    "redirect" : "rise1",
+    "name" : "kline.up"
+  },
+  {
+    "redirect" : "fill1",
+    "name" : "kline.viewbg"
+  },
+  {
+    "color" : "#F21A1A1A",
+    "name" : "kline.viewbgTab"
+  },
+  {
+    "redirect" : "line2",
+    "name" : "kline.green"
+  },
+  {
+    "color" : "#D8D8D8",
+    "name" : "kline.seperator"
+  },
+  {
+    "color" : "#40232326",
+    "name" : "kline.viewbgIcon25"
+  },
+  {
+    "color" : "#010101",
+    "name" : "kline.navbg"
+  },
+  {
+    "redirect" : "fall1",
+    "name" : "kline.down"
+  },
+  {
+    "redirect" : "text1",
+    "name" : "kline.labelcolorLite"
+  },
+  {
+    "redirect" : "main1",
+    "name" : "kline.viewhighlight"
+  },
+  {
+      "redirect" : "rise1",
+    "name" : "kline.up15"
+  },
+  {
+    "color" : "#E9A991",
+    "name" : "kline.pink"
+  },
+  {
+    "color" : "#F21A1A1A",
+    "name" : "kline.viewseperator"
+  },
+  {
+    "redirect" : "text2",
+    "name" : "kline.labelcolorMedium"
+  },
+  {
+      "redirect" : "fall1",
+    "name" : "kline.down15"
+  },
+  {
+    "redirect" : "main1",
+    "name" : "kline.labelcolorHighlight"
+  },
+  {
+    "redirect" : "special2",
+    "name" : "kline.viewbgIcon"
+  },
+  {
+    "color" : "#0D1D26",
+    "name" : "kline.viewbgGap"
+  },
+  {
+    "redirect" : "line3",
+    "name" : "kline.purple"
+  },
+  {
+    "redirect" : "text4",
+    "name" : "kline.labelwhite"
+  },
+  {
+    "color" : "#F21A1A1A",
+    "name" : "kline.tagbg"
+  },
+  {
+    "color" : "#232326",
+    "name" : "kline.viewborder"
+  },
+  {
+    "color" : "#F5CB89",
+    "name" : "kline.yellow"
+  },
+  {
+    "redirect" : "main1",
+    "name" : "kline.btnhighlight"
+  },
+  {
+    "color" : "#313E55",
+    "name" : "btn.normal"
+  },
+  {
+    "redirect" : "fill5",
+    "name" : "btn.disable"
+  },
+  {
+    "redirect" : "fill5",
+    "name" : "btn.touch2"
+  },
+  {
+    "color" : "#4E5A6D",
+    "name" : "btn.touch"
+  },
+  {
+    "redirect" : "buttonTitle",
+    "name" : "btn.title"
+  },
+  {
+    "color" : "#2B61FF4D",
+    "name" : "btn.highlight30"
+  },
+  {
+    "redirect" : "main1",
+    "name" : "btn.highlight"
+  },
+  {
+    "color" : "#232326",
+    "name" : "textfield.seperator"
+  },
+  {
+    "color" : "#232326",
+    "name" : "tab.icon"
+  },
+  {
+    "redirect" : "fill9",
+    "name" : "tab.bg"
+  },
+  {
+    "color" : "#232326",
+    "name" : "view.bgIconh"
+  },
+  {
+    "redirect" : "fill6",
+    "name" : "view.alertBg"
+  },
+  {
+    "color" : "#80232326",
+    "name" : "view.bgIcon50"
+  },
+  {
+    "color" : "#57BFF9",
+    "name" : "view.badge5"
+  },
+  {
+    "redirect" : "special2",
+    "name" : "view.bgIcon"
+  },
+  {
+    "redirect" : "fill9",
+    "name" : "view.markBg"
+  },
+  {
+    "color" : "#402B61FF",
+    "name" : "view.highlight25"
+  },
+  {
+    "color" : "#F21A1A1A",
+    "name" : "view.bgTab"
+  },
+  {
+    "redirect" : "line1",
+    "name" : "view.seperator"
+  },
+  {
+    "redirect" : "text4",
+    "name" : "view.bgCard"
+  },
+  {
+    "redirect" : "fill3",
+    "name" : "view.card2"
+  },
+  {
+    "redirect" : "fill1",
+    "name" : "view.midbg"
+  },
+  {
+    "color" : "#080808",
+    "name" : "view.mask"
+  },
+  {
+    "redirect" : "special2",
+    "name" : "view.mySign"
+  },
+  {
+    "color" : "#0D1D26",
+    "name" : "view.bgGap"
+  },
+  {
+    "redirect" : "fill8",
+    "name" : "view.toast"
+  },
+  {
+    "color" : "#80232326",
+    "name" : "view.bgIconh50"
+  },
+  {
+    "color" : "#40232326",
+    "name" : "view.bgIcon25"
+  },
+  {
+    "redirect" : "fill2",
+    "name" : "view.card1"
+  },
+  {
+    "color" : "#262B61FF",
+    "name" : "view.highlight15"
+  },
+  {
+    "color" : "#802B61FF",
+    "name" : "view.highlight50"
+  },
+  {
+    "redirect" : "bg1",
+    "name" : "view.bg"
+  },
+  {
+    "color" : "#0F192A",
+    "name" : "view.alertImage"
+  },
+  {
+    "color" : "#232326",
+    "name" : "view.border"
+  },
+  {
+    "color" : "#C72A29",
+    "name" : "view.badge10"
+  },
+  {
+    "redirect" : "bg1",
+    "name" : "view.newbg"
+  },
+  {
+    "color" : "#F7B500",
+    "name" : "view.yellow"
+  },
+  {
+    "redirect" : "main1",
+    "name" : "view.highlight"
+  },
+  {
+    "color" : "#EB3A54",
+    "name" : "redpacket.normalRed"
+  },
+  {
+    "color" : "#F3CA92",
+    "name" : "redpacket.text"
+  },
+  {
+    "color" : "#232326",
+    "name" : "pagecontrol.unselect"
+  },
+  {
+    "color" : "#D8E1F0",
+    "name" : "pagecontrol.bannerSelect"
+  },
+  {
+    "color" : "#5D6D89",
+    "name" : "pagecontrol.bannerUnselect"
+  },
+  {
+    "color" : "#D8E1F0",
+    "name" : "pagecontrol.select"
+  },
+  {
+    "colors" : [
+      "#004FE1",
+      "#1D5FDA"
+    ],
+    "name" : "gradient.default"
+  },
+  {
+    "redirect" : "fill1",
+    "name" : "nav.bg"
+  },
+  {
+    "redirect" : "text3",
+    "name" : "label.text3"
+  },
+  {
+    "redirect" : "text2",
+    "name" : "label.text2"
+  },
+  {
+    "redirect" : "text1",
+    "name" : "label.text1"
+  },
+  {
+    "redirect" : "text4",
+    "name" : "label.text4"
+  },
+  {
+    "redirect" : "fill2",
+    "name" : "btn.bg"
+  },
+  
+  {
+    "redirect" : "text1",
+    "name" : "btn.border"
+  },
+  {
+    "redirect" : "fill2",
+    "name" : "textfield.bg"
+  },
+  {
+    "redirect" : "text4",
+    "name" : "textfield.placeholder"
+  },
+  {
+    "color" : "#1D1D1D",
+    "name" : "masksegmentbg"
+  },
+  {
+    "color" : "#FFFFFF",
+    "name" : "secondaryWhite"
+  },
+
+  {
+      "category":"渐变色",
+      "desc" : "骨架渐变色",
+      "colors" : [
+          "#9BE453",
+          "#C1F848",
+          "#57E598"
+      ],
+      "name" : "gradient.marketAi",
+      "version" : "6.0"
+  },
+  {
+      "category":"渐变色",
+      "desc" : "骨架渐变色",
+      "colors" : [
+          "#FC40FF",
+          "#5860FF",
+          "#40FFAA"
+      ],
+      "name" : "gradient.marketAi2",
+      "version" : "6.0"
+  },
+
+  {
+    "color" : "#FFFFFF",
+    "name" : "ai_bg"
+  },
+
+]
