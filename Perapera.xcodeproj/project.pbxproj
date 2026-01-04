@@ -23,6 +23,7 @@
 		ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE962F0A38490090F990 /* EXThemeColorLight.json */; };
 		ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE942F0A38490090F990 /* EXThemeColor.swift */; };
 		ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */; };
+		ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9D2F0A59430090F990 /* PUserDefault.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		ECACBE952F0A38490090F990 /* EXThemeColorDark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorDark.json; sourceTree = "<group>"; };
 		ECACBE962F0A38490090F990 /* EXThemeColorLight.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorLight.json; sourceTree = "<group>"; };
 		ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingsView.swift; sourceTree = "<group>"; };
+		ECACBE9D2F0A59430090F990 /* PUserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PUserDefault.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +172,7 @@
 		ECACBE852EFA58BB0090F990 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBE9D2F0A59430090F990 /* PUserDefault.swift */,
 				ECACBE842EFA58BB0090F990 /* String+Extension.swift */,
 			);
 			path = Extensions;
@@ -306,6 +309,7 @@
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
+				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

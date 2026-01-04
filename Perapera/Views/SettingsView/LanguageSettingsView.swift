@@ -12,8 +12,7 @@ struct LanguageManager {
     ]
     
     static func setAppLanguage(_ code: String) {
-        UserDefaults.standard.set(code, forKey: "AppLanguage")
-        UserDefaults.standard.synchronize()
+        PUserDefault.setValueForKey(code, key: "AppLanguage")
     }
     
     static func getCurrentAppLanguage() -> String {
