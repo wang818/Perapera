@@ -40,10 +40,12 @@ struct HomeView: View {
                 .sheet(isPresented: $showingSheet) {
                     VStack(alignment: .leading) {
                         Text("home_sheet_title".localized())
+                            .foregroundColor(.ex.text1)
                             .font(.headline)
                             .padding(.top, 40)
                             .padding(.leading, 25)
                         Text("home_sheet_subtitle".localized())
+                            .foregroundColor(.ex.text1)
                             .font(.subheadline)
                             .padding(.leading, 25)
                             .padding(.bottom, 20)

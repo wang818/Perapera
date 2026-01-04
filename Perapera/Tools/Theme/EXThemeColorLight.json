@@ -255,6 +255,15 @@
     "name" : "special4",
     "version" : "6.0"
   },
+  
+  {
+    "category" : "主题色",
+    "desc" : "常规",
+    "color" : "#78C83B",
+    "name" : "main",
+    "version" : "6.0"
+  },
+  
   {
     "category" : "主色",
     "desc" : "蓝色常规",

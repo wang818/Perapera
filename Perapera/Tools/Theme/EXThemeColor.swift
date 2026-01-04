@@ -362,6 +362,12 @@ public extension UIColor.Ex {
     /// 蓝色常规
     ///
     /// 类别:主色
+    ///
+
+    static var main: UIColor { global.main }
+    var main: UIColor { named(.main) }
+    
+    
     static var main1: UIColor { global.main1 }
     var main1: UIColor { named(.main1) }
     
@@ -625,6 +631,7 @@ extension UIColor.Ex {
             case secondaryG100
             case secondaryG80
             case secondaryG50
+            case main
             case main1
             case main2
             case main3
@@ -720,6 +727,7 @@ public extension Color {
         public static var special3: Color { Color.ex("special3") }
         public static var special4: Color { Color.ex("special4") }
         
+        public static var main : Color { Color.ex("main")  }
         public static var main1: Color { Color.ex("main1") }
         public static var main2: Color { Color.ex("main2") }
         public static var main3: Color { Color.ex("main3") }
