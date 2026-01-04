@@ -81,7 +81,18 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("settings_about".localized())) {
-                    Text("Version 1.0.0")
+                    SettingsRowView(imageName: "questionmark.circle", title: "settings_faq_title".localized(), subtitle: "") {
+                        if let url = URL(string: "https://www.perapera.com/faq") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    
+                    SettingsRowView(imageName: "info.circle", title: "settings_about_perapera_title".localized(), subtitle: "") {
+                        if let url = URL(string: "https://www.perapera.com/about") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    
                 }
                 
                 

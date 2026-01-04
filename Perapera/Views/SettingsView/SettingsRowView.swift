@@ -23,9 +23,11 @@ struct SettingsRowView: View {
                         .font(.subheadline)
                         .foregroundColor(.ex.text1)
                     
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundColor(.ex.text2)
+                    if !subtitle.isEmpty {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundColor(.ex.text2)
+                    }
                 }
                 
                 Spacer()

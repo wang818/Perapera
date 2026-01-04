@@ -48,6 +48,9 @@
 "settings_feedback_header" = "Phản hồi";
 "settings_email_title" = "Email";
 "settings_email_subtitle" = "Nhận hỗ trợ qua email";
+
+"settings_faq_title" = "Câu hỏi thường gặp";
+"settings_about_perapera_title" = "Giới thiệu về Perapera";
  
  "settings_lang_app_title" = "Giao diện người dùng";
 "settings_lang_app_subtitle" = "Ngôn ngữ giao diện";

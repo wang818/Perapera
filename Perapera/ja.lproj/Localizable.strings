@@ -48,6 +48,9 @@
 "settings_feedback_header" = "フィードバック";
 "settings_email_title" = "メール";
 "settings_email_subtitle" = "メールでサポートを受ける";
+
+"settings_faq_title" = "よくある質問";
+"settings_about_perapera_title" = "Peraperaについて";
  
  "settings_lang_app_title" = "ユーザーインターフェース";
 "settings_lang_app_subtitle" = "ユーザーインターフェース言語";
