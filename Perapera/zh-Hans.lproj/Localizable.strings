@@ -6,6 +6,7 @@
   
 */
 
+//HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "导入视频和音频";
 "home_sheet_subtitle" = "请选择从哪里导入媒体文件";
@@ -20,4 +21,18 @@
 "colse" = "关闭";
 "save" = "保存";
 
+// Settings
+"settings_account_header" = "账户";
+"settings_account_not_logged_in" = "未登录";
+"settings_account_login_description" = "登录后使用所有功能";
+"settings_account_login_button" = "登录";
 
+// Login
+"login_title" = "登录";
+"login_email_placeholder" = "请输入邮箱地址";
+"login_code_placeholder" = "请输入验证码";
+"login_get_code" = "获取验证码";
+"login_button" = "登录";
+"login_next_button" = "下一步";
+"login_email_invalid" = "请输入有效的邮箱地址";
+"login_code_sent" = "验证码已发送";

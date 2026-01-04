@@ -17,6 +17,7 @@
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
 		ECACBE7E2EFA57210090F990 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE7C2EFA57210090F990 /* Localizable.strings */; };
 		ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE842EFA58BB0090F990 /* String+Extension.swift */; };
+		ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE882F0A15DF0090F990 /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		ECACBE822EFA573D0090F990 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBE842EFA58BB0090F990 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		ECACBE872EFA5D4D0090F990 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		ECACBE882F0A15DF0090F990 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 		ECACBE732EF937CA0090F990 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBE892F0A15DF0090F990 /* LoginView */,
 				ECACBE762EF938410090F990 /* SettingsView */,
 				ECACBE752EF938340090F990 /* PodcastView */,
 				ECACBE742EF9380B0090F990 /* HomeView */,
@@ -157,6 +160,14 @@
 				ECACBE842EFA58BB0090F990 /* String+Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		ECACBE892F0A15DF0090F990 /* LoginView */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBE882F0A15DF0090F990 /* LoginView.swift */,
+			);
+			path = LoginView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1889F1292EF9214800886186 /* ContentView.swift in Sources */,
+				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
