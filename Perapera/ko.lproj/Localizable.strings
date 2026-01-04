@@ -41,8 +41,15 @@
 "settings_alphabet_subtitle" = "알파벳 표시 설정 관리";
 "settings_theme_title" = "테마";
 "settings_theme_subtitle" = "앱 테마 조정";
+"settings_theme_system" = "시스템 설정 따름";
+"settings_theme_light" = "라이트 모드";
+"settings_theme_dark" = "다크 모드";
 
-"settings_lang_app_title" = "사용자 인터페이스";
+"settings_feedback_header" = "피드백";
+"settings_email_title" = "이메일";
+"settings_email_subtitle" = "이메일을 통해 지원 받기";
+ 
+ "settings_lang_app_title" = "사용자 인터페이스";
 "settings_lang_app_subtitle" = "사용자 인터페이스 언어";
 "settings_lang_ai_title" = "AI 설명";
 "settings_lang_ai_subtitle" = "AI 설명 언어";

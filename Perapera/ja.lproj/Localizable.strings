@@ -41,8 +41,15 @@
 "settings_alphabet_subtitle" = "文字の表示設定を管理";
 "settings_theme_title" = "テーマ";
 "settings_theme_subtitle" = "アプリのテーマを調整";
+"settings_theme_system" = "システムに従う";
+"settings_theme_light" = "ライトモード";
+"settings_theme_dark" = "ダークモード";
 
-"settings_lang_app_title" = "ユーザーインターフェース";
+"settings_feedback_header" = "フィードバック";
+"settings_email_title" = "メール";
+"settings_email_subtitle" = "メールでサポートを受ける";
+ 
+ "settings_lang_app_title" = "ユーザーインターフェース";
 "settings_lang_app_subtitle" = "ユーザーインターフェース言語";
 "settings_lang_ai_title" = "AI解説";
 "settings_lang_ai_subtitle" = "AI解説の言語";

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("AppLanguage") private var appLanguage = "en"
+    @AppStorage("AppTheme") private var appTheme: AppTheme = .system
     
     var body: some View {
         TabView {
@@ -28,6 +29,7 @@ struct ContentView: View {
                 }
         }
         .id(appLanguage)
+        .preferredColorScheme(appTheme.colorScheme)
     }
 }
 

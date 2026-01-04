@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @State private var showingLoginView = false
     @State private var showLanguageSettings = false
+    @State private var showThemeSettings = false
 
     var body: some View {
         NavigationStack {
@@ -65,10 +66,19 @@ struct SettingsView: View {
                         print("Alphabet tapped")
                     }
                     SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
-                        print("Theme tapped")
+                        showThemeSettings = true
                     }
                 }
                 
+                
+                Section(header: Text("settings_feedback_header".localized())) {
+                    SettingsRowView(imageName: "envelope.fill", title: "settings_email_title".localized(), subtitle: "settings_email_subtitle".localized()) {
+                        print("Email tapped")
+                        if let url = URL(string: "mailto:support@perapera.com") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                }
                 
                 Section(header: Text("settings_about".localized())) {
                     Text("Version 1.0.0")
@@ -79,10 +89,17 @@ struct SettingsView: View {
             }
             .navigationTitle("settings_title".localized())
             .background(
-                NavigationLink(
-                    destination: LanguageSettingsView(),
-                    isActive: $showLanguageSettings
-                ) { EmptyView() }
+                Group {
+                    NavigationLink(
+                        destination: LanguageSettingsView(),
+                        isActive: $showLanguageSettings
+                    ) { EmptyView() }
+                    
+                    NavigationLink(
+                        destination: ThemeSettingsView(),
+                        isActive: $showThemeSettings
+                    ) { EmptyView() }
+                }
             )
             .sheet(isPresented: $showingLoginView) {
                 LoginView()
@@ -94,3 +111,47 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
 }
+
+struct ThemeSettingsView: View {
+    @AppStorage("AppTheme") private var selectedTheme: AppTheme = .system
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        List {
+            ForEach(AppTheme.allCases) { theme in
+                Button(action: {
+                    selectedTheme = theme
+                }) {
+                    HStack {
+                        Text(theme.localizedName)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        if selectedTheme == theme {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+        }
+        .navigationTitle("settings_theme_title".localized())
+        // Hide default back button to remove text
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 17, weight: .semibold))
+                        // Ensure the back button color matches the navigation bar tint
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+    }
+}
+

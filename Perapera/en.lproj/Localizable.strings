@@ -41,8 +41,15 @@
 "settings_alphabet_subtitle" = "Manage alphabet display settings";
 "settings_theme_title" = "Theme";
 "settings_theme_subtitle" = "Adjust app theme";
+"settings_theme_system" = "Follow System";
+"settings_theme_light" = "Light Mode";
+"settings_theme_dark" = "Dark Mode";
 
-"settings_lang_app_title" = "User Interface";
+"settings_feedback_header" = "Feedback";
+"settings_email_title" = "Email";
+"settings_email_subtitle" = "Get support via email";
+ 
+ "settings_lang_app_title" = "User Interface";
 "settings_lang_app_subtitle" = "User Interface Language";
 "settings_lang_ai_title" = "AI Explanation";
 "settings_lang_ai_subtitle" = "AI Explanation Language";

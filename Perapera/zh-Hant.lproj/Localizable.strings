@@ -41,8 +41,15 @@
 "settings_alphabet_subtitle" = "管理字母顯示設定";
 "settings_theme_title" = "主題";
 "settings_theme_subtitle" = "調整應用程式主題";
+"settings_theme_system" = "跟隨系統";
+"settings_theme_light" = "淺色模式";
+"settings_theme_dark" = "深色模式";
 
-"settings_lang_app_title" = "使用者介面";
+"settings_feedback_header" = "意見回饋";
+"settings_email_title" = "電子郵件";
+"settings_email_subtitle" = "透過郵件獲取支援";
+ 
+ "settings_lang_app_title" = "使用者介面";
 "settings_lang_app_subtitle" = "使用者介面語言";
 "settings_lang_ai_title" = "AI講解";
 "settings_lang_ai_subtitle" = "AI講解語言";

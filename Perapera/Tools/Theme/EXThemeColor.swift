@@ -8,6 +8,30 @@
 import UIKit
 import SwiftUI
 
+public enum AppTheme: String, CaseIterable, Identifiable {
+    case system = "system"
+    case light = "light"
+    case dark = "dark"
+    
+    public var id: String { self.rawValue }
+    
+    var localizedName: String {
+        switch self {
+        case .system: return "settings_theme_system".localized()
+        case .light: return "settings_theme_light".localized()
+        case .dark: return "settings_theme_dark".localized()
+        }
+    }
+    
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
 // MARK: - Theme Models
 
 private struct ThemeColorDefinition: Codable {

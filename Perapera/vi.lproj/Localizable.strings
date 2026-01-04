@@ -41,8 +41,15 @@
 "settings_alphabet_subtitle" = "Quản lý cài đặt hiển thị chữ cái";
 "settings_theme_title" = "Chủ đề";
 "settings_theme_subtitle" = "Điều chỉnh chủ đề ứng dụng";
+"settings_theme_system" = "Theo hệ thống";
+"settings_theme_light" = "Chế độ sáng";
+"settings_theme_dark" = "Chế độ tối";
 
-"settings_lang_app_title" = "Giao diện người dùng";
+"settings_feedback_header" = "Phản hồi";
+"settings_email_title" = "Email";
+"settings_email_subtitle" = "Nhận hỗ trợ qua email";
+ 
+ "settings_lang_app_title" = "Giao diện người dùng";
 "settings_lang_app_subtitle" = "Ngôn ngữ giao diện";
 "settings_lang_ai_title" = "Giải thích AI";
 "settings_lang_ai_subtitle" = "Ngôn ngữ giải thích AI";
