@@ -5,3 +5,53 @@
   Created by yinsishun on 2025/12/23.
   
 */
+
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "匯入影片和音訊";
+"home_sheet_subtitle" = "請選擇從哪裡匯入媒體檔案";
+"home_sheet_list_title1" = "Youtube網址";
+"home_sheet_list_subtitle1" = "在應用程式中播放Youtube影片，無需下載";
+"home_sheet_list_title2" = "本地媒體";
+"home_sheet_list_subtitle2" = "從本地儲存匯入媒體檔案，無需複製";
+"home_sheet_list_title3" = "相簿";
+"home_sheet_list_subtitle3" = "從您的相簿匯入媒體檔案";
+"home_Youtube_Alert_title" = "Youtube網址";
+"home_Youtube_Alert_textFiled_placeholder" = "請輸入網址";
+"colse" = "關閉";
+"save" = "儲存";
+
+// Settings
+"settings_account_header" = "帳戶";
+"settings_account_not_logged_in" = "未登入";
+"settings_account_login_description" = "登入後使用所有功能";
+"settings_account_login_button" = "登入";
+"settings_pro_title" = "加入 Perapera Pro";
+"settings_pro_subtitle" = "用AI解鎖全部功能";
+
+"settings_general_header" = "通用";
+"settings_language_title" = "App語言";
+"settings_language_subtitle" = "選擇App內使用語言";
+"settings_alphabet_title" = "字母首選項";
+"settings_alphabet_subtitle" = "管理字母顯示設定";
+"settings_theme_title" = "主題";
+"settings_theme_subtitle" = "調整應用程式主題";
+
+"settings_lang_app_title" = "使用者介面";
+"settings_lang_app_subtitle" = "使用者介面語言";
+"settings_lang_ai_title" = "AI講解";
+"settings_lang_ai_subtitle" = "AI講解語言";
+"settings_lang_source_title" = "第二字幕";
+"settings_lang_source_subtitle" = "預設翻譯語言";
+"settings_lang_learn_title" = "目標語言";
+"settings_lang_learn_subtitle" = "選擇想要學習的語言";
+
+// Login
+"login_title" = "登入";
+"login_email_placeholder" = "請輸入電子郵件地址";
+"login_code_placeholder" = "請輸入驗證碼";
+"login_get_code" = "獲取驗證碼";
+"login_button" = "登入";
+"login_next_button" = "下一步";
+"login_email_invalid" = "請輸入有效的電子郵件地址";
+"login_code_sent" = "驗證碼已發送";

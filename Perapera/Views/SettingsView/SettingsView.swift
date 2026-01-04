@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var showingLoginView = false
+    @State private var showLanguageSettings = false
 
     var body: some View {
         NavigationStack {
@@ -40,15 +41,15 @@ struct SettingsView: View {
                     
                 }
                 Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("加入 Perapera Pro")
+                    VStack(alignment: .center, spacing: 8) {
+                        Text("settings_pro_title".localized())
                             .font(.headline)
-                            .foregroundColor(.white)
-                        Text("用AI解锁全部功能")
+                            .foregroundColor(.Ex.text1)
+                        Text("settings_pro_subtitle".localized())
                             .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.8))
+                            .foregroundColor(.Ex.text2)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .background(Color.ex.main)
                     .cornerRadius(10)
@@ -56,13 +57,33 @@ struct SettingsView: View {
                     .listRowBackground(Color.clear) // Remove default list row background
                 }
                 
+                Section(header: Text("settings_general_header".localized())) {
+                    SettingsRowView(imageName: "globe", title: "settings_language_title".localized(), subtitle: "settings_language_subtitle".localized()) {
+                        showLanguageSettings = true
+                    }
+                    SettingsRowView(imageName: "textformat", title: "settings_alphabet_title".localized(), subtitle: "settings_alphabet_subtitle".localized()) {
+                        print("Alphabet tapped")
+                    }
+                    SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
+                        print("Theme tapped")
+                    }
+                }
                 
                 
                 Section(header: Text("About")) {
                     Text("Version 1.0.0")
                 }
+                
+                
+                
             }
             .navigationTitle("Settings")
+            .background(
+                NavigationLink(
+                    destination: LanguageSettingsView(),
+                    isActive: $showLanguageSettings
+                ) { EmptyView() }
+            )
             .sheet(isPresented: $showingLoginView) {
                 LoginView()
             }

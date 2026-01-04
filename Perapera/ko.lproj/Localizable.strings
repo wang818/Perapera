@@ -5,3 +5,53 @@
   Created by yinsishun on 2025/12/23.
   
 */
+
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "비디오 및 오디오 가져오기";
+"home_sheet_subtitle" = "미디어 파일을 가져올 위치를 선택하세요";
+"home_sheet_list_title1" = "Youtube URL";
+"home_sheet_list_subtitle1" = "다운로드 없이 앱에서 Youtube 재생";
+"home_sheet_list_title2" = "로컬 미디어";
+"home_sheet_list_subtitle2" = "복사 없이 로컬 저장소에서 가져오기";
+"home_sheet_list_title3" = "사진";
+"home_sheet_list_subtitle3" = "사진 앱에서 미디어 가져오기";
+"home_Youtube_Alert_title" = "Youtube URL";
+"home_Youtube_Alert_textFiled_placeholder" = "URL을 입력하세요";
+"colse" = "닫기";
+"save" = "저장";
+
+// Settings
+"settings_account_header" = "계정";
+"settings_account_not_logged_in" = "로그인 안 됨";
+"settings_account_login_description" = "로그인하여 모든 기능 사용";
+"settings_account_login_button" = "로그인";
+"settings_pro_title" = "Perapera Pro 가입";
+"settings_pro_subtitle" = "AI로 모든 기능 잠금 해제";
+
+"settings_general_header" = "일반";
+"settings_language_title" = "앱 언어";
+"settings_language_subtitle" = "앱에서 사용할 언어 선택";
+"settings_alphabet_title" = "알파벳 환경설정";
+"settings_alphabet_subtitle" = "알파벳 표시 설정 관리";
+"settings_theme_title" = "테마";
+"settings_theme_subtitle" = "앱 테마 조정";
+
+"settings_lang_app_title" = "사용자 인터페이스";
+"settings_lang_app_subtitle" = "사용자 인터페이스 언어";
+"settings_lang_ai_title" = "AI 설명";
+"settings_lang_ai_subtitle" = "AI 설명 언어";
+"settings_lang_source_title" = "제2 자막";
+"settings_lang_source_subtitle" = "기본 번역 언어";
+"settings_lang_learn_title" = "목표 언어";
+"settings_lang_learn_subtitle" = "학습할 언어 선택";
+
+// Login
+"login_title" = "로그인";
+"login_email_placeholder" = "이메일 주소 입력";
+"login_code_placeholder" = "인증 코드 입력";
+"login_get_code" = "코드 받기";
+"login_button" = "로그인";
+"login_next_button" = "다음";
+"login_email_invalid" = "유효한 이메일 주소를 입력하세요";
+"login_code_sent" = "인증 코드가 발송되었습니다";

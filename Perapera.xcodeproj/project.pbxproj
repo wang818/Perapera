@@ -15,12 +15,14 @@
 		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
 		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
+		ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE772EF938410090F990 /* SettingsRowView.swift */; };
 		ECACBE7E2EFA57210090F990 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE7C2EFA57210090F990 /* Localizable.strings */; };
 		ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE842EFA58BB0090F990 /* String+Extension.swift */; };
 		ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE882F0A15DF0090F990 /* LoginView.swift */; };
 		ECACBE982F0A38490090F990 /* EXThemeColorDark.json in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE952F0A38490090F990 /* EXThemeColorDark.json */; };
 		ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */ = {isa = PBXBuildFile; fileRef = ECACBE962F0A38490090F990 /* EXThemeColorLight.json */; };
 		ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE942F0A38490090F990 /* EXThemeColor.swift */; };
+		ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,7 @@
 		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		ECACBE772EF938410090F990 /* SettingsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowView.swift; sourceTree = "<group>"; };
 		ECACBE7D2EFA57210090F990 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBE7F2EFA57380090F990 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		ECACBE802EFA573B0090F990 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -46,6 +49,7 @@
 		ECACBE942F0A38490090F990 /* EXThemeColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXThemeColor.swift; sourceTree = "<group>"; };
 		ECACBE952F0A38490090F990 /* EXThemeColorDark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorDark.json; sourceTree = "<group>"; };
 		ECACBE962F0A38490090F990 /* EXThemeColorLight.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EXThemeColorLight.json; sourceTree = "<group>"; };
+		ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +151,9 @@
 		ECACBE762EF938410090F990 /* SettingsView */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */,
 				ECACBE6F2EF937930090F990 /* SettingsView.swift */,
+				ECACBE772EF938410090F990 /* SettingsRowView.swift */,
 			);
 			path = SettingsView;
 			sourceTree = "<group>";
@@ -294,11 +300,13 @@
 				1889F1292EF9214800886186 /* ContentView.swift in Sources */,
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
+				ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
 				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
+				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,3 +5,53 @@
   Created by yinsishun on 2025/12/23.
   
 */
+
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Import Video and Audio";
+"home_sheet_subtitle" = "Select source to import media";
+"home_sheet_list_title1" = "Youtube URL";
+"home_sheet_list_subtitle1" = "Play Youtube videos without downloading";
+"home_sheet_list_title2" = "Local Media";
+"home_sheet_list_subtitle2" = "Import from local storage without copying";
+"home_sheet_list_title3" = "Photos";
+"home_sheet_list_subtitle3" = "Import media from your photos";
+"home_Youtube_Alert_title" = "Youtube URL";
+"home_Youtube_Alert_textFiled_placeholder" = "Enter URL";
+"colse" = "Close";
+"save" = "Save";
+
+// Settings
+"settings_account_header" = "Account";
+"settings_account_not_logged_in" = "Not Logged In";
+"settings_account_login_description" = "Log in to access all features";
+"settings_account_login_button" = "Log In";
+"settings_pro_title" = "Join Perapera Pro";
+"settings_pro_subtitle" = "Unlock all features with AI";
+
+"settings_general_header" = "General";
+"settings_language_title" = "App Language";
+"settings_language_subtitle" = "Choose app language";
+"settings_alphabet_title" = "Alphabet Preferences";
+"settings_alphabet_subtitle" = "Manage alphabet display settings";
+"settings_theme_title" = "Theme";
+"settings_theme_subtitle" = "Adjust app theme";
+
+"settings_lang_app_title" = "User Interface";
+"settings_lang_app_subtitle" = "User Interface Language";
+"settings_lang_ai_title" = "AI Explanation";
+"settings_lang_ai_subtitle" = "AI Explanation Language";
+"settings_lang_source_title" = "Second Subtitle";
+"settings_lang_source_subtitle" = "Default Translation Language";
+"settings_lang_learn_title" = "Target Language";
+"settings_lang_learn_subtitle" = "Choose the language to learn";
+
+// Login
+"login_title" = "Log In";
+"login_email_placeholder" = "Enter email address";
+"login_code_placeholder" = "Enter verification code";
+"login_get_code" = "Get Code";
+"login_button" = "Log In";
+"login_next_button" = "Next";
+"login_email_invalid" = "Enter a valid email address";
+"login_code_sent" = "Verification code sent";

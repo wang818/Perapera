@@ -5,3 +5,53 @@
   Created by yinsishun on 2025/12/23.
   
 */
+
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "動画と音声をインポート";
+"home_sheet_subtitle" = "メディアのインポート元を選択してください";
+"home_sheet_list_title1" = "Youtube URL";
+"home_sheet_list_subtitle1" = "ダウンロードせずにYoutube動画を再生";
+"home_sheet_list_title2" = "ローカルメディア";
+"home_sheet_list_subtitle2" = "コピーせずにローカルストレージからインポート";
+"home_sheet_list_title3" = "写真";
+"home_sheet_list_subtitle3" = "写真アプリからメディアをインポート";
+"home_Youtube_Alert_title" = "Youtube URL";
+"home_Youtube_Alert_textFiled_placeholder" = "URLを入力してください";
+"colse" = "閉じる";
+"save" = "保存";
+
+// Settings
+"settings_account_header" = "アカウント";
+"settings_account_not_logged_in" = "未ログイン";
+"settings_account_login_description" = "ログインして全機能を利用";
+"settings_account_login_button" = "ログイン";
+"settings_pro_title" = "Perapera Proに参加";
+"settings_pro_subtitle" = "AIですべての機能をロック解除";
+
+"settings_general_header" = "一般";
+"settings_language_title" = "アプリの言語";
+"settings_language_subtitle" = "アプリ内で使用する言語を選択";
+"settings_alphabet_title" = "文字設定";
+"settings_alphabet_subtitle" = "文字の表示設定を管理";
+"settings_theme_title" = "テーマ";
+"settings_theme_subtitle" = "アプリのテーマを調整";
+
+"settings_lang_app_title" = "ユーザーインターフェース";
+"settings_lang_app_subtitle" = "ユーザーインターフェース言語";
+"settings_lang_ai_title" = "AI解説";
+"settings_lang_ai_subtitle" = "AI解説の言語";
+"settings_lang_source_title" = "第2字幕";
+"settings_lang_source_subtitle" = "デフォルトの翻訳言語";
+"settings_lang_learn_title" = "学習言語";
+"settings_lang_learn_subtitle" = "学びたい言語を選択";
+
+// Login
+"login_title" = "ログイン";
+"login_email_placeholder" = "メールアドレスを入力";
+"login_code_placeholder" = "認証コードを入力";
+"login_get_code" = "コードを取得";
+"login_button" = "ログイン";
+"login_next_button" = "次へ";
+"login_email_invalid" = "有効なメールアドレスを入力してください";
+"login_code_sent" = "認証コードを送信しました";

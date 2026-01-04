@@ -26,6 +26,25 @@
 "settings_account_not_logged_in" = "未登录";
 "settings_account_login_description" = "登录后使用所有功能";
 "settings_account_login_button" = "登录";
+"settings_pro_title" = "加入 Perapera Pro";
+"settings_pro_subtitle" = "用AI解锁全部功能";
+
+"settings_general_header" = "通用";
+"settings_language_title" = "App语言";
+"settings_language_subtitle" = "选择App内使用语言";
+"settings_alphabet_title" = "字母首选项";
+"settings_alphabet_subtitle" = "管理字母显示设置";
+"settings_theme_title" = "主题";
+"settings_theme_subtitle" = "调整应用主题";
+
+"settings_lang_app_title" = "用户界面";
+"settings_lang_app_subtitle" = "用户界面语言";
+"settings_lang_ai_title" = "AI讲解";
+"settings_lang_ai_subtitle" = "AI讲解语言";
+"settings_lang_source_title" = "第二字幕";
+"settings_lang_source_subtitle" = "默认翻译语言";
+"settings_lang_learn_title" = "目标语言";
+"settings_lang_learn_subtitle" = "选择想要学习的语言";
 
 // Login
 "login_title" = "登录";
