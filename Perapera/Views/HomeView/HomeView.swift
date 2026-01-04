@@ -21,7 +21,7 @@ struct HomeView: View {
                         Image(systemName: "doc.text")
                             .foregroundColor(Color.ex.text1)
                         Text(item)
-                            .foregroundColor(Color.ex.main1)
+                            .foregroundColor(.ex.main1)
                     }
                     .frame(height: 150)
                 }
@@ -68,10 +68,10 @@ struct HomeView: View {
                                     VStack(alignment: .leading) {
                                         Text("home_sheet_list_title1".localized())
                                             .font(.headline)
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(.ex.text1)
                                         Text("home_sheet_list_subtitle1".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(.ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
@@ -98,10 +98,10 @@ struct HomeView: View {
                                     VStack(alignment: .leading) {
                                         Text("home_sheet_list_title2".localized())
                                             .font(.headline)
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(.ex.text1)
                                         Text("home_sheet_list_subtitle2".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(.ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
@@ -128,10 +128,10 @@ struct HomeView: View {
                                     VStack(alignment: .leading) {
                                         Text("home_sheet_list_title3".localized())
                                             .font(.headline)
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(.ex.text1)
                                         Text("home_sheet_list_subtitle3".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(.ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
