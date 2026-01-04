@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct HomeView: View {
     // Sample data
@@ -6,6 +7,7 @@ struct HomeView: View {
 
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
+    @State private var showingFileImporter = false
     @State private var youtubeUrl = ""
 
     var body: some View {
@@ -58,10 +60,10 @@ struct HomeView: View {
                                         .frame(width: 25, height: 25)
                                         .foregroundColor(.blue)
                                     VStack(alignment: .leading) {
-                                        Text("Youtube网址")
+                                        Text("home_sheet_list_title1".localized())
                                             .font(.headline)
                                             .foregroundColor(.primary)
-                                        Text("在应用中播放Youtube视频，无需下载")
+                                        Text("home_sheet_list_subtitle1".localized())
                                             .font(.subheadline)
                                             .foregroundColor(.secondary)
                                             .lineLimit(1)
@@ -78,6 +80,9 @@ struct HomeView: View {
                             Button(action: {
                                 print("Item 2 tapped")
                                 showingSheet = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    showingFileImporter = true
+                                }
                             }) {
                                 HStack(spacing: 15) {
                                     Image(systemName: "mic")
@@ -85,10 +90,10 @@ struct HomeView: View {
                                         .frame(width: 25, height: 25)
                                         .foregroundColor(.green)
                                     VStack(alignment: .leading) {
-                                        Text("本地媒体")
+                                        Text("home_sheet_list_title2".localized())
                                             .font(.headline)
                                             .foregroundColor(.primary)
-                                        Text("从您的本地存储导入媒体文件，无需复制")
+                                        Text("home_sheet_list_subtitle2".localized())
                                             .font(.subheadline)
                                             .foregroundColor(.secondary)
                                             .lineLimit(1)
@@ -112,10 +117,10 @@ struct HomeView: View {
                                         .frame(width: 25, height: 25)
                                         .foregroundColor(.orange)
                                     VStack(alignment: .leading) {
-                                        Text("相册")
+                                        Text("home_sheet_list_title3".localized())
                                             .font(.headline)
                                             .foregroundColor(.primary)
-                                        Text("从您的相册导入媒体文件")
+                                        Text("home_sheet_list_subtitle3".localized())
                                             .font(.subheadline)
                                             .foregroundColor(.secondary)
                                             .lineLimit(1)
@@ -134,6 +139,24 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .presentationDetents([.height(420)])
                     .presentationDragIndicator(.visible)
+                }
+                .fileImporter(
+                    isPresented: $showingFileImporter,
+                    allowedContentTypes: [.audio, .movie],
+                    allowsMultipleSelection: false
+                ) { result in
+                    switch result {
+                    case .success(let urls):
+                        guard let url = urls.first else { return }
+                        // Access the security-scoped resource
+                        if url.startAccessingSecurityScopedResource() {
+                            defer { url.stopAccessingSecurityScopedResource() }
+                            print("Selected media file: \(url.absoluteString)")
+                            // TODO: Handle the file (e.g., play it or import it)
+                        }
+                    case .failure(let error):
+                        print("File selection error: \(error.localizedDescription)")
+                    }
                 }
             }
             
