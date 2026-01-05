@@ -1,23 +1,16 @@
-/* 
-  Localizable.strings
-  Perapera
-
-  Created by yinsishun on 2025/12/23.
-  
-*/
-
+/* Localizable.strings (Vietnamese) */
 //HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "Nhập Video và Âm thanh";
 "home_sheet_subtitle" = "Chọn nguồn để nhập tệp phương tiện";
 "home_sheet_list_title1" = "URL Youtube";
-"home_sheet_list_subtitle1" = "Phát video Youtube trong ứng dụng mà không cần tải xuống";
+"home_sheet_list_subtitle1" = "Phát video Youtube mà không cần tải xuống";
 "home_sheet_list_title2" = "Phương tiện cục bộ";
 "home_sheet_list_subtitle2" = "Nhập từ bộ nhớ cục bộ mà không cần sao chép";
 "home_sheet_list_title3" = "Ảnh";
-"home_sheet_list_subtitle3" = "Nhập phương tiện từ thư viện ảnh của bạn";
+"home_sheet_list_subtitle3" = "Nhập phương tiện từ ảnh của bạn";
 "home_Youtube_Alert_title" = "URL Youtube";
-"home_Youtube_Alert_textFiled_placeholder" = "Vui lòng nhập URL";
+"home_Youtube_Alert_textFiled_placeholder" = "Nhập URL";
 "colse" = "Đóng";
 "save" = "Lưu";
 
@@ -29,16 +22,16 @@
 // Settings
 "settings_account_header" = "Tài khoản";
 "settings_account_not_logged_in" = "Chưa đăng nhập";
-"settings_account_login_description" = "Đăng nhập để sử dụng tất cả tính năng";
+"settings_account_login_description" = "Đăng nhập để truy cập tất cả các tính năng";
 "settings_account_login_button" = "Đăng nhập";
 "settings_pro_title" = "Tham gia Perapera Pro";
-"settings_pro_subtitle" = "Mở khóa tất cả tính năng với AI";
+"settings_pro_subtitle" = "Mở khóa tất cả các tính năng với AI";
 
 "settings_general_header" = "Chung";
 "settings_language_title" = "Ngôn ngữ ứng dụng";
-"settings_language_subtitle" = "Chọn ngôn ngữ sử dụng trong ứng dụng";
+"settings_language_subtitle" = "Chọn ngôn ngữ ứng dụng";
 "settings_alphabet_title" = "Tùy chọn bảng chữ cái";
-"settings_alphabet_subtitle" = "Quản lý cài đặt hiển thị chữ cái";
+"settings_alphabet_subtitle" = "Quản lý cài đặt hiển thị bảng chữ cái";
 "settings_theme_title" = "Chủ đề";
 "settings_theme_subtitle" = "Điều chỉnh chủ đề ứng dụng";
 "settings_theme_system" = "Theo hệ thống";
@@ -50,16 +43,16 @@
 "settings_email_subtitle" = "Nhận hỗ trợ qua email";
 
 "settings_faq_title" = "Câu hỏi thường gặp";
-"settings_about_perapera_title" = "Giới thiệu về Perapera";
- 
- "settings_lang_app_title" = "Giao diện người dùng";
-"settings_lang_app_subtitle" = "Ngôn ngữ giao diện";
+"settings_about_perapera_title" = "Về Perapera";
+
+"settings_lang_app_title" = "Giao diện người dùng";
+"settings_lang_app_subtitle" = "Ngôn ngữ giao diện người dùng";
 "settings_lang_ai_title" = "Giải thích AI";
 "settings_lang_ai_subtitle" = "Ngôn ngữ giải thích AI";
 "settings_lang_source_title" = "Phụ đề thứ hai";
 "settings_lang_source_subtitle" = "Ngôn ngữ dịch mặc định";
 "settings_lang_learn_title" = "Ngôn ngữ mục tiêu";
-"settings_lang_learn_subtitle" = "Chọn ngôn ngữ muốn học";
+"settings_lang_learn_subtitle" = "Chọn ngôn ngữ để học";
 
 // Login
 "login_title" = "Đăng nhập";
@@ -68,7 +61,7 @@
 "login_get_code" = "Lấy mã";
 "login_button" = "Đăng nhập";
 "login_next_button" = "Tiếp theo";
-"login_email_invalid" = "Vui lòng nhập địa chỉ email hợp lệ";
+"login_email_invalid" = "Nhập địa chỉ email hợp lệ";
 "login_code_sent" = "Mã xác minh đã được gửi";
 
 // Navigation

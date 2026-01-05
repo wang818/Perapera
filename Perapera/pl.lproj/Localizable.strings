@@ -2,13 +2,13 @@
 //HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "Importuj wideo i audio";
-"home_sheet_subtitle" = "Wybierz źródło importu mediów";
+"home_sheet_subtitle" = "Wybierz źródło do importu mediów";
 "home_sheet_list_title1" = "Adres URL Youtube";
 "home_sheet_list_subtitle1" = "Odtwarzaj filmy z Youtube bez pobierania";
-"home_sheet_list_title2" = "Media Lokalne";
+"home_sheet_list_title2" = "Media lokalne";
 "home_sheet_list_subtitle2" = "Importuj z pamięci lokalnej bez kopiowania";
 "home_sheet_list_title3" = "Zdjęcia";
-"home_sheet_list_subtitle3" = "Importuj media ze zdjęć";
+"home_sheet_list_subtitle3" = "Importuj media ze swoich zdjęć";
 "home_Youtube_Alert_title" = "Adres URL Youtube";
 "home_Youtube_Alert_textFiled_placeholder" = "Wpisz adres URL";
 "colse" = "Zamknij";
@@ -25,7 +25,7 @@
 "settings_account_login_description" = "Zaloguj się, aby uzyskać dostęp do wszystkich funkcji";
 "settings_account_login_button" = "Zaloguj się";
 "settings_pro_title" = "Dołącz do Perapera Pro";
-"settings_pro_subtitle" = "Odblokuj wszystkie funkcje dzięki AI";
+"settings_pro_subtitle" = "Odblokuj wszystkie funkcje z AI";
 
 "settings_general_header" = "Ogólne";
 "settings_language_title" = "Język aplikacji";
@@ -40,7 +40,7 @@
 
 "settings_feedback_header" = "Opinie";
 "settings_email_title" = "E-mail";
-"settings_email_subtitle" = "Uzyskaj pomoc przez e-mail";
+"settings_email_subtitle" = "Uzyskaj wsparcie przez e-mail";
 
 "settings_faq_title" = "FAQ";
 "settings_about_perapera_title" = "O Perapera";
@@ -48,8 +48,8 @@
 "settings_lang_app_title" = "Interfejs użytkownika";
 "settings_lang_app_subtitle" = "Język interfejsu użytkownika";
 "settings_lang_ai_title" = "Wyjaśnienie AI";
-"settings_lang_ai_subtitle" = "Język wyjaśnień AI";
-"settings_lang_source_title" = "Drugie napisy";
+"settings_lang_ai_subtitle" = "Język wyjaśnienia AI";
+"settings_lang_source_title" = "Drugi napis";
 "settings_lang_source_subtitle" = "Domyślny język tłumaczenia";
 "settings_lang_learn_title" = "Język docelowy";
 "settings_lang_learn_subtitle" = "Wybierz język do nauki";

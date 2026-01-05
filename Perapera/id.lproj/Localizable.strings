@@ -24,7 +24,7 @@
 "settings_account_not_logged_in" = "Belum Masuk";
 "settings_account_login_description" = "Masuk untuk mengakses semua fitur";
 "settings_account_login_button" = "Masuk";
-"settings_pro_title" = "Gabung Perapera Pro";
+"settings_pro_title" = "Bergabung dengan Perapera Pro";
 "settings_pro_subtitle" = "Buka semua fitur dengan AI";
 
 "settings_general_header" = "Umum";
@@ -40,7 +40,7 @@
 
 "settings_feedback_header" = "Umpan Balik";
 "settings_email_title" = "Email";
-"settings_email_subtitle" = "Dapatkan dukungan melalui email";
+"settings_email_subtitle" = "Dapatkan dukungan via email";
 
 "settings_faq_title" = "FAQ";
 "settings_about_perapera_title" = "Tentang Perapera";
@@ -52,7 +52,7 @@
 "settings_lang_source_title" = "Subtitle Kedua";
 "settings_lang_source_subtitle" = "Bahasa Terjemahan Default";
 "settings_lang_learn_title" = "Bahasa Target";
-"settings_lang_learn_subtitle" = "Pilih bahasa untuk dipelajari";
+"settings_lang_learn_subtitle" = "Pilih bahasa yang akan dipelajari";
 
 // Login
 "login_title" = "Masuk";

@@ -2,9 +2,9 @@
 //HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "Import Video dan Audio";
-"home_sheet_subtitle" = "Pilih sumber untuk mengimport media";
+"home_sheet_subtitle" = "Pilih sumber untuk import media";
 "home_sheet_list_title1" = "URL Youtube";
-"home_sheet_list_subtitle1" = "Mainkan video Youtube tanpa memuat turun";
+"home_sheet_list_subtitle1" = "Main video Youtube tanpa memuat turun";
 "home_sheet_list_title2" = "Media Tempatan";
 "home_sheet_list_subtitle2" = "Import dari storan tempatan tanpa menyalin";
 "home_sheet_list_title3" = "Foto";
@@ -30,10 +30,10 @@
 "settings_general_header" = "Umum";
 "settings_language_title" = "Bahasa Aplikasi";
 "settings_language_subtitle" = "Pilih bahasa aplikasi";
-"settings_alphabet_title" = "Pilihan Abjad";
+"settings_alphabet_title" = "Keutamaan Abjad";
 "settings_alphabet_subtitle" = "Urus tetapan paparan abjad";
 "settings_theme_title" = "Tema";
-"settings_theme_subtitle" = "Sesuaikan tema aplikasi";
+"settings_theme_subtitle" = "Laras tema aplikasi";
 "settings_theme_system" = "Ikut Sistem";
 "settings_theme_light" = "Mod Cerah";
 "settings_theme_dark" = "Mod Gelap";
@@ -47,8 +47,8 @@
 
 "settings_lang_app_title" = "Antara Muka Pengguna";
 "settings_lang_app_subtitle" = "Bahasa Antara Muka Pengguna";
-"settings_lang_ai_title" = "Penerangan AI";
-"settings_lang_ai_subtitle" = "Bahasa Penerangan AI";
+"settings_lang_ai_title" = "Penjelasan AI";
+"settings_lang_ai_subtitle" = "Bahasa Penjelasan AI";
 "settings_lang_source_title" = "Sarikata Kedua";
 "settings_lang_source_subtitle" = "Bahasa Terjemahan Lalai";
 "settings_lang_learn_title" = "Bahasa Sasaran";

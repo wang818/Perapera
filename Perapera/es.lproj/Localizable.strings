@@ -29,7 +29,7 @@
 
 "settings_general_header" = "General";
 "settings_language_title" = "Idioma de la App";
-"settings_language_subtitle" = "Elegir idioma de la aplicación";
+"settings_language_subtitle" = "Elige el idioma de la aplicación";
 "settings_alphabet_title" = "Preferencias del Alfabeto";
 "settings_alphabet_subtitle" = "Gestionar configuración de visualización del alfabeto";
 "settings_theme_title" = "Tema";
@@ -39,7 +39,7 @@
 "settings_theme_dark" = "Modo Oscuro";
 
 "settings_feedback_header" = "Comentarios";
-"settings_email_title" = "Correo";
+"settings_email_title" = "Correo Electrónico";
 "settings_email_subtitle" = "Obtener soporte por correo electrónico";
 
 "settings_faq_title" = "Preguntas Frecuentes";
@@ -56,12 +56,12 @@
 
 // Login
 "login_title" = "Iniciar Sesión";
-"login_email_placeholder" = "Ingresar correo electrónico";
+"login_email_placeholder" = "Ingresar dirección de correo";
 "login_code_placeholder" = "Ingresar código de verificación";
 "login_get_code" = "Obtener Código";
 "login_button" = "Iniciar Sesión";
 "login_next_button" = "Siguiente";
-"login_email_invalid" = "Ingresar un correo válido";
+"login_email_invalid" = "Ingresa una dirección de correo válida";
 "login_code_sent" = "Código de verificación enviado";
 
 // Navigation

@@ -109,6 +109,8 @@
 		ECACBF002F0B4BB20090F990 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBF012F0B4BBF0090F990 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBF022F0B4BCA0090F990 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBF032F0B50FA0090F990 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBF042F0B51580090F990 /* fil */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fil; path = fil.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -344,6 +346,8 @@
 				ru,
 				th,
 				tr,
+				fr,
+				fil,
 			);
 			mainGroup = 1889F11A2EF9214800886186;
 			productRefGroup = 1889F1242EF9214800886186 /* Products */;
@@ -481,6 +485,8 @@
 				ECACBF002F0B4BB20090F990 /* ru */,
 				ECACBF012F0B4BBF0090F990 /* th */,
 				ECACBF022F0B4BCA0090F990 /* tr */,
+				ECACBF032F0B50FA0090F990 /* fr */,
+				ECACBF042F0B51580090F990 /* fil */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

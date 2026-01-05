@@ -2,69 +2,69 @@
 //HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "Importar Vídeo e Áudio";
-"home_sheet_subtitle" = "Selecionar fonte para importar média";
+"home_sheet_subtitle" = "Selecione a fonte para importar mídia";
 "home_sheet_list_title1" = "URL do Youtube";
-"home_sheet_list_subtitle1" = "Reproduzir vídeos do Youtube sem descarregar";
-"home_sheet_list_title2" = "Média Local";
+"home_sheet_list_subtitle1" = "Reproduzir vídeos do Youtube sem baixar";
+"home_sheet_list_title2" = "Mídia Local";
 "home_sheet_list_subtitle2" = "Importar do armazenamento local sem copiar";
 "home_sheet_list_title3" = "Fotos";
-"home_sheet_list_subtitle3" = "Importar média das suas fotos";
+"home_sheet_list_subtitle3" = "Importar mídia das suas fotos";
 "home_Youtube_Alert_title" = "URL do Youtube";
-"home_Youtube_Alert_textFiled_placeholder" = "Introduzir URL";
+"home_Youtube_Alert_textFiled_placeholder" = "Inserir URL";
 "colse" = "Fechar";
-"save" = "Guardar";
+"save" = "Salvar";
 
 // Tab
 "tab_home" = "Início";
 "tab_podcast" = "Podcast";
-"tab_settings" = "Definições";
+"tab_settings" = "Configurações";
 
 // Settings
 "settings_account_header" = "Conta";
-"settings_account_not_logged_in" = "Não Iniciou Sessão";
-"settings_account_login_description" = "Inicie sessão para aceder a todas as funcionalidades";
-"settings_account_login_button" = "Iniciar Sessão";
-"settings_pro_title" = "Aderir ao Perapera Pro";
-"settings_pro_subtitle" = "Desbloquear todas as funcionalidades com IA";
+"settings_account_not_logged_in" = "Não Conectado";
+"settings_account_login_description" = "Faça login para acessar todos os recursos";
+"settings_account_login_button" = "Entrar";
+"settings_pro_title" = "Junte-se ao Perapera Pro";
+"settings_pro_subtitle" = "Desbloqueie todos os recursos com IA";
 
 "settings_general_header" = "Geral";
-"settings_language_title" = "Idioma da Aplicação";
-"settings_language_subtitle" = "Escolher idioma da aplicação";
+"settings_language_title" = "Idioma do App";
+"settings_language_subtitle" = "Escolha o idioma do aplicativo";
 "settings_alphabet_title" = "Preferências de Alfabeto";
-"settings_alphabet_subtitle" = "Gerir definições de visualização do alfabeto";
+"settings_alphabet_subtitle" = "Gerenciar configurações de exibição do alfabeto";
 "settings_theme_title" = "Tema";
-"settings_theme_subtitle" = "Ajustar tema da aplicação";
+"settings_theme_subtitle" = "Ajustar tema do aplicativo";
 "settings_theme_system" = "Seguir Sistema";
 "settings_theme_light" = "Modo Claro";
 "settings_theme_dark" = "Modo Escuro";
 
 "settings_feedback_header" = "Feedback";
 "settings_email_title" = "E-mail";
-"settings_email_subtitle" = "Obter suporte por e-mail";
+"settings_email_subtitle" = "Obter suporte via e-mail";
 
-"settings_faq_title" = "Perguntas Frequentes";
+"settings_faq_title" = "FAQ";
 "settings_about_perapera_title" = "Sobre Perapera";
 
-"settings_lang_app_title" = "Interface de Utilizador";
-"settings_lang_app_subtitle" = "Idioma da Interface de Utilizador";
-"settings_lang_ai_title" = "Explicação de IA";
-"settings_lang_ai_subtitle" = "Idioma de Explicação de IA";
+"settings_lang_app_title" = "Interface do Usuário";
+"settings_lang_app_subtitle" = "Idioma da Interface do Usuário";
+"settings_lang_ai_title" = "Explicação da IA";
+"settings_lang_ai_subtitle" = "Idioma de Explicação da IA";
 "settings_lang_source_title" = "Segunda Legenda";
-"settings_lang_source_subtitle" = "Idioma de Tradução Predefinido";
+"settings_lang_source_subtitle" = "Idioma de Tradução Padrão";
 "settings_lang_learn_title" = "Idioma Alvo";
 "settings_lang_learn_subtitle" = "Escolha o idioma para aprender";
 
 // Login
-"login_title" = "Iniciar Sessão";
-"login_email_placeholder" = "Introduzir endereço de e-mail";
-"login_code_placeholder" = "Introduzir código de verificação";
+"login_title" = "Entrar";
+"login_email_placeholder" = "Inserir endereço de e-mail";
+"login_code_placeholder" = "Inserir código de verificação";
 "login_get_code" = "Obter Código";
-"login_button" = "Iniciar Sessão";
-"login_next_button" = "Seguinte";
-"login_email_invalid" = "Introduza um endereço de e-mail válido";
+"login_button" = "Entrar";
+"login_next_button" = "Próximo";
+"login_email_invalid" = "Insira um endereço de e-mail válido";
 "login_code_sent" = "Código de verificação enviado";
 
 // Navigation
 "podcast_title" = "Podcast";
-"settings_title" = "Definições";
+"settings_title" = "Configurações";
 "settings_help" = "Ajuda";

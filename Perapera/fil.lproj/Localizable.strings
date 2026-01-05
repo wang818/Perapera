@@ -1,0 +1,70 @@
+/* Localizable.strings (Filipino) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Mag-import ng Video at Audio";
+"home_sheet_subtitle" = "Pumili ng pagmumulan upang mag-import ng media";
+"home_sheet_list_title1" = "Youtube URL";
+"home_sheet_list_subtitle1" = "Mag-play ng Youtube videos nang hindi nagda-download";
+"home_sheet_list_title2" = "Lokal na Media";
+"home_sheet_list_subtitle2" = "Mag-import mula sa lokal na imbakan nang hindi kumokopya";
+"home_sheet_list_title3" = "Mga Larawan";
+"home_sheet_list_subtitle3" = "Mag-import ng media mula sa iyong mga larawan";
+"home_Youtube_Alert_title" = "Youtube URL";
+"home_Youtube_Alert_textFiled_placeholder" = "Ilagay ang URL";
+"colse" = "Isara";
+"save" = "I-save";
+
+// Tab
+"tab_home" = "Home";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Mga Setting";
+
+// Settings
+"settings_account_header" = "Account";
+"settings_account_not_logged_in" = "Hindi Naka-log in";
+"settings_account_login_description" = "Mag-log in upang ma-access ang lahat ng tampok";
+"settings_account_login_button" = "Mag-log in";
+"settings_pro_title" = "Sumali sa Perapera Pro";
+"settings_pro_subtitle" = "I-unlock ang lahat ng tampok gamit ang AI";
+
+"settings_general_header" = "Pangkalahatan";
+"settings_language_title" = "Wika ng App";
+"settings_language_subtitle" = "Piliin ang wika ng app";
+"settings_alphabet_title" = "Mga Kagustuhan sa Alpabeto";
+"settings_alphabet_subtitle" = "Pamahalaan ang mga setting ng pagpapakita ng alpabeto";
+"settings_theme_title" = "Tema";
+"settings_theme_subtitle" = "Ayusin ang tema ng app";
+"settings_theme_system" = "Sundin ang Sistema";
+"settings_theme_light" = "Light Mode";
+"settings_theme_dark" = "Dark Mode";
+
+"settings_feedback_header" = "Feedback";
+"settings_email_title" = "Email";
+"settings_email_subtitle" = "Kumuha ng suporta sa pamamagitan ng email";
+
+"settings_faq_title" = "FAQ";
+"settings_about_perapera_title" = "Tungkol sa Perapera";
+
+"settings_lang_app_title" = "User Interface";
+"settings_lang_app_subtitle" = "Wika ng User Interface";
+"settings_lang_ai_title" = "Paliwanag ng AI";
+"settings_lang_ai_subtitle" = "Wika ng Paliwanag ng AI";
+"settings_lang_source_title" = "Pangalawang Subtitle";
+"settings_lang_source_subtitle" = "Default na Wika ng Pagsasalin";
+"settings_lang_learn_title" = "Target na Wika";
+"settings_lang_learn_subtitle" = "Piliin ang wika na pag-aaralan";
+
+// Login
+"login_title" = "Mag-log in";
+"login_email_placeholder" = "Ilagay ang email address";
+"login_code_placeholder" = "Ilagay ang verification code";
+"login_get_code" = "Kumuha ng Code";
+"login_button" = "Mag-log in";
+"login_next_button" = "Susunod";
+"login_email_invalid" = "Maglagay ng wastong email address";
+"login_code_sent" = "Naipadala na ang verification code";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Mga Setting";
+"settings_help" = "Tulong";

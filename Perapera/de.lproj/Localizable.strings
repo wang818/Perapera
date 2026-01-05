@@ -8,7 +8,7 @@
 "home_sheet_list_title2" = "Lokale Medien";
 "home_sheet_list_subtitle2" = "Vom lokalen Speicher importieren ohne zu kopieren";
 "home_sheet_list_title3" = "Fotos";
-"home_sheet_list_subtitle3" = "Medien aus Fotos importieren";
+"home_sheet_list_subtitle3" = "Medien aus Ihren Fotos importieren";
 "home_Youtube_Alert_title" = "Youtube-URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URL eingeben";
 "colse" = "Schließen";
@@ -31,9 +31,9 @@
 "settings_language_title" = "App-Sprache";
 "settings_language_subtitle" = "App-Sprache wählen";
 "settings_alphabet_title" = "Alphabet-Einstellungen";
-"settings_alphabet_subtitle" = "Anzeigeeinstellungen für Alphabet verwalten";
-"settings_theme_title" = "Design";
-"settings_theme_subtitle" = "App-Design anpassen";
+"settings_alphabet_subtitle" = "Alphabet-Anzeige verwalten";
+"settings_theme_title" = "Thema";
+"settings_theme_subtitle" = "App-Thema anpassen";
 "settings_theme_system" = "System folgen";
 "settings_theme_light" = "Heller Modus";
 "settings_theme_dark" = "Dunkler Modus";
@@ -52,17 +52,17 @@
 "settings_lang_source_title" = "Zweiter Untertitel";
 "settings_lang_source_subtitle" = "Standard-Übersetzungssprache";
 "settings_lang_learn_title" = "Zielsprache";
-"settings_lang_learn_subtitle" = "Wählen Sie die zu lernende Sprache";
+"settings_lang_learn_subtitle" = "Sprache zum Lernen wählen";
 
 // Login
 "login_title" = "Einloggen";
 "login_email_placeholder" = "E-Mail-Adresse eingeben";
-"login_code_placeholder" = "Bestätigungscode eingeben";
+"login_code_placeholder" = "Verifizierungscode eingeben";
 "login_get_code" = "Code anfordern";
 "login_button" = "Einloggen";
 "login_next_button" = "Weiter";
 "login_email_invalid" = "Gültige E-Mail-Adresse eingeben";
-"login_code_sent" = "Bestätigungscode gesendet";
+"login_code_sent" = "Verifizierungscode gesendet";
 
 // Navigation
 "podcast_title" = "Podcast";

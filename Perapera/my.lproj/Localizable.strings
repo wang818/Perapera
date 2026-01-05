@@ -1,18 +1,18 @@
 /* Localizable.strings (Burmese) */
 //HomeView
 "home_navigationTitle" = "Perapera";
-"home_sheet_title" = "ဗီဒီယိုနှင့် အသံကို တင်သွင်းပါ";
-"home_sheet_subtitle" = "မီဒီယာတင်သွင်းရန် အရင်းအမြစ်ကို ရွေးပါ";
+"home_sheet_title" = "ဗီဒီယိုနှင့်အသံ ထည့်သွင်းရန်";
+"home_sheet_subtitle" = "မီဒီယာထည့်သွင်းရန် အရင်းအမြစ်ရွေးချယ်ပါ";
 "home_sheet_list_title1" = "Youtube URL";
-"home_sheet_list_subtitle1" = "ဒေါင်းလုဒ်မလုပ်ဘဲ Youtube ဗီဒီယိုများ ကြည့်ပါ";
+"home_sheet_list_subtitle1" = "ဒေါင်းလုဒ်မလုပ်ဘဲ Youtube ဗီဒီယိုများကြည့်ရန်";
 "home_sheet_list_title2" = "စက်ထဲရှိ မီဒီယာ";
-"home_sheet_list_subtitle2" = "ကူးယူခြင်းမပြုဘဲ စက်ထဲမှ တင်သွင်းပါ";
+"home_sheet_list_subtitle2" = "ကူးယူခြင်းမရှိဘဲ စက်ထဲမှထည့်သွင်းရန်";
 "home_sheet_list_title3" = "ဓာတ်ပုံများ";
-"home_sheet_list_subtitle3" = "ဓာတ်ပုံများမှ မီဒီယာတင်သွင်းပါ";
+"home_sheet_list_subtitle3" = "သင့်ဓာတ်ပုံများမှ မီဒီယာထည့်သွင်းရန်";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URL ထည့်ပါ";
-"colse" = "ပိတ်ပါ";
-"save" = "သိမ်းပါ";
+"colse" = "ပိတ်ရန်";
+"save" = "သိမ်းဆည်းရန်";
 
 // Tab
 "tab_home" = "ပင်မစာမျက်နှာ";
@@ -21,48 +21,48 @@
 
 // Settings
 "settings_account_header" = "အကောင့်";
-"settings_account_not_logged_in" = "အကောင့်မဝင်ရသေးပါ";
-"settings_account_login_description" = "လုပ်ဆောင်ချက်အားလုံးသုံးရန် အကောင့်ဝင်ပါ";
-"settings_account_login_button" = "အကောင့်ဝင်ပါ";
-"settings_pro_title" = "Perapera Pro သို့ ဝင်ပါ";
-"settings_pro_subtitle" = "AI ဖြင့် လုပ်ဆောင်ချက်အားလုံး ဖွင့်ပါ";
+"settings_account_not_logged_in" = "လော့ဂ်အင်မဝင်ရသေးပါ";
+"settings_account_login_description" = "အင်္ဂါရပ်အားလုံးသုံးရန် လော့ဂ်အင်ဝင်ပါ";
+"settings_account_login_button" = "လော့ဂ်အင်ဝင်ရန်";
+"settings_pro_title" = "Perapera Pro သို့ ဝင်ရောက်ရန်";
+"settings_pro_subtitle" = "AI ဖြင့် အင်္ဂါရပ်အားလုံးကို ဖွင့်ရန်";
 
 "settings_general_header" = "အထွေထွေ";
-"settings_language_title" = "အက်ပ် ဘာသာစကား";
-"settings_language_subtitle" = "အက်ပ် ဘာသာစကား ရွေးပါ";
+"settings_language_title" = "အက်ပ်ဘာသာစကား";
+"settings_language_subtitle" = "အက်ပ်ဘာသာစကား ရွေးချယ်ရန်";
 "settings_alphabet_title" = "အက္ခရာ ဦးစားပေးများ";
-"settings_alphabet_subtitle" = "အက္ခရာ ပြသမှု ဆက်တင်များ စီမံပါ";
+"settings_alphabet_subtitle" = "အက္ခရာပြသမှု ဆက်တင်များ စီမံရန်";
 "settings_theme_title" = "အခင်းအကျင်း";
-"settings_theme_subtitle" = "အက်ပ် အခင်းအကျင်း ချိန်ညှိပါ";
+"settings_theme_subtitle" = "အက်ပ်အခင်းအကျင်း ချိန်ညှိရန်";
 "settings_theme_system" = "စနစ်အတိုင်း";
-"settings_theme_light" = "အလင်း မုဒ်";
-"settings_theme_dark" = "အမှောင် မုဒ်";
+"settings_theme_light" = "အလင်းမုဒ်";
+"settings_theme_dark" = "အမှောင်မုဒ်";
 
-"settings_feedback_header" = "တုံ့ပြန်ချက်";
+"settings_feedback_header" = "အကြံပြုချက်";
 "settings_email_title" = "အီးမေးလ်";
-"settings_email_subtitle" = "အီးမေးလ်ဖြင့် အကူအညီရယူပါ";
+"settings_email_subtitle" = "အီးမေးလ်မှတစ်ဆင့် အကူအညီရယူရန်";
 
-"settings_faq_title" = "မေးလေ့ရှိသော မေးခွန်းများ";
+"settings_faq_title" = "မေးလေ့ရှိသောမေးခွန်းများ";
 "settings_about_perapera_title" = "Perapera အကြောင်း";
 
-"settings_lang_app_title" = "အသုံးပြုသူ ကြားခံ";
-"settings_lang_app_subtitle" = "အသုံးပြုသူ ကြားခံ ဘာသာစကား";
+"settings_lang_app_title" = "အသုံးပြုသူ အင်တာဖေ့စ်";
+"settings_lang_app_subtitle" = "အသုံးပြုသူ အင်တာဖေ့စ် ဘာသာစကား";
 "settings_lang_ai_title" = "AI ရှင်းလင်းချက်";
 "settings_lang_ai_subtitle" = "AI ရှင်းလင်းချက် ဘာသာစကား";
 "settings_lang_source_title" = "ဒုတိယ စာတန်းထိုး";
 "settings_lang_source_subtitle" = "မူလ ဘာသာပြန် ဘာသာစကား";
-"settings_lang_learn_title" = "ပစ်မှတ် ဘာသာစကား";
-"settings_lang_learn_subtitle" = "လေ့လာလိုသော ဘာသာစကားကို ရွေးပါ";
+"settings_lang_learn_title" = "လေ့လာမည့် ဘာသာစကား";
+"settings_lang_learn_subtitle" = "လေ့လာရန် ဘာသာစကား ရွေးချယ်ပါ";
 
 // Login
-"login_title" = "အကောင့်ဝင်ပါ";
+"login_title" = "လော့ဂ်အင်";
 "login_email_placeholder" = "အီးမေးလ်လိပ်စာ ထည့်ပါ";
 "login_code_placeholder" = "အတည်ပြုကုဒ် ထည့်ပါ";
-"login_get_code" = "ကုဒ် ရယူပါ";
-"login_button" = "အကောင့်ဝင်ပါ";
-"login_next_button" = "ရှေ့သို့";
+"login_get_code" = "ကုဒ်ရယူရန်";
+"login_button" = "လော့ဂ်အင်";
+"login_next_button" = "ရှေ့ဆက်";
 "login_email_invalid" = "မှန်ကန်သော အီးမေးလ်လိပ်စာ ထည့်ပါ";
-"login_code_sent" = "အတည်ပြုကုဒ် ပို့လိုက်ပါပြီ";
+"login_code_sent" = "အတည်ပြုကုဒ် ပေးပို့ပြီးပါပြီ";
 
 // Navigation
 "podcast_title" = "Podcast";

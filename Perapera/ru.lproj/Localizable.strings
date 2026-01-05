@@ -2,14 +2,14 @@
 //HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "Импорт видео и аудио";
-"home_sheet_subtitle" = "Выберите источник для импорта";
-"home_sheet_list_title1" = "Youtube URL";
-"home_sheet_list_subtitle1" = "Смотреть видео с Youtube без скачивания";
+"home_sheet_subtitle" = "Выберите источник для импорта медиа";
+"home_sheet_list_title1" = "URL Youtube";
+"home_sheet_list_subtitle1" = "Воспроизведение видео с Youtube без скачивания";
 "home_sheet_list_title2" = "Локальные медиа";
 "home_sheet_list_subtitle2" = "Импорт из локального хранилища без копирования";
 "home_sheet_list_title3" = "Фото";
-"home_sheet_list_subtitle3" = "Импорт медиа из фото";
-"home_Youtube_Alert_title" = "Youtube URL";
+"home_sheet_list_subtitle3" = "Импорт медиа из ваших фото";
+"home_Youtube_Alert_title" = "URL Youtube";
 "home_Youtube_Alert_textFiled_placeholder" = "Введите URL";
 "colse" = "Закрыть";
 "save" = "Сохранить";
@@ -21,20 +21,20 @@
 
 // Settings
 "settings_account_header" = "Аккаунт";
-"settings_account_not_logged_in" = "Не выполнен вход";
-"settings_account_login_description" = "Войдите, чтобы получить доступ ко всем функциям";
+"settings_account_not_logged_in" = "Вход не выполнен";
+"settings_account_login_description" = "Войдите для доступа ко всем функциям";
 "settings_account_login_button" = "Войти";
 "settings_pro_title" = "Присоединиться к Perapera Pro";
-"settings_pro_subtitle" = "Разблокировать все функции с ИИ";
+"settings_pro_subtitle" = "Разблокируйте все функции с ИИ";
 
 "settings_general_header" = "Общие";
 "settings_language_title" = "Язык приложения";
 "settings_language_subtitle" = "Выберите язык приложения";
 "settings_alphabet_title" = "Настройки алфавита";
-"settings_alphabet_subtitle" = "Управление отображением алфавита";
+"settings_alphabet_subtitle" = "Управление настройками отображения алфавита";
 "settings_theme_title" = "Тема";
 "settings_theme_subtitle" = "Настроить тему приложения";
-"settings_theme_system" = "Как в системе";
+"settings_theme_system" = "Системная";
 "settings_theme_light" = "Светлая тема";
 "settings_theme_dark" = "Темная тема";
 
@@ -46,9 +46,9 @@
 "settings_about_perapera_title" = "О Perapera";
 
 "settings_lang_app_title" = "Интерфейс пользователя";
-"settings_lang_app_subtitle" = "Язык интерфейса";
-"settings_lang_ai_title" = "ИИ объяснение";
-"settings_lang_ai_subtitle" = "Язык ИИ объяснения";
+"settings_lang_app_subtitle" = "Язык интерфейса пользователя";
+"settings_lang_ai_title" = "Объяснение ИИ";
+"settings_lang_ai_subtitle" = "Язык объяснения ИИ";
 "settings_lang_source_title" = "Вторые субтитры";
 "settings_lang_source_subtitle" = "Язык перевода по умолчанию";
 "settings_lang_learn_title" = "Изучаемый язык";

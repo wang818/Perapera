@@ -2,10 +2,10 @@
 //HomeView
 "home_navigationTitle" = "Perapera";
 "home_sheet_title" = "استيراد الفيديو والصوت";
-"home_sheet_subtitle" = "اختر المصدر لاستيراد الوسائط";
+"home_sheet_subtitle" = "اختر مصدراً لاستيراد الوسائط";
 "home_sheet_list_title1" = "رابط يوتيوب";
-"home_sheet_list_subtitle1" = "شغل فيديوهات يوتيوب بدون تحميل";
-"home_sheet_list_title2" = "وسائط محلية";
+"home_sheet_list_subtitle1" = "تشغيل فيديوهات يوتيوب بدون تحميل";
+"home_sheet_list_title2" = "الوسائط المحلية";
 "home_sheet_list_subtitle2" = "استيراد من التخزين المحلي بدون نسخ";
 "home_sheet_list_title3" = "الصور";
 "home_sheet_list_subtitle3" = "استيراد الوسائط من صورك";
@@ -21,11 +21,11 @@
 
 // Settings
 "settings_account_header" = "الحساب";
-"settings_account_not_logged_in" = "غير مسجل الدخول";
+"settings_account_not_logged_in" = "لم يتم تسجيل الدخول";
 "settings_account_login_description" = "سجل الدخول للوصول إلى جميع الميزات";
 "settings_account_login_button" = "تسجيل الدخول";
 "settings_pro_title" = "انضم إلى Perapera Pro";
-"settings_pro_subtitle" = "افتح جميع الميزات مع الذكاء الاصطناعي";
+"settings_pro_subtitle" = "فتح جميع الميزات مع الذكاء الاصطناعي";
 
 "settings_general_header" = "عام";
 "settings_language_title" = "لغة التطبيق";
@@ -49,7 +49,7 @@
 "settings_lang_app_subtitle" = "لغة واجهة المستخدم";
 "settings_lang_ai_title" = "شرح الذكاء الاصطناعي";
 "settings_lang_ai_subtitle" = "لغة شرح الذكاء الاصطناعي";
-"settings_lang_source_title" = "الترجمة الثانوية";
+"settings_lang_source_title" = "الترجمة الثانية";
 "settings_lang_source_subtitle" = "لغة الترجمة الافتراضية";
 "settings_lang_learn_title" = "اللغة المستهدفة";
 "settings_lang_learn_subtitle" = "اختر اللغة لتعلمها";
