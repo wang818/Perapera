@@ -1,0 +1,70 @@
+/* Localizable.strings (Malay) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Import Video dan Audio";
+"home_sheet_subtitle" = "Pilih sumber untuk mengimport media";
+"home_sheet_list_title1" = "URL Youtube";
+"home_sheet_list_subtitle1" = "Mainkan video Youtube tanpa memuat turun";
+"home_sheet_list_title2" = "Media Tempatan";
+"home_sheet_list_subtitle2" = "Import dari storan tempatan tanpa menyalin";
+"home_sheet_list_title3" = "Foto";
+"home_sheet_list_subtitle3" = "Import media dari foto anda";
+"home_Youtube_Alert_title" = "URL Youtube";
+"home_Youtube_Alert_textFiled_placeholder" = "Masukkan URL";
+"colse" = "Tutup";
+"save" = "Simpan";
+
+// Tab
+"tab_home" = "Laman Utama";
+"tab_podcast" = "Podsiar";
+"tab_settings" = "Tetapan";
+
+// Settings
+"settings_account_header" = "Akaun";
+"settings_account_not_logged_in" = "Belum Log Masuk";
+"settings_account_login_description" = "Log masuk untuk akses semua ciri";
+"settings_account_login_button" = "Log Masuk";
+"settings_pro_title" = "Sertai Perapera Pro";
+"settings_pro_subtitle" = "Buka kunci semua ciri dengan AI";
+
+"settings_general_header" = "Umum";
+"settings_language_title" = "Bahasa Aplikasi";
+"settings_language_subtitle" = "Pilih bahasa aplikasi";
+"settings_alphabet_title" = "Pilihan Abjad";
+"settings_alphabet_subtitle" = "Urus tetapan paparan abjad";
+"settings_theme_title" = "Tema";
+"settings_theme_subtitle" = "Sesuaikan tema aplikasi";
+"settings_theme_system" = "Ikut Sistem";
+"settings_theme_light" = "Mod Cerah";
+"settings_theme_dark" = "Mod Gelap";
+
+"settings_feedback_header" = "Maklum Balas";
+"settings_email_title" = "Emel";
+"settings_email_subtitle" = "Dapatkan sokongan melalui emel";
+
+"settings_faq_title" = "Soalan Lazim";
+"settings_about_perapera_title" = "Tentang Perapera";
+
+"settings_lang_app_title" = "Antara Muka Pengguna";
+"settings_lang_app_subtitle" = "Bahasa Antara Muka Pengguna";
+"settings_lang_ai_title" = "Penerangan AI";
+"settings_lang_ai_subtitle" = "Bahasa Penerangan AI";
+"settings_lang_source_title" = "Sarikata Kedua";
+"settings_lang_source_subtitle" = "Bahasa Terjemahan Lalai";
+"settings_lang_learn_title" = "Bahasa Sasaran";
+"settings_lang_learn_subtitle" = "Pilih bahasa untuk dipelajari";
+
+// Login
+"login_title" = "Log Masuk";
+"login_email_placeholder" = "Masukkan alamat emel";
+"login_code_placeholder" = "Masukkan kod pengesahan";
+"login_get_code" = "Dapatkan Kod";
+"login_button" = "Log Masuk";
+"login_next_button" = "Seterusnya";
+"login_email_invalid" = "Masukkan alamat emel yang sah";
+"login_code_sent" = "Kod pengesahan dihantar";
+
+// Navigation
+"podcast_title" = "Podsiar";
+"settings_title" = "Tetapan";
+"settings_help" = "Bantuan";

@@ -25,6 +25,28 @@
 		ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */; };
 		ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9D2F0A59430090F990 /* PUserDefault.swift */; };
 		ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */; };
+		ECACBEDC2F0A6DAE0090F990 /* AppIcon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED92F0A6DAE0090F990 /* AppIcon-76@2x.png */; };
+		ECACBEDD2F0A6DAE0090F990 /* AppIcon-29@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECE2F0A6DAE0090F990 /* AppIcon-29@1x.png */; };
+		ECACBEDE2F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED02F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png */; };
+		ECACBEDF2F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED42F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png */; };
+		ECACBEE02F0A6DAE0090F990 /* AppIcon-83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEDA2F0A6DAE0090F990 /* AppIcon-83.5@2x.png */; };
+		ECACBEE12F0A6DAE0090F990 /* AppIcon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED62F0A6DAE0090F990 /* AppIcon-60@2x.png */; };
+		ECACBEE22F0A6DAE0090F990 /* AppIcon-40@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED22F0A6DAE0090F990 /* AppIcon-40@1x.png */; };
+		ECACBEE32F0A6DAE0090F990 /* AppIcon-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */; };
+		ECACBEE42F0A6DAE0090F990 /* AppIcon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED72F0A6DAE0090F990 /* AppIcon-60@3x.png */; };
+		ECACBEE52F0A6DAE0090F990 /* AppIcon-20@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECA2F0A6DAE0090F990 /* AppIcon-20@1x.png */; };
+		ECACBEE62F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECC2F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png */; };
+		ECACBEE72F0A6DAE0090F990 /* AppIcon-76@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED82F0A6DAE0090F990 /* AppIcon-76@1x.png */; };
+		ECACBEE82F0A6DAE0090F990 /* AppIcon-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECB2F0A6DAE0090F990 /* AppIcon-20@2x.png */; };
+		ECACBEE92F0A6DAE0090F990 /* AppIcon-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECF2F0A6DAE0090F990 /* AppIcon-29@2x.png */; };
+		ECACBEEA2F0A6DAE0090F990 /* AppIcon-40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED52F0A6DAE0090F990 /* AppIcon-40@3x.png */; };
+		ECACBEEB2F0A6DAE0090F990 /* AppIcon-20@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECD2F0A6DAE0090F990 /* AppIcon-20@3x.png */; };
+		ECACBEEC2F0A6DAE0090F990 /* AppIcon-29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED12F0A6DAE0090F990 /* AppIcon-29@3x.png */; };
+		ECACBEED2F0A6DAE0090F990 /* AppIcon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED32F0A6DAE0090F990 /* AppIcon-40@2x.png */; };
+		ECACBEF12F0B4A430090F990 /* AppIcon-64@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF02F0B4A430090F990 /* AppIcon-64@2x.png */; };
+		ECACBEF32F0B4A490090F990 /* AppIcon-64@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */; };
+		ECACBEF52F0B4A950090F990 /* AppIcon-38@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */; };
+		ECACBEF72F0B4AA70090F990 /* AppIcon-68@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +76,39 @@
 		ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingsView.swift; sourceTree = "<group>"; };
 		ECACBE9D2F0A59430090F990 /* PUserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PUserDefault.swift; sourceTree = "<group>"; };
 		ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		ECACBECA2F0A6DAE0090F990 /* AppIcon-20@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@1x.png"; sourceTree = "<group>"; };
+		ECACBECB2F0A6DAE0090F990 /* AppIcon-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@2x.png"; sourceTree = "<group>"; };
+		ECACBECC2F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@2x-ipad.png"; sourceTree = "<group>"; };
+		ECACBECD2F0A6DAE0090F990 /* AppIcon-20@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@3x.png"; sourceTree = "<group>"; };
+		ECACBECE2F0A6DAE0090F990 /* AppIcon-29@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@1x.png"; sourceTree = "<group>"; };
+		ECACBECF2F0A6DAE0090F990 /* AppIcon-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@2x.png"; sourceTree = "<group>"; };
+		ECACBED02F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@2x-ipad.png"; sourceTree = "<group>"; };
+		ECACBED12F0A6DAE0090F990 /* AppIcon-29@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@3x.png"; sourceTree = "<group>"; };
+		ECACBED22F0A6DAE0090F990 /* AppIcon-40@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@1x.png"; sourceTree = "<group>"; };
+		ECACBED32F0A6DAE0090F990 /* AppIcon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@2x.png"; sourceTree = "<group>"; };
+		ECACBED42F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@2x-ipad.png"; sourceTree = "<group>"; };
+		ECACBED52F0A6DAE0090F990 /* AppIcon-40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@3x.png"; sourceTree = "<group>"; };
+		ECACBED62F0A6DAE0090F990 /* AppIcon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-60@2x.png"; sourceTree = "<group>"; };
+		ECACBED72F0A6DAE0090F990 /* AppIcon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-60@3x.png"; sourceTree = "<group>"; };
+		ECACBED82F0A6DAE0090F990 /* AppIcon-76@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@1x.png"; sourceTree = "<group>"; };
+		ECACBED92F0A6DAE0090F990 /* AppIcon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@2x.png"; sourceTree = "<group>"; };
+		ECACBEDA2F0A6DAE0090F990 /* AppIcon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-83.5@2x.png"; sourceTree = "<group>"; };
+		ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-1024.png"; sourceTree = "<group>"; };
+		ECACBEF02F0B4A430090F990 /* AppIcon-64@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-64@2x.png"; sourceTree = "<group>"; };
+		ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-64@3x.png"; sourceTree = "<group>"; };
+		ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-38@3x.png"; sourceTree = "<group>"; };
+		ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-68@2x.png"; sourceTree = "<group>"; };
+		ECACBEF82F0B4AD30090F990 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEF92F0B4AE90090F990 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEFA2F0B4B080090F990 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEFB2F0B4B140090F990 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEFC2F0B4B380090F990 /* ms */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ms; path = ms.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEFD2F0B4B7E0090F990 /* my */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = my; path = my.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEFE2F0B4B930090F990 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBEFF2F0B4BA80090F990 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		ECACBF002F0B4BB20090F990 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBF012F0B4BBF0090F990 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBF022F0B4BCA0090F990 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +144,7 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBEA32F0A6C6F0090F990 /* Icon */,
 				ECACBE832EFA58980090F990 /* Tools */,
 				ECACBE732EF937CA0090F990 /* Views */,
 				1889F1262EF9214800886186 /* PeraperaApp.swift */,
@@ -199,6 +255,35 @@
 			path = Theme;
 			sourceTree = "<group>";
 		};
+		ECACBEA32F0A6C6F0090F990 /* Icon */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBECA2F0A6DAE0090F990 /* AppIcon-20@1x.png */,
+				ECACBECB2F0A6DAE0090F990 /* AppIcon-20@2x.png */,
+				ECACBECC2F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png */,
+				ECACBECD2F0A6DAE0090F990 /* AppIcon-20@3x.png */,
+				ECACBECE2F0A6DAE0090F990 /* AppIcon-29@1x.png */,
+				ECACBECF2F0A6DAE0090F990 /* AppIcon-29@2x.png */,
+				ECACBED02F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png */,
+				ECACBED12F0A6DAE0090F990 /* AppIcon-29@3x.png */,
+				ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */,
+				ECACBED22F0A6DAE0090F990 /* AppIcon-40@1x.png */,
+				ECACBED32F0A6DAE0090F990 /* AppIcon-40@2x.png */,
+				ECACBED42F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png */,
+				ECACBED52F0A6DAE0090F990 /* AppIcon-40@3x.png */,
+				ECACBED62F0A6DAE0090F990 /* AppIcon-60@2x.png */,
+				ECACBED72F0A6DAE0090F990 /* AppIcon-60@3x.png */,
+				ECACBEF02F0B4A430090F990 /* AppIcon-64@2x.png */,
+				ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */,
+				ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */,
+				ECACBED82F0A6DAE0090F990 /* AppIcon-76@1x.png */,
+				ECACBED92F0A6DAE0090F990 /* AppIcon-76@2x.png */,
+				ECACBEDA2F0A6DAE0090F990 /* AppIcon-83.5@2x.png */,
+				ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */,
+			);
+			path = Icon;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -210,6 +295,7 @@
 				1889F11F2EF9214800886186 /* Sources */,
 				1889F1202EF9214800886186 /* Frameworks */,
 				1889F1212EF9214800886186 /* Resources */,
+				64265FB93041787E16BFDC37 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -228,7 +314,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					1889F1222EF9214800886186 = {
 						CreatedOnToolsVersion = 15.2;
@@ -247,6 +333,17 @@
 				ko,
 				vi,
 				"zh-Hant",
+				ar,
+				de,
+				es,
+				id,
+				ms,
+				my,
+				pl,
+				"pt-PT",
+				ru,
+				th,
+				tr,
 			);
 			mainGroup = 1889F11A2EF9214800886186;
 			productRefGroup = 1889F1242EF9214800886186 /* Products */;
@@ -265,9 +362,31 @@
 			files = (
 				1889F12E2EF9214B00886186 /* Preview Assets.xcassets in Resources */,
 				ECACBE7E2EFA57210090F990 /* Localizable.strings in Resources */,
+				ECACBEDC2F0A6DAE0090F990 /* AppIcon-76@2x.png in Resources */,
+				ECACBEDD2F0A6DAE0090F990 /* AppIcon-29@1x.png in Resources */,
+				ECACBEDE2F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png in Resources */,
+				ECACBEDF2F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png in Resources */,
+				ECACBEE02F0A6DAE0090F990 /* AppIcon-83.5@2x.png in Resources */,
+				ECACBEF12F0B4A430090F990 /* AppIcon-64@2x.png in Resources */,
+				ECACBEE12F0A6DAE0090F990 /* AppIcon-60@2x.png in Resources */,
+				ECACBEE22F0A6DAE0090F990 /* AppIcon-40@1x.png in Resources */,
+				ECACBEE32F0A6DAE0090F990 /* AppIcon-1024.png in Resources */,
+				ECACBEE42F0A6DAE0090F990 /* AppIcon-60@3x.png in Resources */,
+				ECACBEE52F0A6DAE0090F990 /* AppIcon-20@1x.png in Resources */,
+				ECACBEE62F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png in Resources */,
+				ECACBEE72F0A6DAE0090F990 /* AppIcon-76@1x.png in Resources */,
+				ECACBEE82F0A6DAE0090F990 /* AppIcon-20@2x.png in Resources */,
+				ECACBEE92F0A6DAE0090F990 /* AppIcon-29@2x.png in Resources */,
+				ECACBEEA2F0A6DAE0090F990 /* AppIcon-40@3x.png in Resources */,
+				ECACBEEB2F0A6DAE0090F990 /* AppIcon-20@3x.png in Resources */,
+				ECACBEEC2F0A6DAE0090F990 /* AppIcon-29@3x.png in Resources */,
+				ECACBEED2F0A6DAE0090F990 /* AppIcon-40@2x.png in Resources */,
 				1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */,
+				ECACBEF72F0B4AA70090F990 /* AppIcon-68@2x.png in Resources */,
 				ECACBE982F0A38490090F990 /* EXThemeColorDark.json in Resources */,
 				ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */,
+				ECACBEF32F0B4A490090F990 /* AppIcon-64@3x.png in Resources */,
+				ECACBEF52F0B4A950090F990 /* AppIcon-38@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +413,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		64265FB93041787E16BFDC37 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -330,6 +470,17 @@
 				ECACBE812EFA573C0090F990 /* ko */,
 				ECACBE822EFA573D0090F990 /* vi */,
 				ECACBE872EFA5D4D0090F990 /* zh-Hant */,
+				ECACBEF82F0B4AD30090F990 /* ar */,
+				ECACBEF92F0B4AE90090F990 /* de */,
+				ECACBEFA2F0B4B080090F990 /* es */,
+				ECACBEFB2F0B4B140090F990 /* id */,
+				ECACBEFC2F0B4B380090F990 /* ms */,
+				ECACBEFD2F0B4B7E0090F990 /* my */,
+				ECACBEFE2F0B4B930090F990 /* pl */,
+				ECACBEFF2F0B4BA80090F990 /* pt-PT */,
+				ECACBF002F0B4BB20090F990 /* ru */,
+				ECACBF012F0B4BBF0090F990 /* th */,
+				ECACBF022F0B4BCA0090F990 /* tr */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -342,6 +493,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -372,6 +524,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 49LG6W98ZJ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -405,6 +558,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -435,6 +589,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 49LG6W98ZJ;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -465,7 +620,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
-				DEVELOPMENT_TEAM = 49LG6W98ZJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -495,7 +649,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
-				DEVELOPMENT_TEAM = 49LG6W98ZJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

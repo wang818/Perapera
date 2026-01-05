@@ -1,0 +1,70 @@
+/* Localizable.strings (Indonesian) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Impor Video dan Audio";
+"home_sheet_subtitle" = "Pilih sumber untuk mengimpor media";
+"home_sheet_list_title1" = "URL Youtube";
+"home_sheet_list_subtitle1" = "Putar video Youtube tanpa mengunduh";
+"home_sheet_list_title2" = "Media Lokal";
+"home_sheet_list_subtitle2" = "Impor dari penyimpanan lokal tanpa menyalin";
+"home_sheet_list_title3" = "Foto";
+"home_sheet_list_subtitle3" = "Impor media dari foto Anda";
+"home_Youtube_Alert_title" = "URL Youtube";
+"home_Youtube_Alert_textFiled_placeholder" = "Masukkan URL";
+"colse" = "Tutup";
+"save" = "Simpan";
+
+// Tab
+"tab_home" = "Beranda";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Pengaturan";
+
+// Settings
+"settings_account_header" = "Akun";
+"settings_account_not_logged_in" = "Belum Masuk";
+"settings_account_login_description" = "Masuk untuk mengakses semua fitur";
+"settings_account_login_button" = "Masuk";
+"settings_pro_title" = "Gabung Perapera Pro";
+"settings_pro_subtitle" = "Buka semua fitur dengan AI";
+
+"settings_general_header" = "Umum";
+"settings_language_title" = "Bahasa Aplikasi";
+"settings_language_subtitle" = "Pilih bahasa aplikasi";
+"settings_alphabet_title" = "Preferensi Alfabet";
+"settings_alphabet_subtitle" = "Kelola pengaturan tampilan alfabet";
+"settings_theme_title" = "Tema";
+"settings_theme_subtitle" = "Sesuaikan tema aplikasi";
+"settings_theme_system" = "Ikuti Sistem";
+"settings_theme_light" = "Mode Terang";
+"settings_theme_dark" = "Mode Gelap";
+
+"settings_feedback_header" = "Umpan Balik";
+"settings_email_title" = "Email";
+"settings_email_subtitle" = "Dapatkan dukungan melalui email";
+
+"settings_faq_title" = "FAQ";
+"settings_about_perapera_title" = "Tentang Perapera";
+
+"settings_lang_app_title" = "Antarmuka Pengguna";
+"settings_lang_app_subtitle" = "Bahasa Antarmuka Pengguna";
+"settings_lang_ai_title" = "Penjelasan AI";
+"settings_lang_ai_subtitle" = "Bahasa Penjelasan AI";
+"settings_lang_source_title" = "Subtitle Kedua";
+"settings_lang_source_subtitle" = "Bahasa Terjemahan Default";
+"settings_lang_learn_title" = "Bahasa Target";
+"settings_lang_learn_subtitle" = "Pilih bahasa untuk dipelajari";
+
+// Login
+"login_title" = "Masuk";
+"login_email_placeholder" = "Masukkan alamat email";
+"login_code_placeholder" = "Masukkan kode verifikasi";
+"login_get_code" = "Dapatkan Kode";
+"login_button" = "Masuk";
+"login_next_button" = "Lanjut";
+"login_email_invalid" = "Masukkan alamat email yang valid";
+"login_code_sent" = "Kode verifikasi terkirim";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Pengaturan";
+"settings_help" = "Bantuan";

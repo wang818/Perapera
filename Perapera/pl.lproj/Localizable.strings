@@ -1,0 +1,70 @@
+/* Localizable.strings (Polish) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Importuj wideo i audio";
+"home_sheet_subtitle" = "Wybierz źródło importu mediów";
+"home_sheet_list_title1" = "Adres URL Youtube";
+"home_sheet_list_subtitle1" = "Odtwarzaj filmy z Youtube bez pobierania";
+"home_sheet_list_title2" = "Media Lokalne";
+"home_sheet_list_subtitle2" = "Importuj z pamięci lokalnej bez kopiowania";
+"home_sheet_list_title3" = "Zdjęcia";
+"home_sheet_list_subtitle3" = "Importuj media ze zdjęć";
+"home_Youtube_Alert_title" = "Adres URL Youtube";
+"home_Youtube_Alert_textFiled_placeholder" = "Wpisz adres URL";
+"colse" = "Zamknij";
+"save" = "Zapisz";
+
+// Tab
+"tab_home" = "Strona główna";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Ustawienia";
+
+// Settings
+"settings_account_header" = "Konto";
+"settings_account_not_logged_in" = "Nie zalogowano";
+"settings_account_login_description" = "Zaloguj się, aby uzyskać dostęp do wszystkich funkcji";
+"settings_account_login_button" = "Zaloguj się";
+"settings_pro_title" = "Dołącz do Perapera Pro";
+"settings_pro_subtitle" = "Odblokuj wszystkie funkcje dzięki AI";
+
+"settings_general_header" = "Ogólne";
+"settings_language_title" = "Język aplikacji";
+"settings_language_subtitle" = "Wybierz język aplikacji";
+"settings_alphabet_title" = "Preferencje alfabetu";
+"settings_alphabet_subtitle" = "Zarządzaj ustawieniami wyświetlania alfabetu";
+"settings_theme_title" = "Motyw";
+"settings_theme_subtitle" = "Dostosuj motyw aplikacji";
+"settings_theme_system" = "Zgodnie z systemem";
+"settings_theme_light" = "Tryb jasny";
+"settings_theme_dark" = "Tryb ciemny";
+
+"settings_feedback_header" = "Opinie";
+"settings_email_title" = "E-mail";
+"settings_email_subtitle" = "Uzyskaj pomoc przez e-mail";
+
+"settings_faq_title" = "FAQ";
+"settings_about_perapera_title" = "O Perapera";
+
+"settings_lang_app_title" = "Interfejs użytkownika";
+"settings_lang_app_subtitle" = "Język interfejsu użytkownika";
+"settings_lang_ai_title" = "Wyjaśnienie AI";
+"settings_lang_ai_subtitle" = "Język wyjaśnień AI";
+"settings_lang_source_title" = "Drugie napisy";
+"settings_lang_source_subtitle" = "Domyślny język tłumaczenia";
+"settings_lang_learn_title" = "Język docelowy";
+"settings_lang_learn_subtitle" = "Wybierz język do nauki";
+
+// Login
+"login_title" = "Zaloguj się";
+"login_email_placeholder" = "Wpisz adres e-mail";
+"login_code_placeholder" = "Wpisz kod weryfikacyjny";
+"login_get_code" = "Pobierz kod";
+"login_button" = "Zaloguj się";
+"login_next_button" = "Dalej";
+"login_email_invalid" = "Wpisz poprawny adres e-mail";
+"login_code_sent" = "Kod weryfikacyjny wysłany";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Ustawienia";
+"settings_help" = "Pomoc";

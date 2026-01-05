@@ -1,0 +1,70 @@
+/* Localizable.strings (Spanish) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Importar Video y Audio";
+"home_sheet_subtitle" = "Seleccionar fuente para importar medios";
+"home_sheet_list_title1" = "URL de Youtube";
+"home_sheet_list_subtitle1" = "Reproducir videos de Youtube sin descargar";
+"home_sheet_list_title2" = "Medios Locales";
+"home_sheet_list_subtitle2" = "Importar desde almacenamiento local sin copiar";
+"home_sheet_list_title3" = "Fotos";
+"home_sheet_list_subtitle3" = "Importar medios desde tus fotos";
+"home_Youtube_Alert_title" = "URL de Youtube";
+"home_Youtube_Alert_textFiled_placeholder" = "Ingresar URL";
+"colse" = "Cerrar";
+"save" = "Guardar";
+
+// Tab
+"tab_home" = "Inicio";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Ajustes";
+
+// Settings
+"settings_account_header" = "Cuenta";
+"settings_account_not_logged_in" = "No has iniciado sesión";
+"settings_account_login_description" = "Inicia sesión para acceder a todas las funciones";
+"settings_account_login_button" = "Iniciar Sesión";
+"settings_pro_title" = "Únete a Perapera Pro";
+"settings_pro_subtitle" = "Desbloquea todas las funciones con IA";
+
+"settings_general_header" = "General";
+"settings_language_title" = "Idioma de la App";
+"settings_language_subtitle" = "Elegir idioma de la aplicación";
+"settings_alphabet_title" = "Preferencias del Alfabeto";
+"settings_alphabet_subtitle" = "Gestionar configuración de visualización del alfabeto";
+"settings_theme_title" = "Tema";
+"settings_theme_subtitle" = "Ajustar tema de la aplicación";
+"settings_theme_system" = "Seguir Sistema";
+"settings_theme_light" = "Modo Claro";
+"settings_theme_dark" = "Modo Oscuro";
+
+"settings_feedback_header" = "Comentarios";
+"settings_email_title" = "Correo";
+"settings_email_subtitle" = "Obtener soporte por correo electrónico";
+
+"settings_faq_title" = "Preguntas Frecuentes";
+"settings_about_perapera_title" = "Acerca de Perapera";
+
+"settings_lang_app_title" = "Interfaz de Usuario";
+"settings_lang_app_subtitle" = "Idioma de la Interfaz de Usuario";
+"settings_lang_ai_title" = "Explicación de IA";
+"settings_lang_ai_subtitle" = "Idioma de Explicación de IA";
+"settings_lang_source_title" = "Segundo Subtítulo";
+"settings_lang_source_subtitle" = "Idioma de Traducción Predeterminado";
+"settings_lang_learn_title" = "Idioma Objetivo";
+"settings_lang_learn_subtitle" = "Elige el idioma para aprender";
+
+// Login
+"login_title" = "Iniciar Sesión";
+"login_email_placeholder" = "Ingresar correo electrónico";
+"login_code_placeholder" = "Ingresar código de verificación";
+"login_get_code" = "Obtener Código";
+"login_button" = "Iniciar Sesión";
+"login_next_button" = "Siguiente";
+"login_email_invalid" = "Ingresar un correo válido";
+"login_code_sent" = "Código de verificación enviado";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Ajustes";
+"settings_help" = "Ayuda";

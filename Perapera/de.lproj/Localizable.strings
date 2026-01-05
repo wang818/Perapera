@@ -1,0 +1,70 @@
+/* Localizable.strings (German) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Video und Audio importieren";
+"home_sheet_subtitle" = "Quelle zum Importieren von Medien auswählen";
+"home_sheet_list_title1" = "Youtube-URL";
+"home_sheet_list_subtitle1" = "Youtube-Videos ohne Download abspielen";
+"home_sheet_list_title2" = "Lokale Medien";
+"home_sheet_list_subtitle2" = "Vom lokalen Speicher importieren ohne zu kopieren";
+"home_sheet_list_title3" = "Fotos";
+"home_sheet_list_subtitle3" = "Medien aus Fotos importieren";
+"home_Youtube_Alert_title" = "Youtube-URL";
+"home_Youtube_Alert_textFiled_placeholder" = "URL eingeben";
+"colse" = "Schließen";
+"save" = "Speichern";
+
+// Tab
+"tab_home" = "Startseite";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Einstellungen";
+
+// Settings
+"settings_account_header" = "Konto";
+"settings_account_not_logged_in" = "Nicht eingeloggt";
+"settings_account_login_description" = "Einloggen, um auf alle Funktionen zuzugreifen";
+"settings_account_login_button" = "Einloggen";
+"settings_pro_title" = "Perapera Pro beitreten";
+"settings_pro_subtitle" = "Alle Funktionen mit KI freischalten";
+
+"settings_general_header" = "Allgemein";
+"settings_language_title" = "App-Sprache";
+"settings_language_subtitle" = "App-Sprache wählen";
+"settings_alphabet_title" = "Alphabet-Einstellungen";
+"settings_alphabet_subtitle" = "Anzeigeeinstellungen für Alphabet verwalten";
+"settings_theme_title" = "Design";
+"settings_theme_subtitle" = "App-Design anpassen";
+"settings_theme_system" = "System folgen";
+"settings_theme_light" = "Heller Modus";
+"settings_theme_dark" = "Dunkler Modus";
+
+"settings_feedback_header" = "Feedback";
+"settings_email_title" = "E-Mail";
+"settings_email_subtitle" = "Support per E-Mail erhalten";
+
+"settings_faq_title" = "FAQ";
+"settings_about_perapera_title" = "Über Perapera";
+
+"settings_lang_app_title" = "Benutzeroberfläche";
+"settings_lang_app_subtitle" = "Sprache der Benutzeroberfläche";
+"settings_lang_ai_title" = "KI-Erklärung";
+"settings_lang_ai_subtitle" = "Sprache der KI-Erklärung";
+"settings_lang_source_title" = "Zweiter Untertitel";
+"settings_lang_source_subtitle" = "Standard-Übersetzungssprache";
+"settings_lang_learn_title" = "Zielsprache";
+"settings_lang_learn_subtitle" = "Wählen Sie die zu lernende Sprache";
+
+// Login
+"login_title" = "Einloggen";
+"login_email_placeholder" = "E-Mail-Adresse eingeben";
+"login_code_placeholder" = "Bestätigungscode eingeben";
+"login_get_code" = "Code anfordern";
+"login_button" = "Einloggen";
+"login_next_button" = "Weiter";
+"login_email_invalid" = "Gültige E-Mail-Adresse eingeben";
+"login_code_sent" = "Bestätigungscode gesendet";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Einstellungen";
+"settings_help" = "Hilfe";

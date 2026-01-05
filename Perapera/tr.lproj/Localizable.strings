@@ -1,0 +1,70 @@
+/* Localizable.strings (Turkish) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "Video ve Ses İçe Aktar";
+"home_sheet_subtitle" = "Medya içe aktarmak için kaynak seçin";
+"home_sheet_list_title1" = "Youtube URL";
+"home_sheet_list_subtitle1" = "Youtube videolarını indirmeden oynat";
+"home_sheet_list_title2" = "Yerel Medya";
+"home_sheet_list_subtitle2" = "Kopyalamadan yerel depolamadan içe aktar";
+"home_sheet_list_title3" = "Fotoğraflar";
+"home_sheet_list_subtitle3" = "Fotoğraflarınızdan medya içe aktarın";
+"home_Youtube_Alert_title" = "Youtube URL";
+"home_Youtube_Alert_textFiled_placeholder" = "URL Girin";
+"colse" = "Kapat";
+"save" = "Kaydet";
+
+// Tab
+"tab_home" = "Ana Sayfa";
+"tab_podcast" = "Podcast";
+"tab_settings" = "Ayarlar";
+
+// Settings
+"settings_account_header" = "Hesap";
+"settings_account_not_logged_in" = "Giriş Yapılmadı";
+"settings_account_login_description" = "Tüm özelliklere erişmek için giriş yapın";
+"settings_account_login_button" = "Giriş Yap";
+"settings_pro_title" = "Perapera Pro'ya Katıl";
+"settings_pro_subtitle" = "AI ile tüm özelliklerin kilidini aç";
+
+"settings_general_header" = "Genel";
+"settings_language_title" = "Uygulama Dili";
+"settings_language_subtitle" = "Uygulama dilini seçin";
+"settings_alphabet_title" = "Alfabe Tercihleri";
+"settings_alphabet_subtitle" = "Alfabe görüntüleme ayarlarını yönet";
+"settings_theme_title" = "Tema";
+"settings_theme_subtitle" = "Uygulama temasını ayarla";
+"settings_theme_system" = "Sistemi Takip Et";
+"settings_theme_light" = "Açık Mod";
+"settings_theme_dark" = "Koyu Mod";
+
+"settings_feedback_header" = "Geri Bildirim";
+"settings_email_title" = "E-posta";
+"settings_email_subtitle" = "E-posta ile destek al";
+
+"settings_faq_title" = "SSS";
+"settings_about_perapera_title" = "Perapera Hakkında";
+
+"settings_lang_app_title" = "Kullanıcı Arayüzü";
+"settings_lang_app_subtitle" = "Kullanıcı Arayüzü Dili";
+"settings_lang_ai_title" = "AI Açıklaması";
+"settings_lang_ai_subtitle" = "AI Açıklama Dili";
+"settings_lang_source_title" = "İkinci Altyazı";
+"settings_lang_source_subtitle" = "Varsayılan Çeviri Dili";
+"settings_lang_learn_title" = "Hedef Dil";
+"settings_lang_learn_subtitle" = "Öğrenilecek dili seçin";
+
+// Login
+"login_title" = "Giriş Yap";
+"login_email_placeholder" = "E-posta adresini girin";
+"login_code_placeholder" = "Doğrulama kodunu girin";
+"login_get_code" = "Kod Al";
+"login_button" = "Giriş Yap";
+"login_next_button" = "İleri";
+"login_email_invalid" = "Geçerli bir e-posta adresi girin";
+"login_code_sent" = "Doğrulama kodu gönderildi";
+
+// Navigation
+"podcast_title" = "Podcast";
+"settings_title" = "Ayarlar";
+"settings_help" = "Yardım";

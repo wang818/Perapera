@@ -1,0 +1,70 @@
+/* Localizable.strings (Arabic) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "استيراد الفيديو والصوت";
+"home_sheet_subtitle" = "اختر المصدر لاستيراد الوسائط";
+"home_sheet_list_title1" = "رابط يوتيوب";
+"home_sheet_list_subtitle1" = "شغل فيديوهات يوتيوب بدون تحميل";
+"home_sheet_list_title2" = "وسائط محلية";
+"home_sheet_list_subtitle2" = "استيراد من التخزين المحلي بدون نسخ";
+"home_sheet_list_title3" = "الصور";
+"home_sheet_list_subtitle3" = "استيراد الوسائط من صورك";
+"home_Youtube_Alert_title" = "رابط يوتيوب";
+"home_Youtube_Alert_textFiled_placeholder" = "أدخل الرابط";
+"colse" = "إغلاق";
+"save" = "حفظ";
+
+// Tab
+"tab_home" = "الرئيسية";
+"tab_podcast" = "بودكاست";
+"tab_settings" = "الإعدادات";
+
+// Settings
+"settings_account_header" = "الحساب";
+"settings_account_not_logged_in" = "غير مسجل الدخول";
+"settings_account_login_description" = "سجل الدخول للوصول إلى جميع الميزات";
+"settings_account_login_button" = "تسجيل الدخول";
+"settings_pro_title" = "انضم إلى Perapera Pro";
+"settings_pro_subtitle" = "افتح جميع الميزات مع الذكاء الاصطناعي";
+
+"settings_general_header" = "عام";
+"settings_language_title" = "لغة التطبيق";
+"settings_language_subtitle" = "اختر لغة التطبيق";
+"settings_alphabet_title" = "تفضيلات الأبجدية";
+"settings_alphabet_subtitle" = "إدارة إعدادات عرض الأبجدية";
+"settings_theme_title" = "السمة";
+"settings_theme_subtitle" = "تعديل سمة التطبيق";
+"settings_theme_system" = "متابعة النظام";
+"settings_theme_light" = "الوضع الفاتح";
+"settings_theme_dark" = "الوضع الداكن";
+
+"settings_feedback_header" = "الملاحظات";
+"settings_email_title" = "البريد الإلكتروني";
+"settings_email_subtitle" = "احصل على الدعم عبر البريد الإلكتروني";
+
+"settings_faq_title" = "الأسئلة الشائعة";
+"settings_about_perapera_title" = "حول Perapera";
+
+"settings_lang_app_title" = "واجهة المستخدم";
+"settings_lang_app_subtitle" = "لغة واجهة المستخدم";
+"settings_lang_ai_title" = "شرح الذكاء الاصطناعي";
+"settings_lang_ai_subtitle" = "لغة شرح الذكاء الاصطناعي";
+"settings_lang_source_title" = "الترجمة الثانوية";
+"settings_lang_source_subtitle" = "لغة الترجمة الافتراضية";
+"settings_lang_learn_title" = "اللغة المستهدفة";
+"settings_lang_learn_subtitle" = "اختر اللغة لتعلمها";
+
+// Login
+"login_title" = "تسجيل الدخول";
+"login_email_placeholder" = "أدخل عنوان البريد الإلكتروني";
+"login_code_placeholder" = "أدخل رمز التحقق";
+"login_get_code" = "احصل على الرمز";
+"login_button" = "تسجيل الدخول";
+"login_next_button" = "التالي";
+"login_email_invalid" = "أدخل عنوان بريد إلكتروني صالح";
+"login_code_sent" = "تم إرسال رمز التحقق";
+
+// Navigation
+"podcast_title" = "بودكاست";
+"settings_title" = "الإعدادات";
+"settings_help" = "مساعدة";

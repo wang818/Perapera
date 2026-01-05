@@ -1,0 +1,70 @@
+/* Localizable.strings (Thai) */
+//HomeView
+"home_navigationTitle" = "Perapera";
+"home_sheet_title" = "นำเข้าวิดีโอและเสียง";
+"home_sheet_subtitle" = "เลือกแหล่งที่มาเพื่อนำเข้าสื่อ";
+"home_sheet_list_title1" = "URL Youtube";
+"home_sheet_list_subtitle1" = "เล่นวิดีโอ Youtube โดยไม่ต้องดาวน์โหลด";
+"home_sheet_list_title2" = "สื่อในเครื่อง";
+"home_sheet_list_subtitle2" = "นำเข้าจากที่เก็บข้อมูลในเครื่องโดยไม่ต้องคัดลอก";
+"home_sheet_list_title3" = "รูปภาพ";
+"home_sheet_list_subtitle3" = "นำเข้าสื่อจากรูปภาพของคุณ";
+"home_Youtube_Alert_title" = "URL Youtube";
+"home_Youtube_Alert_textFiled_placeholder" = "ป้อน URL";
+"colse" = "ปิด";
+"save" = "บันทึก";
+
+// Tab
+"tab_home" = "หน้าหลัก";
+"tab_podcast" = "พอดแคสต์";
+"tab_settings" = "การตั้งค่า";
+
+// Settings
+"settings_account_header" = "บัญชี";
+"settings_account_not_logged_in" = "ยังไม่ได้เข้าสู่ระบบ";
+"settings_account_login_description" = "เข้าสู่ระบบเพื่อเข้าถึงคุณสมบัติทั้งหมด";
+"settings_account_login_button" = "เข้าสู่ระบบ";
+"settings_pro_title" = "เข้าร่วม Perapera Pro";
+"settings_pro_subtitle" = "ปลดล็อกคุณสมบัติทั้งหมดด้วย AI";
+
+"settings_general_header" = "ทั่วไป";
+"settings_language_title" = "ภาษาของแอป";
+"settings_language_subtitle" = "เลือกภาษาของแอป";
+"settings_alphabet_title" = "การตั้งค่าตัวอักษร";
+"settings_alphabet_subtitle" = "จัดการการแสดงผลตัวอักษร";
+"settings_theme_title" = "ธีม";
+"settings_theme_subtitle" = "ปรับธีมของแอป";
+"settings_theme_system" = "ตามระบบ";
+"settings_theme_light" = "โหมดสว่าง";
+"settings_theme_dark" = "โหมดมืด";
+
+"settings_feedback_header" = "ข้อเสนอแนะ";
+"settings_email_title" = "อีเมล";
+"settings_email_subtitle" = "รับการสนับสนุนทางอีเมล";
+
+"settings_faq_title" = "คำถามที่พบบ่อย";
+"settings_about_perapera_title" = "เกี่ยวกับ Perapera";
+
+"settings_lang_app_title" = "ส่วนต่อประสานผู้ใช้";
+"settings_lang_app_subtitle" = "ภาษาของส่วนต่อประสานผู้ใช้";
+"settings_lang_ai_title" = "คำอธิบาย AI";
+"settings_lang_ai_subtitle" = "ภาษาของคำอธิบาย AI";
+"settings_lang_source_title" = "คำบรรยายที่สอง";
+"settings_lang_source_subtitle" = "ภาษาแปลเริ่มต้น";
+"settings_lang_learn_title" = "ภาษาเป้าหมาย";
+"settings_lang_learn_subtitle" = "เลือกภาษาที่จะเรียนรู้";
+
+// Login
+"login_title" = "เข้าสู่ระบบ";
+"login_email_placeholder" = "ป้อนที่อยู่อีเมล";
+"login_code_placeholder" = "ป้อนรหัสยืนยัน";
+"login_get_code" = "รับรหัส";
+"login_button" = "เข้าสู่ระบบ";
+"login_next_button" = "ถัดไป";
+"login_email_invalid" = "ป้อนที่อยู่อีเมลที่ถูกต้อง";
+"login_code_sent" = "ส่งรหัสยืนยันแล้ว";
+
+// Navigation
+"podcast_title" = "พอดแคสต์";
+"settings_title" = "การตั้งค่า";
+"settings_help" = "ช่วยเหลือ";
