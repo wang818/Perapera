@@ -1,6 +1,26 @@
 import SwiftUI
+import RxSwift
+import Moya
+import HandyJSON
+
+class SettingsViewModel: ObservableObject {
+    private let disposeBag = DisposeBag()
+    
+    func fetchSupportLanguages() {
+        appApi.rx.request(.supportLang)
+            .asObservable()
+            .mapArray(SupportLanguageModel.self)
+            .subscribe(onNext: { models in
+                // Save to local
+                LanguageManager.updateSupportLanguages(models)
+            }, onError: { error in
+            })
+            .disposed(by: disposeBag)
+    }
+}
 
 struct SettingsView: View {
+    @StateObject private var viewModel = SettingsViewModel()
     @State private var showingLoginView = false
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
@@ -112,6 +132,9 @@ struct SettingsView: View {
                     ) { EmptyView() }
                 }
             )
+            .onAppear {
+                viewModel.fetchSupportLanguages()
+            }
             .sheet(isPresented: $showingLoginView) {
                 LoginView()
             }
@@ -163,6 +186,7 @@ struct ThemeSettingsView: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

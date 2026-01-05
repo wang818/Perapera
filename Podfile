@@ -9,6 +9,7 @@ target 'Perapera' do
 #    pod 'MJExtension'
    
    pod 'Moya', '15.0.0'
+   pod 'Moya/RxSwift'
    pod 'Alamofire' , '5.0'
    
    # Dependencies used in coinup-bigclient-ios network layer

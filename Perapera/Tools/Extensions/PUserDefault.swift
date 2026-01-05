@@ -3,7 +3,7 @@ import UIKit
 
 open class PUserDefault: NSObject {
     public class func getCoinIcon(coin: String) -> UIImage? {
-        guard let imgDict = PUserDefault.getVauleForKey(key: "kCoinImageKeyValues") as? [String: Data] else { return nil }
+        guard let imgDict = PUserDefault.getVauleForKey(key: AppKeys.coinImageKeyValues) as? [String: Data] else { return nil }
         if let imageData = imgDict[coin] {
             return UIImage(data: imageData)
         }
@@ -12,13 +12,13 @@ open class PUserDefault: NSObject {
     
     public class func setCoinIcon(coin: String, image: UIImage) {
         if let imgData = image.pngData() {
-            var imgDict = PUserDefault.getVauleForKey(key: "kCoinImageKeyValues") as? [String: Data]
+            var imgDict = PUserDefault.getVauleForKey(key: AppKeys.coinImageKeyValues) as? [String: Data]
             if imgDict != nil {
                 imgDict![coin] = imgData
             } else {
                 imgDict = [coin: imgData]
             }
-            PUserDefault.setValueForKey(imgDict, key: "kCoinImageKeyValues")
+            PUserDefault.setValueForKey(imgDict, key: AppKeys.coinImageKeyValues)
         }
     }
     

@@ -15,7 +15,7 @@ class HomeViewModel: ObservableObject {
     
     func getZendeskNotice() {
         print("Start requesting Zendesk Notice...")
-        appApi.rx.request(.zendeskNotice(page: "1", pagesize: "10"))
+        appApi.rx.request(AppAPIEndPoint.zendeskNotice(page: "1", pagesize: "10"))
             .asObservable()
             .mapObject(EXZendeskNoticeModel.self)
             .subscribe(onNext: { entity in

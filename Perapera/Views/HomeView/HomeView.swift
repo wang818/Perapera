@@ -1,10 +1,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import PhotosUI
-import Moya
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
     // Sample data
     let items = Array(1...20).map { "Item \($0)" }
 
@@ -118,7 +116,7 @@ struct HomeView: View {
                             Button(action: {
                                 print("Network Test tapped")
                                 showingSheet = false
-                                viewModel.getZendeskNotice()
+                                //viewModel.getZendeskNotice()
                             }) {
                                 HStack(spacing: 15) {
                                     Image(systemName: "network")

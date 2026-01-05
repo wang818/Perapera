@@ -54,6 +54,8 @@
 		ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0D2F0B59880090F990 /* XHUDManager.swift */; };
 		ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF072F0B59880090F990 /* EXZendeskNoticeModel.swift */; };
 		ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF092F0B59880090F990 /* EXTracking.swift */; };
+		ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */; };
+		ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1D2F0B9A340090F990 /* AppKeys.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,6 +128,8 @@
 		ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+HandyJSON.swift"; sourceTree = "<group>"; };
 		ECACBF0D2F0B59880090F990 /* XHUDManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XHUDManager.swift; sourceTree = "<group>"; };
 		ECACBF162F0B5CE70090F990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLanguageModel.swift; sourceTree = "<group>"; };
+		ECACBF1D2F0B9A340090F990 /* AppKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -240,6 +244,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
 				ECACBE852EFA58BB0090F990 /* Extensions */,
@@ -314,6 +319,7 @@
 		ECACBF082F0B59880090F990 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */,
 				ECACBF072F0B59880090F990 /* EXZendeskNoticeModel.swift */,
 			);
 			path = Models;
@@ -503,8 +509,10 @@
 				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
+				ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
 				ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */,
+				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,
 				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
 				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
