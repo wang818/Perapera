@@ -47,6 +47,13 @@
 		ECACBEF32F0B4A490090F990 /* AppIcon-64@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */; };
 		ECACBEF52F0B4A950090F990 /* AppIcon-38@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */; };
 		ECACBEF72F0B4AA70090F990 /* AppIcon-68@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */; };
+		ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF052F0B59880090F990 /* AppAPIEndPoint.swift */; };
+		ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0B2F0B59880090F990 /* NetWorkService.swift */; };
+		ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */; };
+		ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */; };
+		ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0D2F0B59880090F990 /* XHUDManager.swift */; };
+		ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF072F0B59880090F990 /* EXZendeskNoticeModel.swift */; };
+		ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF092F0B59880090F990 /* EXTracking.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +118,14 @@
 		ECACBF022F0B4BCA0090F990 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBF032F0B50FA0090F990 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBF042F0B51580090F990 /* fil */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fil; path = fil.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ECACBF052F0B59880090F990 /* AppAPIEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAPIEndPoint.swift; sourceTree = "<group>"; };
+		ECACBF072F0B59880090F990 /* EXZendeskNoticeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXZendeskNoticeModel.swift; sourceTree = "<group>"; };
+		ECACBF092F0B59880090F990 /* EXTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTracking.swift; sourceTree = "<group>"; };
+		ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaLoadingPlugin.swift; sourceTree = "<group>"; };
+		ECACBF0B2F0B59880090F990 /* NetWorkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWorkService.swift; sourceTree = "<group>"; };
+		ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+HandyJSON.swift"; sourceTree = "<group>"; };
+		ECACBF0D2F0B59880090F990 /* XHUDManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XHUDManager.swift; sourceTree = "<group>"; };
+		ECACBF162F0B5CE70090F990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +161,8 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				ECACBF162F0B5CE70090F990 /* Info.plist */,
+				ECACBF0E2F0B59880090F990 /* Network */,
 				ECACBEA32F0A6C6F0090F990 /* Icon */,
 				ECACBE832EFA58980090F990 /* Tools */,
 				ECACBE732EF937CA0090F990 /* Views */,
@@ -284,6 +301,36 @@
 				ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */,
 			);
 			path = Icon;
+			sourceTree = "<group>";
+		};
+		ECACBF062F0B59880090F990 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBF052F0B59880090F990 /* AppAPIEndPoint.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		ECACBF082F0B59880090F990 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBF072F0B59880090F990 /* EXZendeskNoticeModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		ECACBF0E2F0B59880090F990 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBF062F0B59880090F990 /* API */,
+				ECACBF082F0B59880090F990 /* Models */,
+				ECACBF092F0B59880090F990 /* EXTracking.swift */,
+				ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */,
+				ECACBF0B2F0B59880090F990 /* NetWorkService.swift */,
+				ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */,
+				ECACBF0D2F0B59880090F990 /* XHUDManager.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -427,9 +474,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -453,6 +504,13 @@
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
+				ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */,
+				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
+				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
+				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
+				ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */,
+				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
+				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 			);
@@ -625,6 +683,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Perapera/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用于身份认证提交，是否允许打开相机？";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -655,6 +717,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Perapera/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用于身份认证提交，是否允许打开相机？";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

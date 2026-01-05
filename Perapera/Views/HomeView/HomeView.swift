@@ -1,8 +1,10 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import PhotosUI
+import Moya
 
 struct HomeView: View {
+    @StateObject private var viewModel = HomeViewModel()
     // Sample data
     let items = Array(1...20).map { "Item \($0)" }
 
@@ -108,7 +110,35 @@ struct HomeView: View {
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.gray.opacity(0.1))
+                                .background(Color.ex("bg2"))
+                                .cornerRadius(10)
+                            }
+                            .padding(.horizontal, 25)
+                            
+                            Button(action: {
+                                print("Network Test tapped")
+                                showingSheet = false
+                                viewModel.getZendeskNotice()
+                            }) {
+                                HStack(spacing: 15) {
+                                    Image(systemName: "network")
+                                        .resizable()
+                                        .frame(width: 25, height: 25)
+                                        .foregroundColor(.purple)
+                                    VStack(alignment: .leading) {
+                                        Text("Network Test")
+                                            .font(.headline)
+                                            .foregroundColor(.ex.text1)
+                                        Text("Check API connection")
+                                            .font(.subheadline)
+                                            .foregroundColor(.ex.text2)
+                                            .lineLimit(1)
+                                    }
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .background(Color.ex("bg2"))
                                 .cornerRadius(10)
                             }
                             .padding(.horizontal, 25)
