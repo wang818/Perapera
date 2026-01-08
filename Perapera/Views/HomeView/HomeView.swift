@@ -179,7 +179,7 @@ struct HomeView: View {
                 }
                 .fileImporter(
                     isPresented: $showingFileImporter,
-                    allowedContentTypes: [.audio, .movie],
+                    allowedContentTypes: [.audio, .movie, UTType(filenameExtension: "opus")].compactMap { $0 },
                     allowsMultipleSelection: false
                 ) { result in
                     switch result {
