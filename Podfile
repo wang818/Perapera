@@ -16,6 +16,9 @@ target 'Perapera' do
    pod 'RxSwift', '6.5.0'
    pod 'RxCocoa', '6.5.0'
    pod 'HandyJSON', '5.0.2'
+   
+   # Tencent Cloud COS SDK for file uploads
+   pod 'QCloudCOSXML'
 
 end
 

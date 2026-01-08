@@ -12,6 +12,8 @@ struct HomeView: View {
     @State private var showingPhotoPicker = false
     @State private var selectedVideoItem: PhotosPickerItem?
     @State private var youtubeUrl = ""
+    @State private var uploadProgress: Double = 0.0
+    @State private var isUploading: Bool = false
 
     var body: some View {
         ZStack {
@@ -185,12 +187,32 @@ struct HomeView: View {
                     switch result {
                     case .success(let urls):
                         guard let url = urls.first else { return }
-                        // Access the security-scoped resource
-                        if url.startAccessingSecurityScopedResource() {
-                            defer { url.stopAccessingSecurityScopedResource() }
-                            print("Selected media file: \(url.absoluteString)")
-                            // TODO: Handle the file (e.g., play it or import it)
-                        }
+                        print("Selected media file: \(url.lastPathComponent)")
+                        
+                        // 开始上传到腾讯云COS
+                        isUploading = true
+                        uploadProgress = 0.0
+                        
+                        COSUploadManager.shared.uploadFile(
+                            fileURL: url,
+                            progress: { progress in
+                                uploadProgress = progress
+                                print("上传进度: \(Int(progress * 100))%")
+                            },
+                            completion: { result in
+                                isUploading = false
+                                switch result {
+                                case .success(let cosURL):
+                                    print("✅ 文件上传成功!")
+                                    print("COS访问地址: \(cosURL)")
+                                    // TODO: 保存COS URL到数据库或进行后续处理
+                                case .failure(let error):
+                                    print("❌ 文件上传失败: \(error.localizedDescription)")
+                                    // TODO: 显示错误提示给用户
+                                }
+                            }
+                        )
+                        
                     case .failure(let error):
                         print("File selection error: \(error.localizedDescription)")
                     }
@@ -206,6 +228,26 @@ struct HomeView: View {
                         }
                     }
                 }
+            }
+            
+            if isUploading {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 20) {
+                    ProgressView(value: uploadProgress)
+                        .progressViewStyle(.linear)
+                        .tint(.blue)
+                    
+                    Text("上传中... \(Int(uploadProgress * 100))%")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
+                .padding(40)
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(12)
+                .shadow(radius: 10)
+                .padding(.horizontal, 40)
             }
             
             if showingYoutubeAlert {

@@ -8,6 +8,15 @@ PODS:
   - Moya/RxSwift (15.0.0):
     - Moya/Core
     - RxSwift (~> 6.0)
+  - QCloudCore (6.5.1):
+    - QCloudCore/Default (= 6.5.1)
+  - QCloudCore/Default (6.5.1):
+    - QCloudTrack/Beacon (= 6.5.1)
+  - QCloudCOSXML (6.5.1):
+    - QCloudCOSXML/Default (= 6.5.1)
+  - QCloudCOSXML/Default (6.5.1):
+    - QCloudCore (= 6.5.1)
+  - QCloudTrack/Beacon (6.5.1)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
@@ -20,6 +29,7 @@ DEPENDENCIES:
   - HandyJSON (= 5.0.2)
   - Moya (= 15.0.0)
   - Moya/RxSwift
+  - QCloudCOSXML
   - RxCocoa (= 6.5.0)
   - RxSwift (= 6.5.0)
 
@@ -28,6 +38,9 @@ SPEC REPOS:
     - Alamofire
     - HandyJSON
     - Moya
+    - QCloudCore
+    - QCloudCOSXML
+    - QCloudTrack
     - RxCocoa
     - RxRelay
     - RxSwift
@@ -36,10 +49,13 @@ SPEC CHECKSUMS:
   Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  QCloudCore: 6f8c67b96448472d2c6a92b9cfe1bdb5abbb1798
+  QCloudCOSXML: 92f50a787b4e8d9a7cb6ea8e626775256b4840a7
+  QCloudTrack: 20b79388365b4c8ed150019c82a56f1569f237f8
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
 
-PODFILE CHECKSUM: 279421c4712a151595de989376286be283a0ed40
+PODFILE CHECKSUM: 70a882eb0a59752ef7de52d6b05e118614656912
 
 COCOAPODS: 1.16.2
