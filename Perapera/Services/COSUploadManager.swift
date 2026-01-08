@@ -23,6 +23,11 @@ class COSUploadManager: NSObject {
     // MARK: - Setup
     
     private func setupCOS() {
+        // 确保本地凭证已加载
+        #if DEBUG
+        COSConfig.setupLocalCredentials()
+        #endif
+        
         let config = QCloudServiceConfiguration()
         config.signatureProvider = self
         config.appID = COSConfig.bucket.components(separatedBy: "-").last ?? ""
@@ -141,13 +146,42 @@ extension COSUploadManager: QCloudSignatureProvider {
     
     func signature(with fileds: QCloudSignatureFields!, request: QCloudBizHTTPRequest!, urlRequest: NSMutableURLRequest!, compelete: QCloudHTTPAuthentationContinueBlock!) {
         
+        // 确保 continueBlock 不为空
+        guard let continueBlock = compelete else {
+            print("❌ ContinueBlock is nil")
+            return
+        }
+        
+        // 获取凭证
+        let secretId = COSConfig.secretId
+        let secretKey = COSConfig.secretKey
+        
+        print("🔑 SecretId: \(secretId.isEmpty ? "空" : "已设置")")
+        print("🔑 SecretKey: \(secretKey.isEmpty ? "空" : "已设置")")
+        
+        // 检查凭证是否为空
+        guard !secretId.isEmpty, !secretKey.isEmpty else {
+            print("❌ SecretId 或 SecretKey 为空")
+            let error = NSError(domain: "COSUploadManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "SecretId 或 SecretKey 未配置"])
+            continueBlock(nil, error)
+            return
+        }
+        
+        // 创建凭证对象
         let credential = QCloudCredential()
-        credential.secretID = COSConfig.secretId
-        credential.secretKey = COSConfig.secretKey
+        credential.secretID = secretId
+        credential.secretKey = secretKey
         
+        // 生成签名
         let creator = QCloudAuthentationV5Creator(credential: credential)
-        let signature = creator?.signature(forData: urlRequest)
+        guard let signature = creator?.signature(forData: urlRequest) else {
+            print("❌ 签名生成失败")
+            let error = NSError(domain: "COSUploadManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "签名生成失败"])
+            continueBlock(nil, error)
+            return
+        }
         
-        compelete(signature, nil)
+        print("✅ 签名生成成功")
+        continueBlock(signature, nil)
     }
 }

@@ -14,6 +14,9 @@ struct HomeView: View {
     @State private var youtubeUrl = ""
     @State private var uploadProgress: Double = 0.0
     @State private var isUploading: Bool = false
+    @State private var asrTaskId: Int?
+    @State private var recognitionText: String = ""
+    @State private var isRecognizing: Bool = false
 
     var body: some View {
         ZStack {
@@ -205,7 +208,22 @@ struct HomeView: View {
                                 case .success(let cosURL):
                                     print("✅ 文件上传成功!")
                                     print("COS访问地址: \(cosURL)")
-                                    // TODO: 保存COS URL到数据库或进行后续处理
+                                    
+                                    // 上传成功后，开始语音识别
+                                    isRecognizing = true
+                                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
+                                        switch result {
+                                        case .success(let taskId):
+                                            print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
+                                            asrTaskId = taskId
+                                            // 开始轮询查询识别结果
+                                            pollRecognitionResult(taskId: taskId)
+                                        case .failure(let error):
+                                            print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
+                                            isRecognizing = false
+                                        }
+                                    }
+
                                 case .failure(let error):
                                     print("❌ 文件上传失败: \(error.localizedDescription)")
                                     // TODO: 显示错误提示给用户
@@ -248,6 +266,83 @@ struct HomeView: View {
                 .cornerRadius(12)
                 .shadow(radius: 10)
                 .padding(.horizontal, 40)
+            }
+            
+            if isRecognizing {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 20) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .scaleEffect(1.5)
+                    
+                    Text("语音识别中...")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    
+                    if let taskId = asrTaskId {
+                        Text("任务ID: \(taskId)")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                }
+                .padding(40)
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(12)
+                .shadow(radius: 10)
+                .padding(.horizontal, 40)
+            }
+            
+            if !recognitionText.isEmpty && !isRecognizing {
+                VStack {
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 15) {
+                        HStack {
+                            Text("识别结果")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                recognitionText = ""
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
+                        ScrollView {
+                            Text(recognitionText)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .frame(maxHeight: 200)
+                        
+                        Button(action: {
+                            UIPasteboard.general.string = recognitionText
+                        }) {
+                            HStack {
+                                Image(systemName: "doc.on.doc")
+                                Text("复制文本")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                        }
+                    }
+                    .padding(20)
+                    .background(Color(UIColor.systemBackground))
+                    .cornerRadius(12)
+                    .shadow(radius: 10)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 30)
+                }
             }
             
             if showingYoutubeAlert {
@@ -303,6 +398,57 @@ struct HomeView: View {
                 .cornerRadius(12)
                 .shadow(radius: 10)
                 .padding(.horizontal, 40)
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    /// 轮询查询语音识别结果
+    private func pollRecognitionResult(taskId: Int, retryCount: Int = 0) {
+        let maxRetries = 60 // 最多轮询 60 次（约 5 分钟）
+        
+        guard retryCount < maxRetries else {
+            print("❌ 语音识别超时")
+            isRecognizing = false
+            return
+        }
+        
+        ASRManager.shared.queryRecognitionResult(taskId: taskId) { result in
+            switch result {
+            case .success(let taskResult):
+                print("📊 识别状态: \(taskResult.StatusStr)")
+                
+                switch taskResult.Status {
+                case 2: // 成功
+                    if let recognizedText = taskResult.Result {
+                        print("✅ 识别成功!")
+                        print("识别结果: \(recognizedText)")
+                        recognitionText = recognizedText
+                        isRecognizing = false
+                    }
+                    
+                case 3: // 失败
+                    print("❌ 识别失败: \(taskResult.ErrorMsg ?? "未知错误")")
+                    isRecognizing = false
+                    
+                case 0, 1: // 等待中或执行中
+                    // 5 秒后继续轮询
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                        pollRecognitionResult(taskId: taskId, retryCount: retryCount + 1)
+                    }
+                    
+                default:
+                    print("⚠️ 未知状态: \(taskResult.Status)")
+                    isRecognizing = false
+                }
+                
+            case .failure(let error):
+                print("❌ 查询识别结果失败: \(error.localizedDescription)")
+                // 失败后重试
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    pollRecognitionResult(taskId: taskId, retryCount: retryCount + 1)
+                }
             }
         }
     }

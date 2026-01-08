@@ -11,11 +11,19 @@ struct COSConfig {
     // MARK: - COS Configuration
     // TODO: Replace these with your actual Tencent Cloud COS credentials
     
+    // 本地开发配置（在 COSConfig.local.swift 中设置）
+    internal static var _localSecretId: String = ""
+    internal static var _localSecretKey: String = ""
+    
     /// 腾讯云 SecretId
     /// 优先使用本地配置，其次使用环境变量
     static var secretId: String {
         #if DEBUG
-        return localSecretId.isEmpty ? (ProcessInfo.processInfo.environment["COS_SECRET_ID"] ?? "") : localSecretId
+        let id = _localSecretId.isEmpty ? (ProcessInfo.processInfo.environment["COS_SECRET_ID"] ?? "") : _localSecretId
+        if id.isEmpty {
+            print("⚠️ COSConfig.secretId 为空! _localSecretId=\(_localSecretId.isEmpty ? "空" : "有值")")
+        }
+        return id
         #else
         return ProcessInfo.processInfo.environment["COS_SECRET_ID"] ?? ""
         #endif
@@ -25,15 +33,15 @@ struct COSConfig {
     /// 优先使用本地配置，其次使用环境变量
     static var secretKey: String {
         #if DEBUG
-        return localSecretKey.isEmpty ? (ProcessInfo.processInfo.environment["COS_SECRET_KEY"] ?? "") : localSecretKey
+        let key = _localSecretKey.isEmpty ? (ProcessInfo.processInfo.environment["COS_SECRET_KEY"] ?? "") : _localSecretKey
+        if key.isEmpty {
+            print("⚠️ COSConfig.secretKey 为空! _localSecretKey=\(_localSecretKey.isEmpty ? "空" : "有值")")
+        }
+        return key
         #else
         return ProcessInfo.processInfo.environment["COS_SECRET_KEY"] ?? ""
         #endif
     }
-    
-    // 本地开发配置（在 COSConfig.local.swift 中定义，该文件不会被提交到 Git）
-    static var localSecretId: String { "" }
-    static var localSecretKey: String { "" }
     
     /// COS 存储桶名称
     static let bucket = "perapera-1255314189"
