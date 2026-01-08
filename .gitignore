@@ -65,3 +65,7 @@ fastlane/test_output
 .DS_Store
 .AppleDouble
 .LSOverride
+Perapera/.DS_Store
+
+# Local configuration files with credentials
+Perapera/Services/COSConfig.local.swift

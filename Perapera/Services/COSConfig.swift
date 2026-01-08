@@ -12,19 +12,37 @@ struct COSConfig {
     // TODO: Replace these with your actual Tencent Cloud COS credentials
     
     /// 腾讯云 SecretId
-    static let secretId = "YOUR_SECRET_ID"
+    /// 优先使用本地配置，其次使用环境变量
+    static var secretId: String {
+        #if DEBUG
+        return localSecretId.isEmpty ? (ProcessInfo.processInfo.environment["COS_SECRET_ID"] ?? "") : localSecretId
+        #else
+        return ProcessInfo.processInfo.environment["COS_SECRET_ID"] ?? ""
+        #endif
+    }
     
     /// 腾讯云 SecretKey
-    static let secretKey = "YOUR_SECRET_KEY"
+    /// 优先使用本地配置，其次使用环境变量
+    static var secretKey: String {
+        #if DEBUG
+        return localSecretKey.isEmpty ? (ProcessInfo.processInfo.environment["COS_SECRET_KEY"] ?? "") : localSecretKey
+        #else
+        return ProcessInfo.processInfo.environment["COS_SECRET_KEY"] ?? ""
+        #endif
+    }
+    
+    // 本地开发配置（在 COSConfig.local.swift 中定义，该文件不会被提交到 Git）
+    static var localSecretId: String { "" }
+    static var localSecretKey: String { "" }
     
     /// COS 存储桶名称
-    static let bucket = "YOUR_BUCKET_NAME"
+    static let bucket = "perapera-1255314189"
     
     /// COS 地域 (例如: ap-guangzhou, ap-shanghai, ap-beijing)
-    static let region = "ap-guangzhou"
+    static let region = "ap-tokyo"
     
     /// 上传文件的目录前缀 (例如: "audio/", "uploads/")
-    static let uploadPrefix = "audio/"
+    static let uploadPrefix = "audios/"
     
     /// COS 访问域名 (可选，用于生成访问URL)
     static var cosHost: String {

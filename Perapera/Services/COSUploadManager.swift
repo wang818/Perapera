@@ -8,14 +8,15 @@
 import Foundation
 import QCloudCOSXML
 
-class COSUploadManager {
+class COSUploadManager: NSObject {
     
     static let shared = COSUploadManager()
     
     private var cosService: QCloudCOSXMLService?
     private var cosTransferManager: QCloudCOSTransferMangerService?
     
-    private init() {
+    private override init() {
+        super.init()
         setupCOS()
     }
     
@@ -35,7 +36,7 @@ class COSUploadManager {
         QCloudCOSTransferMangerService.registerDefaultCOSTransferManger(with: config)
         
         self.cosService = QCloudCOSXMLService.defaultCOSXML()
-        self.cosTransferManager = QCloudCOSTransferMangerService.defaultCOSTransferManger()
+        self.cosTransferManager = QCloudCOSTransferMangerService.defaultCOSTransferManager()
     }
     
     // MARK: - Upload Methods

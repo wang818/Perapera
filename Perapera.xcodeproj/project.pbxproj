@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180C76702F0FB65C00AD6932 /* COSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C766E2F0FB65C00AD6932 /* COSConfig.swift */; };
+		180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -59,6 +61,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		180C766E2F0FB65C00AD6932 /* COSConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.swift; path = Services/COSConfig.swift; sourceTree = "<group>"; };
+		180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSUploadManager.swift; path = Services/COSUploadManager.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -144,6 +148,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		180C766D2F0FB64400AD6932 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				180C766E2F0FB65C00AD6932 /* COSConfig.swift */,
+				180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
 		1889F11A2EF9214800886186 = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +178,7 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				180C766D2F0FB64400AD6932 /* Services */,
 				ECACBF162F0B5CE70090F990 /* Info.plist */,
 				ECACBF0E2F0B59880090F990 /* Network */,
 				ECACBEA32F0A6C6F0090F990 /* Icon */,
@@ -529,12 +543,14 @@
 				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,
 				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
 				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
+				180C76702F0FB65C00AD6932 /* COSConfig.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
 				ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */,
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
+				180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
