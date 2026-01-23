@@ -1,12 +1,11 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import PhotosUI
+import AVFoundation
 
 struct HomeView: View {
-    // Sample data
-    let items = Array(1...20).map { "Item \($0)" }
-
     @StateObject private var viewModel = HomeViewModel()
+    @State private var videos: [VideoItem] = []
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
@@ -22,17 +21,38 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             NavigationStack {
-                List(items, id: \.self) { item in
-                    HStack {
-                        Image(systemName: "doc.text")
-                            .foregroundColor(Color.ex.text1)
-                        Text(item)
-                            .foregroundColor(.ex.main1)
+                Group {
+                    if videos.isEmpty {
+                        // 空状态
+                        VStack(spacing: 20) {
+                            Image(systemName: "video.slash")
+                                .font(.system(size: 60))
+                                .foregroundColor(.gray)
+                            Text("暂无视频")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            Text("点击右上角 + 添加视频")
+                                .font(.subheadline)
+                                .foregroundColor(.gray.opacity(0.7))
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        // 视频列表
+                        List {
+                            ForEach(videos) { video in
+                                VideoRowView(video: video, onDelete: {
+                                    deleteVideo(video)
+                                })
+                            }
+                            .onDelete(perform: deleteVideos)
+                        }
+                        .scrollContentBackground(.hidden)
                     }
-                    .frame(height: 150)
                 }
-                .scrollContentBackground(.hidden)
                 .navigationTitle("home_navigationTitle".localized())
+                .onAppear {
+                    loadVideos()
+                }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -209,6 +229,15 @@ struct HomeView: View {
                         guard let url = urls.first else { return }
                         print("Selected media file: \(url.lastPathComponent)")
                         
+                        // 保存视频到列表
+                        let videoName = url.deletingPathExtension().lastPathComponent
+                        VideoStorageManager.shared.addVideo(
+                            name: videoName,
+                            posterImage: UIImage(systemName: "video.fill"),
+                            videoURL: url.path
+                        )
+                        loadVideos()
+                        
                         // 开始上传到腾讯云COS
                         isUploading = true
                         uploadProgress = 0.0
@@ -256,10 +285,29 @@ struct HomeView: View {
                 .onChange(of: selectedVideoItem) { newItem in
                     if let newItem = newItem {
                         Task {
-                            // Example of loading the video
-                            // Note: Loading actual video data or URL might require more steps depending on needs
-                            print("Selected video item: \(newItem)")
-                            // Reset selection if needed or handle the file
+                            // 加载视频
+                            if let data = try? await newItem.loadTransferable(type: Data.self) {
+                                // 保存到临时目录
+                                let tempURL = FileManager.default.temporaryDirectory
+                                    .appendingPathComponent(UUID().uuidString)
+                                    .appendingPathExtension("mov")
+                                
+                                try? data.write(to: tempURL)
+                                
+                                // 生成缩略图
+                                let thumbnail = generateVideoThumbnail(url: tempURL)
+                                
+                                // 保存到视频列表
+                                VideoStorageManager.shared.addVideo(
+                                    name: "相册视频 - \(Date().formatted())",
+                                    posterImage: thumbnail,
+                                    videoURL: tempURL.path
+                                )
+                                
+                                await MainActor.run {
+                                    loadVideos()
+                                }
+                            }
                         }
                     }
                 }
@@ -471,8 +519,11 @@ struct HomeView: View {
                         }
                         
                         Button(action: {
-                            // Handle save action
-                            print("Saved URL: \(youtubeUrl)")
+                            // 保存 YouTube 视频
+                            if !youtubeUrl.isEmpty {
+                                saveYoutubeVideo(url: youtubeUrl)
+                                youtubeUrl = ""
+                            }
                             showingYoutubeAlert = false
                         }) {
                             Text("保存")
@@ -495,6 +546,88 @@ struct HomeView: View {
     }
     
     // MARK: - Helper Methods
+    
+    /// 加载视频列表
+    private func loadVideos() {
+        videos = VideoStorageManager.shared.loadVideos()
+    }
+    
+    /// 删除视频
+    private func deleteVideo(_ video: VideoItem) {
+        VideoStorageManager.shared.deleteVideo(id: video.id)
+        loadVideos()
+    }
+    
+    /// 批量删除视频
+    private func deleteVideos(at offsets: IndexSet) {
+        for index in offsets {
+            let video = videos[index]
+            VideoStorageManager.shared.deleteVideo(id: video.id)
+        }
+        loadVideos()
+    }
+    
+    /// 保存 YouTube 视频
+    private func saveYoutubeVideo(url: String) {
+        // 从 URL 提取视频名称
+        let videoName = extractVideoName(from: url)
+        
+        // 使用默认海报图
+        let defaultPoster = UIImage(systemName: "video.fill")
+        
+        VideoStorageManager.shared.addVideo(
+            name: videoName,
+            posterImage: defaultPoster,
+            videoURL: url
+        )
+        
+        loadVideos()
+        print("✅ YouTube 视频已保存: \(videoName)")
+    }
+    
+    /// 从 URL 提取视频名称
+    private func extractVideoName(from urlString: String) -> String {
+        if let url = URL(string: urlString) {
+            // 尝试从 YouTube URL 提取视频 ID
+            if urlString.contains("youtube.com") || urlString.contains("youtu.be") {
+                if let videoId = extractYoutubeVideoId(from: urlString) {
+                    return "YouTube - \(videoId)"
+                }
+            }
+            return url.lastPathComponent
+        }
+        return "未命名视频"
+    }
+    
+    /// 提取 YouTube 视频 ID
+    private func extractYoutubeVideoId(from urlString: String) -> String? {
+        if let url = URL(string: urlString) {
+            if urlString.contains("youtube.com") {
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                return components?.queryItems?.first(where: { $0.name == "v" })?.value
+            } else if urlString.contains("youtu.be") {
+                return url.lastPathComponent
+            }
+        }
+        return nil
+    }
+    
+    /// 生成视频缩略图
+    private func generateVideoThumbnail(url: URL) -> UIImage? {
+        let asset = AVAsset(url: url)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
+        
+        let time = CMTime(seconds: 1, preferredTimescale: 60)
+        
+        do {
+            let cgImage = try imageGenerator.copyCGImage(at: time, actualTime: nil)
+            return UIImage(cgImage: cgImage)
+        } catch {
+            print("❌ 生成缩略图失败: \(error.localizedDescription)")
+            return nil
+        }
+    }
     
     /// 读取并打印 123.json 的内容
     private func print123JsonContent() {
@@ -548,6 +681,84 @@ struct HomeView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Video Row View
+struct VideoRowView: View {
+    let video: VideoItem
+    let onDelete: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 15) {
+            // 视频海报
+            Group {
+                if let posterImage = video.posterImage {
+                    Image(uiImage: posterImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else {
+                    Image(systemName: "video.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.gray)
+                        .padding(20)
+                }
+            }
+            .frame(width: 120, height: 80)
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(8)
+            .clipped()
+            
+            // 视频信息
+            VStack(alignment: .leading, spacing: 5) {
+                Text(video.name)
+                    .font(.headline)
+                    .foregroundColor(.ex.text1)
+                    .lineLimit(2)
+                
+                Text(formatDate(video.createdAt))
+                    .font(.caption)
+                    .foregroundColor(.ex.text2)
+                
+                if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
+                    HStack(spacing: 4) {
+                        Image(systemName: "play.rectangle.fill")
+                            .font(.caption)
+                        Text("YouTube")
+                            .font(.caption)
+                    }
+                    .foregroundColor(.red)
+                } else {
+                    HStack(spacing: 4) {
+                        Image(systemName: "doc.fill")
+                            .font(.caption)
+                        Text("本地视频")
+                            .font(.caption)
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                onDelete()
+            } label: {
+                Label("删除", systemImage: "trash")
+            }
+        }
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "zh_CN")
+        return formatter.string(from: date)
     }
 }
 

@@ -12,7 +12,7 @@
 		180C76752F0FE2E000AD6932 /* ASRConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76722F0FE2DF00AD6932 /* ASRConfig.swift */; };
 		180C76762F0FE2E000AD6932 /* ASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76732F0FE2DF00AD6932 /* ASRManager.swift */; };
 		180C76772F0FE2E000AD6932 /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76742F0FE2E000AD6932 /* COSConfig.local.swift */; };
-		FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */; };
+		183D7E282F23CCCF0069A36C /* VideoStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -62,10 +62,11 @@
 		ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF092F0B59880090F990 /* EXTracking.swift */; };
 		ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */; };
 		ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1D2F0B9A340090F990 /* AppKeys.swift */; };
-		FFFFFFFF2F1000000090F990 /* 123.json in Resources */ = {isa = PBXBuildFile; fileRef = FFFFFFFE2F1000000090F990 /* 123.json */; };
-		FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */; };
-		FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */; };
+		FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */; };
 		FFFFFFF92F1000030090F990 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF82F1000030090F990 /* HomeViewModel.swift */; };
+		FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */; };
+		FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */; };
+		FFFFFFFF2F1000000090F990 /* 123.json in Resources */ = {isa = PBXBuildFile; fileRef = FFFFFFFE2F1000000090F990 /* 123.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,7 +75,7 @@
 		180C76722F0FE2DF00AD6932 /* ASRConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRConfig.swift; path = Services/ASRConfig.swift; sourceTree = "<group>"; };
 		180C76732F0FE2DF00AD6932 /* ASRManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRManager.swift; path = Services/ASRManager.swift; sourceTree = "<group>"; };
 		180C76742F0FE2E000AD6932 /* COSConfig.local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.local.swift; path = Services/COSConfig.local.swift; sourceTree = "<group>"; };
-		FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.local.swift; path = Services/HunyuanConfig.local.swift; sourceTree = "<group>"; };
+		183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStorageManager.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -146,10 +147,11 @@
 		ECACBF162F0B5CE70090F990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLanguageModel.swift; sourceTree = "<group>"; };
 		ECACBF1D2F0B9A340090F990 /* AppKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKeys.swift; sourceTree = "<group>"; };
-		FFFFFFFE2F1000000090F990 /* 123.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = 123.json; sourceTree = "<group>"; };
-		FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.swift; path = Services/HunyuanConfig.swift; sourceTree = "<group>"; };
-		FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanManager.swift; path = Services/HunyuanManager.swift; sourceTree = "<group>"; };
+		FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.local.swift; path = Services/HunyuanConfig.local.swift; sourceTree = "<group>"; };
 		FFFFFFF82F1000030090F990 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanManager.swift; path = Services/HunyuanManager.swift; sourceTree = "<group>"; };
+		FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.swift; path = Services/HunyuanConfig.swift; sourceTree = "<group>"; };
+		FFFFFFFE2F1000000090F990 /* 123.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = 123.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +284,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
@@ -557,6 +560,7 @@
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
 				ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */,
+				183D7E282F23CCCF0069A36C /* VideoStorageManager.swift in Sources */,
 				ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
 				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,
