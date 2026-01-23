@@ -6,6 +6,7 @@ struct HomeView: View {
     // Sample data
     let items = Array(1...20).map { "Item \($0)" }
 
+    @StateObject private var viewModel = HomeViewModel()
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
@@ -41,6 +42,22 @@ struct HomeView: View {
                                 .foregroundStyle(.black)
                         }
                     }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    Button(action: {
+                        print123JsonContent()
+                    }) {
+                        Text("翻译")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 10)
+                    .background(Color(UIColor.systemBackground))
                 }
                 .sheet(isPresented: $showingSheet) {
                     VStack(alignment: .leading) {
@@ -294,6 +311,30 @@ struct HomeView: View {
                 .padding(.horizontal, 40)
             }
             
+            if viewModel.isTranslating {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 20) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .scaleEffect(1.5)
+                    
+                    Text("正在翻译...")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    
+                    Text("使用混元大模型翻译中")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.7))
+                }
+                .padding(40)
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(12)
+                .shadow(radius: 10)
+                .padding(.horizontal, 40)
+            }
+            
             if !recognitionText.isEmpty && !isRecognizing {
                 VStack {
                     Spacer()
@@ -328,6 +369,57 @@ struct HomeView: View {
                             HStack {
                                 Image(systemName: "doc.on.doc")
                                 Text("复制文本")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                        }
+                    }
+                    .padding(20)
+                    .background(Color(UIColor.systemBackground))
+                    .cornerRadius(12)
+                    .shadow(radius: 10)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 30)
+                }
+            }
+            
+            if !viewModel.translationResult.isEmpty && !viewModel.isTranslating {
+                VStack {
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 15) {
+                        HStack {
+                            Text("翻译结果")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                viewModel.translationResult = ""
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
+                        ScrollView {
+                            Text(viewModel.translationResult)
+                                .font(.system(.body, design: .monospaced))
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .frame(maxHeight: 300)
+                        
+                        Button(action: {
+                            UIPasteboard.general.string = viewModel.translationResult
+                        }) {
+                            HStack {
+                                Image(systemName: "doc.on.doc")
+                                Text("复制结果")
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -403,6 +495,11 @@ struct HomeView: View {
     }
     
     // MARK: - Helper Methods
+    
+    /// 读取并打印 123.json 的内容
+    private func print123JsonContent() {
+        viewModel.translate123Json()
+    }
     
     /// 轮询查询语音识别结果
     private func pollRecognitionResult(taskId: Int, retryCount: Int = 0) {

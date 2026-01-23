@@ -12,6 +12,7 @@
 		180C76752F0FE2E000AD6932 /* ASRConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76722F0FE2DF00AD6932 /* ASRConfig.swift */; };
 		180C76762F0FE2E000AD6932 /* ASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76732F0FE2DF00AD6932 /* ASRManager.swift */; };
 		180C76772F0FE2E000AD6932 /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76742F0FE2E000AD6932 /* COSConfig.local.swift */; };
+		FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -61,6 +62,10 @@
 		ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF092F0B59880090F990 /* EXTracking.swift */; };
 		ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */; };
 		ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1D2F0B9A340090F990 /* AppKeys.swift */; };
+		FFFFFFFF2F1000000090F990 /* 123.json in Resources */ = {isa = PBXBuildFile; fileRef = FFFFFFFE2F1000000090F990 /* 123.json */; };
+		FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */; };
+		FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */; };
+		FFFFFFF92F1000030090F990 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF82F1000030090F990 /* HomeViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +74,7 @@
 		180C76722F0FE2DF00AD6932 /* ASRConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRConfig.swift; path = Services/ASRConfig.swift; sourceTree = "<group>"; };
 		180C76732F0FE2DF00AD6932 /* ASRManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRManager.swift; path = Services/ASRManager.swift; sourceTree = "<group>"; };
 		180C76742F0FE2E000AD6932 /* COSConfig.local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.local.swift; path = Services/COSConfig.local.swift; sourceTree = "<group>"; };
+		FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.local.swift; path = Services/HunyuanConfig.local.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -140,6 +146,10 @@
 		ECACBF162F0B5CE70090F990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLanguageModel.swift; sourceTree = "<group>"; };
 		ECACBF1D2F0B9A340090F990 /* AppKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKeys.swift; sourceTree = "<group>"; };
+		FFFFFFFE2F1000000090F990 /* 123.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = 123.json; sourceTree = "<group>"; };
+		FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.swift; path = Services/HunyuanConfig.swift; sourceTree = "<group>"; };
+		FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanManager.swift; path = Services/HunyuanManager.swift; sourceTree = "<group>"; };
+		FFFFFFF82F1000030090F990 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +172,9 @@
 				180C76742F0FE2E000AD6932 /* COSConfig.local.swift */,
 				180C766E2F0FB65C00AD6932 /* COSConfig.swift */,
 				180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */,
+				FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */,
+				FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */,
+				FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -198,6 +211,7 @@
 				1889F12A2EF9214B00886186 /* Assets.xcassets */,
 				1889F12C2EF9214B00886186 /* Preview Content */,
 				ECACBE7C2EFA57210090F990 /* Localizable.strings */,
+				FFFFFFFE2F1000000090F990 /* 123.json */,
 			);
 			path = Perapera;
 			sourceTree = "<group>";
@@ -242,6 +256,7 @@
 			isa = PBXGroup;
 			children = (
 				ECACBE6D2EF937930090F990 /* HomeView.swift */,
+				FFFFFFF82F1000030090F990 /* HomeViewModel.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -468,6 +483,7 @@
 				ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */,
 				ECACBEF32F0B4A490090F990 /* AppIcon-64@3x.png in Resources */,
 				ECACBEF52F0B4A950090F990 /* AppIcon-38@3x.png in Resources */,
+				FFFFFFFF2F1000000090F990 /* 123.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,6 +579,10 @@
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 				180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */,
+				FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */,
+				FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */,
+				FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */,
+				FFFFFFF92F1000030090F990 /* HomeViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

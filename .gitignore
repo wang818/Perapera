@@ -69,3 +69,4 @@ Perapera/.DS_Store
 
 # Local configuration files with credentials
 Perapera/Services/COSConfig.local.swift
+Perapera/Services/HunyuanConfig.local.swift
