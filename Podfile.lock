@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (5.0.0)
+  - ffmpeg-kit-ios-full (6.0)
   - HandyJSON (5.0.2)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
@@ -26,6 +27,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (= 5.0)
+  - ffmpeg-kit-ios-full (from `https://github.com/luthviar/ffmpeg-kit-ios-full.git`)
   - HandyJSON (= 5.0.2)
   - Moya (= 15.0.0)
   - Moya/RxSwift
@@ -45,8 +47,18 @@ SPEC REPOS:
     - RxRelay
     - RxSwift
 
+EXTERNAL SOURCES:
+  ffmpeg-kit-ios-full:
+    :git: https://github.com/luthviar/ffmpeg-kit-ios-full.git
+
+CHECKOUT OPTIONS:
+  ffmpeg-kit-ios-full:
+    :commit: 92a964e3a1623c81071f917e77c9ec6efbcda229
+    :git: https://github.com/luthviar/ffmpeg-kit-ios-full.git
+
 SPEC CHECKSUMS:
   Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
+  ffmpeg-kit-ios-full: 2da77324b0e9fb007195ab6661f64be4cf31dc12
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   QCloudCore: 6f8c67b96448472d2c6a92b9cfe1bdb5abbb1798
@@ -56,6 +68,6 @@ SPEC CHECKSUMS:
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
 
-PODFILE CHECKSUM: 70a882eb0a59752ef7de52d6b05e118614656912
+PODFILE CHECKSUM: 04f97d0a685a5927b86d59d052f3fb022a309fb2
 
 COCOAPODS: 1.16.2

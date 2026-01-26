@@ -17,6 +17,9 @@ struct HomeView: View {
     @State private var asrTaskId: Int?
     @State private var recognitionText: String = ""
     @State private var isRecognizing: Bool = false
+    @State private var isConverting: Bool = false
+    @State private var conversionProgress: Double = 0.0
+    @State private var currentConvertingVideoId: String?
 
     var body: some View {
         ZStack {
@@ -229,53 +232,23 @@ struct HomeView: View {
                         guard let url = urls.first else { return }
                         print("Selected media file: \(url.lastPathComponent)")
                         
-                        // 保存视频到列表
+                        // 保存视频到列表（先不设置音频路径）
                         let videoName = url.deletingPathExtension().lastPathComponent
                         VideoStorageManager.shared.addVideo(
                             name: videoName,
                             posterImage: UIImage(systemName: "video.fill"),
-                            videoURL: url.path
+                            videoURL: url.path,
+                            audioURL: nil
                         )
                         loadVideos()
                         
-                        // 开始上传到腾讯云COS
-                        isUploading = true
-                        uploadProgress = 0.0
-                        
-                        COSUploadManager.shared.uploadFile(
-                            fileURL: url,
-                            progress: { progress in
-                                uploadProgress = progress
-                                print("上传进度: \(Int(progress * 100))%")
-                            },
-                            completion: { result in
-                                isUploading = false
-                                switch result {
-                                case .success(let cosURL):
-                                    print("✅ 文件上传成功!")
-                                    print("COS访问地址: \(cosURL)")
-                                    
-                                    // 上传成功后，开始语音识别
-                                    isRecognizing = true
-                                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                                        switch result {
-                                        case .success(let taskId):
-                                            print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
-                                            asrTaskId = taskId
-                                            // 开始轮询查询识别结果
-                                            pollRecognitionResult(taskId: taskId)
-                                        case .failure(let error):
-                                            print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
-                                            isRecognizing = false
-                                        }
-                                    }
-
-                                case .failure(let error):
-                                    print("❌ 文件上传失败: \(error.localizedDescription)")
-                                    // TODO: 显示错误提示给用户
-                                }
-                            }
-                        )
+                        // 获取刚添加的视频 ID
+                        if let newVideo = videos.first {
+                            currentConvertingVideoId = newVideo.id
+                            
+                            // 开始转换视频为音频
+                            convertVideoToAudio(videoURL: url, videoId: newVideo.id)
+                        }
                         
                     case .failure(let error):
                         print("File selection error: \(error.localizedDescription)")
@@ -301,11 +274,20 @@ struct HomeView: View {
                                 VideoStorageManager.shared.addVideo(
                                     name: "相册视频 - \(Date().formatted())",
                                     posterImage: thumbnail,
-                                    videoURL: tempURL.path
+                                    videoURL: tempURL.path,
+                                    audioURL: nil
                                 )
                                 
                                 await MainActor.run {
                                     loadVideos()
+                                    
+                                    // 获取刚添加的视频 ID
+                                    if let newVideo = videos.first {
+                                        currentConvertingVideoId = newVideo.id
+                                        
+                                        // 开始转换视频为音频
+                                        convertVideoToAudio(videoURL: tempURL, videoId: newVideo.id)
+                                    }
                                 }
                             }
                         }
@@ -325,6 +307,30 @@ struct HomeView: View {
                     Text("上传中... \(Int(uploadProgress * 100))%")
                         .font(.headline)
                         .foregroundColor(.white)
+                }
+                .padding(40)
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(12)
+                .shadow(radius: 10)
+                .padding(.horizontal, 40)
+            }
+            
+            if isConverting {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 20) {
+                    ProgressView(value: conversionProgress)
+                        .progressViewStyle(.linear)
+                        .tint(.green)
+                    
+                    Text("转换音频中... \(Int(conversionProgress * 100))%")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    
+                    Text("正在将视频转换为 Opus 格式")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.7))
                 }
                 .padding(40)
                 .background(Color(UIColor.systemBackground))
@@ -629,6 +635,89 @@ struct HomeView: View {
         }
     }
     
+    /// 转换视频为音频
+    private func convertVideoToAudio(videoURL: URL, videoId: String) {
+        isConverting = true
+        conversionProgress = 0.0
+        
+        AudioConverter.shared.convertVideoToOpusWithProgress(
+            inputURL: videoURL,
+            bitrate: "64k",
+            sampleRate: 48000,
+            progress: { progress in
+                conversionProgress = progress
+            },
+            completion: { result in
+                isConverting = false
+                
+                switch result {
+                case .success(let audioURL):
+                    print("✅ 音频转换成功!")
+                    print("📁 音频路径: \(audioURL.path)")
+                    
+                    // 更新视频的音频路径
+                    VideoStorageManager.shared.updateVideoAudioURL(
+                        id: videoId,
+                        audioURL: audioURL.path
+                    )
+                    
+                    // 刷新列表
+                    loadVideos()
+                    
+                    // 上传音频到 COS 并进行语音识别
+                    uploadAudioAndRecognize(audioURL: audioURL)
+                    
+                case .failure(let error):
+                    print("❌ 音频转换失败: \(error.localizedDescription)")
+                    // TODO: 显示错误提示给用户
+                }
+                
+                currentConvertingVideoId = nil
+            }
+        )
+    }
+    
+    /// 上传音频并进行语音识别
+    private func uploadAudioAndRecognize(audioURL: URL) {
+        isUploading = true
+        uploadProgress = 0.0
+        
+        COSUploadManager.shared.uploadFile(
+            fileURL: audioURL,
+            progress: { progress in
+                uploadProgress = progress
+                print("上传进度: \(Int(progress * 100))%")
+            },
+            completion: { result in
+                isUploading = false
+                switch result {
+                case .success(let cosURL):
+                    print("✅ 音频上传成功!")
+                    print("COS访问地址: \(cosURL)")
+                    
+                    // 开始语音识别
+                    isRecognizing = true
+                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
+                        switch result {
+                        case .success(let taskId):
+                            print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
+                            asrTaskId = taskId
+                            // 开始轮询查询识别结果
+                            pollRecognitionResult(taskId: taskId)
+                        case .failure(let error):
+                            print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
+                            isRecognizing = false
+                        }
+                    }
+                    
+                case .failure(let error):
+                    print("❌ 音频上传失败: \(error.localizedDescription)")
+                    // TODO: 显示错误提示给用户
+                }
+            }
+        )
+    }
+    
     /// 读取并打印 123.json 的内容
     private func print123JsonContent() {
         viewModel.translate123Json()
@@ -721,22 +810,35 @@ struct VideoRowView: View {
                     .font(.caption)
                     .foregroundColor(.ex.text2)
                 
-                if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
-                    HStack(spacing: 4) {
-                        Image(systemName: "play.rectangle.fill")
-                            .font(.caption)
-                        Text("YouTube")
-                            .font(.caption)
+                HStack(spacing: 8) {
+                    if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
+                        HStack(spacing: 4) {
+                            Image(systemName: "play.rectangle.fill")
+                                .font(.caption)
+                            Text("YouTube")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.red)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "doc.fill")
+                                .font(.caption)
+                            Text("本地视频")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.blue)
                     }
-                    .foregroundColor(.red)
-                } else {
-                    HStack(spacing: 4) {
-                        Image(systemName: "doc.fill")
-                            .font(.caption)
-                        Text("本地视频")
-                            .font(.caption)
+                    
+                    // 音频状态标签
+                    if video.hasAudio {
+                        HStack(spacing: 4) {
+                            Image(systemName: "waveform")
+                                .font(.caption)
+                            Text("已转换")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.green)
                     }
-                    .foregroundColor(.blue)
                 }
             }
             

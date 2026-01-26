@@ -13,6 +13,7 @@
 		180C76762F0FE2E000AD6932 /* ASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76732F0FE2DF00AD6932 /* ASRManager.swift */; };
 		180C76772F0FE2E000AD6932 /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76742F0FE2E000AD6932 /* COSConfig.local.swift */; };
 		183D7E282F23CCCF0069A36C /* VideoStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */; };
+		183D7E2B2F23D2320069A36C /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183D7E2A2F23D2320069A36C /* AudioConverter.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -76,6 +77,8 @@
 		180C76732F0FE2DF00AD6932 /* ASRManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRManager.swift; path = Services/ASRManager.swift; sourceTree = "<group>"; };
 		180C76742F0FE2E000AD6932 /* COSConfig.local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.local.swift; path = Services/COSConfig.local.swift; sourceTree = "<group>"; };
 		183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStorageManager.swift; sourceTree = "<group>"; };
+		183D7E292F23D1D20069A36C /* Perapera-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Perapera-Bridging-Header.h"; sourceTree = "<group>"; };
+		183D7E2A2F23D2320069A36C /* AudioConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioConverter.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -184,10 +187,10 @@
 		1889F11A2EF9214800886186 = {
 			isa = PBXGroup;
 			children = (
-				1889F1252EF9214800886186 /* Perapera */,
-				1889F1242EF9214800886186 /* Products */,
-				C0897F491922CD8EFA017C71 /* Pods */,
 				6003A9B52417A3737F56402B /* Frameworks */,
+				1889F1252EF9214800886186 /* Perapera */,
+				C0897F491922CD8EFA017C71 /* Pods */,
+				1889F1242EF9214800886186 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -202,6 +205,7 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				183D7E292F23D1D20069A36C /* Perapera-Bridging-Header.h */,
 				180C766D2F0FB64400AD6932 /* Services */,
 				ECACBF162F0B5CE70090F990 /* Info.plist */,
 				ECACBF0E2F0B59880090F990 /* Network */,
@@ -284,6 +288,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				183D7E2A2F23D2320069A36C /* AudioConverter.swift */,
 				183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
@@ -581,6 +586,7 @@
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
 				180C76772F0FE2E000AD6932 /* COSConfig.local.swift in Sources */,
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
+				183D7E2B2F23D2320069A36C /* AudioConverter.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 				180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */,
 				FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */,
