@@ -66,22 +66,6 @@ struct HomeView: View {
                         }
                     }
                 }
-                .safeAreaInset(edge: .bottom) {
-                    Button(action: {
-                        print123JsonContent()
-                    }) {
-                        Text("翻译")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom, 10)
-                    .background(Color(UIColor.systemBackground))
-                }
                 .sheet(isPresented: $showingSheet) {
                     VStack(alignment: .leading) {
                         Text("home_sheet_title".localized())
