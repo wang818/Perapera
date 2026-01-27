@@ -75,3 +75,7 @@
 "podcast_title" = "ポッドキャスト";
 "settings_title" = "設定";
 "settings_help" = "ヘルプ";
+"login_send_code_success" = "認証コードの送信に成功しました";
+"login_resend_code" = "再送信";
+"login_resend_code_timer" = "%d秒後に再送信";
+"login_success" = "ログイン成功";

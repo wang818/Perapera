@@ -68,3 +68,5 @@
 "podcast_title" = "Podcast";
 "settings_title" = "ဆက်တင်များ";
 "settings_help" = "အကူအညီ";
+"login_send_code_success" = "အတည်ပြုကုဒ် ပေးပို့ပြီးပါပြီ";
+"login_success" = "Login successful";

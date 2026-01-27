@@ -75,3 +75,7 @@
 "podcast_title" = "Podcast";
 "settings_title" = "設定";
 "settings_help" = "幫助";
+"login_send_code_success" = "發送驗證碼成功";
+"login_resend_code" = "重新發送";
+"login_resend_code_timer" = "%d秒後重發";
+"login_success" = "登錄成功";

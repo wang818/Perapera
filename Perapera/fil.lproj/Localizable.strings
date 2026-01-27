@@ -68,3 +68,5 @@
 "podcast_title" = "Podcast";
 "settings_title" = "Mga Setting";
 "settings_help" = "Tulong";
+"login_send_code_success" = "Matagumpay na naipadala ang verification code";
+"login_success" = "Login successful";

@@ -68,3 +68,5 @@
 "podcast_title" = "พอดแคสต์";
 "settings_title" = "การตั้งค่า";
 "settings_help" = "ช่วยเหลือ";
+"login_send_code_success" = "ส่งรหัสยืนยันสำเร็จ";
+"login_success" = "Login successful";

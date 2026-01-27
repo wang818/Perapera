@@ -10,6 +10,10 @@ import RxSwift
 import Moya
 import HandyJSON
 
+public protocol ResponseStatusable {
+    var statusCode: Int? { get set }
+}
+
 extension ObservableType where Element == Response {
     
     /// Maps data received from the signal into an object which implements the HandyJSON protocol.
@@ -36,11 +40,17 @@ extension ObservableType where Element == Response {
             
             // Let's try to map the whole JSON first.
             if let model = T.deserialize(from: json) {
+                if var statusModel = model as? ResponseStatusable {
+                    statusModel.statusCode = response.statusCode
+                }
                 return model
             }
             
             // If direct mapping fails, maybe it's inside "data"
             if let data = json["data"] as? [String: Any], let model = T.deserialize(from: data) {
+                if var statusModel = model as? ResponseStatusable {
+                    statusModel.statusCode = response.statusCode
+                }
                 return model
             }
             

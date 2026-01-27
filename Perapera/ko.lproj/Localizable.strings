@@ -75,3 +75,7 @@
 "podcast_title" = "팟캐스트";
 "settings_title" = "설정";
 "settings_help" = "도움말";
+"login_send_code_success" = "인증 코드 전송 성공";
+"login_resend_code" = "코드 재전송";
+"login_resend_code_timer" = "%d초 후 재전송";
+"login_success" = "로그인 성공";

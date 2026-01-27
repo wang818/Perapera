@@ -29,7 +29,7 @@
       "size" : "29x29"
     },
     {
-      "filename" : "AppIcon-76@1x.png",
+      "filename" : "AppIcon-38@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -92,7 +92,7 @@
       "size" : "68x68"
     },
     {
-      "filename" : "AppIcon-76@2x 1.png",
+      "filename" : "AppIcon-76@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",

@@ -68,3 +68,5 @@
 "podcast_title" = "Podcast";
 "settings_title" = "Ustawienia";
 "settings_help" = "Pomoc";
+"login_send_code_success" = "Kod weryfikacyjny został wysłany pomyślnie";
+"login_success" = "Login successful";

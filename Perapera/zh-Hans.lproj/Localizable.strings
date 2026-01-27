@@ -75,3 +75,7 @@
 "podcast_title" = "播客";
 "settings_title" = "设置";
 "settings_help" = "帮助";
+"login_send_code_success" = "发送验证码成功";
+"login_resend_code" = "重新发送";
+"login_resend_code_timer" = "%d秒后重发";
+"login_success" = "登录成功";

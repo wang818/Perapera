@@ -75,3 +75,7 @@
 "podcast_title" = "Podcast";
 "settings_title" = "Settings";
 "settings_help" = "Help";
+"login_send_code_success" = "Verification code sent successfully";
+"login_resend_code" = "Resend Code";
+"login_resend_code_timer" = "Resend in %ds";
+"login_success" = "Login successful";

@@ -68,3 +68,5 @@
 "podcast_title" = "Podcast";
 "settings_title" = "Pengaturan";
 "settings_help" = "Bantuan";
+"login_send_code_success" = "Kode verifikasi berhasil dikirim";
+"login_success" = "Login successful";

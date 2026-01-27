@@ -68,3 +68,5 @@
 "podcast_title" = "Podcast";
 "settings_title" = "Cài đặt";
 "settings_help" = "Trợ giúp";
+"login_send_code_success" = "Gửi mã xác minh thành công";
+"login_success" = "Login successful";
