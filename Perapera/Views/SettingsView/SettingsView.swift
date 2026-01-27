@@ -25,6 +25,7 @@ struct SettingsView: View {
     @State private var showingLoginView = false
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
+    @State private var showPurchaseView = false
 
     var body: some View {
         NavigationStack {
@@ -80,22 +81,26 @@ struct SettingsView: View {
                         }
                     }
                     .padding(.vertical, 6)
-                    
-                    
                 }
+                
                 Section {
-                    VStack(alignment: .center, spacing: 8) {
-                        Text("settings_pro_title".localized())
-                            .font(.headline)
-                            .foregroundColor(.Ex.text1)
-                        Text("settings_pro_subtitle".localized())
-                            .font(.subheadline)
-                            .foregroundColor(.Ex.text2)
+                    Button(action: {
+                        showPurchaseView = true
+                    }) {
+                        VStack(alignment: .center, spacing: 8) {
+                            Text("settings_pro_title".localized())
+                                .font(.headline)
+                                .foregroundColor(.Ex.text1)
+                            Text("settings_pro_subtitle".localized())
+                                .font(.subheadline)
+                                .foregroundColor(.Ex.text2)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                        .background(Color.ex.main)
+                        .cornerRadius(10)
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding()
-                    .background(Color.ex.main)
-                    .cornerRadius(10)
+                    .buttonStyle(PlainButtonStyle())
                     .listRowInsets(EdgeInsets()) // Remove default list row padding
                     .listRowBackground(Color.clear) // Remove default list row background
                 }
@@ -157,8 +162,11 @@ struct SettingsView: View {
             .onAppear {
                 viewModel.fetchSupportLanguages()
             }
-            .sheet(isPresented: $showingLoginView) {
+            .fullScreenCover(isPresented: $showingLoginView) {
                 LoginView()
+            }
+            .fullScreenCover(isPresented: $showPurchaseView) {
+                PurchaseView()
             }
         }
     }
