@@ -69,4 +69,5 @@
 "settings_title" = "Tetapan";
 "settings_help" = "Bantuan";
 "login_send_code_success" = "Kod pengesahan berjaya dihantar";
-"login_success" = "Login successful";
+"login_success" = "Log masuk berjaya";
+"logout" = "Log keluar";

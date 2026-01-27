@@ -13,6 +13,7 @@
 		1889F12E2EF9214B00886186 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12D2EF9214B00886186 /* Preview Assets.xcassets */; };
 		63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92228B25C99537B2CD47D806 /* Pods_Perapera.framework */; };
 		EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31CE7E2F1491C80040B489 /* LoginModel.swift */; };
+		EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF012F284BCA0007BCA6 /* UserManager.swift */; };
 		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
 		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
@@ -66,6 +67,7 @@
 		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.debug.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.debug.xcconfig"; sourceTree = "<group>"; };
 		EC31CE7E2F1491C80040B489 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
+		EC7FEF012F284BCA0007BCA6 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				EC7FEF012F284BCA0007BCA6 /* UserManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
@@ -477,13 +480,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -515,6 +514,7 @@
 				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,
 				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
 				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
+				EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
 				ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */,
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,

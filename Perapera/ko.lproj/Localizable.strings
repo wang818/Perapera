@@ -79,3 +79,4 @@
 "login_resend_code" = "코드 재전송";
 "login_resend_code_timer" = "%d초 후 재전송";
 "login_success" = "로그인 성공";
+"logout" = "로그아웃";

@@ -71,4 +71,5 @@
 "login_send_code_success" = "Código de verificação enviado com sucesso";
 "login_resend_code" = "Reenviar código";
 "login_resend_code_timer" = "Reenviar em %ds";
-"login_success" = "Login successful";
+"login_success" = "Login efetuado com sucesso";
+"logout" = "Sair";

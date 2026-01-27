@@ -69,4 +69,5 @@
 "settings_title" = "Ayarlar";
 "settings_help" = "Yardım";
 "login_send_code_success" = "Doğrulama kodu başarıyla gönderildi";
-"login_success" = "Login successful";
+"login_success" = "Giriş başarılı";
+"logout" = "Çıkış Yap";

@@ -95,7 +95,9 @@ class LoginViewModel: ObservableObject {
                 print("Login success: AccessToken=\(model.access_token), TokenType=\(model.token_type)")
                 PUserDefault.setValueForKey(model.access_token, key: "access_token")
                 // 这里可以保存用户信息，例如:
-                // UserManager.shared.save(model)
+                if let email = self?.email {
+                    UserManager.shared.save(model: model, email: email)
+                }
                 
                 if model.statusCode == 200 {
                     DispatchQueue.main.async {

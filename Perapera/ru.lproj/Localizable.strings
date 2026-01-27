@@ -71,4 +71,5 @@
 "login_send_code_success" = "Код подтверждения успешно отправлен";
 "login_resend_code" = "Отправить код снова";
 "login_resend_code_timer" = "Отправить снова через %ds";
-"login_success" = "Login successful";
+"login_success" = "Вход выполнен успешно";
+"logout" = "Выйти";

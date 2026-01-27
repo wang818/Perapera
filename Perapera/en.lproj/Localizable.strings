@@ -79,3 +79,4 @@
 "login_resend_code" = "Resend Code";
 "login_resend_code_timer" = "Resend in %ds";
 "login_success" = "Login successful";
+"logout" = "Log Out";

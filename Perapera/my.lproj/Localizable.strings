@@ -69,4 +69,5 @@
 "settings_title" = "ဆက်တင်များ";
 "settings_help" = "အကူအညီ";
 "login_send_code_success" = "အတည်ပြုကုဒ် ပေးပို့ပြီးပါပြီ";
-"login_success" = "Login successful";
+"login_success" = "အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်";
+"logout" = "အကောင့်ထွက်ရန်";
