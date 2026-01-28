@@ -30,8 +30,8 @@
 "settings_general_header" = "Genel";
 "settings_language_title" = "Uygulama Dili";
 "settings_language_subtitle" = "Uygulama dilini seçin";
-"settings_alphabet_title" = "Alfabe Tercihleri";
-"settings_alphabet_subtitle" = "Alfabe görüntüleme ayarlarını yönetin";
+"settings_alphabet_title" = "Altyazı Tercihleri";
+"settings_alphabet_subtitle" = "Altyazı görüntüleme ayarlarını yönet";
 "settings_theme_title" = "Tema";
 "settings_theme_subtitle" = "Uygulama temasını ayarla";
 "settings_theme_system" = "Sistemi Takip Et";

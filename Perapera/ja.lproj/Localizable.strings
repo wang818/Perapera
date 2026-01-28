@@ -37,8 +37,8 @@
 "settings_general_header" = "一般";
 "settings_language_title" = "アプリの言語";
 "settings_language_subtitle" = "アプリ内で使用する言語を選択";
-"settings_alphabet_title" = "文字設定";
-"settings_alphabet_subtitle" = "文字の表示設定を管理";
+"settings_alphabet_title" = "字幕設定";
+"settings_alphabet_subtitle" = "字幕表示設定を管理";
 "settings_theme_title" = "テーマ";
 "settings_theme_subtitle" = "アプリのテーマを調整";
 "settings_theme_system" = "システムに従う";

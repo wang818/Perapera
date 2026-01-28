@@ -30,8 +30,8 @@
 "settings_general_header" = "Chung";
 "settings_language_title" = "Ngôn ngữ ứng dụng";
 "settings_language_subtitle" = "Chọn ngôn ngữ ứng dụng";
-"settings_alphabet_title" = "Tùy chọn bảng chữ cái";
-"settings_alphabet_subtitle" = "Quản lý cài đặt hiển thị bảng chữ cái";
+"settings_alphabet_title" = "Tùy chọn phụ đề";
+"settings_alphabet_subtitle" = "Quản lý cài đặt hiển thị phụ đề";
 "settings_theme_title" = "Chủ đề";
 "settings_theme_subtitle" = "Điều chỉnh chủ đề ứng dụng";
 "settings_theme_system" = "Theo hệ thống";

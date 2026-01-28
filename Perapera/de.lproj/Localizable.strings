@@ -30,8 +30,8 @@
 "settings_general_header" = "Allgemein";
 "settings_language_title" = "App-Sprache";
 "settings_language_subtitle" = "App-Sprache wählen";
-"settings_alphabet_title" = "Alphabet-Einstellungen";
-"settings_alphabet_subtitle" = "Alphabet-Anzeige verwalten";
+"settings_alphabet_title" = "Untertitel-Einstellungen";
+"settings_alphabet_subtitle" = "Untertitel-Anzeigeeinstellungen verwalten";
 "settings_theme_title" = "Thema";
 "settings_theme_subtitle" = "App-Thema anpassen";
 "settings_theme_system" = "System folgen";

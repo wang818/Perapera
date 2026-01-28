@@ -30,8 +30,8 @@
 "settings_general_header" = "Ogólne";
 "settings_language_title" = "Język aplikacji";
 "settings_language_subtitle" = "Wybierz język aplikacji";
-"settings_alphabet_title" = "Preferencje alfabetu";
-"settings_alphabet_subtitle" = "Zarządzaj ustawieniami wyświetlania alfabetu";
+"settings_alphabet_title" = "Preferencje napisów";
+"settings_alphabet_subtitle" = "Zarządzaj ustawieniami wyświetlania napisów";
 "settings_theme_title" = "Motyw";
 "settings_theme_subtitle" = "Dostosuj motyw aplikacji";
 "settings_theme_system" = "Zgodnie z systemem";

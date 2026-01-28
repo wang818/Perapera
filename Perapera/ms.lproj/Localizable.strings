@@ -30,8 +30,8 @@
 "settings_general_header" = "Umum";
 "settings_language_title" = "Bahasa Aplikasi";
 "settings_language_subtitle" = "Pilih bahasa aplikasi";
-"settings_alphabet_title" = "Keutamaan Abjad";
-"settings_alphabet_subtitle" = "Urus tetapan paparan abjad";
+"settings_alphabet_title" = "Pilihan Sari Kata";
+"settings_alphabet_subtitle" = "Urus tetapan paparan sari kata";
 "settings_theme_title" = "Tema";
 "settings_theme_subtitle" = "Laras tema aplikasi";
 "settings_theme_system" = "Ikut Sistem";

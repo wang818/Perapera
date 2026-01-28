@@ -30,8 +30,8 @@
 "settings_general_header" = "Umum";
 "settings_language_title" = "Bahasa Aplikasi";
 "settings_language_subtitle" = "Pilih bahasa aplikasi";
-"settings_alphabet_title" = "Preferensi Alfabet";
-"settings_alphabet_subtitle" = "Kelola pengaturan tampilan alfabet";
+"settings_alphabet_title" = "Preferensi Subtitle";
+"settings_alphabet_subtitle" = "Kelola pengaturan tampilan subtitle";
 "settings_theme_title" = "Tema";
 "settings_theme_subtitle" = "Sesuaikan tema aplikasi";
 "settings_theme_system" = "Ikuti Sistem";

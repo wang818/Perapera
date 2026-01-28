@@ -25,6 +25,7 @@ struct SettingsView: View {
     @State private var showingLoginView = false
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
+    @State private var showSubtitleSettings = false
     @State private var showPurchaseView = false
 
     var body: some View {
@@ -110,7 +111,7 @@ struct SettingsView: View {
                         showLanguageSettings = true
                     }
                     SettingsRowView(imageName: "textformat", title: "settings_alphabet_title".localized(), subtitle: "settings_alphabet_subtitle".localized()) {
-                        print("Alphabet tapped")
+                        showSubtitleSettings = true
                     }
                     SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
                         showThemeSettings = true
@@ -156,6 +157,11 @@ struct SettingsView: View {
                     NavigationLink(
                         destination: ThemeSettingsView(),
                         isActive: $showThemeSettings
+                    ) { EmptyView() }
+                    
+                    NavigationLink(
+                        destination: SubtitleSettingsView(),
+                        isActive: $showSubtitleSettings
                     ) { EmptyView() }
                 }
             )

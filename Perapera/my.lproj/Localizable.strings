@@ -30,8 +30,8 @@
 "settings_general_header" = "အထွေထွေ";
 "settings_language_title" = "အက်ပ်ဘာသာစကား";
 "settings_language_subtitle" = "အက်ပ်ဘာသာစကား ရွေးချယ်ရန်";
-"settings_alphabet_title" = "အက္ခရာ ဦးစားပေးများ";
-"settings_alphabet_subtitle" = "အက္ခရာပြသမှု ဆက်တင်များ စီမံရန်";
+"settings_alphabet_title" = "စာတန်းထိုး ဦးစားပေးများ";
+"settings_alphabet_subtitle" = "စာတန်းထိုး ပြသမှု ဆက်တင်များကို စီမံပါ";
 "settings_theme_title" = "အခင်းအကျင်း";
 "settings_theme_subtitle" = "အက်ပ်အခင်းအကျင်း ချိန်ညှိရန်";
 "settings_theme_system" = "စနစ်အတိုင်း";

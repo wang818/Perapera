@@ -37,8 +37,8 @@
 "settings_general_header" = "通用";
 "settings_language_title" = "App語言";
 "settings_language_subtitle" = "選擇App內使用語言";
-"settings_alphabet_title" = "字母首選項";
-"settings_alphabet_subtitle" = "管理字母顯示設定";
+"settings_alphabet_title" = "字幕首選項";
+"settings_alphabet_subtitle" = "管理字幕顯示設置";
 "settings_theme_title" = "主題";
 "settings_theme_subtitle" = "調整應用程式主題";
 "settings_theme_system" = "跟隨系統";

@@ -15,6 +15,7 @@
 		EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31CE7E2F1491C80040B489 /* LoginModel.swift */; };
 		EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF012F284BCA0007BCA6 /* UserManager.swift */; };
 		EC7FEF052F284EE50007BCA6 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */; };
+		EC7FEF082F2854920007BCA6 /* SubtitleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */; };
 		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
 		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
@@ -70,6 +71,7 @@
 		EC31CE7E2F1491C80040B489 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EC7FEF012F284BCA0007BCA6 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
+		EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleSettingsView.swift; sourceTree = "<group>"; };
 		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -212,9 +214,18 @@
 			path = PurchaseView;
 			sourceTree = "<group>";
 		};
+		EC7FEF072F2854920007BCA6 /* SubtitleSettingsView */ = {
+			isa = PBXGroup;
+			children = (
+				EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */,
+			);
+			path = SubtitleSettingsView;
+			sourceTree = "<group>";
+		};
 		ECACBE732EF937CA0090F990 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EC7FEF072F2854920007BCA6 /* SubtitleSettingsView */,
 				EC7FEF042F284EE50007BCA6 /* PurchaseView */,
 				ECACBF222F0BB8B20090F990 /* Components */,
 				ECACBE892F0A15DF0090F990 /* LoginView */,
@@ -532,6 +543,7 @@
 				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
 				EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
+				EC7FEF082F2854920007BCA6 /* SubtitleSettingsView.swift in Sources */,
 				ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */,
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,

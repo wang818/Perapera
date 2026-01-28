@@ -30,8 +30,8 @@
 "settings_general_header" = "عام";
 "settings_language_title" = "لغة التطبيق";
 "settings_language_subtitle" = "اختر لغة التطبيق";
-"settings_alphabet_title" = "تفضيلات الأبجدية";
-"settings_alphabet_subtitle" = "إدارة إعدادات عرض الأبجدية";
+"settings_alphabet_title" = "تفضيلات الترجمة";
+"settings_alphabet_subtitle" = "إدارة إعدادات عرض الترجمة";
 "settings_theme_title" = "السمة";
 "settings_theme_subtitle" = "تعديل سمة التطبيق";
 "settings_theme_system" = "متابعة النظام";

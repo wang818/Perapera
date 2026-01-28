@@ -30,8 +30,8 @@
 "settings_general_header" = "ทั่วไป";
 "settings_language_title" = "ภาษาของแอป";
 "settings_language_subtitle" = "เลือกภาษาของแอป";
-"settings_alphabet_title" = "การตั้งค่าตัวอักษร";
-"settings_alphabet_subtitle" = "จัดการการตั้งค่าการแสดงผลตัวอักษร";
+"settings_alphabet_title" = "การตั้งค่าคำบรรยาย";
+"settings_alphabet_subtitle" = "จัดการการตั้งค่าการแสดงคำบรรยาย";
 "settings_theme_title" = "ธีม";
 "settings_theme_subtitle" = "ปรับธีมของแอป";
 "settings_theme_system" = "ตามระบบ";

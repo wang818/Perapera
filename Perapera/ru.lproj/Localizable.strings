@@ -30,8 +30,8 @@
 "settings_general_header" = "Общие";
 "settings_language_title" = "Язык приложения";
 "settings_language_subtitle" = "Выберите язык приложения";
-"settings_alphabet_title" = "Настройки алфавита";
-"settings_alphabet_subtitle" = "Управление настройками отображения алфавита";
+"settings_alphabet_title" = "Настройки субтитров";
+"settings_alphabet_subtitle" = "Управление настройками отображения субтитров";
 "settings_theme_title" = "Тема";
 "settings_theme_subtitle" = "Настроить тему приложения";
 "settings_theme_system" = "Системная";

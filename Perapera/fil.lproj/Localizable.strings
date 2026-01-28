@@ -30,8 +30,8 @@
 "settings_general_header" = "Pangkalahatan";
 "settings_language_title" = "Wika ng App";
 "settings_language_subtitle" = "Piliin ang wika ng app";
-"settings_alphabet_title" = "Mga Kagustuhan sa Alpabeto";
-"settings_alphabet_subtitle" = "Pamahalaan ang mga setting ng pagpapakita ng alpabeto";
+"settings_alphabet_title" = "Mga Kagustuhan sa Subtitle";
+"settings_alphabet_subtitle" = "Pamahalaan ang mga setting ng pagpapakita ng subtitle";
 "settings_theme_title" = "Tema";
 "settings_theme_subtitle" = "Ayusin ang tema ng app";
 "settings_theme_system" = "Sundin ang Sistema";
