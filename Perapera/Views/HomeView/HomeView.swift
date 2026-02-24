@@ -711,7 +711,7 @@ struct HomeView: View {
                     loadVideos()
                     
                     // 上传音频到 COS 并进行语音识别
-                    uploadAudioAndRecognize(audioURL: audioURL)
+                    uploadAudioAndRecognize(audioURL: audioURL, videoId: videoId)
                     
                 case .failure(let error):
                     print("❌ 音频转换失败: \(error.localizedDescription)")
@@ -724,7 +724,7 @@ struct HomeView: View {
     }
     
     /// 上传音频并进行语音识别
-    private func uploadAudioAndRecognize(audioURL: URL) {
+    private func uploadAudioAndRecognize(audioURL: URL, videoId: String) {
         isUploading = true
         uploadProgress = 0.0
         
@@ -749,7 +749,7 @@ struct HomeView: View {
                             print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
                             asrTaskId = taskId
                             // 开始轮询查询识别结果
-                            pollRecognitionResult(taskId: taskId)
+                            pollRecognitionResult(taskId: taskId, videoId: videoId)
                         case .failure(let error):
                             print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
                             isRecognizing = false
@@ -825,7 +825,7 @@ struct HomeView: View {
     }
     
     /// 轮询查询语音识别结果
-    private func pollRecognitionResult(taskId: Int, retryCount: Int = 0) {
+    private func pollRecognitionResult(taskId: Int, videoId: String, retryCount: Int = 0) {
         let maxRetries = 60 // 最多轮询 60 次（约 5 分钟）
         
         guard retryCount < maxRetries else {
@@ -846,6 +846,9 @@ struct HomeView: View {
                         print("识别结果: \(recognizedText)")
                         recognitionText = recognizedText
                         isRecognizing = false
+                        
+                        // 保存识别结果为 JSON 文件
+                        saveRecognitionResultToJSON(videoId: videoId, recognizedText: recognizedText, taskId: taskId)
                     }
                     
                 case 3: // 失败
@@ -855,7 +858,7 @@ struct HomeView: View {
                 case 0, 1: // 等待中或执行中
                     // 5 秒后继续轮询
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                        pollRecognitionResult(taskId: taskId, retryCount: retryCount + 1)
+                        pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                     }
                     
                 default:
@@ -867,9 +870,55 @@ struct HomeView: View {
                 print("❌ 查询识别结果失败: \(error.localizedDescription)")
                 // 失败后重试
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                    pollRecognitionResult(taskId: taskId, retryCount: retryCount + 1)
+                    pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                 }
             }
+        }
+    }
+    
+    /// 保存识别结果为 JSON 文件
+    private func saveRecognitionResultToJSON(videoId: String, recognizedText: String, taskId: Int) {
+        // 构建 JSON 数据
+        let recognitionData: [String: Any] = [
+            "videoId": videoId,
+            "taskId": taskId,
+            "recognizedText": recognizedText,
+            "timestamp": Int(Date().timeIntervalSince1970),
+            "createdAt": ISO8601DateFormatter().string(from: Date())
+        ]
+        
+        do {
+            // 转换为 JSON
+            let jsonData = try JSONSerialization.data(withJSONObject: recognitionData, options: .prettyPrinted)
+            
+            // 获取 Documents 目录
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            // 生成文件路径：videoId.json
+            let fileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
+            
+            // 写入文件
+            try jsonData.write(to: fileURL)
+            
+            print("\n" + String(repeating: "=", count: 60))
+            print("💾 识别结果已保存为 JSON 文件")
+            print(String(repeating: "=", count: 60))
+            print("📝 文件名: \(videoId).json")
+            print("📂 文件路径: \(fileURL.path)")
+            print("🆔 视频ID: \(videoId)")
+            print("🔢 任务ID: \(taskId)")
+            print("📄 识别文本长度: \(recognizedText.count) 字符")
+            
+            // 输出 JSON 内容到控制台
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("\n📋 JSON 内容:")
+                print(jsonString)
+            }
+            
+            print(String(repeating: "=", count: 60) + "\n")
+            
+        } catch {
+            print("❌ 保存识别结果 JSON 失败: \(error.localizedDescription)")
         }
     }
 }
