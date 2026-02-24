@@ -1,10 +1,23 @@
 PODS:
   - Alamofire (5.0.0)
+  - ffmpeg-kit-ios-full (6.0)
   - HandyJSON (5.0.2)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
     - Alamofire (~> 5.0)
+  - Moya/RxSwift (15.0.0):
+    - Moya/Core
+    - RxSwift (~> 6.0)
+  - QCloudCore (6.5.1):
+    - QCloudCore/Default (= 6.5.1)
+  - QCloudCore/Default (6.5.1):
+    - QCloudTrack/Beacon (= 6.5.1)
+  - QCloudCOSXML (6.5.1):
+    - QCloudCOSXML/Default (= 6.5.1)
+  - QCloudCOSXML/Default (6.5.1):
+    - QCloudCore (= 6.5.1)
+  - QCloudTrack/Beacon (6.5.1)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
@@ -14,8 +27,11 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (= 5.0)
+  - ffmpeg-kit-ios-full (from `https://github.com/luthviar/ffmpeg-kit-ios-full.git`)
   - HandyJSON (= 5.0.2)
   - Moya (= 15.0.0)
+  - Moya/RxSwift
+  - QCloudCOSXML
   - RxCocoa (= 6.5.0)
   - RxSwift (= 6.5.0)
 
@@ -24,18 +40,34 @@ SPEC REPOS:
     - Alamofire
     - HandyJSON
     - Moya
+    - QCloudCore
+    - QCloudCOSXML
+    - QCloudTrack
     - RxCocoa
     - RxRelay
     - RxSwift
 
+EXTERNAL SOURCES:
+  ffmpeg-kit-ios-full:
+    :git: https://github.com/luthviar/ffmpeg-kit-ios-full.git
+
+CHECKOUT OPTIONS:
+  ffmpeg-kit-ios-full:
+    :commit: 92a964e3a1623c81071f917e77c9ec6efbcda229
+    :git: https://github.com/luthviar/ffmpeg-kit-ios-full.git
+
 SPEC CHECKSUMS:
   Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
+  ffmpeg-kit-ios-full: 2da77324b0e9fb007195ab6661f64be4cf31dc12
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  QCloudCore: 6f8c67b96448472d2c6a92b9cfe1bdb5abbb1798
+  QCloudCOSXML: 92f50a787b4e8d9a7cb6ea8e626775256b4840a7
+  QCloudTrack: 20b79388365b4c8ed150019c82a56f1569f237f8
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
 
-PODFILE CHECKSUM: 14c38900a03022a36eaf1fc1f85405ff167d3de4
+PODFILE CHECKSUM: 04f97d0a685a5927b86d59d052f3fb022a309fb2
 
 COCOAPODS: 1.16.2

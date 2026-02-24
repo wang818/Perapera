@@ -1,0 +1,1394 @@
+{
+    "Response": {
+        "RequestId": "c633907c-a31d-4bff-8c63-9bb09df7b066",
+        "Data": {
+            "TaskId": 14149671390,
+            "Status": 2,
+            "StatusStr": "success",
+            "AudioDuration": 104.095063,
+            "Result": "[0:0.180,1:0.660]  在我身后的就是特斯拉应对国产电车的直接回应，这是model悍尾标的话应该叫model y, 中国首发是换新版model y plus的6座加长版，加长了这么多，当然它不是简单的加长，内外都有升级。二排需要中间的座位变成两个很行正的通风加热座椅，扶手电动升降，头顶和膝盖前面都有不少的空间，这边有一个小屏幕可以控制座椅和空调。进到第三排，这个空间有点普通，腿部空间是前排有了后排就不能有头顶上的空间，嗯，还凑合。好消息是两边都有各自的杯架，还有电动已备调节10°，每个座位都有自己的麦克风，方便车内交流。嗨，特斯拉播放音乐正在播放，没错，有语音唤醒了，而且原本就很强的音响现在变得更强了，升级到了18个扬声器。\n[1:0.660,1:44.095]  加一个低音炮，后备箱被三台空间蚕食不少，再也不能放个床垫就躺着睡觉了。前排不是Y1的重点，但它还是有不少升级，中控屏幕比之前大了一丢丢，从15变成了16In，无线充电变成了50瓦，而且有吹冷风。终于啊，对于驾驶者来说，Model YL依然不会让你觉得自己只是一个司机，因为它配备上了MODEL3P才有的CDC电控悬架，屁股上的小流版0加速4.5秒，CLTC续航751km。总的来说，Model的功能多的很，不特斯拉，当然它最重要的竞争力还得是它是特斯拉，所以这样一台车，大家觉得买多少钱比较合适呢？\n",
+            "ResultDetail": [
+                {
+                    "FinalSentence": "在我身后的就是特斯拉应对国产电车的直接回应，这是model悍尾标的话应该叫model y, 中国首发是换新版model y plus的6座加长版，加长了这么多，当然它不是简单的加长，内外都有升级。二排需要中间的座位变成两个很行正的通风加热座椅，扶手电动升降，头顶和膝盖前面都有不少的空间，这边有一个小屏幕可以控制座椅和空调。进到第三排，这个空间有点普通，腿部空间是前排有了后排就不能有头顶上的空间，嗯，还凑合。好消息是两边都有各自的杯架，还有电动已备调节10°，每个座位都有自己的麦克风，方便车内交流。嗨，特斯拉播放音乐正在播放，没错，有语音唤醒了，而且原本就很强的音响现在变得更强了，升级到了18个扬声器。",
+                    "SliceSentence": "在我 身后 的 就是 特斯拉 应对 国产 电车 的 直接 回应 这是 model 悍 尾 标的 话 应该 叫 model y 中国 首发 是 换新 版 model y plus 的 6座 加长版 加长 了 这么多 当然 它不是 简单 的 加长 内外 都有 升级 二 排 需要 中间 的 座位 变成 两个 很 行正 的 通风 加热 座椅 扶手 电动 升降 头顶 和 膝盖 前面 都有 不少 的 空间 这边 有一 个 小屏 幕 可以 控制 座椅 和 空调 进 到 第三 排 这个 空间 有点 普通 腿部 空间 是 前排 有了 后排 就不 能有 头顶 上 的 空间 嗯 还 凑合 好消息 是 两边 都有 各自 的 杯架 还有 电动 已 备 调节 10 °每个 座位 都有 自己 的 麦克风 方便 车内 交流 嗨 特斯拉 播放 音乐 正在 播放 没错 有 语音 唤醒 了 而且 原本 就 很强 的 音响 现在 变得 更强 了 升级 到 了 18 个 扬声器",
+                    "WrittenText": "",
+                    "StartMs": 180,
+                    "EndMs": 60660,
+                    "SpeechSpeed": 4.6,
+                    "WordsNum": 150,
+                    "Words": [
+                        {
+                            "OffsetStartMs": 190,
+                            "OffsetEndMs": 600,
+                            "Word": "在我"
+                        },
+                        {
+                            "OffsetStartMs": 600,
+                            "OffsetEndMs": 930,
+                            "Word": "身后"
+                        },
+                        {
+                            "OffsetStartMs": 930,
+                            "OffsetEndMs": 1095,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 1095,
+                            "OffsetEndMs": 1380,
+                            "Word": "就是"
+                        },
+                        {
+                            "OffsetStartMs": 1380,
+                            "OffsetEndMs": 1860,
+                            "Word": "特斯拉"
+                        },
+                        {
+                            "OffsetStartMs": 1860,
+                            "OffsetEndMs": 2235,
+                            "Word": "应对"
+                        },
+                        {
+                            "OffsetStartMs": 2235,
+                            "OffsetEndMs": 2640,
+                            "Word": "国产"
+                        },
+                        {
+                            "OffsetStartMs": 2640,
+                            "OffsetEndMs": 3000,
+                            "Word": "电车"
+                        },
+                        {
+                            "OffsetStartMs": 3000,
+                            "OffsetEndMs": 3195,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 3195,
+                            "OffsetEndMs": 3600,
+                            "Word": "直接"
+                        },
+                        {
+                            "OffsetStartMs": 3600,
+                            "OffsetEndMs": 4070,
+                            "Word": "回应"
+                        },
+                        {
+                            "OffsetStartMs": 5080,
+                            "OffsetEndMs": 5625,
+                            "Word": "这是"
+                        },
+                        {
+                            "OffsetStartMs": 5625,
+                            "OffsetEndMs": 5900,
+                            "Word": "model"
+                        },
+                        {
+                            "OffsetStartMs": 6310,
+                            "OffsetEndMs": 6570,
+                            "Word": "悍"
+                        },
+                        {
+                            "OffsetStartMs": 6570,
+                            "OffsetEndMs": 6720,
+                            "Word": "尾"
+                        },
+                        {
+                            "OffsetStartMs": 6720,
+                            "OffsetEndMs": 7005,
+                            "Word": "标的"
+                        },
+                        {
+                            "OffsetStartMs": 7005,
+                            "OffsetEndMs": 7170,
+                            "Word": "话"
+                        },
+                        {
+                            "OffsetStartMs": 7170,
+                            "OffsetEndMs": 7470,
+                            "Word": "应该"
+                        },
+                        {
+                            "OffsetStartMs": 7470,
+                            "OffsetEndMs": 7740,
+                            "Word": "叫"
+                        },
+                        {
+                            "OffsetStartMs": 7740,
+                            "OffsetEndMs": 8120,
+                            "Word": "model"
+                        },
+                        {
+                            "OffsetStartMs": 8170,
+                            "OffsetEndMs": 8570,
+                            "Word": "y"
+                        },
+                        {
+                            "OffsetStartMs": 9460,
+                            "OffsetEndMs": 9915,
+                            "Word": "中国"
+                        },
+                        {
+                            "OffsetStartMs": 9915,
+                            "OffsetEndMs": 10400,
+                            "Word": "首发"
+                        },
+                        {
+                            "OffsetStartMs": 10420,
+                            "OffsetEndMs": 10695,
+                            "Word": "是"
+                        },
+                        {
+                            "OffsetStartMs": 10695,
+                            "OffsetEndMs": 11025,
+                            "Word": "换新"
+                        },
+                        {
+                            "OffsetStartMs": 11025,
+                            "OffsetEndMs": 11175,
+                            "Word": "版"
+                        },
+                        {
+                            "OffsetStartMs": 11175,
+                            "OffsetEndMs": 11370,
+                            "Word": "model"
+                        },
+                        {
+                            "OffsetStartMs": 11370,
+                            "OffsetEndMs": 11625,
+                            "Word": "y"
+                        },
+                        {
+                            "OffsetStartMs": 11625,
+                            "OffsetEndMs": 11865,
+                            "Word": "plus"
+                        },
+                        {
+                            "OffsetStartMs": 11865,
+                            "OffsetEndMs": 12090,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 12090,
+                            "OffsetEndMs": 12585,
+                            "Word": "6座"
+                        },
+                        {
+                            "OffsetStartMs": 12585,
+                            "OffsetEndMs": 13275,
+                            "Word": "加长版"
+                        },
+                        {
+                            "OffsetStartMs": 13275,
+                            "OffsetEndMs": 13710,
+                            "Word": "加长"
+                        },
+                        {
+                            "OffsetStartMs": 13710,
+                            "OffsetEndMs": 14000,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 14560,
+                            "OffsetEndMs": 15200,
+                            "Word": "这么多"
+                        },
+                        {
+                            "OffsetStartMs": 15280,
+                            "OffsetEndMs": 15780,
+                            "Word": "当然"
+                        },
+                        {
+                            "OffsetStartMs": 15780,
+                            "OffsetEndMs": 16185,
+                            "Word": "它不是"
+                        },
+                        {
+                            "OffsetStartMs": 16185,
+                            "OffsetEndMs": 16515,
+                            "Word": "简单"
+                        },
+                        {
+                            "OffsetStartMs": 16515,
+                            "OffsetEndMs": 16650,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 16650,
+                            "OffsetEndMs": 17175,
+                            "Word": "加长"
+                        },
+                        {
+                            "OffsetStartMs": 17175,
+                            "OffsetEndMs": 17670,
+                            "Word": "内外"
+                        },
+                        {
+                            "OffsetStartMs": 17670,
+                            "OffsetEndMs": 17985,
+                            "Word": "都有"
+                        },
+                        {
+                            "OffsetStartMs": 17985,
+                            "OffsetEndMs": 18470,
+                            "Word": "升级"
+                        },
+                        {
+                            "OffsetStartMs": 18550,
+                            "OffsetEndMs": 18855,
+                            "Word": "二"
+                        },
+                        {
+                            "OffsetStartMs": 18855,
+                            "OffsetEndMs": 19050,
+                            "Word": "排"
+                        },
+                        {
+                            "OffsetStartMs": 19050,
+                            "OffsetEndMs": 19380,
+                            "Word": "需要"
+                        },
+                        {
+                            "OffsetStartMs": 19380,
+                            "OffsetEndMs": 19695,
+                            "Word": "中间"
+                        },
+                        {
+                            "OffsetStartMs": 19695,
+                            "OffsetEndMs": 19830,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 19830,
+                            "OffsetEndMs": 20160,
+                            "Word": "座位"
+                        },
+                        {
+                            "OffsetStartMs": 20160,
+                            "OffsetEndMs": 20460,
+                            "Word": "变成"
+                        },
+                        {
+                            "OffsetStartMs": 20460,
+                            "OffsetEndMs": 20715,
+                            "Word": "两个"
+                        },
+                        {
+                            "OffsetStartMs": 20715,
+                            "OffsetEndMs": 20880,
+                            "Word": "很"
+                        },
+                        {
+                            "OffsetStartMs": 20880,
+                            "OffsetEndMs": 21195,
+                            "Word": "行正"
+                        },
+                        {
+                            "OffsetStartMs": 21195,
+                            "OffsetEndMs": 21330,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 21330,
+                            "OffsetEndMs": 21690,
+                            "Word": "通风"
+                        },
+                        {
+                            "OffsetStartMs": 21690,
+                            "OffsetEndMs": 22065,
+                            "Word": "加热"
+                        },
+                        {
+                            "OffsetStartMs": 22065,
+                            "OffsetEndMs": 22550,
+                            "Word": "座椅"
+                        },
+                        {
+                            "OffsetStartMs": 22720,
+                            "OffsetEndMs": 23190,
+                            "Word": "扶手"
+                        },
+                        {
+                            "OffsetStartMs": 23190,
+                            "OffsetEndMs": 23475,
+                            "Word": "电动"
+                        },
+                        {
+                            "OffsetStartMs": 23475,
+                            "OffsetEndMs": 23930,
+                            "Word": "升降"
+                        },
+                        {
+                            "OffsetStartMs": 25780,
+                            "OffsetEndMs": 26265,
+                            "Word": "头顶"
+                        },
+                        {
+                            "OffsetStartMs": 26265,
+                            "OffsetEndMs": 26460,
+                            "Word": "和"
+                        },
+                        {
+                            "OffsetStartMs": 26460,
+                            "OffsetEndMs": 26805,
+                            "Word": "膝盖"
+                        },
+                        {
+                            "OffsetStartMs": 26805,
+                            "OffsetEndMs": 27135,
+                            "Word": "前面"
+                        },
+                        {
+                            "OffsetStartMs": 27135,
+                            "OffsetEndMs": 27315,
+                            "Word": "都有"
+                        },
+                        {
+                            "OffsetStartMs": 27315,
+                            "OffsetEndMs": 27540,
+                            "Word": "不少"
+                        },
+                        {
+                            "OffsetStartMs": 27540,
+                            "OffsetEndMs": 27660,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 27660,
+                            "OffsetEndMs": 28050,
+                            "Word": "空间"
+                        },
+                        {
+                            "OffsetStartMs": 28050,
+                            "OffsetEndMs": 28335,
+                            "Word": "这边"
+                        },
+                        {
+                            "OffsetStartMs": 28335,
+                            "OffsetEndMs": 28500,
+                            "Word": "有一"
+                        },
+                        {
+                            "OffsetStartMs": 28500,
+                            "OffsetEndMs": 28590,
+                            "Word": "个"
+                        },
+                        {
+                            "OffsetStartMs": 28590,
+                            "OffsetEndMs": 28860,
+                            "Word": "小屏"
+                        },
+                        {
+                            "OffsetStartMs": 28860,
+                            "OffsetEndMs": 28995,
+                            "Word": "幕"
+                        },
+                        {
+                            "OffsetStartMs": 28995,
+                            "OffsetEndMs": 29160,
+                            "Word": "可以"
+                        },
+                        {
+                            "OffsetStartMs": 29160,
+                            "OffsetEndMs": 29445,
+                            "Word": "控制"
+                        },
+                        {
+                            "OffsetStartMs": 29445,
+                            "OffsetEndMs": 29775,
+                            "Word": "座椅"
+                        },
+                        {
+                            "OffsetStartMs": 29775,
+                            "OffsetEndMs": 29925,
+                            "Word": "和"
+                        },
+                        {
+                            "OffsetStartMs": 29925,
+                            "OffsetEndMs": 30350,
+                            "Word": "空调"
+                        },
+                        {
+                            "OffsetStartMs": 31120,
+                            "OffsetEndMs": 31395,
+                            "Word": "进"
+                        },
+                        {
+                            "OffsetStartMs": 31395,
+                            "OffsetEndMs": 31530,
+                            "Word": "到"
+                        },
+                        {
+                            "OffsetStartMs": 31530,
+                            "OffsetEndMs": 31860,
+                            "Word": "第三"
+                        },
+                        {
+                            "OffsetStartMs": 31860,
+                            "OffsetEndMs": 32100,
+                            "Word": "排"
+                        },
+                        {
+                            "OffsetStartMs": 32100,
+                            "OffsetEndMs": 32430,
+                            "Word": "这个"
+                        },
+                        {
+                            "OffsetStartMs": 32430,
+                            "OffsetEndMs": 32910,
+                            "Word": "空间"
+                        },
+                        {
+                            "OffsetStartMs": 32910,
+                            "OffsetEndMs": 33450,
+                            "Word": "有点"
+                        },
+                        {
+                            "OffsetStartMs": 33450,
+                            "OffsetEndMs": 34005,
+                            "Word": "普通"
+                        },
+                        {
+                            "OffsetStartMs": 34005,
+                            "OffsetEndMs": 34350,
+                            "Word": "腿部"
+                        },
+                        {
+                            "OffsetStartMs": 34350,
+                            "OffsetEndMs": 34665,
+                            "Word": "空间"
+                        },
+                        {
+                            "OffsetStartMs": 34665,
+                            "OffsetEndMs": 34950,
+                            "Word": "是"
+                        },
+                        {
+                            "OffsetStartMs": 34950,
+                            "OffsetEndMs": 35490,
+                            "Word": "前排"
+                        },
+                        {
+                            "OffsetStartMs": 35490,
+                            "OffsetEndMs": 35745,
+                            "Word": "有了"
+                        },
+                        {
+                            "OffsetStartMs": 35745,
+                            "OffsetEndMs": 36045,
+                            "Word": "后排"
+                        },
+                        {
+                            "OffsetStartMs": 36045,
+                            "OffsetEndMs": 36270,
+                            "Word": "就不"
+                        },
+                        {
+                            "OffsetStartMs": 36270,
+                            "OffsetEndMs": 36705,
+                            "Word": "能有"
+                        },
+                        {
+                            "OffsetStartMs": 36705,
+                            "OffsetEndMs": 37110,
+                            "Word": "头顶"
+                        },
+                        {
+                            "OffsetStartMs": 37110,
+                            "OffsetEndMs": 37230,
+                            "Word": "上"
+                        },
+                        {
+                            "OffsetStartMs": 37230,
+                            "OffsetEndMs": 37335,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 37335,
+                            "OffsetEndMs": 37725,
+                            "Word": "空间"
+                        },
+                        {
+                            "OffsetStartMs": 37725,
+                            "OffsetEndMs": 37980,
+                            "Word": "嗯"
+                        },
+                        {
+                            "OffsetStartMs": 37980,
+                            "OffsetEndMs": 38205,
+                            "Word": "还"
+                        },
+                        {
+                            "OffsetStartMs": 38205,
+                            "OffsetEndMs": 38640,
+                            "Word": "凑合"
+                        },
+                        {
+                            "OffsetStartMs": 38640,
+                            "OffsetEndMs": 39150,
+                            "Word": "好消息"
+                        },
+                        {
+                            "OffsetStartMs": 39150,
+                            "OffsetEndMs": 39360,
+                            "Word": "是"
+                        },
+                        {
+                            "OffsetStartMs": 39360,
+                            "OffsetEndMs": 39765,
+                            "Word": "两边"
+                        },
+                        {
+                            "OffsetStartMs": 39765,
+                            "OffsetEndMs": 39990,
+                            "Word": "都有"
+                        },
+                        {
+                            "OffsetStartMs": 39990,
+                            "OffsetEndMs": 40245,
+                            "Word": "各自"
+                        },
+                        {
+                            "OffsetStartMs": 40245,
+                            "OffsetEndMs": 40380,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 40380,
+                            "OffsetEndMs": 40880,
+                            "Word": "杯架"
+                        },
+                        {
+                            "OffsetStartMs": 40990,
+                            "OffsetEndMs": 41430,
+                            "Word": "还有"
+                        },
+                        {
+                            "OffsetStartMs": 41430,
+                            "OffsetEndMs": 41805,
+                            "Word": "电动"
+                        },
+                        {
+                            "OffsetStartMs": 41805,
+                            "OffsetEndMs": 41970,
+                            "Word": "已"
+                        },
+                        {
+                            "OffsetStartMs": 41970,
+                            "OffsetEndMs": 42135,
+                            "Word": "备"
+                        },
+                        {
+                            "OffsetStartMs": 42135,
+                            "OffsetEndMs": 42540,
+                            "Word": "调节"
+                        },
+                        {
+                            "OffsetStartMs": 42540,
+                            "OffsetEndMs": 43160,
+                            "Word": "10"
+                        },
+                        {
+                            "OffsetStartMs": 45040,
+                            "OffsetEndMs": 45420,
+                            "Word": "°每个"
+                        },
+                        {
+                            "OffsetStartMs": 45420,
+                            "OffsetEndMs": 45720,
+                            "Word": "座位"
+                        },
+                        {
+                            "OffsetStartMs": 45720,
+                            "OffsetEndMs": 45960,
+                            "Word": "都有"
+                        },
+                        {
+                            "OffsetStartMs": 45960,
+                            "OffsetEndMs": 46125,
+                            "Word": "自己"
+                        },
+                        {
+                            "OffsetStartMs": 46125,
+                            "OffsetEndMs": 46245,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 46245,
+                            "OffsetEndMs": 46785,
+                            "Word": "麦克风"
+                        },
+                        {
+                            "OffsetStartMs": 46785,
+                            "OffsetEndMs": 47100,
+                            "Word": "方便"
+                        },
+                        {
+                            "OffsetStartMs": 47100,
+                            "OffsetEndMs": 47385,
+                            "Word": "车内"
+                        },
+                        {
+                            "OffsetStartMs": 47385,
+                            "OffsetEndMs": 47840,
+                            "Word": "交流"
+                        },
+                        {
+                            "OffsetStartMs": 47890,
+                            "OffsetEndMs": 48180,
+                            "Word": "嗨"
+                        },
+                        {
+                            "OffsetStartMs": 48180,
+                            "OffsetEndMs": 48645,
+                            "Word": "特斯拉"
+                        },
+                        {
+                            "OffsetStartMs": 48645,
+                            "OffsetEndMs": 48990,
+                            "Word": "播放"
+                        },
+                        {
+                            "OffsetStartMs": 48990,
+                            "OffsetEndMs": 49430,
+                            "Word": "音乐"
+                        },
+                        {
+                            "OffsetStartMs": 51010,
+                            "OffsetEndMs": 51450,
+                            "Word": "正在"
+                        },
+                        {
+                            "OffsetStartMs": 51450,
+                            "OffsetEndMs": 51920,
+                            "Word": "播放"
+                        },
+                        {
+                            "OffsetStartMs": 54370,
+                            "OffsetEndMs": 54900,
+                            "Word": "没错"
+                        },
+                        {
+                            "OffsetStartMs": 54900,
+                            "OffsetEndMs": 55095,
+                            "Word": "有"
+                        },
+                        {
+                            "OffsetStartMs": 55095,
+                            "OffsetEndMs": 55425,
+                            "Word": "语音"
+                        },
+                        {
+                            "OffsetStartMs": 55425,
+                            "OffsetEndMs": 55815,
+                            "Word": "唤醒"
+                        },
+                        {
+                            "OffsetStartMs": 55815,
+                            "OffsetEndMs": 56055,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 56055,
+                            "OffsetEndMs": 56550,
+                            "Word": "而且"
+                        },
+                        {
+                            "OffsetStartMs": 56550,
+                            "OffsetEndMs": 56925,
+                            "Word": "原本"
+                        },
+                        {
+                            "OffsetStartMs": 56925,
+                            "OffsetEndMs": 57060,
+                            "Word": "就"
+                        },
+                        {
+                            "OffsetStartMs": 57060,
+                            "OffsetEndMs": 57345,
+                            "Word": "很强"
+                        },
+                        {
+                            "OffsetStartMs": 57345,
+                            "OffsetEndMs": 57435,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 57435,
+                            "OffsetEndMs": 57825,
+                            "Word": "音响"
+                        },
+                        {
+                            "OffsetStartMs": 57825,
+                            "OffsetEndMs": 58200,
+                            "Word": "现在"
+                        },
+                        {
+                            "OffsetStartMs": 58200,
+                            "OffsetEndMs": 58440,
+                            "Word": "变得"
+                        },
+                        {
+                            "OffsetStartMs": 58440,
+                            "OffsetEndMs": 58785,
+                            "Word": "更强"
+                        },
+                        {
+                            "OffsetStartMs": 58785,
+                            "OffsetEndMs": 59060,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 59080,
+                            "OffsetEndMs": 59490,
+                            "Word": "升级"
+                        },
+                        {
+                            "OffsetStartMs": 59490,
+                            "OffsetEndMs": 59580,
+                            "Word": "到"
+                        },
+                        {
+                            "OffsetStartMs": 59580,
+                            "OffsetEndMs": 59700,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 59700,
+                            "OffsetEndMs": 59955,
+                            "Word": "18"
+                        },
+                        {
+                            "OffsetStartMs": 59955,
+                            "OffsetEndMs": 60045,
+                            "Word": "个"
+                        },
+                        {
+                            "OffsetStartMs": 60045,
+                            "OffsetEndMs": 60450,
+                            "Word": "扬声器"
+                        }
+                    ],
+                    "SpeakerId": 0,
+                    "EmotionalEnergy": 0,
+                    "SilenceTime": 0,
+                    "EmotionType": [
+                        "disabled"
+                    ]
+                },
+                {
+                    "FinalSentence": "加一个低音炮，后备箱被三台空间蚕食不少，再也不能放个床垫就躺着睡觉了。前排不是Y1的重点，但它还是有不少升级，中控屏幕比之前大了一丢丢，从15变成了16In，无线充电变成了50瓦，而且有吹冷风。终于啊，对于驾驶者来说，Model YL依然不会让你觉得自己只是一个司机，因为它配备上了MODEL3P才有的CDC电控悬架，屁股上的小流版0加速4.5秒，CLTC续航751km。总的来说，Model的功能多的很，不特斯拉，当然它最重要的竞争力还得是它是特斯拉，所以这样一台车，大家觉得买多少钱比较合适呢？",
+                    "SliceSentence": "加一 个 低音炮 后备箱 被 三台 空间 蚕食 不少 再也 不能 放 个 床垫 就 躺着 睡觉 了 前排 不是 Y 1 的 重点 但 它 还是 有不少 升级 中控 屏幕 比 之前 大 了 一 丢 丢 从 15 变成了 16 In 无线 充电 变成了 50 瓦 而且 有 吹 冷风 终于 啊 对于 驾驶者 来说 Model YL 依然 不会 让你 觉得自己 只是 一个 司机 因为它 配备 上 了 MODEL 3 P 才有 的 CDC 电控 悬架 屁股 上 的 小流 版 0 加速 4.5秒 CLTC 续航 751 km 总的来说 Model 的 功能 多的 很不 特斯拉 当然 它 最重要 的 竞争力 还得 是 它 是 特斯拉 所以 这样 一台 车 大家 觉得 买 多少 钱 比较 合适 呢",
+                    "WrittenText": "",
+                    "StartMs": 60660,
+                    "EndMs": 104095,
+                    "SpeechSpeed": 5.2,
+                    "WordsNum": 119,
+                    "Words": [
+                        {
+                            "OffsetStartMs": 0,
+                            "OffsetEndMs": 330,
+                            "Word": "加一"
+                        },
+                        {
+                            "OffsetStartMs": 330,
+                            "OffsetEndMs": 450,
+                            "Word": "个"
+                        },
+                        {
+                            "OffsetStartMs": 450,
+                            "OffsetEndMs": 1010,
+                            "Word": "低音炮"
+                        },
+                        {
+                            "OffsetStartMs": 4510,
+                            "OffsetEndMs": 5115,
+                            "Word": "后备箱"
+                        },
+                        {
+                            "OffsetStartMs": 5115,
+                            "OffsetEndMs": 5280,
+                            "Word": "被"
+                        },
+                        {
+                            "OffsetStartMs": 5280,
+                            "OffsetEndMs": 5565,
+                            "Word": "三台"
+                        },
+                        {
+                            "OffsetStartMs": 5565,
+                            "OffsetEndMs": 5910,
+                            "Word": "空间"
+                        },
+                        {
+                            "OffsetStartMs": 5910,
+                            "OffsetEndMs": 6255,
+                            "Word": "蚕食"
+                        },
+                        {
+                            "OffsetStartMs": 6255,
+                            "OffsetEndMs": 6690,
+                            "Word": "不少"
+                        },
+                        {
+                            "OffsetStartMs": 6690,
+                            "OffsetEndMs": 6975,
+                            "Word": "再也"
+                        },
+                        {
+                            "OffsetStartMs": 6975,
+                            "OffsetEndMs": 7215,
+                            "Word": "不能"
+                        },
+                        {
+                            "OffsetStartMs": 7215,
+                            "OffsetEndMs": 7350,
+                            "Word": "放"
+                        },
+                        {
+                            "OffsetStartMs": 7350,
+                            "OffsetEndMs": 7500,
+                            "Word": "个"
+                        },
+                        {
+                            "OffsetStartMs": 7500,
+                            "OffsetEndMs": 7830,
+                            "Word": "床垫"
+                        },
+                        {
+                            "OffsetStartMs": 7830,
+                            "OffsetEndMs": 7995,
+                            "Word": "就"
+                        },
+                        {
+                            "OffsetStartMs": 7995,
+                            "OffsetEndMs": 8265,
+                            "Word": "躺着"
+                        },
+                        {
+                            "OffsetStartMs": 8265,
+                            "OffsetEndMs": 8640,
+                            "Word": "睡觉"
+                        },
+                        {
+                            "OffsetStartMs": 8640,
+                            "OffsetEndMs": 8930,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 9610,
+                            "OffsetEndMs": 10095,
+                            "Word": "前排"
+                        },
+                        {
+                            "OffsetStartMs": 10095,
+                            "OffsetEndMs": 10320,
+                            "Word": "不是"
+                        },
+                        {
+                            "OffsetStartMs": 10320,
+                            "OffsetEndMs": 10470,
+                            "Word": "Y"
+                        },
+                        {
+                            "OffsetStartMs": 10470,
+                            "OffsetEndMs": 10590,
+                            "Word": "1"
+                        },
+                        {
+                            "OffsetStartMs": 10590,
+                            "OffsetEndMs": 10710,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 10710,
+                            "OffsetEndMs": 11115,
+                            "Word": "重点"
+                        },
+                        {
+                            "OffsetStartMs": 11115,
+                            "OffsetEndMs": 11310,
+                            "Word": "但"
+                        },
+                        {
+                            "OffsetStartMs": 11310,
+                            "OffsetEndMs": 11430,
+                            "Word": "它"
+                        },
+                        {
+                            "OffsetStartMs": 11430,
+                            "OffsetEndMs": 11655,
+                            "Word": "还是"
+                        },
+                        {
+                            "OffsetStartMs": 11655,
+                            "OffsetEndMs": 11985,
+                            "Word": "有不少"
+                        },
+                        {
+                            "OffsetStartMs": 11985,
+                            "OffsetEndMs": 12480,
+                            "Word": "升级"
+                        },
+                        {
+                            "OffsetStartMs": 12480,
+                            "OffsetEndMs": 12915,
+                            "Word": "中控"
+                        },
+                        {
+                            "OffsetStartMs": 12915,
+                            "OffsetEndMs": 13245,
+                            "Word": "屏幕"
+                        },
+                        {
+                            "OffsetStartMs": 13245,
+                            "OffsetEndMs": 13380,
+                            "Word": "比"
+                        },
+                        {
+                            "OffsetStartMs": 13380,
+                            "OffsetEndMs": 13665,
+                            "Word": "之前"
+                        },
+                        {
+                            "OffsetStartMs": 13665,
+                            "OffsetEndMs": 13785,
+                            "Word": "大"
+                        },
+                        {
+                            "OffsetStartMs": 13785,
+                            "OffsetEndMs": 13860,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 13860,
+                            "OffsetEndMs": 13965,
+                            "Word": "一"
+                        },
+                        {
+                            "OffsetStartMs": 13965,
+                            "OffsetEndMs": 14115,
+                            "Word": "丢"
+                        },
+                        {
+                            "OffsetStartMs": 14115,
+                            "OffsetEndMs": 14310,
+                            "Word": "丢"
+                        },
+                        {
+                            "OffsetStartMs": 14310,
+                            "OffsetEndMs": 14535,
+                            "Word": "从"
+                        },
+                        {
+                            "OffsetStartMs": 14535,
+                            "OffsetEndMs": 14865,
+                            "Word": "15"
+                        },
+                        {
+                            "OffsetStartMs": 14865,
+                            "OffsetEndMs": 15165,
+                            "Word": "变成了"
+                        },
+                        {
+                            "OffsetStartMs": 15165,
+                            "OffsetEndMs": 15420,
+                            "Word": "16"
+                        },
+                        {
+                            "OffsetStartMs": 15420,
+                            "OffsetEndMs": 15890,
+                            "Word": "In"
+                        },
+                        {
+                            "OffsetStartMs": 16030,
+                            "OffsetEndMs": 16560,
+                            "Word": "无线"
+                        },
+                        {
+                            "OffsetStartMs": 16560,
+                            "OffsetEndMs": 16950,
+                            "Word": "充电"
+                        },
+                        {
+                            "OffsetStartMs": 16950,
+                            "OffsetEndMs": 17400,
+                            "Word": "变成了"
+                        },
+                        {
+                            "OffsetStartMs": 17400,
+                            "OffsetEndMs": 17715,
+                            "Word": "50"
+                        },
+                        {
+                            "OffsetStartMs": 17715,
+                            "OffsetEndMs": 17955,
+                            "Word": "瓦"
+                        },
+                        {
+                            "OffsetStartMs": 17955,
+                            "OffsetEndMs": 18525,
+                            "Word": "而且"
+                        },
+                        {
+                            "OffsetStartMs": 18525,
+                            "OffsetEndMs": 18765,
+                            "Word": "有"
+                        },
+                        {
+                            "OffsetStartMs": 18765,
+                            "OffsetEndMs": 18945,
+                            "Word": "吹"
+                        },
+                        {
+                            "OffsetStartMs": 18945,
+                            "OffsetEndMs": 19440,
+                            "Word": "冷风"
+                        },
+                        {
+                            "OffsetStartMs": 19440,
+                            "OffsetEndMs": 19995,
+                            "Word": "终于"
+                        },
+                        {
+                            "OffsetStartMs": 19995,
+                            "OffsetEndMs": 20300,
+                            "Word": "啊"
+                        },
+                        {
+                            "OffsetStartMs": 20560,
+                            "OffsetEndMs": 20925,
+                            "Word": "对于"
+                        },
+                        {
+                            "OffsetStartMs": 20925,
+                            "OffsetEndMs": 21345,
+                            "Word": "驾驶者"
+                        },
+                        {
+                            "OffsetStartMs": 21345,
+                            "OffsetEndMs": 21750,
+                            "Word": "来说"
+                        },
+                        {
+                            "OffsetStartMs": 21750,
+                            "OffsetEndMs": 21990,
+                            "Word": "Model"
+                        },
+                        {
+                            "OffsetStartMs": 21990,
+                            "OffsetEndMs": 22425,
+                            "Word": "YL"
+                        },
+                        {
+                            "OffsetStartMs": 22425,
+                            "OffsetEndMs": 22755,
+                            "Word": "依然"
+                        },
+                        {
+                            "OffsetStartMs": 22755,
+                            "OffsetEndMs": 22995,
+                            "Word": "不会"
+                        },
+                        {
+                            "OffsetStartMs": 22995,
+                            "OffsetEndMs": 23220,
+                            "Word": "让你"
+                        },
+                        {
+                            "OffsetStartMs": 23220,
+                            "OffsetEndMs": 23805,
+                            "Word": "觉得自己"
+                        },
+                        {
+                            "OffsetStartMs": 23805,
+                            "OffsetEndMs": 24165,
+                            "Word": "只是"
+                        },
+                        {
+                            "OffsetStartMs": 24165,
+                            "OffsetEndMs": 24405,
+                            "Word": "一个"
+                        },
+                        {
+                            "OffsetStartMs": 24405,
+                            "OffsetEndMs": 24825,
+                            "Word": "司机"
+                        },
+                        {
+                            "OffsetStartMs": 24825,
+                            "OffsetEndMs": 25230,
+                            "Word": "因为它"
+                        },
+                        {
+                            "OffsetStartMs": 25230,
+                            "OffsetEndMs": 25515,
+                            "Word": "配备"
+                        },
+                        {
+                            "OffsetStartMs": 25515,
+                            "OffsetEndMs": 25620,
+                            "Word": "上"
+                        },
+                        {
+                            "OffsetStartMs": 25620,
+                            "OffsetEndMs": 25725,
+                            "Word": "了"
+                        },
+                        {
+                            "OffsetStartMs": 25725,
+                            "OffsetEndMs": 25950,
+                            "Word": "MODEL"
+                        },
+                        {
+                            "OffsetStartMs": 25950,
+                            "OffsetEndMs": 26205,
+                            "Word": "3"
+                        },
+                        {
+                            "OffsetStartMs": 26205,
+                            "OffsetEndMs": 26415,
+                            "Word": "P"
+                        },
+                        {
+                            "OffsetStartMs": 26415,
+                            "OffsetEndMs": 26685,
+                            "Word": "才有"
+                        },
+                        {
+                            "OffsetStartMs": 26685,
+                            "OffsetEndMs": 26790,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 26790,
+                            "OffsetEndMs": 27225,
+                            "Word": "CDC"
+                        },
+                        {
+                            "OffsetStartMs": 27225,
+                            "OffsetEndMs": 27495,
+                            "Word": "电控"
+                        },
+                        {
+                            "OffsetStartMs": 27495,
+                            "OffsetEndMs": 27900,
+                            "Word": "悬架"
+                        },
+                        {
+                            "OffsetStartMs": 27900,
+                            "OffsetEndMs": 28200,
+                            "Word": "屁股"
+                        },
+                        {
+                            "OffsetStartMs": 28200,
+                            "OffsetEndMs": 28305,
+                            "Word": "上"
+                        },
+                        {
+                            "OffsetStartMs": 28305,
+                            "OffsetEndMs": 28440,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 28440,
+                            "OffsetEndMs": 28920,
+                            "Word": "小流"
+                        },
+                        {
+                            "OffsetStartMs": 28920,
+                            "OffsetEndMs": 29100,
+                            "Word": "版"
+                        },
+                        {
+                            "OffsetStartMs": 29100,
+                            "OffsetEndMs": 29340,
+                            "Word": "0"
+                        },
+                        {
+                            "OffsetStartMs": 29340,
+                            "OffsetEndMs": 29730,
+                            "Word": "加速"
+                        },
+                        {
+                            "OffsetStartMs": 29730,
+                            "OffsetEndMs": 30405,
+                            "Word": "4.5秒"
+                        },
+                        {
+                            "OffsetStartMs": 30720,
+                            "OffsetEndMs": 31035,
+                            "Word": "CLTC"
+                        },
+                        {
+                            "OffsetStartMs": 31035,
+                            "OffsetEndMs": 31410,
+                            "Word": "续航"
+                        },
+                        {
+                            "OffsetStartMs": 31755,
+                            "OffsetEndMs": 32145,
+                            "Word": "751"
+                        },
+                        {
+                            "OffsetStartMs": 32145,
+                            "OffsetEndMs": 32475,
+                            "Word": "km"
+                        },
+                        {
+                            "OffsetStartMs": 32475,
+                            "OffsetEndMs": 33150,
+                            "Word": "总的来说"
+                        },
+                        {
+                            "OffsetStartMs": 33150,
+                            "OffsetEndMs": 33440,
+                            "Word": "Model"
+                        },
+                        {
+                            "OffsetStartMs": 33550,
+                            "OffsetEndMs": 33825,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 33825,
+                            "OffsetEndMs": 34215,
+                            "Word": "功能"
+                        },
+                        {
+                            "OffsetStartMs": 34215,
+                            "OffsetEndMs": 34680,
+                            "Word": "多的"
+                        },
+                        {
+                            "OffsetStartMs": 34680,
+                            "OffsetEndMs": 35055,
+                            "Word": "很不"
+                        },
+                        {
+                            "OffsetStartMs": 35055,
+                            "OffsetEndMs": 35625,
+                            "Word": "特斯拉"
+                        },
+                        {
+                            "OffsetStartMs": 35625,
+                            "OffsetEndMs": 36120,
+                            "Word": "当然"
+                        },
+                        {
+                            "OffsetStartMs": 36120,
+                            "OffsetEndMs": 36345,
+                            "Word": "它"
+                        },
+                        {
+                            "OffsetStartMs": 36345,
+                            "OffsetEndMs": 36735,
+                            "Word": "最重要"
+                        },
+                        {
+                            "OffsetStartMs": 36735,
+                            "OffsetEndMs": 36870,
+                            "Word": "的"
+                        },
+                        {
+                            "OffsetStartMs": 36870,
+                            "OffsetEndMs": 37470,
+                            "Word": "竞争力"
+                        },
+                        {
+                            "OffsetStartMs": 37470,
+                            "OffsetEndMs": 37935,
+                            "Word": "还得"
+                        },
+                        {
+                            "OffsetStartMs": 37935,
+                            "OffsetEndMs": 38270,
+                            "Word": "是"
+                        },
+                        {
+                            "OffsetStartMs": 38290,
+                            "OffsetEndMs": 38580,
+                            "Word": "它"
+                        },
+                        {
+                            "OffsetStartMs": 38580,
+                            "OffsetEndMs": 38850,
+                            "Word": "是"
+                        },
+                        {
+                            "OffsetStartMs": 38850,
+                            "OffsetEndMs": 39740,
+                            "Word": "特斯拉"
+                        },
+                        {
+                            "OffsetStartMs": 39880,
+                            "OffsetEndMs": 40305,
+                            "Word": "所以"
+                        },
+                        {
+                            "OffsetStartMs": 40305,
+                            "OffsetEndMs": 40635,
+                            "Word": "这样"
+                        },
+                        {
+                            "OffsetStartMs": 40635,
+                            "OffsetEndMs": 40965,
+                            "Word": "一台"
+                        },
+                        {
+                            "OffsetStartMs": 40965,
+                            "OffsetEndMs": 41160,
+                            "Word": "车"
+                        },
+                        {
+                            "OffsetStartMs": 41160,
+                            "OffsetEndMs": 41400,
+                            "Word": "大家"
+                        },
+                        {
+                            "OffsetStartMs": 41400,
+                            "OffsetEndMs": 41670,
+                            "Word": "觉得"
+                        },
+                        {
+                            "OffsetStartMs": 41670,
+                            "OffsetEndMs": 41820,
+                            "Word": "买"
+                        },
+                        {
+                            "OffsetStartMs": 41820,
+                            "OffsetEndMs": 42090,
+                            "Word": "多少"
+                        },
+                        {
+                            "OffsetStartMs": 42090,
+                            "OffsetEndMs": 42270,
+                            "Word": "钱"
+                        },
+                        {
+                            "OffsetStartMs": 42270,
+                            "OffsetEndMs": 42555,
+                            "Word": "比较"
+                        },
+                        {
+                            "OffsetStartMs": 42555,
+                            "OffsetEndMs": 42840,
+                            "Word": "合适"
+                        },
+                        {
+                            "OffsetStartMs": 42840,
+                            "OffsetEndMs": 43100,
+                            "Word": "呢"
+                        }
+                    ],
+                    "SpeakerId": 0,
+                    "EmotionalEnergy": 0,
+                    "SilenceTime": 0,
+                    "EmotionType": [
+                        "disabled"
+                    ]
+                }
+            ],
+            "ErrorMsg": ""
+        }
+    }
+}

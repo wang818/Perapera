@@ -60,3 +60,13 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Perapera/.DS_Store
+
+# Local configuration files with credentials
+Perapera/Services/COSConfig.local.swift
+Perapera/Services/HunyuanConfig.local.swift

@@ -16,6 +16,12 @@ target 'Perapera' do
    pod 'RxSwift', '6.5.0'
    pod 'RxCocoa', '6.5.0'
    pod 'HandyJSON', '5.0.2'
+   
+   # Tencent Cloud COS SDK for file uploads
+   pod 'QCloudCOSXML'
+   
+   # FFmpeg for video/audio processing (using community maintained version)
+   pod 'ffmpeg-kit-ios-full', :git => 'https://github.com/luthviar/ffmpeg-kit-ios-full.git'
 
 end
 
