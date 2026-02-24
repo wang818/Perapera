@@ -11,6 +11,17 @@
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
 		1889F12E2EF9214B00886186 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12D2EF9214B00886186 /* Preview Assets.xcassets */; };
+		1890B8112F4D8D9E00ED26BC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B8102F4D8D9E00ED26BC /* HomeViewModel.swift */; };
+		1890B8142F4D8E0E00ED26BC /* VideoStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B8122F4D8E0E00ED26BC /* VideoStorageManager.swift */; };
+		1890B8152F4D8E0E00ED26BC /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B8132F4D8E0E00ED26BC /* AudioConverter.swift */; };
+		1890B8182F4DB5A200ED26BC /* ASRConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B8172F4DB5A200ED26BC /* ASRConfig.swift */; };
+		1890B8202F4DB5BC00ED26BC /* COSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B8192F4DB5BC00ED26BC /* COSConfig.swift */; };
+		1890B8212F4DB5BC00ED26BC /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B81A2F4DB5BC00ED26BC /* HunyuanConfig.local.swift */; };
+		1890B8222F4DB5BC00ED26BC /* HunyuanConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B81B2F4DB5BC00ED26BC /* HunyuanConfig.swift */; };
+		1890B8232F4DB5BC00ED26BC /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B81C2F4DB5BC00ED26BC /* COSConfig.local.swift */; };
+		1890B8242F4DB5BC00ED26BC /* COSUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B81D2F4DB5BC00ED26BC /* COSUploadManager.swift */; };
+		1890B8252F4DB5BC00ED26BC /* HunyuanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B81E2F4DB5BC00ED26BC /* HunyuanManager.swift */; };
+		1890B8262F4DB5BC00ED26BC /* ASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1890B81F2F4DB5BC00ED26BC /* ASRManager.swift */; };
 		18CA306E2F2787DE00CA9B62 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA306C2F2787DE00CA9B62 /* VideoPlayerView.swift */; };
 		18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA306D2F2787DE00CA9B62 /* VideoPlayerViewModel.swift */; };
 		18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30732F27884E00CA9B62 /* SubtitleModel.swift */; };
@@ -68,6 +79,17 @@
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1889F12A2EF9214B00886186 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1889F12D2EF9214B00886186 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1890B8102F4D8D9E00ED26BC /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		1890B8122F4D8E0E00ED26BC /* VideoStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStorageManager.swift; sourceTree = "<group>"; };
+		1890B8132F4D8E0E00ED26BC /* AudioConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioConverter.swift; sourceTree = "<group>"; };
+		1890B8172F4DB5A200ED26BC /* ASRConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRConfig.swift; path = Services/ASRConfig.swift; sourceTree = "<group>"; };
+		1890B8192F4DB5BC00ED26BC /* COSConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.swift; path = Services/COSConfig.swift; sourceTree = "<group>"; };
+		1890B81A2F4DB5BC00ED26BC /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.local.swift; path = Services/HunyuanConfig.local.swift; sourceTree = "<group>"; };
+		1890B81B2F4DB5BC00ED26BC /* HunyuanConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.swift; path = Services/HunyuanConfig.swift; sourceTree = "<group>"; };
+		1890B81C2F4DB5BC00ED26BC /* COSConfig.local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.local.swift; path = Services/COSConfig.local.swift; sourceTree = "<group>"; };
+		1890B81D2F4DB5BC00ED26BC /* COSUploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSUploadManager.swift; path = Services/COSUploadManager.swift; sourceTree = "<group>"; };
+		1890B81E2F4DB5BC00ED26BC /* HunyuanManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HunyuanManager.swift; path = Services/HunyuanManager.swift; sourceTree = "<group>"; };
+		1890B81F2F4DB5BC00ED26BC /* ASRManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRManager.swift; path = Services/ASRManager.swift; sourceTree = "<group>"; };
 		18CA306C2F2787DE00CA9B62 /* VideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPlayerView.swift; path = VideoPlayerView/VideoPlayerView.swift; sourceTree = "<group>"; };
 		18CA306D2F2787DE00CA9B62 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPlayerViewModel.swift; path = VideoPlayerView/VideoPlayerViewModel.swift; sourceTree = "<group>"; };
 		18CA30732F27884E00CA9B62 /* SubtitleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubtitleModel.swift; path = Models/SubtitleModel.swift; sourceTree = "<group>"; };
@@ -173,9 +195,8 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				1890B8162F4DB57F00ED26BC /* Services */,
 				18CA30702F27881100CA9B62 /* Models */,
-				183D7E292F23D1D20069A36C /* Perapera-Bridging-Header.h */,
-				180C766D2F0FB64400AD6932 /* Services */,
 				ECACBF162F0B5CE70090F990 /* Info.plist */,
 				ECACBF0E2F0B59880090F990 /* Network */,
 				ECACBEA32F0A6C6F0090F990 /* Icon */,
@@ -196,6 +217,21 @@
 				1889F12D2EF9214B00886186 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1890B8162F4DB57F00ED26BC /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				1890B81F2F4DB5BC00ED26BC /* ASRManager.swift */,
+				1890B81C2F4DB5BC00ED26BC /* COSConfig.local.swift */,
+				1890B8192F4DB5BC00ED26BC /* COSConfig.swift */,
+				1890B81D2F4DB5BC00ED26BC /* COSUploadManager.swift */,
+				1890B81A2F4DB5BC00ED26BC /* HunyuanConfig.local.swift */,
+				1890B81B2F4DB5BC00ED26BC /* HunyuanConfig.swift */,
+				1890B81E2F4DB5BC00ED26BC /* HunyuanManager.swift */,
+				1890B8172F4DB5A200ED26BC /* ASRConfig.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 		18CA306B2F2787BC00CA9B62 /* VideoPlayerView */ = {
@@ -266,6 +302,7 @@
 		ECACBE742EF9380B0090F990 /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
+				1890B8102F4D8D9E00ED26BC /* HomeViewModel.swift */,
 				ECACBE6D2EF937930090F990 /* HomeView.swift */,
 			);
 			path = HomeView;
@@ -292,6 +329,8 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				1890B8132F4D8E0E00ED26BC /* AudioConverter.swift */,
+				1890B8122F4D8E0E00ED26BC /* VideoStorageManager.swift */,
 				EC7FEF012F284BCA0007BCA6 /* UserManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
@@ -553,15 +592,21 @@
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				ECACBF202F0BB6A40090F990 /* SendCaptchaModel.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
+				1890B8202F4DB5BC00ED26BC /* COSConfig.swift in Sources */,
+				1890B8222F4DB5BC00ED26BC /* HunyuanConfig.swift in Sources */,
+				1890B8182F4DB5A200ED26BC /* ASRConfig.swift in Sources */,
 				ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */,
 				ECACBF232F0BB8B20090F990 /* ToastView.swift in Sources */,
+				1890B8152F4D8E0E00ED26BC /* AudioConverter.swift in Sources */,
 				ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
 				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,
 				EC7FEF052F284EE50007BCA6 /* PurchaseView.swift in Sources */,
+				1890B8242F4DB5BC00ED26BC /* COSUploadManager.swift in Sources */,
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
 				ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */,
+				1890B8252F4DB5BC00ED26BC /* HunyuanManager.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
 				EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */,
 				ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */,
@@ -576,14 +621,14 @@
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
+				1890B8142F4D8E0E00ED26BC /* VideoStorageManager.swift in Sources */,
+				1890B8232F4DB5BC00ED26BC /* COSConfig.local.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 				18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */,
-				180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */,
-				FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */,
-				FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */,
+				1890B8112F4D8D9E00ED26BC /* HomeViewModel.swift in Sources */,
+				1890B8262F4DB5BC00ED26BC /* ASRManager.swift in Sources */,
 				18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */,
-				FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */,
-				FFFFFFF92F1000030090F990 /* HomeViewModel.swift in Sources */,
+				1890B8212F4DB5BC00ED26BC /* HunyuanConfig.local.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
