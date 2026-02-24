@@ -39,10 +39,8 @@ class AudioConverter {
     }
     
     // MARK: - 生成输出文件路径
-    private func generateOutputPath(for inputURL: URL) -> URL {
-        let fileName = inputURL.deletingPathExtension().lastPathComponent
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let outputFileName = "\(fileName)_\(timestamp).opus"
+    private func generateOutputPath(videoId: String) -> URL {
+        let outputFileName = "\(videoId).opus"
         return getDocumentsDirectory().appendingPathComponent(outputFileName)
     }
     
@@ -50,11 +48,13 @@ class AudioConverter {
     /// 将视频文件转换为 Opus 格式音频
     /// - Parameters:
     ///   - inputURL: 输入视频文件 URL
+    ///   - videoId: 视频 ID（用作输出文件名）
     ///   - bitrate: 音频比特率（默认 64k）
     ///   - sampleRate: 采样率（默认 48000）
     ///   - completion: 完成回调
     func convertVideoToOpus(
         inputURL: URL,
+        videoId: String,
         bitrate: String = "64k",
         sampleRate: Int = 48000,
         completion: @escaping (ConversionResult) -> Void
@@ -66,7 +66,7 @@ class AudioConverter {
         }
         
         // 生成输出文件路径
-        let outputURL = generateOutputPath(for: inputURL)
+        let outputURL = generateOutputPath(videoId: videoId)
         
         // 如果输出文件已存在，先删除
         if FileManager.default.fileExists(atPath: outputURL.path) {
@@ -79,6 +79,7 @@ class AudioConverter {
         print("🎬 开始转换视频到 Opus 音频...")
         print("📥 输入: \(inputURL.lastPathComponent)")
         print("📤 输出: \(outputURL.lastPathComponent)")
+        print("🆔 视频ID: \(videoId)")
         print("⚙️ 命令: \(command)")
         
         // 异步执行转换
@@ -129,12 +130,14 @@ class AudioConverter {
     /// 将视频文件转换为 Opus 格式音频（带进度回调）
     /// - Parameters:
     ///   - inputURL: 输入视频文件 URL
+    ///   - videoId: 视频 ID（用作输出文件名）
     ///   - bitrate: 音频比特率（默认 64k）
     ///   - sampleRate: 采样率（默认 48000）
     ///   - progress: 进度回调（0.0 - 1.0）
     ///   - completion: 完成回调
     func convertVideoToOpusWithProgress(
         inputURL: URL,
+        videoId: String,
         bitrate: String = "64k",
         sampleRate: Int = 48000,
         progress: @escaping (Double) -> Void,
@@ -147,7 +150,7 @@ class AudioConverter {
         }
         
         // 生成输出文件路径
-        let outputURL = generateOutputPath(for: inputURL)
+        let outputURL = generateOutputPath(videoId: videoId)
         
         // 如果输出文件已存在，先删除
         if FileManager.default.fileExists(atPath: outputURL.path) {
@@ -160,6 +163,7 @@ class AudioConverter {
         print("🎬 开始转换视频到 Opus 音频（带进度）...")
         print("📥 输入: \(inputURL.lastPathComponent)")
         print("📤 输出: \(outputURL.lastPathComponent)")
+        print("🆔 视频ID: \(videoId)")
         
         // 获取视频时长
         let duration = getVideoDuration(url: inputURL)

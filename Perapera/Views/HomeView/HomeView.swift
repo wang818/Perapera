@@ -543,6 +543,61 @@ struct HomeView: View {
     /// 加载视频列表
     private func loadVideos() {
         videos = VideoStorageManager.shared.loadVideos()
+        printVideosInfo()
+    }
+    
+    /// 输出 videos 变量信息到控制台
+    private func printVideosInfo() {
+        print("\n" + String(repeating: "=", count: 70))
+        print("📹 当前视频列表 (共 \(videos.count) 个)")
+        print(String(repeating: "=", count: 70))
+        
+        if videos.isEmpty {
+            print("📭 列表为空")
+        } else {
+            for (index, video) in videos.enumerated() {
+                print("\n[\(index + 1)] 视频信息:")
+                print("  🆔 ID: \(video.id)")
+                print("  📝 名称: \(video.name)")
+                print("  🎬 视频路径: \(video.videoURL)")
+                
+                if let audioURL = video.audioURL {
+                    print("  🎵 音频路径: \(audioURL)")
+                    print("  ✅ 音频状态: 已转换")
+                } else {
+                    print("  🎵 音频路径: 无")
+                    print("  ⏳ 音频状态: 未转换")
+                }
+                
+                print("  🕐 创建时间: \(formatDateForConsole(video.createdAt))")
+                
+                if let posterImage = video.posterImage {
+                    let size = posterImage.size
+                    print("  🖼️  海报图: 有 (\(Int(size.width))x\(Int(size.height)))")
+                } else {
+                    print("  🖼️  海报图: 无")
+                }
+                
+                // 检查视频类型
+                if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
+                    print("  📺 类型: YouTube 视频")
+                } else {
+                    print("  📁 类型: 本地视频")
+                }
+                
+                print("  " + String(repeating: "-", count: 66))
+            }
+        }
+        
+        print(String(repeating: "=", count: 70) + "\n")
+    }
+    
+    /// 格式化日期用于控制台输出
+    private func formatDateForConsole(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "zh_CN")
+        return formatter.string(from: date)
     }
     
     /// 删除视频
@@ -629,6 +684,7 @@ struct HomeView: View {
         
         AudioConverter.shared.convertVideoToOpusWithProgress(
             inputURL: videoURL,
+            videoId: videoId,
             bitrate: "64k",
             sampleRate: 48000,
             progress: { progress in
@@ -641,6 +697,9 @@ struct HomeView: View {
                 case .success(let audioURL):
                     print("✅ 音频转换成功!")
                     print("📁 音频路径: \(audioURL.path)")
+                    
+                    // 输出文件详细信息到控制台
+                    printAudioFileInfo(audioURL: audioURL)
                     
                     // 更新视频的音频路径
                     VideoStorageManager.shared.updateVideoAudioURL(
@@ -708,6 +767,61 @@ struct HomeView: View {
     /// 读取并打印 123.json 的内容
     private func print123JsonContent() {
         viewModel.translate123Json()
+    }
+    
+    /// 输出音频文件详细信息到控制台
+    private func printAudioFileInfo(audioURL: URL) {
+        print("\n" + String(repeating: "=", count: 60))
+        print("📄 转换后的音频文件信息")
+        print(String(repeating: "=", count: 60))
+        
+        do {
+            // 获取文件属性
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: audioURL.path)
+            
+            // 文件名
+            print("📝 文件名: \(audioURL.lastPathComponent)")
+            
+            // 文件路径
+            print("📂 完整路径: \(audioURL.path)")
+            
+            // 文件大小
+            if let fileSize = fileAttributes[.size] as? Int64 {
+                let fileSizeMB = Double(fileSize) / (1024 * 1024)
+                let fileSizeKB = Double(fileSize) / 1024
+                print("💾 文件大小: \(String(format: "%.2f", fileSizeMB)) MB (\(String(format: "%.2f", fileSizeKB)) KB)")
+            }
+            
+            // 创建时间
+            if let creationDate = fileAttributes[.creationDate] as? Date {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                print("🕐 创建时间: \(formatter.string(from: creationDate))")
+            }
+            
+            // 文件格式
+            print("🎵 文件格式: \(audioURL.pathExtension.uppercased())")
+            
+            // 检查文件是否存在
+            let fileExists = FileManager.default.fileExists(atPath: audioURL.path)
+            print("✓ 文件存在: \(fileExists ? "是" : "否")")
+            
+            // 尝试读取音频元数据
+            let asset = AVAsset(url: audioURL)
+            let duration = asset.duration
+            let durationSeconds = CMTimeGetSeconds(duration)
+            
+            if durationSeconds.isFinite && durationSeconds > 0 {
+                let minutes = Int(durationSeconds) / 60
+                let seconds = Int(durationSeconds) % 60
+                print("⏱️  音频时长: \(minutes)分\(seconds)秒 (\(String(format: "%.2f", durationSeconds))秒)")
+            }
+            
+            print(String(repeating: "=", count: 60) + "\n")
+            
+        } catch {
+            print("❌ 无法读取文件信息: \(error.localizedDescription)")
+        }
     }
     
     /// 轮询查询语音识别结果

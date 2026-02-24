@@ -11,7 +11,8 @@ struct VideoItem: Codable, Identifiable {
     let createdAt: Date
     
     init(name: String, posterImageData: Data?, videoURL: String, audioURL: String? = nil) {
-        self.id = UUID().uuidString
+        let timestamp = Int(Date().timeIntervalSince1970)
+        self.id = "\(UUID().uuidString)-\(timestamp)"
         self.name = name
         self.posterImageData = posterImageData
         self.videoURL = videoURL
