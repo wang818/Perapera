@@ -7,13 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		180C76702F0FB65C00AD6932 /* COSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C766E2F0FB65C00AD6932 /* COSConfig.swift */; };
-		180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */; };
-		180C76752F0FE2E000AD6932 /* ASRConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76722F0FE2DF00AD6932 /* ASRConfig.swift */; };
-		180C76762F0FE2E000AD6932 /* ASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76732F0FE2DF00AD6932 /* ASRManager.swift */; };
-		180C76772F0FE2E000AD6932 /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180C76742F0FE2E000AD6932 /* COSConfig.local.swift */; };
-		183D7E282F23CCCF0069A36C /* VideoStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */; };
-		183D7E2B2F23D2320069A36C /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183D7E2A2F23D2320069A36C /* AudioConverter.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -22,6 +15,10 @@
 		18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA306D2F2787DE00CA9B62 /* VideoPlayerViewModel.swift */; };
 		18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30732F27884E00CA9B62 /* SubtitleModel.swift */; };
 		63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92228B25C99537B2CD47D806 /* Pods_Perapera.framework */; };
+		EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31CE7E2F1491C80040B489 /* LoginModel.swift */; };
+		EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF012F284BCA0007BCA6 /* UserManager.swift */; };
+		EC7FEF052F284EE50007BCA6 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */; };
+		EC7FEF082F2854920007BCA6 /* SubtitleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */; };
 		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
 		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
@@ -35,28 +32,6 @@
 		ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */; };
 		ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9D2F0A59430090F990 /* PUserDefault.swift */; };
 		ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */; };
-		ECACBEDC2F0A6DAE0090F990 /* AppIcon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED92F0A6DAE0090F990 /* AppIcon-76@2x.png */; };
-		ECACBEDD2F0A6DAE0090F990 /* AppIcon-29@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECE2F0A6DAE0090F990 /* AppIcon-29@1x.png */; };
-		ECACBEDE2F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED02F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png */; };
-		ECACBEDF2F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED42F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png */; };
-		ECACBEE02F0A6DAE0090F990 /* AppIcon-83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEDA2F0A6DAE0090F990 /* AppIcon-83.5@2x.png */; };
-		ECACBEE12F0A6DAE0090F990 /* AppIcon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED62F0A6DAE0090F990 /* AppIcon-60@2x.png */; };
-		ECACBEE22F0A6DAE0090F990 /* AppIcon-40@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED22F0A6DAE0090F990 /* AppIcon-40@1x.png */; };
-		ECACBEE32F0A6DAE0090F990 /* AppIcon-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */; };
-		ECACBEE42F0A6DAE0090F990 /* AppIcon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED72F0A6DAE0090F990 /* AppIcon-60@3x.png */; };
-		ECACBEE52F0A6DAE0090F990 /* AppIcon-20@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECA2F0A6DAE0090F990 /* AppIcon-20@1x.png */; };
-		ECACBEE62F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECC2F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png */; };
-		ECACBEE72F0A6DAE0090F990 /* AppIcon-76@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED82F0A6DAE0090F990 /* AppIcon-76@1x.png */; };
-		ECACBEE82F0A6DAE0090F990 /* AppIcon-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECB2F0A6DAE0090F990 /* AppIcon-20@2x.png */; };
-		ECACBEE92F0A6DAE0090F990 /* AppIcon-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECF2F0A6DAE0090F990 /* AppIcon-29@2x.png */; };
-		ECACBEEA2F0A6DAE0090F990 /* AppIcon-40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED52F0A6DAE0090F990 /* AppIcon-40@3x.png */; };
-		ECACBEEB2F0A6DAE0090F990 /* AppIcon-20@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBECD2F0A6DAE0090F990 /* AppIcon-20@3x.png */; };
-		ECACBEEC2F0A6DAE0090F990 /* AppIcon-29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED12F0A6DAE0090F990 /* AppIcon-29@3x.png */; };
-		ECACBEED2F0A6DAE0090F990 /* AppIcon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBED32F0A6DAE0090F990 /* AppIcon-40@2x.png */; };
-		ECACBEF12F0B4A430090F990 /* AppIcon-64@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF02F0B4A430090F990 /* AppIcon-64@2x.png */; };
-		ECACBEF32F0B4A490090F990 /* AppIcon-64@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */; };
-		ECACBEF52F0B4A950090F990 /* AppIcon-38@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */; };
-		ECACBEF72F0B4AA70090F990 /* AppIcon-68@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */; };
 		ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF052F0B59880090F990 /* AppAPIEndPoint.swift */; };
 		ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0B2F0B59880090F990 /* NetWorkService.swift */; };
 		ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */; };
@@ -66,22 +41,28 @@
 		ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF092F0B59880090F990 /* EXTracking.swift */; };
 		ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */; };
 		ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1D2F0B9A340090F990 /* AppKeys.swift */; };
-		FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */; };
-		FFFFFFF92F1000030090F990 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFF82F1000030090F990 /* HomeViewModel.swift */; };
-		FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */; };
-		FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */; };
-		FFFFFFFF2F1000000090F990 /* 123.json in Resources */ = {isa = PBXBuildFile; fileRef = FFFFFFFE2F1000000090F990 /* 123.json */; };
+		ECACBF202F0BB6A40090F990 /* SendCaptchaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF1F2F0BB6A40090F990 /* SendCaptchaModel.swift */; };
+		ECACBF232F0BB8B20090F990 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF212F0BB8B20090F990 /* ToastView.swift */; };
+		ECACBF352F0BC8170090F990 /* AppIcon-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF342F0BC8170090F990 /* AppIcon-1024.png */; };
+		ECACBF362F0BC8170090F990 /* AppIcon-83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF332F0BC8170090F990 /* AppIcon-83.5@2x.png */; };
+		ECACBF372F0BC8170090F990 /* AppIcon-38@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF282F0BC8170090F990 /* AppIcon-38@2x.png */; };
+		ECACBF382F0BC8170090F990 /* AppIcon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF2A2F0BC8170090F990 /* AppIcon-40@2x.png */; };
+		ECACBF392F0BC8170090F990 /* AppIcon-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF262F0BC8170090F990 /* AppIcon-29@2x.png */; };
+		ECACBF3A2F0BC8170090F990 /* AppIcon-64@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF2F2F0BC8170090F990 /* AppIcon-64@3x.png */; };
+		ECACBF3B2F0BC8170090F990 /* AppIcon-68@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF302F0BC8170090F990 /* AppIcon-68@2x.png */; };
+		ECACBF3C2F0BC8170090F990 /* AppIcon-20@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF252F0BC8170090F990 /* AppIcon-20@3x.png */; };
+		ECACBF3D2F0BC8170090F990 /* AppIcon-38@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF292F0BC8170090F990 /* AppIcon-38@3x.png */; };
+		ECACBF3E2F0BC8170090F990 /* AppIcon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF2C2F0BC8170090F990 /* AppIcon-60@2x.png */; };
+		ECACBF3F2F0BC8170090F990 /* AppIcon-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF242F0BC8170090F990 /* AppIcon-20@2x.png */; };
+		ECACBF402F0BC8170090F990 /* AppIcon-40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF2B2F0BC8170090F990 /* AppIcon-40@3x.png */; };
+		ECACBF412F0BC8170090F990 /* AppIcon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF2D2F0BC8170090F990 /* AppIcon-60@3x.png */; };
+		ECACBF422F0BC8170090F990 /* AppIcon-64@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF2E2F0BC8170090F990 /* AppIcon-64@2x.png */; };
+		ECACBF432F0BC8170090F990 /* AppIcon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF312F0BC8170090F990 /* AppIcon-76.png */; };
+		ECACBF442F0BC8170090F990 /* AppIcon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */; };
+		ECACBF452F0BC8170090F990 /* AppIcon-29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF272F0BC8170090F990 /* AppIcon-29@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		180C766E2F0FB65C00AD6932 /* COSConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.swift; path = Services/COSConfig.swift; sourceTree = "<group>"; };
-		180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSUploadManager.swift; path = Services/COSUploadManager.swift; sourceTree = "<group>"; };
-		180C76722F0FE2DF00AD6932 /* ASRConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRConfig.swift; path = Services/ASRConfig.swift; sourceTree = "<group>"; };
-		180C76732F0FE2DF00AD6932 /* ASRManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASRManager.swift; path = Services/ASRManager.swift; sourceTree = "<group>"; };
-		180C76742F0FE2E000AD6932 /* COSConfig.local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = COSConfig.local.swift; path = Services/COSConfig.local.swift; sourceTree = "<group>"; };
-		183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStorageManager.swift; sourceTree = "<group>"; };
-		183D7E292F23D1D20069A36C /* Perapera-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Perapera-Bridging-Header.h"; sourceTree = "<group>"; };
-		183D7E2A2F23D2320069A36C /* AudioConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioConverter.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -93,6 +74,10 @@
 		491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.release.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.release.xcconfig"; sourceTree = "<group>"; };
 		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.debug.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.debug.xcconfig"; sourceTree = "<group>"; };
+		EC31CE7E2F1491C80040B489 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
+		EC7FEF012F284BCA0007BCA6 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
+		EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleSettingsView.swift; sourceTree = "<group>"; };
 		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -111,28 +96,6 @@
 		ECACBE9B2F0A4A5E0090F990 /* LanguageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingsView.swift; sourceTree = "<group>"; };
 		ECACBE9D2F0A59430090F990 /* PUserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PUserDefault.swift; sourceTree = "<group>"; };
 		ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
-		ECACBECA2F0A6DAE0090F990 /* AppIcon-20@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@1x.png"; sourceTree = "<group>"; };
-		ECACBECB2F0A6DAE0090F990 /* AppIcon-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@2x.png"; sourceTree = "<group>"; };
-		ECACBECC2F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@2x-ipad.png"; sourceTree = "<group>"; };
-		ECACBECD2F0A6DAE0090F990 /* AppIcon-20@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@3x.png"; sourceTree = "<group>"; };
-		ECACBECE2F0A6DAE0090F990 /* AppIcon-29@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@1x.png"; sourceTree = "<group>"; };
-		ECACBECF2F0A6DAE0090F990 /* AppIcon-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@2x.png"; sourceTree = "<group>"; };
-		ECACBED02F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@2x-ipad.png"; sourceTree = "<group>"; };
-		ECACBED12F0A6DAE0090F990 /* AppIcon-29@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@3x.png"; sourceTree = "<group>"; };
-		ECACBED22F0A6DAE0090F990 /* AppIcon-40@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@1x.png"; sourceTree = "<group>"; };
-		ECACBED32F0A6DAE0090F990 /* AppIcon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@2x.png"; sourceTree = "<group>"; };
-		ECACBED42F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@2x-ipad.png"; sourceTree = "<group>"; };
-		ECACBED52F0A6DAE0090F990 /* AppIcon-40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@3x.png"; sourceTree = "<group>"; };
-		ECACBED62F0A6DAE0090F990 /* AppIcon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-60@2x.png"; sourceTree = "<group>"; };
-		ECACBED72F0A6DAE0090F990 /* AppIcon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-60@3x.png"; sourceTree = "<group>"; };
-		ECACBED82F0A6DAE0090F990 /* AppIcon-76@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@1x.png"; sourceTree = "<group>"; };
-		ECACBED92F0A6DAE0090F990 /* AppIcon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@2x.png"; sourceTree = "<group>"; };
-		ECACBEDA2F0A6DAE0090F990 /* AppIcon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-83.5@2x.png"; sourceTree = "<group>"; };
-		ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-1024.png"; sourceTree = "<group>"; };
-		ECACBEF02F0B4A430090F990 /* AppIcon-64@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-64@2x.png"; sourceTree = "<group>"; };
-		ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-64@3x.png"; sourceTree = "<group>"; };
-		ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-38@3x.png"; sourceTree = "<group>"; };
-		ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-68@2x.png"; sourceTree = "<group>"; };
 		ECACBEF82F0B4AD30090F990 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBEF92F0B4AE90090F990 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ECACBEFA2F0B4B080090F990 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -156,11 +119,25 @@
 		ECACBF162F0B5CE70090F990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLanguageModel.swift; sourceTree = "<group>"; };
 		ECACBF1D2F0B9A340090F990 /* AppKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKeys.swift; sourceTree = "<group>"; };
-		FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.local.swift; path = Services/HunyuanConfig.local.swift; sourceTree = "<group>"; };
-		FFFFFFF82F1000030090F990 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanManager.swift; path = Services/HunyuanManager.swift; sourceTree = "<group>"; };
-		FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HunyuanConfig.swift; path = Services/HunyuanConfig.swift; sourceTree = "<group>"; };
-		FFFFFFFE2F1000000090F990 /* 123.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = 123.json; sourceTree = "<group>"; };
+		ECACBF1F2F0BB6A40090F990 /* SendCaptchaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCaptchaModel.swift; sourceTree = "<group>"; };
+		ECACBF212F0BB8B20090F990 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		ECACBF242F0BC8170090F990 /* AppIcon-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@2x.png"; sourceTree = "<group>"; };
+		ECACBF252F0BC8170090F990 /* AppIcon-20@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-20@3x.png"; sourceTree = "<group>"; };
+		ECACBF262F0BC8170090F990 /* AppIcon-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@2x.png"; sourceTree = "<group>"; };
+		ECACBF272F0BC8170090F990 /* AppIcon-29@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-29@3x.png"; sourceTree = "<group>"; };
+		ECACBF282F0BC8170090F990 /* AppIcon-38@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-38@2x.png"; sourceTree = "<group>"; };
+		ECACBF292F0BC8170090F990 /* AppIcon-38@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-38@3x.png"; sourceTree = "<group>"; };
+		ECACBF2A2F0BC8170090F990 /* AppIcon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@2x.png"; sourceTree = "<group>"; };
+		ECACBF2B2F0BC8170090F990 /* AppIcon-40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-40@3x.png"; sourceTree = "<group>"; };
+		ECACBF2C2F0BC8170090F990 /* AppIcon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-60@2x.png"; sourceTree = "<group>"; };
+		ECACBF2D2F0BC8170090F990 /* AppIcon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-60@3x.png"; sourceTree = "<group>"; };
+		ECACBF2E2F0BC8170090F990 /* AppIcon-64@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-64@2x.png"; sourceTree = "<group>"; };
+		ECACBF2F2F0BC8170090F990 /* AppIcon-64@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-64@3x.png"; sourceTree = "<group>"; };
+		ECACBF302F0BC8170090F990 /* AppIcon-68@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-68@2x.png"; sourceTree = "<group>"; };
+		ECACBF312F0BC8170090F990 /* AppIcon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76.png"; sourceTree = "<group>"; };
+		ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@2x.png"; sourceTree = "<group>"; };
+		ECACBF332F0BC8170090F990 /* AppIcon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-83.5@2x.png"; sourceTree = "<group>"; };
+		ECACBF342F0BC8170090F990 /* AppIcon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-1024.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,28 +152,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		180C766D2F0FB64400AD6932 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				180C76722F0FE2DF00AD6932 /* ASRConfig.swift */,
-				180C76732F0FE2DF00AD6932 /* ASRManager.swift */,
-				180C76742F0FE2E000AD6932 /* COSConfig.local.swift */,
-				180C766E2F0FB65C00AD6932 /* COSConfig.swift */,
-				180C766F2F0FB65C00AD6932 /* COSUploadManager.swift */,
-				FFFFFFFC2F1000010090F990 /* HunyuanConfig.swift */,
-				FFFFFFF62F1000040090F990 /* HunyuanConfig.local.swift */,
-				FFFFFFFA2F1000020090F990 /* HunyuanManager.swift */,
-			);
-			name = Services;
-			sourceTree = "<group>";
-		};
 		1889F11A2EF9214800886186 = {
 			isa = PBXGroup;
 			children = (
-				6003A9B52417A3737F56402B /* Frameworks */,
 				1889F1252EF9214800886186 /* Perapera */,
-				C0897F491922CD8EFA017C71 /* Pods */,
 				1889F1242EF9214800886186 /* Products */,
+				C0897F491922CD8EFA017C71 /* Pods */,
+				6003A9B52417A3737F56402B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -224,7 +186,6 @@
 				1889F12A2EF9214B00886186 /* Assets.xcassets */,
 				1889F12C2EF9214B00886186 /* Preview Content */,
 				ECACBE7C2EFA57210090F990 /* Localizable.strings */,
-				FFFFFFFE2F1000000090F990 /* 123.json */,
 			);
 			path = Perapera;
 			sourceTree = "<group>";
@@ -271,10 +232,29 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		EC7FEF042F284EE50007BCA6 /* PurchaseView */ = {
+			isa = PBXGroup;
+			children = (
+				EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */,
+			);
+			path = PurchaseView;
+			sourceTree = "<group>";
+		};
+		EC7FEF072F2854920007BCA6 /* SubtitleSettingsView */ = {
+			isa = PBXGroup;
+			children = (
+				EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */,
+			);
+			path = SubtitleSettingsView;
+			sourceTree = "<group>";
+		};
 		ECACBE732EF937CA0090F990 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				18CA306B2F2787BC00CA9B62 /* VideoPlayerView */,
+				EC7FEF072F2854920007BCA6 /* SubtitleSettingsView */,
+				EC7FEF042F284EE50007BCA6 /* PurchaseView */,
+				ECACBF222F0BB8B20090F990 /* Components */,
 				ECACBE892F0A15DF0090F990 /* LoginView */,
 				ECACBE762EF938410090F990 /* SettingsView */,
 				ECACBE752EF938340090F990 /* PodcastView */,
@@ -287,7 +267,6 @@
 			isa = PBXGroup;
 			children = (
 				ECACBE6D2EF937930090F990 /* HomeView.swift */,
-				FFFFFFF82F1000030090F990 /* HomeViewModel.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -313,8 +292,7 @@
 		ECACBE832EFA58980090F990 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
-				183D7E2A2F23D2320069A36C /* AudioConverter.swift */,
-				183D7E272F23CCCF0069A36C /* VideoStorageManager.swift */,
+				EC7FEF012F284BCA0007BCA6 /* UserManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
@@ -353,28 +331,23 @@
 		ECACBEA32F0A6C6F0090F990 /* Icon */ = {
 			isa = PBXGroup;
 			children = (
-				ECACBECA2F0A6DAE0090F990 /* AppIcon-20@1x.png */,
-				ECACBECB2F0A6DAE0090F990 /* AppIcon-20@2x.png */,
-				ECACBECC2F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png */,
-				ECACBECD2F0A6DAE0090F990 /* AppIcon-20@3x.png */,
-				ECACBECE2F0A6DAE0090F990 /* AppIcon-29@1x.png */,
-				ECACBECF2F0A6DAE0090F990 /* AppIcon-29@2x.png */,
-				ECACBED02F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png */,
-				ECACBED12F0A6DAE0090F990 /* AppIcon-29@3x.png */,
-				ECACBEF42F0B4A950090F990 /* AppIcon-38@3x.png */,
-				ECACBED22F0A6DAE0090F990 /* AppIcon-40@1x.png */,
-				ECACBED32F0A6DAE0090F990 /* AppIcon-40@2x.png */,
-				ECACBED42F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png */,
-				ECACBED52F0A6DAE0090F990 /* AppIcon-40@3x.png */,
-				ECACBED62F0A6DAE0090F990 /* AppIcon-60@2x.png */,
-				ECACBED72F0A6DAE0090F990 /* AppIcon-60@3x.png */,
-				ECACBEF02F0B4A430090F990 /* AppIcon-64@2x.png */,
-				ECACBEF22F0B4A490090F990 /* AppIcon-64@3x.png */,
-				ECACBEF62F0B4AA70090F990 /* AppIcon-68@2x.png */,
-				ECACBED82F0A6DAE0090F990 /* AppIcon-76@1x.png */,
-				ECACBED92F0A6DAE0090F990 /* AppIcon-76@2x.png */,
-				ECACBEDA2F0A6DAE0090F990 /* AppIcon-83.5@2x.png */,
-				ECACBEDB2F0A6DAE0090F990 /* AppIcon-1024.png */,
+				ECACBF242F0BC8170090F990 /* AppIcon-20@2x.png */,
+				ECACBF252F0BC8170090F990 /* AppIcon-20@3x.png */,
+				ECACBF262F0BC8170090F990 /* AppIcon-29@2x.png */,
+				ECACBF272F0BC8170090F990 /* AppIcon-29@3x.png */,
+				ECACBF282F0BC8170090F990 /* AppIcon-38@2x.png */,
+				ECACBF292F0BC8170090F990 /* AppIcon-38@3x.png */,
+				ECACBF2A2F0BC8170090F990 /* AppIcon-40@2x.png */,
+				ECACBF2B2F0BC8170090F990 /* AppIcon-40@3x.png */,
+				ECACBF2C2F0BC8170090F990 /* AppIcon-60@2x.png */,
+				ECACBF2D2F0BC8170090F990 /* AppIcon-60@3x.png */,
+				ECACBF2E2F0BC8170090F990 /* AppIcon-64@2x.png */,
+				ECACBF2F2F0BC8170090F990 /* AppIcon-64@3x.png */,
+				ECACBF302F0BC8170090F990 /* AppIcon-68@2x.png */,
+				ECACBF312F0BC8170090F990 /* AppIcon-76.png */,
+				ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */,
+				ECACBF332F0BC8170090F990 /* AppIcon-83.5@2x.png */,
+				ECACBF342F0BC8170090F990 /* AppIcon-1024.png */,
 			);
 			path = Icon;
 			sourceTree = "<group>";
@@ -390,6 +363,8 @@
 		ECACBF082F0B59880090F990 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				EC31CE7E2F1491C80040B489 /* LoginModel.swift */,
+				ECACBF1F2F0BB6A40090F990 /* SendCaptchaModel.swift */,
 				ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */,
 				ECACBF072F0B59880090F990 /* EXZendeskNoticeModel.swift */,
 			);
@@ -410,6 +385,14 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		ECACBF222F0BB8B20090F990 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				ECACBF212F0BB8B20090F990 /* ToastView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -422,7 +405,6 @@
 				1889F1202EF9214800886186 /* Frameworks */,
 				1889F1212EF9214800886186 /* Resources */,
 				64265FB93041787E16BFDC37 /* [CP] Embed Pods Frameworks */,
-				52C0FE72BF2B52242B73C4E1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -489,34 +471,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECACBF352F0BC8170090F990 /* AppIcon-1024.png in Resources */,
+				ECACBF362F0BC8170090F990 /* AppIcon-83.5@2x.png in Resources */,
+				ECACBF372F0BC8170090F990 /* AppIcon-38@2x.png in Resources */,
+				ECACBF382F0BC8170090F990 /* AppIcon-40@2x.png in Resources */,
+				ECACBF392F0BC8170090F990 /* AppIcon-29@2x.png in Resources */,
+				ECACBF3A2F0BC8170090F990 /* AppIcon-64@3x.png in Resources */,
+				ECACBF3B2F0BC8170090F990 /* AppIcon-68@2x.png in Resources */,
+				ECACBF3C2F0BC8170090F990 /* AppIcon-20@3x.png in Resources */,
+				ECACBF3D2F0BC8170090F990 /* AppIcon-38@3x.png in Resources */,
+				ECACBF3E2F0BC8170090F990 /* AppIcon-60@2x.png in Resources */,
+				ECACBF3F2F0BC8170090F990 /* AppIcon-20@2x.png in Resources */,
+				ECACBF402F0BC8170090F990 /* AppIcon-40@3x.png in Resources */,
+				ECACBF412F0BC8170090F990 /* AppIcon-60@3x.png in Resources */,
+				ECACBF422F0BC8170090F990 /* AppIcon-64@2x.png in Resources */,
+				ECACBF432F0BC8170090F990 /* AppIcon-76.png in Resources */,
+				ECACBF442F0BC8170090F990 /* AppIcon-76@2x.png in Resources */,
+				ECACBF452F0BC8170090F990 /* AppIcon-29@3x.png in Resources */,
 				1889F12E2EF9214B00886186 /* Preview Assets.xcassets in Resources */,
 				ECACBE7E2EFA57210090F990 /* Localizable.strings in Resources */,
-				ECACBEDC2F0A6DAE0090F990 /* AppIcon-76@2x.png in Resources */,
-				ECACBEDD2F0A6DAE0090F990 /* AppIcon-29@1x.png in Resources */,
-				ECACBEDE2F0A6DAE0090F990 /* AppIcon-29@2x-ipad.png in Resources */,
-				ECACBEDF2F0A6DAE0090F990 /* AppIcon-40@2x-ipad.png in Resources */,
-				ECACBEE02F0A6DAE0090F990 /* AppIcon-83.5@2x.png in Resources */,
-				ECACBEF12F0B4A430090F990 /* AppIcon-64@2x.png in Resources */,
-				ECACBEE12F0A6DAE0090F990 /* AppIcon-60@2x.png in Resources */,
-				ECACBEE22F0A6DAE0090F990 /* AppIcon-40@1x.png in Resources */,
-				ECACBEE32F0A6DAE0090F990 /* AppIcon-1024.png in Resources */,
-				ECACBEE42F0A6DAE0090F990 /* AppIcon-60@3x.png in Resources */,
-				ECACBEE52F0A6DAE0090F990 /* AppIcon-20@1x.png in Resources */,
-				ECACBEE62F0A6DAE0090F990 /* AppIcon-20@2x-ipad.png in Resources */,
-				ECACBEE72F0A6DAE0090F990 /* AppIcon-76@1x.png in Resources */,
-				ECACBEE82F0A6DAE0090F990 /* AppIcon-20@2x.png in Resources */,
-				ECACBEE92F0A6DAE0090F990 /* AppIcon-29@2x.png in Resources */,
-				ECACBEEA2F0A6DAE0090F990 /* AppIcon-40@3x.png in Resources */,
-				ECACBEEB2F0A6DAE0090F990 /* AppIcon-20@3x.png in Resources */,
-				ECACBEEC2F0A6DAE0090F990 /* AppIcon-29@3x.png in Resources */,
-				ECACBEED2F0A6DAE0090F990 /* AppIcon-40@2x.png in Resources */,
 				1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */,
-				ECACBEF72F0B4AA70090F990 /* AppIcon-68@2x.png in Resources */,
 				ECACBE982F0A38490090F990 /* EXThemeColorDark.json in Resources */,
 				ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */,
-				ECACBEF32F0B4A490090F990 /* AppIcon-64@3x.png in Resources */,
-				ECACBEF52F0B4A950090F990 /* AppIcon-38@3x.png in Resources */,
-				FFFFFFFF2F1000000090F990 /* 123.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,23 +521,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		52C0FE72BF2B52242B73C4E1 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		64265FB93041787E16BFDC37 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -570,9 +529,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -588,31 +551,31 @@
 			files = (
 				1889F1292EF9214800886186 /* ContentView.swift in Sources */,
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
+				ECACBF202F0BB6A40090F990 /* SendCaptchaModel.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
 				ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */,
-				183D7E282F23CCCF0069A36C /* VideoStorageManager.swift in Sources */,
+				ECACBF232F0BB8B20090F990 /* ToastView.swift in Sources */,
 				ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */,
 				ECACBE702EF937930090F990 /* PodcastView.swift in Sources */,
 				ECACBE9A2F0A38490090F990 /* EXThemeColor.swift in Sources */,
+				EC7FEF052F284EE50007BCA6 /* PurchaseView.swift in Sources */,
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
-				180C76762F0FE2E000AD6932 /* ASRManager.swift in Sources */,
 				ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
+				EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */,
 				ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */,
 				18CA306E2F2787DE00CA9B62 /* VideoPlayerView.swift in Sources */,
 				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,
 				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
-				180C76752F0FE2E000AD6932 /* ASRConfig.swift in Sources */,
 				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
-				180C76702F0FB65C00AD6932 /* COSConfig.swift in Sources */,
+				EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
+				EC7FEF082F2854920007BCA6 /* SubtitleSettingsView.swift in Sources */,
 				ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */,
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
-				180C76772F0FE2E000AD6932 /* COSConfig.local.swift in Sources */,
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
-				183D7E2B2F23D2320069A36C /* AudioConverter.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 				18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */,
 				180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */,
@@ -710,7 +673,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -769,7 +732,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -800,7 +763,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -835,7 +797,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

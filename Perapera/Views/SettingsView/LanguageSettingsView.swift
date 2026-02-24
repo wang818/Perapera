@@ -130,6 +130,8 @@ enum LanguageSelectionType {
     case ai
     case source
     case learning
+    case youtube
+    case secondSubtitle
 }
 
 struct LanguageSelectionSheet: View {
@@ -196,6 +198,8 @@ struct LanguageSelectionSheet: View {
         case .ai: return "settings_lang_ai_title".localized()
         case .source: return "settings_lang_source_title".localized()
         case .learning: return "settings_lang_learn_title".localized()
+        case .youtube: return "settings_subtitle_youtube_title".localized()
+        case .secondSubtitle: return "settings_subtitle_second_title".localized()
         }
     }
     
@@ -205,6 +209,8 @@ struct LanguageSelectionSheet: View {
         case .ai: return "settings_lang_ai_subtitle".localized()
         case .source: return "settings_lang_source_subtitle".localized()
         case .learning: return "settings_lang_learn_subtitle".localized()
+        case .youtube: return "settings_subtitle_youtube_subtitle".localized()
+        case .secondSubtitle: return "settings_subtitle_second_subtitle".localized()
         }
     }
     
@@ -218,6 +224,10 @@ struct LanguageSelectionSheet: View {
             LanguageManager.setSourceLanguage(key)
         case .learning:
             LanguageManager.setLearningLanguage(key)
+        case .youtube, .secondSubtitle:
+            // Handled via Binding in SubtitleSettingsView, no global manager update needed here
+            // or if we want to sync with UserDefaults keys manually:
+            break
         }
     }
 }

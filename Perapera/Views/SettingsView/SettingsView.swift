@@ -21,9 +21,12 @@ class SettingsViewModel: ObservableObject {
 
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
+    @ObservedObject private var userManager = UserManager.shared
     @State private var showingLoginView = false
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
+    @State private var showSubtitleSettings = false
+    @State private var showPurchaseView = false
 
     var body: some View {
         NavigationStack {
@@ -32,48 +35,73 @@ struct SettingsView: View {
                     .font(.title2)) {
                     HStack {
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("settings_account_not_logged_in".localized())
-                                .font(.headline)
-                                .foregroundColor(.Ex.text1)
-                            Text("settings_account_login_description".localized())
-                                .font(.subheadline)
-                                .foregroundColor(.Ex.text2)
+                            if userManager.isLoggedIn {
+                                Text(userManager.userEmail ?? "")
+                                    .font(.headline)
+                                    .foregroundColor(.Ex.text1)
+                            } else {
+                                Text("settings_account_not_logged_in".localized())
+                                    .font(.headline)
+                                    .foregroundColor(.Ex.text1)
+                                Text("settings_account_login_description".localized())
+                                    .font(.subheadline)
+                                    .foregroundColor(.Ex.text2)
+                            }
                         }
                         
                         Spacer()
                         
-                        Button(action: {
-                            // Handle login action
-                            print("Login tapped")
-                            showingLoginView = true
-                        }) {
-                            Text("settings_account_login_button".localized())
-                                .fontWeight(.medium)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(Color.Ex.main)
-                                .cornerRadius(8)
+                        if !userManager.isLoggedIn {
+                            Button(action: {
+                                // Handle login action
+                                print("Login tapped")
+                                showingLoginView = true
+                            }) {
+                                Text("settings_account_login_button".localized())
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                    .background(Color.Ex.main)
+                                    .cornerRadius(8)
+                            }
+                            .buttonStyle(PlainButtonStyle()) // Prevent list row selection
+                        } else {
+                             Button(action: {
+                                 userManager.logout()
+                             }) {
+                                 Text("logout".localized())
+                                     .fontWeight(.medium)
+                                     .foregroundColor(.white)
+                                     .padding(.horizontal, 16)
+                                     .padding(.vertical, 8)
+                                     .background(Color.gray)
+                                     .cornerRadius(8)
+                             }
+                             .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle()) // Prevent list row selection
                     }
                     .padding(.vertical, 6)
-                    
-                    
                 }
+                
                 Section {
-                    VStack(alignment: .center, spacing: 8) {
-                        Text("settings_pro_title".localized())
-                            .font(.headline)
-                            .foregroundColor(.Ex.text1)
-                        Text("settings_pro_subtitle".localized())
-                            .font(.subheadline)
-                            .foregroundColor(.Ex.text2)
+                    Button(action: {
+                        showPurchaseView = true
+                    }) {
+                        VStack(alignment: .center, spacing: 8) {
+                            Text("settings_pro_title".localized())
+                                .font(.headline)
+                                .foregroundColor(.Ex.text1)
+                            Text("settings_pro_subtitle".localized())
+                                .font(.subheadline)
+                                .foregroundColor(.Ex.text2)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                        .background(Color.ex.main)
+                        .cornerRadius(10)
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding()
-                    .background(Color.ex.main)
-                    .cornerRadius(10)
+                    .buttonStyle(PlainButtonStyle())
                     .listRowInsets(EdgeInsets()) // Remove default list row padding
                     .listRowBackground(Color.clear) // Remove default list row background
                 }
@@ -83,7 +111,7 @@ struct SettingsView: View {
                         showLanguageSettings = true
                     }
                     SettingsRowView(imageName: "textformat", title: "settings_alphabet_title".localized(), subtitle: "settings_alphabet_subtitle".localized()) {
-                        print("Alphabet tapped")
+                        showSubtitleSettings = true
                     }
                     SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
                         showThemeSettings = true
@@ -130,13 +158,21 @@ struct SettingsView: View {
                         destination: ThemeSettingsView(),
                         isActive: $showThemeSettings
                     ) { EmptyView() }
+                    
+                    NavigationLink(
+                        destination: SubtitleSettingsView(),
+                        isActive: $showSubtitleSettings
+                    ) { EmptyView() }
                 }
             )
             .onAppear {
                 viewModel.fetchSupportLanguages()
             }
-            .sheet(isPresented: $showingLoginView) {
+            .fullScreenCover(isPresented: $showingLoginView) {
                 LoginView()
+            }
+            .fullScreenCover(isPresented: $showPurchaseView) {
+                PurchaseView()
             }
         }
     }

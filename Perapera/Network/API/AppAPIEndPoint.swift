@@ -13,6 +13,8 @@ enum AppAPIEndPoint {
     case userInfo
     case zendeskNotice(page: String, pagesize: String)
     case supportLang
+    case sendCaptcha(email: String)
+    case login(email: String, captcha: String)
 }
 
 extension AppAPIEndPoint: TargetType {
@@ -26,6 +28,8 @@ extension AppAPIEndPoint: TargetType {
         case .userInfo: return "/user/info"
         case .zendeskNotice: return ""
         case .supportLang: return "common/support_lang"
+        case .sendCaptcha : return "auth/sendCaptcha"
+        case .login : return "auth/login"
             
         }
     }
@@ -34,6 +38,7 @@ extension AppAPIEndPoint: TargetType {
         switch self {
         case .zendeskNotice: return .get
         case .supportLang: return .get
+        case .sendCaptcha: return .get
         default: return .post
         }
     }
@@ -43,14 +48,24 @@ extension AppAPIEndPoint: TargetType {
         switch self {
         case .zendeskNotice(let page, let pagesize):
             let params = ["page": page, "pagesize": pagesize]
+            return .requestParameters(parameters: params, encoding: URLEncoding.default)
+        case .sendCaptcha(let email):
+            let params = ["email" : email]
+            return .requestParameters(parameters: params, encoding: URLEncoding.default)
+        case .login(let email, let captcha):
+            let params = ["email" : email, "captcha" : captcha]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+
         default:
             return .requestPlain
         }
     }
     
     var headers: [String : String]? {
-        return nil
+        var headParam : [String : String] = [:]
+        let appLanguage = LanguageManager.currentLanguageCode()
+        headParam["Accept-Language"] = appLanguage
+        return headParam
     }
     
     var sampleData: Data {
