@@ -569,6 +569,22 @@ struct HomeView: View {
                     print("  ⏳ 音频状态: 未转换")
                 }
                 
+                if let recognitionURL = video.recognitionURL {
+                    print("  📄 识别结果: \(recognitionURL)")
+                    print("  ✅ 识别状态: 已识别")
+                } else {
+                    print("  � 识别结果: 无")
+                    print("  ⏳ 识别状态: 未识别")
+                }
+                
+                if let translationURL = video.translationURL {
+                    print("  🌐 翻译结果: \(translationURL)")
+                    print("  ✅ 翻译状态: 已翻译")
+                } else {
+                    print("  🌐 翻译结果: 无")
+                    print("  ⏳ 翻译状态: 未翻译")
+                }
+                
                 print("  🕐 创建时间: \(formatDateForConsole(video.createdAt))")
                 
                 if let posterImage = video.posterImage {
@@ -917,6 +933,12 @@ struct HomeView: View {
             
             print(String(repeating: "=", count: 60) + "\n")
             
+            // 更新视频的识别结果路径
+            VideoStorageManager.shared.updateVideoRecognitionURL(id: videoId, recognitionURL: fileURL.path)
+            
+            // 刷新列表
+            loadVideos()
+            
         } catch {
             print("❌ 保存识别结果 JSON 失败: \(error.localizedDescription)")
         }
@@ -988,6 +1010,44 @@ struct VideoRowView: View {
                                 .font(.caption)
                         }
                         .foregroundColor(.green)
+                    }
+                    
+                    // 识别状态标签
+                    if video.hasRecognition {
+                        HStack(spacing: 4) {
+                            Image(systemName: "text.bubble")
+                                .font(.caption)
+                            Text("已识别")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.orange)
+                    } else if video.hasAudio {
+                        HStack(spacing: 4) {
+                            Image(systemName: "text.bubble")
+                                .font(.caption)
+                            Text("未识别")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.gray)
+                    }
+                    
+                    // 翻译状态标签
+                    if video.hasTranslation {
+                        HStack(spacing: 4) {
+                            Image(systemName: "globe")
+                                .font(.caption)
+                            Text("已翻译")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.purple)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "globe")
+                                .font(.caption)
+                            Text("未翻译")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.gray)
                     }
                 }
             }

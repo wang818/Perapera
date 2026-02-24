@@ -8,15 +8,19 @@ struct VideoItem: Codable, Identifiable {
     let posterImageData: Data? // 海报图片的 Data
     let videoURL: String // 视频地址（本地路径或远程URL）
     let audioURL: String? // 转换后的音频文件路径（Opus 格式）
+    let recognitionURL: String? // 识别结果 JSON 文件路径
+    let translationURL: String? // 翻译结果 JSON 文件路径
     let createdAt: Date
     
-    init(name: String, posterImageData: Data?, videoURL: String, audioURL: String? = nil) {
+    init(name: String, posterImageData: Data?, videoURL: String, audioURL: String? = nil, recognitionURL: String? = nil, translationURL: String? = nil) {
         let timestamp = Int(Date().timeIntervalSince1970)
         self.id = "\(UUID().uuidString)-\(timestamp)"
         self.name = name
         self.posterImageData = posterImageData
         self.videoURL = videoURL
         self.audioURL = audioURL
+        self.recognitionURL = recognitionURL
+        self.translationURL = translationURL
         self.createdAt = Date()
     }
     
@@ -29,6 +33,16 @@ struct VideoItem: Codable, Identifiable {
     // 是否已转换音频
     var hasAudio: Bool {
         return audioURL != nil
+    }
+    
+    // 是否已识别
+    var hasRecognition: Bool {
+        return recognitionURL != nil
+    }
+    
+    // 是否已翻译
+    var hasTranslation: Bool {
+        return translationURL != nil
     }
 }
 
@@ -74,7 +88,7 @@ class VideoStorageManager {
     }
     
     // MARK: - 添加单个视频
-    func addVideo(name: String, posterImage: UIImage?, videoURL: String, audioURL: String? = nil) {
+    func addVideo(name: String, posterImage: UIImage?, videoURL: String, audioURL: String? = nil, recognitionURL: String? = nil, translationURL: String? = nil) {
         var videos = loadVideos()
         
         // 压缩图片
@@ -84,7 +98,9 @@ class VideoStorageManager {
             name: name,
             posterImageData: compressedImageData,
             videoURL: videoURL,
-            audioURL: audioURL
+            audioURL: audioURL,
+            recognitionURL: recognitionURL,
+            translationURL: translationURL
         )
         
         videos.insert(newVideo, at: 0) // 插入到最前面
@@ -110,7 +126,7 @@ class VideoStorageManager {
     }
     
     // MARK: - 更新视频
-    func updateVideo(id: String, name: String? = nil, posterImage: UIImage? = nil, videoURL: String? = nil, audioURL: String? = nil) {
+    func updateVideo(id: String, name: String? = nil, posterImage: UIImage? = nil, videoURL: String? = nil, audioURL: String? = nil, recognitionURL: String? = nil, translationURL: String? = nil) {
         var videos = loadVideos()
         
         guard let index = videos.firstIndex(where: { $0.id == id }) else {
@@ -125,7 +141,9 @@ class VideoStorageManager {
             name: name ?? oldVideo.name,
             posterImageData: compressedImageData,
             videoURL: videoURL ?? oldVideo.videoURL,
-            audioURL: audioURL ?? oldVideo.audioURL
+            audioURL: audioURL ?? oldVideo.audioURL,
+            recognitionURL: recognitionURL ?? oldVideo.recognitionURL,
+            translationURL: translationURL ?? oldVideo.translationURL
         )
         
         videos[index] = updatedVideo
@@ -136,6 +154,18 @@ class VideoStorageManager {
     func updateVideoAudioURL(id: String, audioURL: String) {
         updateVideo(id: id, audioURL: audioURL)
         print("✅ 已更新视频 \(id) 的音频路径")
+    }
+    
+    // MARK: - 更新视频的识别结果路径
+    func updateVideoRecognitionURL(id: String, recognitionURL: String) {
+        updateVideo(id: id, recognitionURL: recognitionURL)
+        print("✅ 已更新视频 \(id) 的识别结果路径")
+    }
+    
+    // MARK: - 更新视频的翻译结果路径
+    func updateVideoTranslationURL(id: String, translationURL: String) {
+        updateVideo(id: id, translationURL: translationURL)
+        print("✅ 已更新视频 \(id) 的翻译结果路径")
     }
     
     // MARK: - 清空所有视频
