@@ -13,7 +13,7 @@ class HomeViewModel: ObservableObject {
     @Published var translationError: String?
     
     /// 翻译 123.json 文件
-    func translate123Json() {
+    func translate123Json(videoId: String? = nil) {
         guard let path = Bundle.main.path(forResource: "123", ofType: "json"),
               let jsonData = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
             translationError = "无法读取 123.json 文件"
@@ -42,6 +42,9 @@ class HomeViewModel: ObservableObject {
                         print(String(repeating: "=", count: 80) + "\n")
                         
                         self?.translationResult = jsonString
+                        
+                        // 保存翻译结果为 txt 文件到 Documents 目录
+                        self?.saveTranslationResultToTxt(jsonString: jsonString, videoId: videoId)
                     }
                     
                 case .failure(let error):
@@ -55,6 +58,39 @@ class HomeViewModel: ObservableObject {
                     self?.translationResult = "翻译失败: \(error.localizedDescription)"
                 }
             }
+        }
+    }
+    
+    /// 保存翻译结果为 txt 文件到 Documents 目录
+    private func saveTranslationResultToTxt(jsonString: String, videoId: String?) {
+        do {
+            // 获取 Documents 目录
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            // 生成文件名：如果有 videoId 则使用 videoId_translation.txt，否则使用时间戳
+            let fileName: String
+            if let videoId = videoId {
+                fileName = "\(videoId)_translation.txt"
+            } else {
+                let timestamp = Int(Date().timeIntervalSince1970)
+                fileName = "translation_\(timestamp).txt"
+            }
+            
+            let fileURL = documentsDirectory.appendingPathComponent(fileName)
+            
+            // 写入文件
+            try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
+            
+            print("\n" + String(repeating: "=", count: 60))
+            print("💾 翻译结果已保存为 TXT 文件")
+            print(String(repeating: "=", count: 60))
+            print("📝 文件名: \(fileName)")
+            print("📂 文件路径: \(fileURL.path)")
+            print("📄 内容长度: \(jsonString.count) 字符")
+            print(String(repeating: "=", count: 60) + "\n")
+            
+        } catch {
+            print("❌ 保存翻译结果 TXT 文件失败: \(error.localizedDescription)")
         }
     }
 }

@@ -67,6 +67,109 @@ class HunyuanManager {
     
     // MARK: - Translation Methods
     
+    /// 翻译简单文本
+    /// - Parameters:
+    ///   - text: 要翻译的文本
+    ///   - targetLanguage: 目标语言（如"日文"、"英文"等）
+    ///   - completion: 完成回调，返回翻译后的文本或错误
+    func translateText(_ text: String, targetLanguage: String, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = HunyuanConfig.generateRequestURL() else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
+            return
+        }
+        
+        let timestamp = Int(Date().timeIntervalSince1970)
+        
+        // 构建提示词
+        let prompt = """
+        请将以下中文文本翻译成\(targetLanguage)，保持原文的语气和含义，只返回翻译结果，不要添加任何解释或额外内容。
+        
+        原文：
+        \(text)
+        """
+        
+        // 构建请求体
+        let requestBody: [String: Any] = [
+            "Model": HunyuanConfig.defaultModel,
+            "Messages": [
+                [
+                    "Role": "user",
+                    "Content": prompt
+                ]
+            ],
+            "Temperature": 0.3,
+            "TopP": 1.0
+        ]
+        
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
+            return
+        }
+        
+        // 创建请求
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
+        request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
+        request.setValue("\(timestamp)", forHTTPHeaderField: "X-TC-Timestamp")
+        request.httpBody = jsonData
+        
+        // 生成签名
+        let signature = generateSignature(
+            action: "ChatCompletions",
+            timestamp: timestamp,
+            body: String(data: jsonData, encoding: .utf8) ?? ""
+        )
+        request.setValue(signature, forHTTPHeaderField: "Authorization")
+        
+        print("🚀 发送文本翻译请求到混元 API...")
+        print("📝 原文长度: \(text.count) 字符")
+        
+        // 发送请求
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
+                return
+            }
+            
+            // 打印原始响应（用于调试）
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📥 API 响应: \(responseString)")
+            }
+            
+            // 解析响应
+            do {
+                let chatResponse = try JSONDecoder().decode(HunyuanChatResponse.self, from: data)
+                
+                // 检查是否有错误
+                if let error = chatResponse.Response.Error {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(error.Message) (Code: \(error.Code))"])))
+                    return
+                }
+                
+                guard let content = chatResponse.Response.Choices?.first?.Message.Content else {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
+                    return
+                }
+                
+                print("✅ 翻译成功")
+                completion(.success(content))
+                
+            } catch {
+                print("❌ JSON 解析失败: \(error)")
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
     /// 翻译 JSON 文件中的 Words 数组为日文
     /// - Parameters:
     ///   - jsonData: 包含 Words 数组的 JSON 数据

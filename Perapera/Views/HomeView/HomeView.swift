@@ -939,8 +939,105 @@ struct HomeView: View {
             // 刷新列表
             loadVideos()
             
+            // 自动触发翻译
+            translateRecognitionResult(videoId: videoId, jsonData: jsonData)
+            
         } catch {
             print("❌ 保存识别结果 JSON 失败: \(error.localizedDescription)")
+        }
+    }
+    
+    /// 翻译识别结果
+    private func translateRecognitionResult(videoId: String, jsonData: Data) {
+        print("\n" + String(repeating: "🌟", count: 40))
+        print("🚀 开始翻译识别结果")
+        print(String(repeating: "🌟", count: 40) + "\n")
+        
+        // 解析识别结果JSON获取文本
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+              let recognizedText = jsonObject["recognizedText"] as? String else {
+            print("❌ 无法解析识别结果JSON")
+            return
+        }
+        
+        viewModel.isTranslating = true
+        
+        // 调用翻译文本的方法
+        HunyuanManager.shared.translateText(recognizedText, targetLanguage: "日文") { result in
+            DispatchQueue.main.async {
+                viewModel.isTranslating = false
+                
+                switch result {
+                case .success(let translatedText):
+                    print("\n" + String(repeating: "=", count: 80))
+                    print("📄 翻译结果")
+                    print(String(repeating: "=", count: 80))
+                    print("原文: \(recognizedText)")
+                    print("译文: \(translatedText)")
+                    print(String(repeating: "=", count: 80) + "\n")
+                    
+                    viewModel.translationResult = translatedText
+                    
+                    // 保存翻译结果为 txt 文件到 Documents 目录
+                    saveTranslationResultToTxt(videoId: videoId, originalText: recognizedText, translatedText: translatedText)
+                    
+                case .failure(let error):
+                    print("\n" + String(repeating: "=", count: 80))
+                    print("❌ 翻译失败")
+                    print(String(repeating: "=", count: 80))
+                    print("错误信息: \(error.localizedDescription)")
+                    print(String(repeating: "=", count: 80) + "\n")
+                    
+                    viewModel.translationResult = "翻译失败: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+    
+    /// 保存翻译结果为 txt 文件到 Documents 目录
+    private func saveTranslationResultToTxt(videoId: String, originalText: String, translatedText: String) {
+        do {
+            // 获取 Documents 目录
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            // 生成文件名：videoId_translation.txt
+            let fileName = "\(videoId)_translation.txt"
+            let fileURL = documentsDirectory.appendingPathComponent(fileName)
+            
+            // 构建文件内容
+            let content = """
+            ==================== 翻译结果 ====================
+            视频ID: \(videoId)
+            翻译时间: \(ISO8601DateFormatter().string(from: Date()))
+            
+            【原文】
+            \(originalText)
+            
+            【译文（日文）】
+            \(translatedText)
+            ==================================================
+            """
+            
+            // 写入文件
+            try content.write(to: fileURL, atomically: true, encoding: .utf8)
+            
+            print("\n" + String(repeating: "=", count: 60))
+            print("💾 翻译结果已保存为 TXT 文件")
+            print(String(repeating: "=", count: 60))
+            print("📝 文件名: \(fileName)")
+            print("📂 文件路径: \(fileURL.path)")
+            print("📄 原文长度: \(originalText.count) 字符")
+            print("📄 译文长度: \(translatedText.count) 字符")
+            print(String(repeating: "=", count: 60) + "\n")
+            
+            // 更新视频的翻译结果路径
+            VideoStorageManager.shared.updateVideoTranslationURL(id: videoId, translationURL: fileURL.path)
+            
+            // 刷新列表
+            loadVideos()
+            
+        } catch {
+            print("❌ 保存翻译结果 TXT 文件失败: \(error.localizedDescription)")
         }
     }
 }
