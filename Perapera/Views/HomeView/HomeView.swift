@@ -43,9 +43,12 @@ struct HomeView: View {
                         // 视频列表
                         List {
                             ForEach(videos) { video in
-                                VideoRowView(video: video, onDelete: {
-                                    deleteVideo(video)
-                                })
+                                NavigationLink(destination: VideoPlayerView(video: video)) {
+                                    VideoRowView(video: video, onDelete: {
+                                        deleteVideo(video)
+                                    })
+                                }
+                                .listRowInsets(EdgeInsets())
                             }
                             .onDelete(perform: deleteVideos)
                         }
@@ -830,13 +833,6 @@ struct VideoRowView: View {
         }
         .padding(.vertical, 8)
         .contentShape(Rectangle())
-        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            Button(role: .destructive) {
-                onDelete()
-            } label: {
-                Label("删除", systemImage: "trash")
-            }
-        }
     }
     
     private func formatDate(_ date: Date) -> String {
