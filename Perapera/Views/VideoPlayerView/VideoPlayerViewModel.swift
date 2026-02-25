@@ -23,17 +23,20 @@ class VideoPlayerViewModel: ObservableObject {
     
     // MARK: - 设置播放器
     func setupPlayer() {
-        guard let videoURL = URL(string: video.videoURL) else {
-            print("❌ 无效的视频 URL: \(video.videoURL)")
-            isLoading = false
-            return
-        }
+        let videoURL = video.actualVideoURL
         
-        // 检查文件是否存在
-        if !FileManager.default.fileExists(atPath: videoURL.path) {
-            print("❌ 视频文件不存在: \(videoURL.path)")
-            isLoading = false
-            return
+        print("🎬 准备加载视频")
+        print("📂 视频路径: \(videoURL.path)")
+        print("🆔 视频ID: \(video.id)")
+        print("📺 是否YouTube: \(video.isYouTube)")
+        
+        // 如果是本地视频，检查文件是否存在
+        if !video.isYouTube {
+            if !FileManager.default.fileExists(atPath: videoURL.path) {
+                print("❌ 视频文件不存在: \(videoURL.path)")
+                isLoading = false
+                return
+            }
         }
         
         let playerItem = AVPlayerItem(url: videoURL)

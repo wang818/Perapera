@@ -219,23 +219,30 @@ struct HomeView: View {
                     switch result {
                     case .success(let urls):
                         guard let url = urls.first else { return }
+                        
+                        // 获取访问权限
+                        guard url.startAccessingSecurityScopedResource() else {
+                            print("❌ 无法访问文件")
+                            return
+                        }
+                        
+                        defer { url.stopAccessingSecurityScopedResource() }
+                        
                         print("Selected media file: \(url.lastPathComponent)")
                         
-                        // 保存视频到列表（先不设置音频路径）
+                        // 保存视频到 Documents 目录
                         let videoName = url.deletingPathExtension().lastPathComponent
-                        VideoStorageManager.shared.addVideo(
+                        
+                        if let newVideo = VideoStorageManager.shared.addLocalVideo(
                             name: videoName,
                             posterImage: UIImage(systemName: "video.fill"),
-                            videoURL: url.path
-                        )
-                        loadVideos()
-                        
-                        // 获取刚添加的视频 ID
-                        if let newVideo = videos.first {
+                            sourceURL: url
+                        ) {
+                            loadVideos()
                             currentConvertingVideoId = newVideo.id
                             
                             // 开始转换视频为音频
-                            convertVideoToAudio(videoURL: url, videoId: newVideo.id)
+                            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
                         }
                         
                     case .failure(let error):
@@ -258,22 +265,24 @@ struct HomeView: View {
                                 // 生成缩略图
                                 let thumbnail = generateVideoThumbnail(url: tempURL)
                                 
-                                // 保存到视频列表
-                                VideoStorageManager.shared.addVideo(
+                                // 保存到 Documents 目录
+                                let newVideo = VideoStorageManager.shared.addLocalVideo(
                                     name: "相册视频 - \(Date().formatted())",
                                     posterImage: thumbnail,
-                                    videoURL: tempURL.path
+                                    sourceURL: tempURL
                                 )
+                                
+                                // 删除临时文件
+                                try? FileManager.default.removeItem(at: tempURL)
                                 
                                 await MainActor.run {
                                     loadVideos()
                                     
-                                    // 获取刚添加的视频 ID
-                                    if let newVideo = videos.first {
+                                    if let newVideo = newVideo {
                                         currentConvertingVideoId = newVideo.id
                                         
                                         // 开始转换视频为音频
-                                        convertVideoToAudio(videoURL: tempURL, videoId: newVideo.id)
+                                        convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
                                     }
                                 }
                             }
@@ -572,7 +581,7 @@ struct HomeView: View {
                 }
                 
                 // 检查视频类型
-                if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
+                if video.isYouTube {
                     print("  📺 类型: YouTube 视频")
                 } else {
                     print("  📁 类型: 本地视频")
@@ -622,10 +631,11 @@ struct HomeView: View {
         // 使用默认海报图
         let defaultPoster = UIImage(systemName: "video.fill")
         
-        VideoStorageManager.shared.addVideo(
+        let _ = VideoStorageManager.shared.addVideo(
             name: videoName,
             posterImage: defaultPoster,
-            videoURL: url
+            videoURL: url,
+            isYouTube: true
         )
         
         loadVideos()
@@ -1052,7 +1062,7 @@ struct VideoRowView: View {
                     .foregroundColor(.ex.text2)
                 
                 HStack(spacing: 8) {
-                    if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
+                    if video.isYouTube {
                         HStack(spacing: 4) {
                             Image(systemName: "play.rectangle.fill")
                                 .font(.caption)
