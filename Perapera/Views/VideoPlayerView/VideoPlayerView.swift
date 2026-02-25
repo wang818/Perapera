@@ -107,14 +107,22 @@ struct VideoPlayerView: View {
     // MARK: - 字幕区域
     private var subtitleSection: some View {
         VStack(spacing: 0) {
-            // 翻译字幕（上）- 日文
-            SubtitleRow(
-                text: viewModel.currentSubtitle?.translatedText ?? "",
-                isActive: viewModel.currentSubtitle != nil && !viewModel.currentSubtitle!.translatedText.isEmpty,
-                language: .japanese,
-                placeholder: "日文字幕"
-            )
-            .frame(height: 60)
+            // 翻译字幕（上）- 日文，带词级别高亮
+            if let subtitle = viewModel.currentSubtitle, let translatedWords = subtitle.translatedWords {
+                WordHighlightSubtitleView(
+                    words: translatedWords,
+                    currentTime: viewModel.currentTime
+                )
+                .frame(height: 80)
+            } else {
+                SubtitleRow(
+                    text: viewModel.currentSubtitle?.translatedText ?? "",
+                    isActive: viewModel.currentSubtitle != nil && !viewModel.currentSubtitle!.translatedText.isEmpty,
+                    language: .japanese,
+                    placeholder: "日文字幕"
+                )
+                .frame(height: 60)
+            }
             
             Divider()
                 .background(Color.gray.opacity(0.3))

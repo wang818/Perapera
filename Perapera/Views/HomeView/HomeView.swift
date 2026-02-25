@@ -929,45 +929,76 @@ struct HomeView: View {
     /// 翻译识别结果
     private func translateRecognitionResult(videoId: String, recognizedText: String) {
         print("\n" + String(repeating: "🌟", count: 40))
-        print("🚀 开始翻译识别结果")
+        print("🚀 开始翻译识别结果（词级别）")
         print(String(repeating: "🌟", count: 40) + "\n")
         
         viewModel.isTranslating = true
         
-        // 调用翻译文本的方法
-        HunyuanManager.shared.translateText(recognizedText, targetLanguage: "日文") { result in
+        // 读取 JSON 文件获取 words 数组
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let jsonFileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
+        
+        guard let jsonData = try? Data(contentsOf: jsonFileURL) else {
+            print("❌ 无法读取 JSON 文件")
+            viewModel.isTranslating = false
+            return
+        }
+        
+        // 解析 JSON 获取所有 words
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+              let response = jsonObject["Response"] as? [String: Any],
+              let data = response["Data"] as? [String: Any],
+              let resultDetail = data["ResultDetail"] as? [[String: Any]] else {
+            print("❌ 无法解析 JSON 结构")
+            viewModel.isTranslating = false
+            return
+        }
+        
+        // 收集所有 words
+        var allWords: [String] = []
+        for detail in resultDetail {
+            if let words = detail["Words"] as? [[String: Any]] {
+                let wordValues = words.compactMap { $0["Word"] as? String }
+                allWords.append(contentsOf: wordValues)
+            }
+        }
+        
+        if allWords.isEmpty {
+            print("❌ 没有找到 words 数组")
+            viewModel.isTranslating = false
+            return
+        }
+        
+        print("📝 准备翻译 \(allWords.count) 个单词...")
+        
+        // 调用翻译 API
+        HunyuanManager.shared.translateWords(allWords) { result in
             DispatchQueue.main.async {
                 viewModel.isTranslating = false
                 
                 switch result {
-                case .success(let translatedText):
-                    print("\n" + String(repeating: "=", count: 80))
-                    print("📄 翻译结果")
-                    print(String(repeating: "=", count: 80))
-                    print("原文: \(recognizedText)")
-                    print("译文: \(translatedText)")
-                    print(String(repeating: "=", count: 80) + "\n")
+                case .success(let translatedWords):
+                    print("✅ 翻译成功，共 \(translatedWords.count) 个日文单词")
                     
-                    viewModel.translationResult = translatedText
+                    // 保存翻译结果为简单文本格式
+                    self.saveTranslationResultToTxt(
+                        videoId: videoId,
+                        originalWords: allWords,
+                        translatedWords: translatedWords
+                    )
                     
-                    // 保存翻译结果为 txt 文件到 Documents 目录
-                    saveTranslationResultToTxt(videoId: videoId, originalText: recognizedText, translatedText: translatedText)
+                    viewModel.translationResult = "翻译完成：\(translatedWords.count) 个单词"
                     
                 case .failure(let error):
-                    print("\n" + String(repeating: "=", count: 80))
-                    print("❌ 翻译失败")
-                    print(String(repeating: "=", count: 80))
-                    print("错误信息: \(error.localizedDescription)")
-                    print(String(repeating: "=", count: 80) + "\n")
-                    
+                    print("❌ 翻译失败: \(error.localizedDescription)")
                     viewModel.translationResult = "翻译失败: \(error.localizedDescription)"
                 }
             }
         }
     }
     
-    /// 保存翻译结果为 txt 文件到 Documents 目录
-    private func saveTranslationResultToTxt(videoId: String, originalText: String, translatedText: String) {
+    /// 保存翻译结果为简单文本格式
+    private func saveTranslationResultToTxt(videoId: String, originalWords: [String], translatedWords: [String]) {
         do {
             // 获取 Documents 目录
             let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -976,19 +1007,8 @@ struct HomeView: View {
             let fileName = "\(videoId)_translation.txt"
             let fileURL = documentsDirectory.appendingPathComponent(fileName)
             
-            // 构建文件内容
-            let content = """
-            ==================== 翻译结果 ====================
-            视频ID: \(videoId)
-            翻译时间: \(ISO8601DateFormatter().string(from: Date()))
-            
-            【原文】
-            \(originalText)
-            
-            【译文（日文）】
-            \(translatedText)
-            ==================================================
-            """
+            // 构建简单的文本内容：每行一个翻译后的词
+            let content = translatedWords.joined(separator: "\n")
             
             // 写入文件
             try content.write(to: fileURL, atomically: true, encoding: .utf8)
@@ -998,8 +1018,8 @@ struct HomeView: View {
             print(String(repeating: "=", count: 60))
             print("📝 文件名: \(fileName)")
             print("📂 文件路径: \(fileURL.path)")
-            print("📄 原文长度: \(originalText.count) 字符")
-            print("📄 译文长度: \(translatedText.count) 字符")
+            print("📊 单词数量: \(translatedWords.count)")
+            print(String(repeating: "=", count: 60) + "\n")
             print(String(repeating: "=", count: 60) + "\n")
             
             // 更新视频的翻译结果路径

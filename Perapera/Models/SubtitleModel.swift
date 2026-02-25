@@ -39,15 +39,17 @@ struct SubtitleItem: Codable, Identifiable {
     let endTime: Double        // 结束时间（秒）
     let originalText: String   // 原文（ASR 识别的文本）
     let translatedText: String // 译文（日文翻译）
-    let words: [WordTiming]?   // 词级别的时间信息
+    let words: [WordTiming]?   // 词级别的时间信息（原文）
+    let translatedWords: [WordTiming]?  // 词级别的时间信息（译文）
     
-    init(id: String = UUID().uuidString, startTime: Double, endTime: Double, originalText: String, translatedText: String = "", words: [WordTiming]? = nil) {
+    init(id: String = UUID().uuidString, startTime: Double, endTime: Double, originalText: String, translatedText: String = "", words: [WordTiming]? = nil, translatedWords: [WordTiming]? = nil) {
         self.id = id
         self.startTime = startTime
         self.endTime = endTime
         self.originalText = originalText
         self.translatedText = translatedText
         self.words = words
+        self.translatedWords = translatedWords
     }
     
     // 判断当前时间是否在字幕时间范围内

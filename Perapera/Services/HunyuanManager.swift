@@ -67,6 +67,14 @@ class HunyuanManager {
     
     // MARK: - Translation Methods
     
+    /// 翻译单词数组（公开方法）
+    /// - Parameters:
+    ///   - words: 要翻译的单词数组
+    ///   - completion: 完成回调，返回翻译后的单词数组或错误
+    func translateWords(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+        translateWordsInternal(words, completion: completion)
+    }
+    
     /// 翻译简单文本
     /// - Parameters:
     ///   - text: 要翻译的文本
@@ -206,7 +214,7 @@ class HunyuanManager {
         print("📝 准备翻译 \(allWords.count) 个单词到日文（来自 \(resultDetail.count) 条记录）...")
         
         // 3. 调用混元 API 进行翻译
-        translateWords(allWords) { [weak self] result in
+        translateWordsInternal(allWords) { [weak self] result in
             switch result {
             case .success(let translatedWords):
                 print("✅ 翻译成功，共 \(translatedWords.count) 个日文单词")
@@ -243,8 +251,8 @@ class HunyuanManager {
         }
     }
     
-    /// 调用混元 API 翻译单词数组
-    private func translateWords(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+    /// 调用混元 API 翻译单词数组（内部方法）
+    private func translateWordsInternal(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
         guard let url = HunyuanConfig.generateRequestURL() else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
             return
