@@ -839,7 +839,7 @@ struct HomeView: View {
         
         ASRManager.shared.queryRecognitionResult(taskId: taskId) { result in
             switch result {
-            case .success(let taskResult):
+            case .success(let (taskResult, rawJSON)):
                 print("📊 识别状态: \(taskResult.StatusStr)")
                 
                 switch taskResult.Status {
@@ -850,8 +850,8 @@ struct HomeView: View {
                         recognitionText = recognizedText
                         isRecognizing = false
                         
-                        // 保存识别结果为 JSON 文件
-                        saveRecognitionResultToJSON(videoId: videoId, recognizedText: recognizedText, taskId: taskId)
+                        // 直接保存原始 JSON 响应
+                        saveRawRecognitionJSON(videoId: videoId, rawJSON: rawJSON, recognizedText: recognizedText)
                     }
                     
                 case 3: // 失败
@@ -879,43 +879,38 @@ struct HomeView: View {
         }
     }
     
-    /// 保存识别结果为 JSON 文件
-    private func saveRecognitionResultToJSON(videoId: String, recognizedText: String, taskId: Int) {
-        // 构建 JSON 数据
-        let recognitionData: [String: Any] = [
-            "videoId": videoId,
-            "taskId": taskId,
-            "recognizedText": recognizedText,
-            "timestamp": Int(Date().timeIntervalSince1970),
-            "createdAt": ISO8601DateFormatter().string(from: Date())
-        ]
-        
+    /// 保存原始 ASR JSON 响应
+    private func saveRawRecognitionJSON(videoId: String, rawJSON: Data, recognizedText: String) {
         do {
-            // 转换为 JSON
-            let jsonData = try JSONSerialization.data(withJSONObject: recognitionData, options: .prettyPrinted)
-            
             // 获取 Documents 目录
             let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             
             // 生成文件路径：videoId.json
             let fileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
             
-            // 写入文件
-            try jsonData.write(to: fileURL)
+            // 直接写入原始 JSON 数据
+            try rawJSON.write(to: fileURL)
             
             print("\n" + String(repeating: "=", count: 60))
-            print("💾 识别结果已保存为 JSON 文件")
+            print("💾 ASR 原始 JSON 已保存")
             print(String(repeating: "=", count: 60))
             print("📝 文件名: \(videoId).json")
             print("📂 文件路径: \(fileURL.path)")
             print("🆔 视频ID: \(videoId)")
-            print("🔢 任务ID: \(taskId)")
             print("📄 识别文本长度: \(recognizedText.count) 字符")
+            print("📦 JSON 文件大小: \(ByteCountFormatter.string(fromByteCount: Int64(rawJSON.count), countStyle: .file))")
             
-            // 输出 JSON 内容到控制台
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("\n📋 JSON 内容:")
-                print(jsonString)
+            // 输出 JSON 内容到控制台（格式化）
+            if let jsonObject = try? JSONSerialization.jsonObject(with: rawJSON),
+               let prettyJSON = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+               let jsonString = String(data: prettyJSON, encoding: .utf8) {
+                print("\n📋 JSON 内容预览:")
+                // 只显示前 500 个字符
+                let preview = jsonString.prefix(500)
+                print(preview)
+                if jsonString.count > 500 {
+                    print("... (共 \(jsonString.count) 字符)")
+                }
             }
             
             print(String(repeating: "=", count: 60) + "\n")
@@ -924,25 +919,18 @@ struct HomeView: View {
             loadVideos()
             
             // 自动触发翻译
-            translateRecognitionResult(videoId: videoId, jsonData: jsonData)
+            translateRecognitionResult(videoId: videoId, recognizedText: recognizedText)
             
         } catch {
-            print("❌ 保存识别结果 JSON 失败: \(error.localizedDescription)")
+            print("❌ 保存原始 JSON 失败: \(error.localizedDescription)")
         }
     }
     
     /// 翻译识别结果
-    private func translateRecognitionResult(videoId: String, jsonData: Data) {
+    private func translateRecognitionResult(videoId: String, recognizedText: String) {
         print("\n" + String(repeating: "🌟", count: 40))
         print("🚀 开始翻译识别结果")
         print(String(repeating: "🌟", count: 40) + "\n")
-        
-        // 解析识别结果JSON获取文本
-        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-              let recognizedText = jsonObject["recognizedText"] as? String else {
-            print("❌ 无法解析识别结果JSON")
-            return
-        }
         
         viewModel.isTranslating = true
         
