@@ -6,6 +6,7 @@ import AVFoundation
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var videos: [VideoItem] = []
+    @State private var refreshID = UUID() // 用于强制刷新视图
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
@@ -49,6 +50,7 @@ struct HomeView: View {
                                     })
                                 }
                                 .listRowInsets(EdgeInsets())
+                                .id("\(video.id)-\(refreshID)") // 强制刷新视图
                             }
                             .onDelete(perform: deleteVideos)
                         }
@@ -224,8 +226,7 @@ struct HomeView: View {
                         VideoStorageManager.shared.addVideo(
                             name: videoName,
                             posterImage: UIImage(systemName: "video.fill"),
-                            videoURL: url.path,
-                            audioURL: nil
+                            videoURL: url.path
                         )
                         loadVideos()
                         
@@ -261,8 +262,7 @@ struct HomeView: View {
                                 VideoStorageManager.shared.addVideo(
                                     name: "相册视频 - \(Date().formatted())",
                                     posterImage: thumbnail,
-                                    videoURL: tempURL.path,
-                                    audioURL: nil
+                                    videoURL: tempURL.path
                                 )
                                 
                                 await MainActor.run {
@@ -543,6 +543,7 @@ struct HomeView: View {
     /// 加载视频列表
     private func loadVideos() {
         videos = VideoStorageManager.shared.loadVideos()
+        refreshID = UUID() // 触发视图刷新
         printVideosInfo()
     }
     
@@ -561,30 +562,6 @@ struct HomeView: View {
                 print("  📝 名称: \(video.name)")
                 print("  🎬 视频路径: \(video.videoURL)")
                 
-                if let audioURL = video.audioURL {
-                    print("  🎵 音频路径: \(audioURL)")
-                    print("  ✅ 音频状态: 已转换")
-                } else {
-                    print("  🎵 音频路径: 无")
-                    print("  ⏳ 音频状态: 未转换")
-                }
-                
-                if let recognitionURL = video.recognitionURL {
-                    print("  📄 识别结果: \(recognitionURL)")
-                    print("  ✅ 识别状态: 已识别")
-                } else {
-                    print("  � 识别结果: 无")
-                    print("  ⏳ 识别状态: 未识别")
-                }
-                
-                if let translationURL = video.translationURL {
-                    print("  🌐 翻译结果: \(translationURL)")
-                    print("  ✅ 翻译状态: 已翻译")
-                } else {
-                    print("  🌐 翻译结果: 无")
-                    print("  ⏳ 翻译状态: 未翻译")
-                }
-                
                 print("  🕐 创建时间: \(formatDateForConsole(video.createdAt))")
                 
                 if let posterImage = video.posterImage {
@@ -600,6 +577,12 @@ struct HomeView: View {
                 } else {
                     print("  📁 类型: 本地视频")
                 }
+                
+                // 检查文件状态
+                print("  📊 文件状态:")
+                print("    🎵 音频文件: \(video.hasAudio ? "✅ 已转换" : "❌ 未转换") - \(video.audioURL.path)")
+                print("    📝 识别结果: \(video.hasRecognition ? "✅ 已识别" : "❌ 未识别") - \(video.recognitionURL.path)")
+                print("    🌐 翻译结果: \(video.hasTranslation ? "✅ 已翻译" : "❌ 未翻译") - \(video.translationURL.path)")
                 
                 print("  " + String(repeating: "-", count: 66))
             }
@@ -717,13 +700,7 @@ struct HomeView: View {
                     // 输出文件详细信息到控制台
                     printAudioFileInfo(audioURL: audioURL)
                     
-                    // 更新视频的音频路径
-                    VideoStorageManager.shared.updateVideoAudioURL(
-                        id: videoId,
-                        audioURL: audioURL.path
-                    )
-                    
-                    // 刷新列表
+                    // 刷新列表（音频文件已保存，状态会自动更新）
                     loadVideos()
                     
                     // 上传音频到 COS 并进行语音识别
@@ -933,10 +910,7 @@ struct HomeView: View {
             
             print(String(repeating: "=", count: 60) + "\n")
             
-            // 更新视频的识别结果路径
-            VideoStorageManager.shared.updateVideoRecognitionURL(id: videoId, recognitionURL: fileURL.path)
-            
-            // 刷新列表
+            // 刷新列表（识别结果文件已保存，状态会自动更新）
             loadVideos()
             
             // 自动触发翻译
@@ -1031,9 +1005,7 @@ struct HomeView: View {
             print(String(repeating: "=", count: 60) + "\n")
             
             // 更新视频的翻译结果路径
-            VideoStorageManager.shared.updateVideoTranslationURL(id: videoId, translationURL: fileURL.path)
-            
-            // 刷新列表
+            // 刷新列表（翻译结果文件已保存，状态会自动更新）
             loadVideos()
             
         } catch {
@@ -1107,6 +1079,14 @@ struct VideoRowView: View {
                                 .font(.caption)
                         }
                         .foregroundColor(.green)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "waveform")
+                                .font(.caption)
+                            Text("未转换")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.gray)
                     }
                     
                     // 识别状态标签
@@ -1118,7 +1098,7 @@ struct VideoRowView: View {
                                 .font(.caption)
                         }
                         .foregroundColor(.orange)
-                    } else if video.hasAudio {
+                    } else {
                         HStack(spacing: 4) {
                             Image(systemName: "text.bubble")
                                 .font(.caption)

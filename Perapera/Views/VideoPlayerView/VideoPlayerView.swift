@@ -225,7 +225,6 @@ struct SubtitleRow: View {
     VideoPlayerView(video: VideoItem(
         name: "测试视频",
         posterImageData: nil,
-        videoURL: "",
-        audioURL: nil
+        videoURL: ""
     ))
 }
