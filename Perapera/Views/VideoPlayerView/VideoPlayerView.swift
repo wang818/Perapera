@@ -119,14 +119,22 @@ struct VideoPlayerView: View {
             Divider()
                 .background(Color.gray.opacity(0.3))
             
-            // 原文字幕（下）- 中文
-            SubtitleRow(
-                text: viewModel.currentSubtitle?.originalText ?? "",
-                isActive: viewModel.currentSubtitle != nil,
-                language: .original,
-                placeholder: "原文字幕"
-            )
-            .frame(height: 60)
+            // 原文字幕（下）- 中文，带词级别高亮
+            if let subtitle = viewModel.currentSubtitle, let words = subtitle.words {
+                WordHighlightSubtitleView(
+                    words: words,
+                    currentTime: viewModel.currentTime
+                )
+                .frame(height: 80)
+            } else {
+                SubtitleRow(
+                    text: viewModel.currentSubtitle?.originalText ?? "",
+                    isActive: viewModel.currentSubtitle != nil,
+                    language: .original,
+                    placeholder: "原文字幕"
+                )
+                .frame(height: 60)
+            }
             
             // 调试信息
             if viewModel.currentSubtitle != nil {
@@ -237,6 +245,45 @@ struct SubtitleRow: View {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
+// MARK: - 词级别高亮字幕组件
+struct WordHighlightSubtitleView: View {
+    let words: [WordTiming]
+    let currentTime: Double
+    
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 0) {
+                    ForEach(Array(words.enumerated()), id: \.offset) { index, word in
+                        let isActive = currentTime >= word.startTime && currentTime <= word.endTime
+                        
+                        Text(word.word)
+                            .font(.subheadline)
+                            .fontWeight(isActive ? .bold : .regular)
+                            .foregroundColor(isActive ? .yellow : .white)
+                            .padding(.horizontal, 2)
+                            .background(
+                                isActive ? Color.yellow.opacity(0.2) : Color.clear
+                            )
+                            .cornerRadius(4)
+                            .id(index)
+                            .onChange(of: isActive) { newValue in
+                                if newValue {
+                                    // 自动滚动到当前高亮的词
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        proxy.scrollTo(index, anchor: .center)
+                                    }
+                                }
+                            }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+            }
         }
     }
 }

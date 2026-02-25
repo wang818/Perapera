@@ -169,7 +169,7 @@ class SubtitleManager {
             
             var allSubtitles: [SubtitleItem] = []
             
-            // 遍历每个大段
+            // 遍历每个大段，为每个大段创建一个字幕项
             for detail in resultDetails {
                 guard let words = detail.Words, !words.isEmpty else {
                     // 如果没有词级别信息，使用整段作为一个字幕
@@ -185,41 +185,28 @@ class SubtitleManager {
                     continue
                 }
                 
-                // 使用词级别信息，按句子分组（每 5-10 个词一组）
-                let wordsPerSubtitle = 8  // 每个字幕显示约 8 个词
-                var currentIndex = 0
-                
-                while currentIndex < words.count {
-                    let endIndex = min(currentIndex + wordsPerSubtitle, words.count)
-                    let wordGroup = Array(words[currentIndex..<endIndex])
-                    
-                    // 获取这组词的时间范围
-                    let startTime = Double(wordGroup.first!.OffsetStartMs) / 1000.0
-                    let endTime = Double(wordGroup.last!.OffsetEndMs) / 1000.0
-                    
-                    // 拼接文本
-                    let text = wordGroup.map { $0.Word }.joined()
-                    
-                    // 创建词时间信息
-                    let wordTimings = wordGroup.map { word in
-                        WordTiming(
-                            word: word.Word,
-                            startTime: Double(word.OffsetStartMs) / 1000.0,
-                            endTime: Double(word.OffsetEndMs) / 1000.0
-                        )
-                    }
-                    
-                    let subtitle = SubtitleItem(
-                        startTime: startTime,
-                        endTime: endTime,
-                        originalText: text,
-                        translatedText: "",
-                        words: wordTimings
+                // 创建词时间信息数组
+                let wordTimings = words.map { word in
+                    WordTiming(
+                        word: word.Word,
+                        startTime: Double(word.OffsetStartMs) / 1000.0,
+                        endTime: Double(word.OffsetEndMs) / 1000.0
                     )
-                    
-                    allSubtitles.append(subtitle)
-                    currentIndex = endIndex
                 }
+                
+                // 为整个大段创建一个字幕项
+                let startTime = Double(detail.StartMs) / 1000.0
+                let endTime = Double(detail.EndMs) / 1000.0
+                
+                let subtitle = SubtitleItem(
+                    startTime: startTime,
+                    endTime: endTime,
+                    originalText: detail.FinalSentence,
+                    translatedText: "",
+                    words: wordTimings
+                )
+                
+                allSubtitles.append(subtitle)
             }
             
             print("✅ 从 ASR 文件加载字幕成功，共 \(allSubtitles.count) 条")
