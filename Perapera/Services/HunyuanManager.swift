@@ -72,7 +72,52 @@ class HunyuanManager {
     ///   - words: 要翻译的单词数组
     ///   - completion: 完成回调，返回翻译后的单词数组或错误
     func translateWords(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
-        translateWordsInternal(words, completion: completion)
+        // 如果单词数量较少，直接翻译
+        if words.count <= 50 {
+            translateWordsInternal(words, completion: completion)
+            return
+        }
+        
+        // 如果单词数量较多，分批翻译
+        print("📝 单词数量较多(\(words.count))，将分批翻译...")
+        
+        let batchSize = 50  // 每批翻译 50 个单词
+        var allTranslatedWords: [String] = []
+        var currentIndex = 0
+        
+        func translateNextBatch() {
+            guard currentIndex < words.count else {
+                // 所有批次翻译完成
+                print("✅ 所有批次翻译完成，共 \(allTranslatedWords.count) 个单词")
+                completion(.success(allTranslatedWords))
+                return
+            }
+            
+            let endIndex = min(currentIndex + batchSize, words.count)
+            let batch = Array(words[currentIndex..<endIndex])
+            let batchNumber = (currentIndex / batchSize) + 1
+            let totalBatches = (words.count + batchSize - 1) / batchSize
+            
+            print("📦 翻译第 \(batchNumber)/\(totalBatches) 批，共 \(batch.count) 个单词...")
+            
+            translateWordsInternal(batch) { result in
+                switch result {
+                case .success(let translatedBatch):
+                    allTranslatedWords.append(contentsOf: translatedBatch)
+                    currentIndex = endIndex
+                    
+                    // 继续翻译下一批
+                    translateNextBatch()
+                    
+                case .failure(let error):
+                    print("❌ 第 \(batchNumber) 批翻译失败: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        // 开始翻译第一批
+        translateNextBatch()
     }
     
     /// 翻译简单文本
@@ -292,6 +337,7 @@ class HunyuanManager {
         // 创建请求
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.timeoutInterval = 120  // 设置超时时间为 120 秒
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
         request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
@@ -306,11 +352,16 @@ class HunyuanManager {
         )
         request.setValue(signature, forHTTPHeaderField: "Authorization")
         
-        print("🚀 发送翻译请求到混元 API...")
-        print("📤 请求体: \(String(data: jsonData, encoding: .utf8) ?? "")")
+        print("🚀 发送翻译请求到混元 API (共 \(words.count) 个单词)...")
+        
+        // 创建自定义 URLSession 配置
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 120
+        configuration.timeoutIntervalForResource = 300
+        let session = URLSession(configuration: configuration)
         
         // 发送请求
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return

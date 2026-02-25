@@ -21,6 +21,8 @@ struct HomeView: View {
     @State private var isConverting: Bool = false
     @State private var conversionProgress: Double = 0.0
     @State private var currentConvertingVideoId: String?
+    @State private var currentRecognizingVideoId: String?
+    @State private var currentTranslatingVideoId: String?
 
     var body: some View {
         ZStack {
@@ -45,9 +47,21 @@ struct HomeView: View {
                         List {
                             ForEach(videos) { video in
                                 NavigationLink(destination: VideoPlayerView(video: video)) {
-                                    VideoRowView(video: video, onDelete: {
-                                        deleteVideo(video)
-                                    })
+                                    VideoRowView(
+                                        video: video,
+                                        onDelete: {
+                                            deleteVideo(video)
+                                        },
+                                        onConvertAudio: {
+                                            convertAudioForVideo(video)
+                                        },
+                                        onStartRecognition: {
+                                            startRecognitionForVideo(video)
+                                        },
+                                        onStartTranslation: {
+                                            startTranslationForVideo(video)
+                                        }
+                                    )
                                 }
                                 .listRowInsets(EdgeInsets())
                                 .id("\(video.id)-\(refreshID)") // 强制刷新视图
@@ -623,6 +637,82 @@ struct HomeView: View {
         loadVideos()
     }
     
+    /// 转换音频
+    private func convertAudioForVideo(_ video: VideoItem) {
+        print("🎵 开始转换音频: \(video.name)")
+        currentConvertingVideoId = video.id
+        convertVideoToAudio(videoURL: video.actualVideoURL, videoId: video.id)
+    }
+    
+    /// 开始识别
+    private func startRecognitionForVideo(_ video: VideoItem) {
+        guard video.hasAudio else {
+            print("❌ 音频文件不存在，无法识别")
+            return
+        }
+        
+        print("🎤 开始语音识别: \(video.name)")
+        currentRecognizingVideoId = video.id
+        
+        // 上传音频到 COS
+        COSUploadManager.shared.uploadFile(fileURL: video.audioURL) { result in
+            switch result {
+            case .success(let cosURL):
+                print("✅ 音频上传成功: \(cosURL)")
+                
+                // 开始语音识别
+                isRecognizing = true
+                ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
+                    switch result {
+                    case .success(let taskId):
+                        print("✅ 识别任务创建成功，TaskId: \(taskId)")
+                        
+                        // 开始轮询查询识别结果
+                        pollRecognitionResult(taskId: taskId, videoId: video.id)
+                        
+                    case .failure(let error):
+                        print("❌ 创建识别任务失败: \(error.localizedDescription)")
+                        isRecognizing = false
+                        currentRecognizingVideoId = nil
+                    }
+                }
+                
+            case .failure(let error):
+                print("❌ 音频上传失败: \(error.localizedDescription)")
+                currentRecognizingVideoId = nil
+            }
+        }
+    }
+    
+    /// 开始翻译
+    private func startTranslationForVideo(_ video: VideoItem) {
+        guard video.hasRecognition else {
+            print("❌ 识别结果不存在，无法翻译")
+            return
+        }
+        
+        print("🌐 开始翻译: \(video.name)")
+        
+        // 读取识别结果
+        do {
+            let recognitionData = try Data(contentsOf: video.recognitionURL)
+            
+            // 解析获取识别文本
+            if let jsonObject = try? JSONSerialization.jsonObject(with: recognitionData) as? [String: Any],
+               let response = jsonObject["Response"] as? [String: Any],
+               let data = response["Data"] as? [String: Any],
+               let result = data["Result"] as? String {
+                
+                // 开始翻译
+                translateRecognitionResult(videoId: video.id, recognizedText: result)
+            } else {
+                print("❌ 无法解析识别结果")
+            }
+        } catch {
+            print("❌ 读取识别结果失败: \(error.localizedDescription)")
+        }
+    }
+    
     /// 保存 YouTube 视频
     private func saveYoutubeVideo(url: String) {
         // 从 URL 提取视频名称
@@ -1036,6 +1126,9 @@ struct HomeView: View {
 struct VideoRowView: View {
     let video: VideoItem
     let onDelete: () -> Void
+    let onConvertAudio: () -> Void
+    let onStartRecognition: () -> Void
+    let onStartTranslation: () -> Void
     
     var body: some View {
         HStack(spacing: 15) {
@@ -1098,13 +1191,20 @@ struct VideoRowView: View {
                         }
                         .foregroundColor(.green)
                     } else {
-                        HStack(spacing: 4) {
-                            Image(systemName: "waveform")
-                                .font(.caption)
-                            Text("未转换")
-                                .font(.caption)
+                        Button(action: onConvertAudio) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "waveform")
+                                    .font(.caption)
+                                Text("未转换")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
                         }
-                        .foregroundColor(.gray)
+                        .buttonStyle(.plain)
                     }
                     
                     // 识别状态标签
@@ -1116,6 +1216,22 @@ struct VideoRowView: View {
                                 .font(.caption)
                         }
                         .foregroundColor(.orange)
+                    } else if video.hasAudio {
+                        // 只有音频已转换才能识别
+                        Button(action: onStartRecognition) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "text.bubble")
+                                    .font(.caption)
+                                Text("未识别")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                        }
+                        .buttonStyle(.plain)
                     } else {
                         HStack(spacing: 4) {
                             Image(systemName: "text.bubble")
@@ -1135,6 +1251,22 @@ struct VideoRowView: View {
                                 .font(.caption)
                         }
                         .foregroundColor(.purple)
+                    } else if video.hasRecognition {
+                        // 只有识别完成才能翻译
+                        Button(action: onStartTranslation) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "globe")
+                                    .font(.caption)
+                                Text("未翻译")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                        }
+                        .buttonStyle(.plain)
                     } else {
                         HStack(spacing: 4) {
                             Image(systemName: "globe")
