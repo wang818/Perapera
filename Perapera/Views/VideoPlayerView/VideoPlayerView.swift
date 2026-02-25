@@ -107,24 +107,34 @@ struct VideoPlayerView: View {
     // MARK: - 字幕区域
     private var subtitleSection: some View {
         VStack(spacing: 0) {
-            // 日文字幕（上）
+            // 翻译字幕（上）- 日文
             SubtitleRow(
                 text: viewModel.currentSubtitle?.translatedText ?? "",
-                isActive: viewModel.currentSubtitle != nil,
-                language: .japanese
+                isActive: viewModel.currentSubtitle != nil && !viewModel.currentSubtitle!.translatedText.isEmpty,
+                language: .japanese,
+                placeholder: "日文字幕"
             )
             .frame(height: 60)
             
             Divider()
                 .background(Color.gray.opacity(0.3))
             
-            // 原文字幕（下）
+            // 原文字幕（下）- 中文
             SubtitleRow(
                 text: viewModel.currentSubtitle?.originalText ?? "",
                 isActive: viewModel.currentSubtitle != nil,
-                language: .original
+                language: .original,
+                placeholder: "原文字幕"
             )
             .frame(height: 60)
+            
+            // 调试信息
+            if viewModel.currentSubtitle != nil {
+                Text("字幕 \(viewModel.currentSubtitleIndex + 1)/\(viewModel.subtitles.count)")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+                    .padding(.vertical, 4)
+            }
         }
         .background(Color.black.opacity(0.8))
     }
@@ -183,6 +193,15 @@ struct VideoPlayerView: View {
                         .font(.title)
                         .foregroundColor(.white)
                 }
+                
+                // 重新播放
+                Button(action: {
+                    viewModel.replay()
+                }) {
+                    Image(systemName: "arrow.counterclockwise.circle")
+                        .font(.title)
+                        .foregroundColor(.white)
+                }
             }
             .padding(.bottom, 20)
         }
@@ -202,6 +221,7 @@ struct SubtitleRow: View {
     let text: String
     let isActive: Bool
     let language: SubtitleLanguage
+    let placeholder: String
     
     enum SubtitleLanguage {
         case japanese
@@ -210,7 +230,7 @@ struct SubtitleRow: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            Text(text.isEmpty ? (language == .japanese ? "日文字幕" : "原文字幕") : text)
+            Text(text.isEmpty ? placeholder : text)
                 .font(language == .japanese ? .body : .subheadline)
                 .foregroundColor(isActive ? .yellow : .gray)
                 .fontWeight(isActive ? .bold : .regular)
