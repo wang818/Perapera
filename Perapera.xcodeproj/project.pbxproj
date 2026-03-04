@@ -19,6 +19,17 @@
 		EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF012F284BCA0007BCA6 /* UserManager.swift */; };
 		EC7FEF052F284EE50007BCA6 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */; };
 		EC7FEF082F2854920007BCA6 /* SubtitleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */; };
+		EC7FEF1E2F4D57C90007BCA6 /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF1C2F4D57C90007BCA6 /* AudioConverter.swift */; };
+		EC7FEF1F2F4D57C90007BCA6 /* VideoStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF1D2F4D57C90007BCA6 /* VideoStorageManager.swift */; };
+		EC7FEF212F4D57F00007BCA6 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF202F4D57F00007BCA6 /* HomeViewModel.swift */; };
+		EC7FEF292F4D58150007BCA6 /* HunyuanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF272F4D58150007BCA6 /* HunyuanManager.swift */; };
+		EC7FEF2A2F4D58150007BCA6 /* ASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF232F4D58150007BCA6 /* ASRManager.swift */; };
+		EC7FEF2B2F4D58150007BCA6 /* COSUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF252F4D58150007BCA6 /* COSUploadManager.swift */; };
+		EC7FEF2C2F4D58150007BCA6 /* HunyuanConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF262F4D58150007BCA6 /* HunyuanConfig.swift */; };
+		EC7FEF2D2F4D58150007BCA6 /* COSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF242F4D58150007BCA6 /* COSConfig.swift */; };
+		EC7FEF2E2F4D58150007BCA6 /* ASRConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF222F4D58150007BCA6 /* ASRConfig.swift */; };
+		EC7FEF302F4D59B10007BCA6 /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF2F2F4D59B10007BCA6 /* COSConfig.local.swift */; };
+		EC7FEF322F4D59C80007BCA6 /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF312F4D59C80007BCA6 /* HunyuanConfig.local.swift */; };
 		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
 		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
@@ -78,6 +89,17 @@
 		EC7FEF012F284BCA0007BCA6 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 		EC7FEF062F2854920007BCA6 /* SubtitleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleSettingsView.swift; sourceTree = "<group>"; };
+		EC7FEF1C2F4D57C90007BCA6 /* AudioConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverter.swift; sourceTree = "<group>"; };
+		EC7FEF1D2F4D57C90007BCA6 /* VideoStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoStorageManager.swift; sourceTree = "<group>"; };
+		EC7FEF202F4D57F00007BCA6 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		EC7FEF222F4D58150007BCA6 /* ASRConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASRConfig.swift; sourceTree = "<group>"; };
+		EC7FEF232F4D58150007BCA6 /* ASRManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASRManager.swift; sourceTree = "<group>"; };
+		EC7FEF242F4D58150007BCA6 /* COSConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COSConfig.swift; sourceTree = "<group>"; };
+		EC7FEF252F4D58150007BCA6 /* COSUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COSUploadManager.swift; sourceTree = "<group>"; };
+		EC7FEF262F4D58150007BCA6 /* HunyuanConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanConfig.swift; sourceTree = "<group>"; };
+		EC7FEF272F4D58150007BCA6 /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanManager.swift; sourceTree = "<group>"; };
+		EC7FEF2F2F4D59B10007BCA6 /* COSConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COSConfig.local.swift; sourceTree = "<group>"; };
+		EC7FEF312F4D59C80007BCA6 /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanConfig.local.swift; sourceTree = "<group>"; };
 		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -173,9 +195,8 @@
 		1889F1252EF9214800886186 /* Perapera */ = {
 			isa = PBXGroup;
 			children = (
+				EC7FEF282F4D58150007BCA6 /* Services */,
 				18CA30702F27881100CA9B62 /* Models */,
-				183D7E292F23D1D20069A36C /* Perapera-Bridging-Header.h */,
-				180C766D2F0FB64400AD6932 /* Services */,
 				ECACBF162F0B5CE70090F990 /* Info.plist */,
 				ECACBF0E2F0B59880090F990 /* Network */,
 				ECACBEA32F0A6C6F0090F990 /* Icon */,
@@ -248,6 +269,21 @@
 			path = SubtitleSettingsView;
 			sourceTree = "<group>";
 		};
+		EC7FEF282F4D58150007BCA6 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				EC7FEF312F4D59C80007BCA6 /* HunyuanConfig.local.swift */,
+				EC7FEF2F2F4D59B10007BCA6 /* COSConfig.local.swift */,
+				EC7FEF222F4D58150007BCA6 /* ASRConfig.swift */,
+				EC7FEF232F4D58150007BCA6 /* ASRManager.swift */,
+				EC7FEF242F4D58150007BCA6 /* COSConfig.swift */,
+				EC7FEF252F4D58150007BCA6 /* COSUploadManager.swift */,
+				EC7FEF262F4D58150007BCA6 /* HunyuanConfig.swift */,
+				EC7FEF272F4D58150007BCA6 /* HunyuanManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		ECACBE732EF937CA0090F990 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,6 +302,7 @@
 		ECACBE742EF9380B0090F990 /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
+				EC7FEF202F4D57F00007BCA6 /* HomeViewModel.swift */,
 				ECACBE6D2EF937930090F990 /* HomeView.swift */,
 			);
 			path = HomeView;
@@ -293,6 +330,8 @@
 			isa = PBXGroup;
 			children = (
 				EC7FEF012F284BCA0007BCA6 /* UserManager.swift */,
+				EC7FEF1C2F4D57C90007BCA6 /* AudioConverter.swift */,
+				EC7FEF1D2F4D57C90007BCA6 /* VideoStorageManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
@@ -550,9 +589,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				1889F1292EF9214800886186 /* ContentView.swift in Sources */,
+				EC7FEF212F4D57F00007BCA6 /* HomeViewModel.swift in Sources */,
 				ECACBE8A2F0A15DF0090F990 /* LoginView.swift in Sources */,
 				ECACBF202F0BB6A40090F990 /* SendCaptchaModel.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
+				EC7FEF292F4D58150007BCA6 /* HunyuanManager.swift in Sources */,
+				EC7FEF2A2F4D58150007BCA6 /* ASRManager.swift in Sources */,
+				EC7FEF2B2F4D58150007BCA6 /* COSUploadManager.swift in Sources */,
+				EC7FEF2C2F4D58150007BCA6 /* HunyuanConfig.swift in Sources */,
+				EC7FEF2D2F4D58150007BCA6 /* COSConfig.swift in Sources */,
+				EC7FEF2E2F4D58150007BCA6 /* ASRConfig.swift in Sources */,
+				EC7FEF1E2F4D57C90007BCA6 /* AudioConverter.swift in Sources */,
+				EC7FEF322F4D59C80007BCA6 /* HunyuanConfig.local.swift in Sources */,
+				EC7FEF1F2F4D57C90007BCA6 /* VideoStorageManager.swift in Sources */,
 				ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */,
 				ECACBF232F0BB8B20090F990 /* ToastView.swift in Sources */,
 				ECACBE9C2F0A4A5E0090F990 /* LanguageSettingsView.swift in Sources */,
@@ -576,14 +625,10 @@
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
 				ECACBE9E2F0A59430090F990 /* PUserDefault.swift in Sources */,
+				EC7FEF302F4D59B10007BCA6 /* COSConfig.local.swift in Sources */,
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 				18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */,
-				180C76712F0FB65C00AD6932 /* COSUploadManager.swift in Sources */,
-				FFFFFFFD2F1000010090F990 /* HunyuanConfig.swift in Sources */,
-				FFFFFFF72F1000040090F990 /* HunyuanConfig.local.swift in Sources */,
 				18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */,
-				FFFFFFFB2F1000020090F990 /* HunyuanManager.swift in Sources */,
-				FFFFFFF92F1000030090F990 /* HomeViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
