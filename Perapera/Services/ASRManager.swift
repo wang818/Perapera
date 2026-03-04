@@ -197,10 +197,10 @@ class ASRManager: NSObject {
     /// 查询识别结果
     /// - Parameters:
     ///   - taskId: 任务 ID
-    ///   - completion: 完成回调
+    ///   - completion: 完成回调，返回原始 JSON Data 和解析后的结果
     func queryRecognitionResult(
         taskId: Int,
-        completion: @escaping (Result<ASRResultResponse.TaskResult, Error>) -> Void
+        completion: @escaping (Result<(taskResult: ASRResultResponse.TaskResult, rawJSON: Data), Error>) -> Void
     ) {
         let timestamp = Int(Date().timeIntervalSince1970)
         
@@ -260,7 +260,8 @@ class ASRManager: NSObject {
                         if let error = result.Response.Error {
                             completion(.failure(NSError(domain: "ASRManager", code: -3, userInfo: [NSLocalizedDescriptionKey: error.Message])))
                         } else if let taskResult = result.Response.Data {
-                            completion(.success(taskResult))
+                            // 返回解析后的结果和原始 JSON 数据
+                            completion(.success((taskResult: taskResult, rawJSON: data)))
                         } else {
                             completion(.failure(NSError(domain: "ASRManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "未返回任务结果"])))
                         }

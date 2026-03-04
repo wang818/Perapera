@@ -107,24 +107,50 @@ struct VideoPlayerView: View {
     // MARK: - 字幕区域
     private var subtitleSection: some View {
         VStack(spacing: 0) {
-            // 日文字幕（上）
-            SubtitleRow(
-                text: viewModel.currentSubtitle?.translatedText ?? "",
-                isActive: viewModel.currentSubtitle != nil,
-                language: .japanese
-            )
-            .frame(height: 60)
+            // 翻译字幕（上）- 日文，带词级别高亮
+            if let subtitle = viewModel.currentSubtitle, let translatedWords = subtitle.translatedWords {
+                WordHighlightSubtitleView(
+                    words: translatedWords,
+                    currentTime: viewModel.currentTime
+                )
+                .frame(height: 80)
+            } else {
+                SubtitleRow(
+                    text: viewModel.currentSubtitle?.translatedText ?? "",
+                    isActive: viewModel.currentSubtitle != nil && !viewModel.currentSubtitle!.translatedText.isEmpty,
+                    language: .japanese,
+                    placeholder: "日文字幕"
+                )
+                .frame(height: 60)
+            }
             
             Divider()
                 .background(Color.gray.opacity(0.3))
             
-            // 原文字幕（下）
-            SubtitleRow(
-                text: viewModel.currentSubtitle?.originalText ?? "",
-                isActive: viewModel.currentSubtitle != nil,
-                language: .original
-            )
-            .frame(height: 60)
+            // 原文字幕（下）- 中文，带词级别高亮
+            if let subtitle = viewModel.currentSubtitle, let words = subtitle.words {
+                WordHighlightSubtitleView(
+                    words: words,
+                    currentTime: viewModel.currentTime
+                )
+                .frame(height: 80)
+            } else {
+                SubtitleRow(
+                    text: viewModel.currentSubtitle?.originalText ?? "",
+                    isActive: viewModel.currentSubtitle != nil,
+                    language: .original,
+                    placeholder: "原文字幕"
+                )
+                .frame(height: 60)
+            }
+            
+            // 调试信息
+            if viewModel.currentSubtitle != nil {
+                Text("字幕 \(viewModel.currentSubtitleIndex + 1)/\(viewModel.subtitles.count)")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+                    .padding(.vertical, 4)
+            }
         }
         .background(Color.black.opacity(0.8))
     }
@@ -183,6 +209,15 @@ struct VideoPlayerView: View {
                         .font(.title)
                         .foregroundColor(.white)
                 }
+                
+                // 重新播放
+                Button(action: {
+                    viewModel.replay()
+                }) {
+                    Image(systemName: "arrow.counterclockwise.circle")
+                        .font(.title)
+                        .foregroundColor(.white)
+                }
             }
             .padding(.bottom, 20)
         }
@@ -202,6 +237,7 @@ struct SubtitleRow: View {
     let text: String
     let isActive: Bool
     let language: SubtitleLanguage
+    let placeholder: String
     
     enum SubtitleLanguage {
         case japanese
@@ -210,7 +246,7 @@ struct SubtitleRow: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            Text(text.isEmpty ? (language == .japanese ? "日文字幕" : "原文字幕") : text)
+            Text(text.isEmpty ? placeholder : text)
                 .font(language == .japanese ? .body : .subheadline)
                 .foregroundColor(isActive ? .yellow : .gray)
                 .fontWeight(isActive ? .bold : .regular)
@@ -221,11 +257,49 @@ struct SubtitleRow: View {
     }
 }
 
+// MARK: - 词级别高亮字幕组件
+struct WordHighlightSubtitleView: View {
+    let words: [WordTiming]
+    let currentTime: Double
+    
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 0) {
+                    ForEach(Array(words.enumerated()), id: \.offset) { index, word in
+                        let isActive = currentTime >= word.startTime && currentTime <= word.endTime
+                        
+                        Text(word.word)
+                            .font(.subheadline)
+                            .fontWeight(isActive ? .bold : .regular)
+                            .foregroundColor(isActive ? .yellow : .white)
+                            .padding(.horizontal, 2)
+                            .background(
+                                isActive ? Color.yellow.opacity(0.2) : Color.clear
+                            )
+                            .cornerRadius(4)
+                            .id(index)
+                            .onChange(of: isActive) { newValue in
+                                if newValue {
+                                    // 自动滚动到当前高亮的词
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        proxy.scrollTo(index, anchor: .center)
+                                    }
+                                }
+                            }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+            }
+        }
+    }
+}
+
 #Preview {
     VideoPlayerView(video: VideoItem(
         name: "测试视频",
         posterImageData: nil,
-        videoURL: "",
-        audioURL: nil
+        videoURL: ""
     ))
 }

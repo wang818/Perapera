@@ -67,6 +67,162 @@ class HunyuanManager {
     
     // MARK: - Translation Methods
     
+    /// 翻译单词数组（公开方法）
+    /// - Parameters:
+    ///   - words: 要翻译的单词数组
+    ///   - completion: 完成回调，返回翻译后的单词数组或错误
+    func translateWords(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+        // 如果单词数量较少，直接翻译
+        if words.count <= 50 {
+            translateWordsInternal(words, completion: completion)
+            return
+        }
+        
+        // 如果单词数量较多，分批翻译
+        print("📝 单词数量较多(\(words.count))，将分批翻译...")
+        
+        let batchSize = 50  // 每批翻译 50 个单词
+        var allTranslatedWords: [String] = []
+        var currentIndex = 0
+        
+        func translateNextBatch() {
+            guard currentIndex < words.count else {
+                // 所有批次翻译完成
+                print("✅ 所有批次翻译完成，共 \(allTranslatedWords.count) 个单词")
+                completion(.success(allTranslatedWords))
+                return
+            }
+            
+            let endIndex = min(currentIndex + batchSize, words.count)
+            let batch = Array(words[currentIndex..<endIndex])
+            let batchNumber = (currentIndex / batchSize) + 1
+            let totalBatches = (words.count + batchSize - 1) / batchSize
+            
+            print("📦 翻译第 \(batchNumber)/\(totalBatches) 批，共 \(batch.count) 个单词...")
+            
+            translateWordsInternal(batch) { result in
+                switch result {
+                case .success(let translatedBatch):
+                    allTranslatedWords.append(contentsOf: translatedBatch)
+                    currentIndex = endIndex
+                    
+                    // 继续翻译下一批
+                    translateNextBatch()
+                    
+                case .failure(let error):
+                    print("❌ 第 \(batchNumber) 批翻译失败: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        // 开始翻译第一批
+        translateNextBatch()
+    }
+    
+    /// 翻译简单文本
+    /// - Parameters:
+    ///   - text: 要翻译的文本
+    ///   - targetLanguage: 目标语言（如"日文"、"英文"等）
+    ///   - completion: 完成回调，返回翻译后的文本或错误
+    func translateText(_ text: String, targetLanguage: String, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = HunyuanConfig.generateRequestURL() else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
+            return
+        }
+        
+        let timestamp = Int(Date().timeIntervalSince1970)
+        
+        // 构建提示词
+        let prompt = """
+        请将以下中文文本翻译成\(targetLanguage)，保持原文的语气和含义，只返回翻译结果，不要添加任何解释或额外内容。
+        
+        原文：
+        \(text)
+        """
+        
+        // 构建请求体
+        let requestBody: [String: Any] = [
+            "Model": HunyuanConfig.defaultModel,
+            "Messages": [
+                [
+                    "Role": "user",
+                    "Content": prompt
+                ]
+            ],
+            "Temperature": 0.3,
+            "TopP": 1.0
+        ]
+        
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
+            return
+        }
+        
+        // 创建请求
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
+        request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
+        request.setValue("\(timestamp)", forHTTPHeaderField: "X-TC-Timestamp")
+        request.httpBody = jsonData
+        
+        // 生成签名
+        let signature = generateSignature(
+            action: "ChatCompletions",
+            timestamp: timestamp,
+            body: String(data: jsonData, encoding: .utf8) ?? ""
+        )
+        request.setValue(signature, forHTTPHeaderField: "Authorization")
+        
+        print("🚀 发送文本翻译请求到混元 API...")
+        print("📝 原文长度: \(text.count) 字符")
+        
+        // 发送请求
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
+                return
+            }
+            
+            // 打印原始响应（用于调试）
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📥 API 响应: \(responseString)")
+            }
+            
+            // 解析响应
+            do {
+                let chatResponse = try JSONDecoder().decode(HunyuanChatResponse.self, from: data)
+                
+                // 检查是否有错误
+                if let error = chatResponse.Response.Error {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(error.Message) (Code: \(error.Code))"])))
+                    return
+                }
+                
+                guard let content = chatResponse.Response.Choices?.first?.Message.Content else {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
+                    return
+                }
+                
+                print("✅ 翻译成功")
+                completion(.success(content))
+                
+            } catch {
+                print("❌ JSON 解析失败: \(error)")
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
     /// 翻译 JSON 文件中的 Words 数组为日文
     /// - Parameters:
     ///   - jsonData: 包含 Words 数组的 JSON 数据
@@ -103,7 +259,7 @@ class HunyuanManager {
         print("📝 准备翻译 \(allWords.count) 个单词到日文（来自 \(resultDetail.count) 条记录）...")
         
         // 3. 调用混元 API 进行翻译
-        translateWords(allWords) { [weak self] result in
+        translateWordsInternal(allWords) { [weak self] result in
             switch result {
             case .success(let translatedWords):
                 print("✅ 翻译成功，共 \(translatedWords.count) 个日文单词")
@@ -140,8 +296,8 @@ class HunyuanManager {
         }
     }
     
-    /// 调用混元 API 翻译单词数组
-    private func translateWords(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+    /// 调用混元 API 翻译单词数组（内部方法）
+    private func translateWordsInternal(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
         guard let url = HunyuanConfig.generateRequestURL() else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
             return
@@ -181,6 +337,7 @@ class HunyuanManager {
         // 创建请求
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.timeoutInterval = 120  // 设置超时时间为 120 秒
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
         request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
@@ -195,11 +352,16 @@ class HunyuanManager {
         )
         request.setValue(signature, forHTTPHeaderField: "Authorization")
         
-        print("🚀 发送翻译请求到混元 API...")
-        print("📤 请求体: \(String(data: jsonData, encoding: .utf8) ?? "")")
+        print("🚀 发送翻译请求到混元 API (共 \(words.count) 个单词)...")
+        
+        // 创建自定义 URLSession 配置
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 120
+        configuration.timeoutIntervalForResource = 300
+        let session = URLSession(configuration: configuration)
         
         // 发送请求
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return

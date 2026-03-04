@@ -11,6 +11,7 @@ class VideoPlayerViewModel: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var isLoading: Bool = true
     @Published var currentSubtitle: SubtitleItem?
+    @Published var currentSubtitleIndex: Int = -1
     @Published var subtitles: [SubtitleItem] = []
     
     private var timeObserver: Any?
@@ -23,17 +24,20 @@ class VideoPlayerViewModel: ObservableObject {
     
     // MARK: - 设置播放器
     func setupPlayer() {
-        guard let videoURL = URL(string: video.videoURL) else {
-            print("❌ 无效的视频 URL: \(video.videoURL)")
-            isLoading = false
-            return
-        }
+        let videoURL = video.actualVideoURL
         
-        // 检查文件是否存在
-        if !FileManager.default.fileExists(atPath: videoURL.path) {
-            print("❌ 视频文件不存在: \(videoURL.path)")
-            isLoading = false
-            return
+        print("🎬 准备加载视频")
+        print("📂 视频路径: \(videoURL.path)")
+        print("🆔 视频ID: \(video.id)")
+        print("📺 是否YouTube: \(video.isYouTube)")
+        
+        // 如果是本地视频，检查文件是否存在
+        if !video.isYouTube {
+            if !FileManager.default.fileExists(atPath: videoURL.path) {
+                print("❌ 视频文件不存在: \(videoURL.path)")
+                isLoading = false
+                return
+            }
         }
         
         let playerItem = AVPlayerItem(url: videoURL)
@@ -86,14 +90,90 @@ class VideoPlayerViewModel: ObservableObject {
     
     // MARK: - 加载字幕
     private func loadSubtitles() {
+        // 优先尝试从 ASR JSON 文件加载
+        if let asrSubtitles = SubtitleManager.shared.loadSubtitlesFromASRFile(videoId: video.id) {
+            subtitles = asrSubtitles
+            print("✅ 从 ASR 文件加载字幕成功，共 \(subtitles.count) 条")
+            
+            // 加载翻译结果
+            loadTranslations()
+            return
+        }
+        
+        // 如果 ASR 文件不存在，尝试从 UserDefaults 加载已保存的字幕
         if let subtitleData = SubtitleManager.shared.loadSubtitles(for: video.id) {
             subtitles = subtitleData.subtitles
-            print("✅ 加载字幕成功，共 \(subtitles.count) 条")
+            print("✅ 从 UserDefaults 加载字幕成功，共 \(subtitles.count) 条")
         } else {
             print("📭 没有找到字幕数据")
-            // 如果有 ASR 识别结果，可以生成默认字幕
+            // 如果都没有，生成默认字幕用于测试
             generateDefaultSubtitles()
         }
+    }
+    
+    // MARK: - 加载翻译结果
+    private func loadTranslations() {
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let translationFilePath = documentsPath.appendingPathComponent("\(video.id)_translation.txt")
+        
+        guard FileManager.default.fileExists(atPath: translationFilePath.path) else {
+            print("📭 没有找到翻译文件")
+            return
+        }
+        
+        do {
+            // 读取翻译文件
+            let content = try String(contentsOf: translationFilePath, encoding: .utf8)
+            let translatedWords = content.components(separatedBy: "\n").filter { !$0.isEmpty }
+            
+            print("✅ 加载翻译结果成功，共 \(translatedWords.count) 个词")
+            
+            // 将翻译结果应用到字幕
+            applyTranslationsToSubtitles(translatedWords: translatedWords)
+            
+        } catch {
+            print("❌ 读取翻译文件失败: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - 应用翻译到字幕
+    private func applyTranslationsToSubtitles(translatedWords: [String]) {
+        var translationIndex = 0
+        
+        for (index, subtitle) in subtitles.enumerated() {
+            guard let words = subtitle.words else { continue }
+            
+            // 为每个字幕项创建翻译后的 words 数组
+            var translatedWordTimings: [WordTiming] = []
+            
+            for word in words {
+                if translationIndex < translatedWords.count {
+                    let translatedWord = WordTiming(
+                        word: translatedWords[translationIndex],
+                        startTime: word.startTime,
+                        endTime: word.endTime
+                    )
+                    translatedWordTimings.append(translatedWord)
+                    translationIndex += 1
+                }
+            }
+            
+            // 创建新的字幕项，包含翻译后的文本和 words
+            let translatedText = translatedWordTimings.map { $0.word }.joined()
+            let newSubtitle = SubtitleItem(
+                id: subtitle.id,
+                startTime: subtitle.startTime,
+                endTime: subtitle.endTime,
+                originalText: subtitle.originalText,
+                translatedText: translatedText,
+                words: subtitle.words,
+                translatedWords: translatedWordTimings
+            )
+            
+            subtitles[index] = newSubtitle
+        }
+        
+        print("✅ 翻译已应用到 \(subtitles.count) 条字幕")
     }
     
     // MARK: - 生成默认字幕
@@ -109,11 +189,22 @@ class VideoPlayerViewModel: ObservableObject {
     
     // MARK: - 更新当前字幕
     private func updateCurrentSubtitle(at time: Double) {
-        let newSubtitle = SubtitleManager.shared.getCurrentSubtitle(subtitles: subtitles, at: time)
-        
-        // 只在字幕变化时更新
-        if newSubtitle?.id != currentSubtitle?.id {
-            currentSubtitle = newSubtitle
+        // 查找当前时间对应的字幕
+        if let index = subtitles.firstIndex(where: { $0.isActive(at: time) }) {
+            let newSubtitle = subtitles[index]
+            
+            // 只在字幕变化时更新
+            if newSubtitle.id != currentSubtitle?.id {
+                currentSubtitle = newSubtitle
+                currentSubtitleIndex = index
+                print("📝 字幕切换: [\(index + 1)/\(subtitles.count)] \(String(format: "%.1f", time))s - \(newSubtitle.originalText.prefix(20))...")
+            }
+        } else {
+            // 没有匹配的字幕
+            if currentSubtitle != nil {
+                currentSubtitle = nil
+                currentSubtitleIndex = -1
+            }
         }
     }
     
@@ -144,6 +235,12 @@ class VideoPlayerViewModel: ObservableObject {
     func skipForward() {
         let newTime = min(duration, currentTime + 10)
         seek(to: newTime)
+    }
+    
+    // MARK: - 重新播放
+    func replay() {
+        seek(to: 0)
+        player?.play()
     }
     
     // MARK: - 清理

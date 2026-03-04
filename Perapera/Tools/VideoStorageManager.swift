@@ -7,16 +7,39 @@ struct VideoItem: Codable, Identifiable {
     let name: String
     let posterImageData: Data? // 海报图片的 Data
     let videoURL: String // 视频地址（本地路径或远程URL）
-    let audioURL: String? // 转换后的音频文件路径（Opus 格式）
     let createdAt: Date
+    let isYouTube: Bool // 是否是 YouTube 视频
     
-    init(name: String, posterImageData: Data?, videoURL: String, audioURL: String? = nil) {
-        self.id = UUID().uuidString
+    init(name: String, posterImageData: Data?, videoURL: String, isYouTube: Bool = false) {
+        let timestamp = Int(Date().timeIntervalSince1970)
+        self.id = "\(UUID().uuidString)-\(timestamp)"
         self.name = name
         self.posterImageData = posterImageData
         self.videoURL = videoURL
-        self.audioURL = audioURL
         self.createdAt = Date()
+        self.isYouTube = isYouTube
+    }
+    
+    // 自定义解码，处理旧数据兼容性
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        posterImageData = try container.decodeIfPresent(Data.self, forKey: .posterImageData)
+        videoURL = try container.decode(String.self, forKey: .videoURL)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        
+        // 兼容旧数据：如果没有 isYouTube 字段，根据 URL 判断
+        if let isYouTube = try? container.decode(Bool.self, forKey: .isYouTube) {
+            self.isYouTube = isYouTube
+        } else {
+            // 旧数据：根据 URL 判断是否是 YouTube
+            self.isYouTube = videoURL.contains("youtube") || videoURL.contains("youtu.be")
+        }
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case id, name, posterImageData, videoURL, createdAt, isYouTube
     }
     
     // 获取海报图片
@@ -25,9 +48,58 @@ struct VideoItem: Codable, Identifiable {
         return UIImage(data: data)
     }
     
+    // 获取 Documents 目录
+    private var documentsDirectory: URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    
+    // 本地视频文件路径
+    var localVideoURL: URL {
+        documentsDirectory.appendingPathComponent("\(id).mp4")
+    }
+    
+    // 音频文件路径
+    var audioURL: URL {
+        documentsDirectory.appendingPathComponent("\(id).opus")
+    }
+    
+    // 识别结果文件路径
+    var recognitionURL: URL {
+        documentsDirectory.appendingPathComponent("\(id).json")
+    }
+    
+    // 翻译结果文件路径
+    var translationURL: URL {
+        documentsDirectory.appendingPathComponent("\(id)_translation.txt")
+    }
+    
     // 是否已转换音频
     var hasAudio: Bool {
-        return audioURL != nil
+        FileManager.default.fileExists(atPath: audioURL.path)
+    }
+    
+    // 是否已识别
+    var hasRecognition: Bool {
+        FileManager.default.fileExists(atPath: recognitionURL.path)
+    }
+    
+    // 是否已翻译
+    var hasTranslation: Bool {
+        FileManager.default.fileExists(atPath: translationURL.path)
+    }
+    
+    // 获取实际的视频 URL（YouTube 返回原 URL，本地视频返回 Documents 路径）
+    var actualVideoURL: URL {
+        if isYouTube {
+            return URL(string: videoURL) ?? localVideoURL
+        } else {
+            // 对于旧数据，如果 videoURL 不为空且文件存在，使用旧路径
+            if !videoURL.isEmpty && FileManager.default.fileExists(atPath: videoURL) {
+                return URL(fileURLWithPath: videoURL)
+            }
+            // 否则使用新的 Documents 路径
+            return localVideoURL
+        }
     }
 }
 
@@ -73,7 +145,7 @@ class VideoStorageManager {
     }
     
     // MARK: - 添加单个视频
-    func addVideo(name: String, posterImage: UIImage?, videoURL: String, audioURL: String? = nil) {
+    func addVideo(name: String, posterImage: UIImage?, videoURL: String, isYouTube: Bool = false) -> VideoItem {
         var videos = loadVideos()
         
         // 压缩图片
@@ -83,11 +155,60 @@ class VideoStorageManager {
             name: name,
             posterImageData: compressedImageData,
             videoURL: videoURL,
-            audioURL: audioURL
+            isYouTube: isYouTube
         )
         
         videos.insert(newVideo, at: 0) // 插入到最前面
         saveVideos(videos)
+        
+        return newVideo
+    }
+    
+    // MARK: - 添加本地视频（复制到 Documents）
+    func addLocalVideo(name: String, posterImage: UIImage?, sourceURL: URL) -> VideoItem? {
+        var videos = loadVideos()
+        
+        // 压缩图片
+        let compressedImageData = compressImage(posterImage)
+        
+        let newVideo = VideoItem(
+            name: name,
+            posterImageData: compressedImageData,
+            videoURL: "", // 本地视频不需要存储原始 URL
+            isYouTube: false
+        )
+        
+        // 复制视频文件到 Documents 目录
+        do {
+            // 如果目标文件已存在，先删除
+            if FileManager.default.fileExists(atPath: newVideo.localVideoURL.path) {
+                try FileManager.default.removeItem(at: newVideo.localVideoURL)
+            }
+            
+            // 复制文件
+            try FileManager.default.copyItem(at: sourceURL, to: newVideo.localVideoURL)
+            
+            print("✅ 视频文件已复制到 Documents")
+            print("📂 源路径: \(sourceURL.path)")
+            print("📂 目标路径: \(newVideo.localVideoURL.path)")
+            
+            // 获取文件大小
+            if let fileSize = try? FileManager.default.attributesOfItem(atPath: newVideo.localVideoURL.path)[.size] as? Int64 {
+                let formatter = ByteCountFormatter()
+                formatter.allowedUnits = [.useKB, .useMB, .useGB]
+                formatter.countStyle = .file
+                print("📊 文件大小: \(formatter.string(fromByteCount: fileSize))")
+            }
+            
+            videos.insert(newVideo, at: 0)
+            saveVideos(videos)
+            
+            return newVideo
+            
+        } catch {
+            print("❌ 复制视频文件失败: \(error.localizedDescription)")
+            return nil
+        }
     }
     
     // MARK: - 删除视频
@@ -96,12 +217,23 @@ class VideoStorageManager {
         
         // 查找要删除的视频
         if let video = videos.first(where: { $0.id == id }) {
-            // 删除关联的音频文件
-            if let audioURLString = video.audioURL,
-               let audioURL = URL(string: audioURLString) {
-                try? FileManager.default.removeItem(at: audioURL)
-                print("🗑️ 已删除关联的音频文件")
+            // 删除关联的本地视频文件
+            if !video.isYouTube {
+                try? FileManager.default.removeItem(at: video.localVideoURL)
+                print("🗑️ 已删除关联的视频文件")
             }
+            
+            // 删除关联的音频文件
+            try? FileManager.default.removeItem(at: video.audioURL)
+            print("🗑️ 已删除关联的音频文件")
+            
+            // 删除关联的识别结果文件
+            try? FileManager.default.removeItem(at: video.recognitionURL)
+            print("🗑️ 已删除关联的识别结果文件")
+            
+            // 删除关联的翻译结果文件
+            try? FileManager.default.removeItem(at: video.translationURL)
+            print("🗑️ 已删除关联的翻译结果文件")
         }
         
         videos.removeAll { $0.id == id }
@@ -109,7 +241,7 @@ class VideoStorageManager {
     }
     
     // MARK: - 更新视频
-    func updateVideo(id: String, name: String? = nil, posterImage: UIImage? = nil, videoURL: String? = nil, audioURL: String? = nil) {
+    func updateVideo(id: String, name: String? = nil, posterImage: UIImage? = nil, videoURL: String? = nil) {
         var videos = loadVideos()
         
         guard let index = videos.firstIndex(where: { $0.id == id }) else {
@@ -123,18 +255,11 @@ class VideoStorageManager {
         let updatedVideo = VideoItem(
             name: name ?? oldVideo.name,
             posterImageData: compressedImageData,
-            videoURL: videoURL ?? oldVideo.videoURL,
-            audioURL: audioURL ?? oldVideo.audioURL
+            videoURL: videoURL ?? oldVideo.videoURL
         )
         
         videos[index] = updatedVideo
         saveVideos(videos)
-    }
-    
-    // MARK: - 更新视频的音频路径
-    func updateVideoAudioURL(id: String, audioURL: String) {
-        updateVideo(id: id, audioURL: audioURL)
-        print("✅ 已更新视频 \(id) 的音频路径")
     }
     
     // MARK: - 清空所有视频

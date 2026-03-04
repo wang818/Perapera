@@ -6,6 +6,7 @@ import AVFoundation
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var videos: [VideoItem] = []
+    @State private var refreshID = UUID() // 用于强制刷新视图
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
@@ -20,6 +21,8 @@ struct HomeView: View {
     @State private var isConverting: Bool = false
     @State private var conversionProgress: Double = 0.0
     @State private var currentConvertingVideoId: String?
+    @State private var currentRecognizingVideoId: String?
+    @State private var currentTranslatingVideoId: String?
 
     var body: some View {
         ZStack {
@@ -44,11 +47,24 @@ struct HomeView: View {
                         List {
                             ForEach(videos) { video in
                                 NavigationLink(destination: VideoPlayerView(video: video)) {
-                                    VideoRowView(video: video, onDelete: {
-                                        deleteVideo(video)
-                                    })
+                                    VideoRowView(
+                                        video: video,
+                                        onDelete: {
+                                            deleteVideo(video)
+                                        },
+                                        onConvertAudio: {
+                                            convertAudioForVideo(video)
+                                        },
+                                        onStartRecognition: {
+                                            startRecognitionForVideo(video)
+                                        },
+                                        onStartTranslation: {
+                                            startTranslationForVideo(video)
+                                        }
+                                    )
                                 }
                                 .listRowInsets(EdgeInsets())
+                                .id("\(video.id)-\(refreshID)") // 强制刷新视图
                             }
                             .onDelete(perform: deleteVideos)
                         }
@@ -217,24 +233,30 @@ struct HomeView: View {
                     switch result {
                     case .success(let urls):
                         guard let url = urls.first else { return }
+                        
+                        // 获取访问权限
+                        guard url.startAccessingSecurityScopedResource() else {
+                            print("❌ 无法访问文件")
+                            return
+                        }
+                        
+                        defer { url.stopAccessingSecurityScopedResource() }
+                        
                         print("Selected media file: \(url.lastPathComponent)")
                         
-                        // 保存视频到列表（先不设置音频路径）
+                        // 保存视频到 Documents 目录
                         let videoName = url.deletingPathExtension().lastPathComponent
-                        VideoStorageManager.shared.addVideo(
+                        
+                        if let newVideo = VideoStorageManager.shared.addLocalVideo(
                             name: videoName,
                             posterImage: UIImage(systemName: "video.fill"),
-                            videoURL: url.path,
-                            audioURL: nil
-                        )
-                        loadVideos()
-                        
-                        // 获取刚添加的视频 ID
-                        if let newVideo = videos.first {
+                            sourceURL: url
+                        ) {
+                            loadVideos()
                             currentConvertingVideoId = newVideo.id
                             
                             // 开始转换视频为音频
-                            convertVideoToAudio(videoURL: url, videoId: newVideo.id)
+                            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
                         }
                         
                     case .failure(let error):
@@ -257,23 +279,24 @@ struct HomeView: View {
                                 // 生成缩略图
                                 let thumbnail = generateVideoThumbnail(url: tempURL)
                                 
-                                // 保存到视频列表
-                                VideoStorageManager.shared.addVideo(
+                                // 保存到 Documents 目录
+                                let newVideo = VideoStorageManager.shared.addLocalVideo(
                                     name: "相册视频 - \(Date().formatted())",
                                     posterImage: thumbnail,
-                                    videoURL: tempURL.path,
-                                    audioURL: nil
+                                    sourceURL: tempURL
                                 )
+                                
+                                // 删除临时文件
+                                try? FileManager.default.removeItem(at: tempURL)
                                 
                                 await MainActor.run {
                                     loadVideos()
                                     
-                                    // 获取刚添加的视频 ID
-                                    if let newVideo = videos.first {
+                                    if let newVideo = newVideo {
                                         currentConvertingVideoId = newVideo.id
                                         
                                         // 开始转换视频为音频
-                                        convertVideoToAudio(videoURL: tempURL, videoId: newVideo.id)
+                                        convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
                                     }
                                 }
                             }
@@ -543,6 +566,60 @@ struct HomeView: View {
     /// 加载视频列表
     private func loadVideos() {
         videos = VideoStorageManager.shared.loadVideos()
+        refreshID = UUID() // 触发视图刷新
+        printVideosInfo()
+    }
+    
+    /// 输出 videos 变量信息到控制台
+    private func printVideosInfo() {
+        print("\n" + String(repeating: "=", count: 70))
+        print("📹 当前视频列表 (共 \(videos.count) 个)")
+        print(String(repeating: "=", count: 70))
+        
+        if videos.isEmpty {
+            print("📭 列表为空")
+        } else {
+            for (index, video) in videos.enumerated() {
+                print("\n[\(index + 1)] 视频信息:")
+                print("  🆔 ID: \(video.id)")
+                print("  📝 名称: \(video.name)")
+                print("  🎬 视频路径: \(video.videoURL)")
+                
+                print("  🕐 创建时间: \(formatDateForConsole(video.createdAt))")
+                
+                if let posterImage = video.posterImage {
+                    let size = posterImage.size
+                    print("  🖼️  海报图: 有 (\(Int(size.width))x\(Int(size.height)))")
+                } else {
+                    print("  🖼️  海报图: 无")
+                }
+                
+                // 检查视频类型
+                if video.isYouTube {
+                    print("  📺 类型: YouTube 视频")
+                } else {
+                    print("  📁 类型: 本地视频")
+                }
+                
+                // 检查文件状态
+                print("  📊 文件状态:")
+                print("    🎵 音频文件: \(video.hasAudio ? "✅ 已转换" : "❌ 未转换") - \(video.audioURL.path)")
+                print("    📝 识别结果: \(video.hasRecognition ? "✅ 已识别" : "❌ 未识别") - \(video.recognitionURL.path)")
+                print("    🌐 翻译结果: \(video.hasTranslation ? "✅ 已翻译" : "❌ 未翻译") - \(video.translationURL.path)")
+                
+                print("  " + String(repeating: "-", count: 66))
+            }
+        }
+        
+        print(String(repeating: "=", count: 70) + "\n")
+    }
+    
+    /// 格式化日期用于控制台输出
+    private func formatDateForConsole(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "zh_CN")
+        return formatter.string(from: date)
     }
     
     /// 删除视频
@@ -560,6 +637,82 @@ struct HomeView: View {
         loadVideos()
     }
     
+    /// 转换音频
+    private func convertAudioForVideo(_ video: VideoItem) {
+        print("🎵 开始转换音频: \(video.name)")
+        currentConvertingVideoId = video.id
+        convertVideoToAudio(videoURL: video.actualVideoURL, videoId: video.id)
+    }
+    
+    /// 开始识别
+    private func startRecognitionForVideo(_ video: VideoItem) {
+        guard video.hasAudio else {
+            print("❌ 音频文件不存在，无法识别")
+            return
+        }
+        
+        print("🎤 开始语音识别: \(video.name)")
+        currentRecognizingVideoId = video.id
+        
+        // 上传音频到 COS
+        COSUploadManager.shared.uploadFile(fileURL: video.audioURL) { result in
+            switch result {
+            case .success(let cosURL):
+                print("✅ 音频上传成功: \(cosURL)")
+                
+                // 开始语音识别
+                isRecognizing = true
+                ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
+                    switch result {
+                    case .success(let taskId):
+                        print("✅ 识别任务创建成功，TaskId: \(taskId)")
+                        
+                        // 开始轮询查询识别结果
+                        pollRecognitionResult(taskId: taskId, videoId: video.id)
+                        
+                    case .failure(let error):
+                        print("❌ 创建识别任务失败: \(error.localizedDescription)")
+                        isRecognizing = false
+                        currentRecognizingVideoId = nil
+                    }
+                }
+                
+            case .failure(let error):
+                print("❌ 音频上传失败: \(error.localizedDescription)")
+                currentRecognizingVideoId = nil
+            }
+        }
+    }
+    
+    /// 开始翻译
+    private func startTranslationForVideo(_ video: VideoItem) {
+        guard video.hasRecognition else {
+            print("❌ 识别结果不存在，无法翻译")
+            return
+        }
+        
+        print("🌐 开始翻译: \(video.name)")
+        
+        // 读取识别结果
+        do {
+            let recognitionData = try Data(contentsOf: video.recognitionURL)
+            
+            // 解析获取识别文本
+            if let jsonObject = try? JSONSerialization.jsonObject(with: recognitionData) as? [String: Any],
+               let response = jsonObject["Response"] as? [String: Any],
+               let data = response["Data"] as? [String: Any],
+               let result = data["Result"] as? String {
+                
+                // 开始翻译
+                translateRecognitionResult(videoId: video.id, recognizedText: result)
+            } else {
+                print("❌ 无法解析识别结果")
+            }
+        } catch {
+            print("❌ 读取识别结果失败: \(error.localizedDescription)")
+        }
+    }
+    
     /// 保存 YouTube 视频
     private func saveYoutubeVideo(url: String) {
         // 从 URL 提取视频名称
@@ -568,10 +721,11 @@ struct HomeView: View {
         // 使用默认海报图
         let defaultPoster = UIImage(systemName: "video.fill")
         
-        VideoStorageManager.shared.addVideo(
+        let _ = VideoStorageManager.shared.addVideo(
             name: videoName,
             posterImage: defaultPoster,
-            videoURL: url
+            videoURL: url,
+            isYouTube: true
         )
         
         loadVideos()
@@ -629,6 +783,7 @@ struct HomeView: View {
         
         AudioConverter.shared.convertVideoToOpusWithProgress(
             inputURL: videoURL,
+            videoId: videoId,
             bitrate: "64k",
             sampleRate: 48000,
             progress: { progress in
@@ -642,17 +797,14 @@ struct HomeView: View {
                     print("✅ 音频转换成功!")
                     print("📁 音频路径: \(audioURL.path)")
                     
-                    // 更新视频的音频路径
-                    VideoStorageManager.shared.updateVideoAudioURL(
-                        id: videoId,
-                        audioURL: audioURL.path
-                    )
+                    // 输出文件详细信息到控制台
+                    printAudioFileInfo(audioURL: audioURL)
                     
-                    // 刷新列表
+                    // 刷新列表（音频文件已保存，状态会自动更新）
                     loadVideos()
                     
                     // 上传音频到 COS 并进行语音识别
-                    uploadAudioAndRecognize(audioURL: audioURL)
+                    uploadAudioAndRecognize(audioURL: audioURL, videoId: videoId)
                     
                 case .failure(let error):
                     print("❌ 音频转换失败: \(error.localizedDescription)")
@@ -665,7 +817,7 @@ struct HomeView: View {
     }
     
     /// 上传音频并进行语音识别
-    private func uploadAudioAndRecognize(audioURL: URL) {
+    private func uploadAudioAndRecognize(audioURL: URL, videoId: String) {
         isUploading = true
         uploadProgress = 0.0
         
@@ -690,7 +842,7 @@ struct HomeView: View {
                             print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
                             asrTaskId = taskId
                             // 开始轮询查询识别结果
-                            pollRecognitionResult(taskId: taskId)
+                            pollRecognitionResult(taskId: taskId, videoId: videoId)
                         case .failure(let error):
                             print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
                             isRecognizing = false
@@ -710,8 +862,63 @@ struct HomeView: View {
         viewModel.translate123Json()
     }
     
+    /// 输出音频文件详细信息到控制台
+    private func printAudioFileInfo(audioURL: URL) {
+        print("\n" + String(repeating: "=", count: 60))
+        print("📄 转换后的音频文件信息")
+        print(String(repeating: "=", count: 60))
+        
+        do {
+            // 获取文件属性
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: audioURL.path)
+            
+            // 文件名
+            print("📝 文件名: \(audioURL.lastPathComponent)")
+            
+            // 文件路径
+            print("📂 完整路径: \(audioURL.path)")
+            
+            // 文件大小
+            if let fileSize = fileAttributes[.size] as? Int64 {
+                let fileSizeMB = Double(fileSize) / (1024 * 1024)
+                let fileSizeKB = Double(fileSize) / 1024
+                print("💾 文件大小: \(String(format: "%.2f", fileSizeMB)) MB (\(String(format: "%.2f", fileSizeKB)) KB)")
+            }
+            
+            // 创建时间
+            if let creationDate = fileAttributes[.creationDate] as? Date {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                print("🕐 创建时间: \(formatter.string(from: creationDate))")
+            }
+            
+            // 文件格式
+            print("🎵 文件格式: \(audioURL.pathExtension.uppercased())")
+            
+            // 检查文件是否存在
+            let fileExists = FileManager.default.fileExists(atPath: audioURL.path)
+            print("✓ 文件存在: \(fileExists ? "是" : "否")")
+            
+            // 尝试读取音频元数据
+            let asset = AVAsset(url: audioURL)
+            let duration = asset.duration
+            let durationSeconds = CMTimeGetSeconds(duration)
+            
+            if durationSeconds.isFinite && durationSeconds > 0 {
+                let minutes = Int(durationSeconds) / 60
+                let seconds = Int(durationSeconds) % 60
+                print("⏱️  音频时长: \(minutes)分\(seconds)秒 (\(String(format: "%.2f", durationSeconds))秒)")
+            }
+            
+            print(String(repeating: "=", count: 60) + "\n")
+            
+        } catch {
+            print("❌ 无法读取文件信息: \(error.localizedDescription)")
+        }
+    }
+    
     /// 轮询查询语音识别结果
-    private func pollRecognitionResult(taskId: Int, retryCount: Int = 0) {
+    private func pollRecognitionResult(taskId: Int, videoId: String, retryCount: Int = 0) {
         let maxRetries = 60 // 最多轮询 60 次（约 5 分钟）
         
         guard retryCount < maxRetries else {
@@ -722,7 +929,7 @@ struct HomeView: View {
         
         ASRManager.shared.queryRecognitionResult(taskId: taskId) { result in
             switch result {
-            case .success(let taskResult):
+            case .success(let (taskResult, rawJSON)):
                 print("📊 识别状态: \(taskResult.StatusStr)")
                 
                 switch taskResult.Status {
@@ -732,6 +939,9 @@ struct HomeView: View {
                         print("识别结果: \(recognizedText)")
                         recognitionText = recognizedText
                         isRecognizing = false
+                        
+                        // 直接保存原始 JSON 响应
+                        saveRawRecognitionJSON(videoId: videoId, rawJSON: rawJSON, recognizedText: recognizedText)
                     }
                     
                 case 3: // 失败
@@ -741,7 +951,7 @@ struct HomeView: View {
                 case 0, 1: // 等待中或执行中
                     // 5 秒后继续轮询
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                        pollRecognitionResult(taskId: taskId, retryCount: retryCount + 1)
+                        pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                     }
                     
                 default:
@@ -753,9 +963,161 @@ struct HomeView: View {
                 print("❌ 查询识别结果失败: \(error.localizedDescription)")
                 // 失败后重试
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                    pollRecognitionResult(taskId: taskId, retryCount: retryCount + 1)
+                    pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                 }
             }
+        }
+    }
+    
+    /// 保存原始 ASR JSON 响应
+    private func saveRawRecognitionJSON(videoId: String, rawJSON: Data, recognizedText: String) {
+        do {
+            // 获取 Documents 目录
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            // 生成文件路径：videoId.json
+            let fileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
+            
+            // 直接写入原始 JSON 数据
+            try rawJSON.write(to: fileURL)
+            
+            print("\n" + String(repeating: "=", count: 60))
+            print("💾 ASR 原始 JSON 已保存")
+            print(String(repeating: "=", count: 60))
+            print("📝 文件名: \(videoId).json")
+            print("📂 文件路径: \(fileURL.path)")
+            print("🆔 视频ID: \(videoId)")
+            print("📄 识别文本长度: \(recognizedText.count) 字符")
+            print("📦 JSON 文件大小: \(ByteCountFormatter.string(fromByteCount: Int64(rawJSON.count), countStyle: .file))")
+            
+            // 输出 JSON 内容到控制台（格式化）
+            if let jsonObject = try? JSONSerialization.jsonObject(with: rawJSON),
+               let prettyJSON = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+               let jsonString = String(data: prettyJSON, encoding: .utf8) {
+                print("\n📋 JSON 内容预览:")
+                // 只显示前 500 个字符
+                let preview = jsonString.prefix(500)
+                print(preview)
+                if jsonString.count > 500 {
+                    print("... (共 \(jsonString.count) 字符)")
+                }
+            }
+            
+            print(String(repeating: "=", count: 60) + "\n")
+            
+            // 刷新列表（识别结果文件已保存，状态会自动更新）
+            loadVideos()
+            
+            // 自动触发翻译
+            translateRecognitionResult(videoId: videoId, recognizedText: recognizedText)
+            
+        } catch {
+            print("❌ 保存原始 JSON 失败: \(error.localizedDescription)")
+        }
+    }
+    
+    /// 翻译识别结果
+    private func translateRecognitionResult(videoId: String, recognizedText: String) {
+        print("\n" + String(repeating: "🌟", count: 40))
+        print("🚀 开始翻译识别结果（词级别）")
+        print(String(repeating: "🌟", count: 40) + "\n")
+        
+        viewModel.isTranslating = true
+        
+        // 读取 JSON 文件获取 words 数组
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let jsonFileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
+        
+        guard let jsonData = try? Data(contentsOf: jsonFileURL) else {
+            print("❌ 无法读取 JSON 文件")
+            viewModel.isTranslating = false
+            return
+        }
+        
+        // 解析 JSON 获取所有 words
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+              let response = jsonObject["Response"] as? [String: Any],
+              let data = response["Data"] as? [String: Any],
+              let resultDetail = data["ResultDetail"] as? [[String: Any]] else {
+            print("❌ 无法解析 JSON 结构")
+            viewModel.isTranslating = false
+            return
+        }
+        
+        // 收集所有 words
+        var allWords: [String] = []
+        for detail in resultDetail {
+            if let words = detail["Words"] as? [[String: Any]] {
+                let wordValues = words.compactMap { $0["Word"] as? String }
+                allWords.append(contentsOf: wordValues)
+            }
+        }
+        
+        if allWords.isEmpty {
+            print("❌ 没有找到 words 数组")
+            viewModel.isTranslating = false
+            return
+        }
+        
+        print("📝 准备翻译 \(allWords.count) 个单词...")
+        
+        // 调用翻译 API
+        HunyuanManager.shared.translateWords(allWords) { result in
+            DispatchQueue.main.async {
+                viewModel.isTranslating = false
+                
+                switch result {
+                case .success(let translatedWords):
+                    print("✅ 翻译成功，共 \(translatedWords.count) 个日文单词")
+                    
+                    // 保存翻译结果为简单文本格式
+                    self.saveTranslationResultToTxt(
+                        videoId: videoId,
+                        originalWords: allWords,
+                        translatedWords: translatedWords
+                    )
+                    
+                    viewModel.translationResult = "翻译完成：\(translatedWords.count) 个单词"
+                    
+                case .failure(let error):
+                    print("❌ 翻译失败: \(error.localizedDescription)")
+                    viewModel.translationResult = "翻译失败: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+    
+    /// 保存翻译结果为简单文本格式
+    private func saveTranslationResultToTxt(videoId: String, originalWords: [String], translatedWords: [String]) {
+        do {
+            // 获取 Documents 目录
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            
+            // 生成文件名：videoId_translation.txt
+            let fileName = "\(videoId)_translation.txt"
+            let fileURL = documentsDirectory.appendingPathComponent(fileName)
+            
+            // 构建简单的文本内容：每行一个翻译后的词
+            let content = translatedWords.joined(separator: "\n")
+            
+            // 写入文件
+            try content.write(to: fileURL, atomically: true, encoding: .utf8)
+            
+            print("\n" + String(repeating: "=", count: 60))
+            print("💾 翻译结果已保存为 TXT 文件")
+            print(String(repeating: "=", count: 60))
+            print("📝 文件名: \(fileName)")
+            print("📂 文件路径: \(fileURL.path)")
+            print("📊 单词数量: \(translatedWords.count)")
+            print(String(repeating: "=", count: 60) + "\n")
+            print(String(repeating: "=", count: 60) + "\n")
+            
+            // 更新视频的翻译结果路径
+            // 刷新列表（翻译结果文件已保存，状态会自动更新）
+            loadVideos()
+            
+        } catch {
+            print("❌ 保存翻译结果 TXT 文件失败: \(error.localizedDescription)")
         }
     }
 }
@@ -764,6 +1126,9 @@ struct HomeView: View {
 struct VideoRowView: View {
     let video: VideoItem
     let onDelete: () -> Void
+    let onConvertAudio: () -> Void
+    let onStartRecognition: () -> Void
+    let onStartTranslation: () -> Void
     
     var body: some View {
         HStack(spacing: 15) {
@@ -798,7 +1163,7 @@ struct VideoRowView: View {
                     .foregroundColor(.ex.text2)
                 
                 HStack(spacing: 8) {
-                    if video.videoURL.contains("youtube") || video.videoURL.contains("youtu.be") {
+                    if video.isYouTube {
                         HStack(spacing: 4) {
                             Image(systemName: "play.rectangle.fill")
                                 .font(.caption)
@@ -825,6 +1190,91 @@ struct VideoRowView: View {
                                 .font(.caption)
                         }
                         .foregroundColor(.green)
+                    } else {
+                        Button(action: onConvertAudio) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "waveform")
+                                    .font(.caption)
+                                Text("未转换")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    
+                    // 识别状态标签
+                    if video.hasRecognition {
+                        HStack(spacing: 4) {
+                            Image(systemName: "text.bubble")
+                                .font(.caption)
+                            Text("已识别")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.orange)
+                    } else if video.hasAudio {
+                        // 只有音频已转换才能识别
+                        Button(action: onStartRecognition) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "text.bubble")
+                                    .font(.caption)
+                                Text("未识别")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "text.bubble")
+                                .font(.caption)
+                            Text("未识别")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.gray)
+                    }
+                    
+                    // 翻译状态标签
+                    if video.hasTranslation {
+                        HStack(spacing: 4) {
+                            Image(systemName: "globe")
+                                .font(.caption)
+                            Text("已翻译")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.purple)
+                    } else if video.hasRecognition {
+                        // 只有识别完成才能翻译
+                        Button(action: onStartTranslation) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "globe")
+                                    .font(.caption)
+                                Text("未翻译")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(4)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "globe")
+                                .font(.caption)
+                            Text("未翻译")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.gray)
                     }
                 }
             }
