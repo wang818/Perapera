@@ -13,7 +13,20 @@ class LanguageManager {
             "zh-Hant": "繁體中文",
             "ja": "日本語",
             "ko": "한국어",
-            "vi": "Tiếng Việt"
+            "vi": "Tiếng Việt",
+            "ar": "العربية",
+            "de": "Deutsch",
+            "es": "Español",
+            "fr": "Français",
+            "pt-PT": "Português (Portugal)",
+            "pl": "Polski",
+            "tr": "Türkçe",
+            "th": "ไทย",
+            "fil": "Filipino",
+            "my": "မြန်မာဘာသာ",
+            "ms": "Bahasa Melayu",
+            "id": "Bahasa Indonesia",
+            "ru": "Русский"
         ]
     }()
     
@@ -38,7 +51,9 @@ class LanguageManager {
     }
     
     static func setAppLanguage(_ code: String) {
-        PUserDefault.setValueForKey(code, key: AppKeys.appLanguage)
+        let normalized = normalizeCode(code)
+        let finalCode = isSupportedBundleCode(normalized) ? normalized : "en"
+        PUserDefault.setValueForKey(finalCode, key: AppKeys.appLanguage)
     }
     
     static func setAILanguage(_ code: String) {
@@ -47,8 +62,7 @@ class LanguageManager {
     
     static func getAILanguage() -> String {
         if let stored = PUserDefault.getVauleForKey(key: AppKeys.aiLanguage) as? String, !stored.isEmpty {
-            
-            return languageNames[stored] ?? "English"
+            return languageNames[stored] ?? localizedLanguageName(stored)
         }
         return getCurrentAppLanguage()
     }
@@ -59,7 +73,7 @@ class LanguageManager {
     
     static func getSourceLanguage() -> String {
         if let stored = PUserDefault.getVauleForKey(key: AppKeys.sourceLanguage) as? String, !stored.isEmpty {
-            return languageNames[stored] ?? "English"
+            return languageNames[stored] ?? localizedLanguageName(stored)
         }
         return getCurrentAppLanguage()
     }
@@ -70,46 +84,69 @@ class LanguageManager {
     
     static func getLearningLanguage() -> String {
         if let stored = PUserDefault.getVauleForKey(key: AppKeys.learningLanguage) as? String, !stored.isEmpty {
-            return languageNames[stored] ?? "English"
+            return languageNames[stored] ?? localizedLanguageName(stored)
         }
         return getCurrentAppLanguage()
     }
     
     static func currentLanguageCode() -> String {
          if let storedLanguageCode = UserDefaults.standard.string(forKey: AppKeys.appLanguage) {
-            return storedLanguageCode
+            let normalized = normalizeCode(storedLanguageCode)
+            return isSupportedBundleCode(normalized) ? normalized : "en"
         }
         
-        // 如果没有手动设置过，则获取系统首选语言
-        // Bundle.main.preferredLocalizations 会自动返回 App 支持的、且最匹配用户系统语言的本地化代码
-        // 如果系统语言 App 不支持，它会自动回退到 Info.plist 中的 Development Language (通常是 en)
         let resolvedLanguage = Bundle.main.preferredLocalizations.first ?? "en"
-        
-        return resolvedLanguage
+        let normalized = normalizeCode(resolvedLanguage)
+        return isSupportedBundleCode(normalized) ? normalized : "en"
     }
 
     static func getCurrentAppLanguage() -> String {
         let code = currentLanguageCode()
-        return languageNames[code] ?? "English"
+        return languageNames[code] ?? localizedLanguageName(code)
     }
     
     static func currentBundle() -> Bundle {
-        var code = currentLanguageCode()
-        
-        // Map server codes to iOS bundle names
-        let mapping: [String: String] = [
-            "zh-CN": "zh-Hans",
-            "pt": "pt-PT"
-        ]
-        
-        if let mappedCode = mapping[code] {
-            code = mappedCode
-        }
+        let code = normalizeCode(currentLanguageCode())
         
         if let path = Bundle.main.path(forResource: code, ofType: "lproj"),
            let bundle = Bundle(path: path) {
             return bundle
         }
         return Bundle.main
+    }
+
+    static func localizedLanguageName(_ code: String) -> String {
+        let mapping: [String: String] = [
+            "zh-Hans": "简体中文",
+            "zh-Hant": "繁體中文"
+        ]
+        if let mapped = mapping[code] {
+            return mapped
+        }
+        if let name = Locale.current.localizedString(forIdentifier: code) {
+            return name.capitalized
+        }
+        if let name2 = Locale.current.localizedString(forLanguageCode: code) {
+            return name2.capitalized
+        }
+        return "English"
+    }
+
+    static func normalizeCode(_ code: String) -> String {
+        let mapping: [String: String] = [
+            "zh-CN": "zh-Hans",
+            "pt": "pt-PT"
+        ]
+        if let mapped = mapping[code] {
+            return mapped
+        }
+        return code
+    }
+
+    static func isSupportedBundleCode(_ code: String) -> Bool {
+        if let path = Bundle.main.path(forResource: code, ofType: "lproj"), !path.isEmpty {
+            return true
+        }
+        return false
     }
 }
