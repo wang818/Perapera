@@ -18,11 +18,6 @@ struct ContentView: View {
                     Label("tab_home".localized(), systemImage: "house")
                 }
             
-            PodcastView()
-                .tabItem {
-                    Label("tab_podcast".localized(), systemImage: "mic")
-                }
-            
             SettingsView()
                 .tabItem {
                     Label("tab_settings".localized(), systemImage: "gear")
