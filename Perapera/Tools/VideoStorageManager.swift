@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import AVFoundation
 
 // MARK: - Video Model
 struct VideoItem: Codable, Identifiable {
@@ -9,15 +10,22 @@ struct VideoItem: Codable, Identifiable {
     let videoURL: String // 视频地址（本地路径或远程URL）
     let createdAt: Date
     let isYouTube: Bool // 是否是 YouTube 视频
+    let duration: Double? // 视频时长（秒）
     
-    init(name: String, posterImageData: Data?, videoURL: String, isYouTube: Bool = false) {
-        let timestamp = Int(Date().timeIntervalSince1970)
-        self.id = "\(UUID().uuidString)-\(timestamp)"
+    init(id: String? = nil, name: String, posterImageData: Data?, videoURL: String, createdAt: Date? = nil, isYouTube: Bool = false, duration: Double? = nil) {
+        if let id = id {
+            self.id = id
+        } else {
+            let timestamp = Int(Date().timeIntervalSince1970)
+            self.id = "\(UUID().uuidString)-\(timestamp)"
+        }
+        
         self.name = name
         self.posterImageData = posterImageData
         self.videoURL = videoURL
-        self.createdAt = Date()
+        self.createdAt = createdAt ?? Date()
         self.isYouTube = isYouTube
+        self.duration = duration
     }
     
     // 自定义解码，处理旧数据兼容性
@@ -28,6 +36,7 @@ struct VideoItem: Codable, Identifiable {
         posterImageData = try container.decodeIfPresent(Data.self, forKey: .posterImageData)
         videoURL = try container.decode(String.self, forKey: .videoURL)
         createdAt = try container.decode(Date.self, forKey: .createdAt)
+        duration = try container.decodeIfPresent(Double.self, forKey: .duration)
         
         // 兼容旧数据：如果没有 isYouTube 字段，根据 URL 判断
         if let isYouTube = try? container.decode(Bool.self, forKey: .isYouTube) {
@@ -39,7 +48,7 @@ struct VideoItem: Codable, Identifiable {
     }
     
     private enum CodingKeys: String, CodingKey {
-        case id, name, posterImageData, videoURL, createdAt, isYouTube
+        case id, name, posterImageData, videoURL, createdAt, isYouTube, duration
     }
     
     // 获取海报图片
@@ -145,7 +154,7 @@ class VideoStorageManager {
     }
     
     // MARK: - 添加单个视频
-    func addVideo(name: String, posterImage: UIImage?, videoURL: String, isYouTube: Bool = false) -> VideoItem {
+    func addVideo(name: String, posterImage: UIImage?, videoURL: String, isYouTube: Bool = false, duration: Double? = nil) -> VideoItem {
         var videos = loadVideos()
         
         // 压缩图片
@@ -155,7 +164,8 @@ class VideoStorageManager {
             name: name,
             posterImageData: compressedImageData,
             videoURL: videoURL,
-            isYouTube: isYouTube
+            isYouTube: isYouTube,
+            duration: duration
         )
         
         videos.insert(newVideo, at: 0) // 插入到最前面
@@ -171,11 +181,17 @@ class VideoStorageManager {
         // 压缩图片
         let compressedImageData = compressImage(posterImage)
         
+        // 获取视频时长
+        let asset = AVURLAsset(url: sourceURL)
+        let duration = CMTimeGetSeconds(asset.duration)
+        let durationSeconds = duration.isNaN ? nil : duration
+        
         let newVideo = VideoItem(
             name: name,
             posterImageData: compressedImageData,
             videoURL: "", // 本地视频不需要存储原始 URL
-            isYouTube: false
+            isYouTube: false,
+            duration: durationSeconds
         )
         
         // 复制视频文件到 Documents 目录
@@ -253,13 +269,50 @@ class VideoStorageManager {
         let compressedImageData = posterImage != nil ? compressImage(posterImage) : oldVideo.posterImageData
         
         let updatedVideo = VideoItem(
+            id: oldVideo.id,
             name: name ?? oldVideo.name,
             posterImageData: compressedImageData,
-            videoURL: videoURL ?? oldVideo.videoURL
+            videoURL: videoURL ?? oldVideo.videoURL,
+            isYouTube: oldVideo.isYouTube,
+            duration: oldVideo.duration
         )
         
         videos[index] = updatedVideo
         saveVideos(videos)
+    }
+    
+    // MARK: - 刷新视频时长（针对旧数据）
+    func refreshVideoDurations() {
+        var videos = loadVideos()
+        var hasChanges = false
+        
+        for i in 0..<videos.count {
+            let video = videos[i]
+            if video.duration == nil && !video.isYouTube {
+                // 如果是本地视频，尝试获取时长
+                let asset = AVURLAsset(url: video.actualVideoURL)
+                let duration = CMTimeGetSeconds(asset.duration)
+                
+                if !duration.isNaN && duration > 0 {
+                    let updatedVideo = VideoItem(
+                        id: video.id,
+                        name: video.name,
+                        posterImageData: video.posterImageData,
+                        videoURL: video.videoURL,
+                        createdAt: video.createdAt,
+                        isYouTube: video.isYouTube,
+                        duration: duration
+                    )
+                    videos[i] = updatedVideo
+                    hasChanges = true
+                    print("✅ 已更新视频时长: \(video.name) - \(duration)s")
+                }
+            }
+        }
+        
+        if hasChanges {
+            saveVideos(videos)
+        }
     }
     
     // MARK: - 清空所有视频

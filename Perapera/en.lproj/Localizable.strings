@@ -105,6 +105,9 @@
 "purchase_yearly_note" = "Yearly fee $49.99, cancel anytime";
 "purchase_privacy" = "Privacy Policy";
 "purchase_terms" = "Terms of Use";
+"purchase_subscribe_now" = "Subscribe Now";
+"purchase_privacy_policy" = "Privacy Policy";
+"purchase_terms_of_use" = "Terms of Use";
 
 "settings_subtitle_title" = "Subtitles";
 "settings_subtitle_general_header" = "General";

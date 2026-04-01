@@ -105,6 +105,9 @@
 "purchase_yearly_note" = "年费 CNY 328.0 可随时取消";
 "purchase_privacy" = "隐私政策";
 "purchase_terms" = "使用条款";
+"purchase_subscribe_now" = "立即购买";
+"purchase_privacy_policy" = "隐私政策";
+"purchase_terms_of_use" = "使用条款";
 
 "settings_subtitle_title" = "字幕";
 "settings_subtitle_general_header" = "通用";

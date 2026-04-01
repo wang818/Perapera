@@ -1,7 +1,28 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import PhotosUI
+import Photos
 import AVFoundation
+
+struct Movie: Transferable {
+    let url: URL
+    
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(contentType: .movie) { movie in
+            SentTransferredFile(movie.url)
+        } importing: { received in
+            let fileName = received.file.lastPathComponent
+            let copy = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+            
+            if FileManager.default.fileExists(atPath: copy.path) {
+                try FileManager.default.removeItem(at: copy)
+            }
+            
+            try FileManager.default.copyItem(at: received.file, to: copy)
+            return Self.init(url: copy)
+        }
+    }
+}
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
@@ -46,24 +67,29 @@ struct HomeView: View {
                         // 视频列表
                         List {
                             ForEach(videos) { video in
-                                NavigationLink(destination: VideoPlayerView(video: video)) {
-                                    VideoRowView(
-                                        video: video,
-                                        onDelete: {
-                                            deleteVideo(video)
-                                        },
-                                        onConvertAudio: {
-                                            convertAudioForVideo(video)
-                                        },
-                                        onStartRecognition: {
-                                            startRecognitionForVideo(video)
-                                        },
-                                        onStartTranslation: {
-                                            startTranslationForVideo(video)
-                                        }
-                                    )
-                                }
+                                VideoRowView(
+                                    video: video,
+                                    onDelete: {
+                                        deleteVideo(video)
+                                    },
+                                    onConvertAudio: {
+                                        convertAudioForVideo(video)
+                                    },
+                                    onStartRecognition: {
+                                        startRecognitionForVideo(video)
+                                    },
+                                    onStartTranslation: {
+                                        startTranslationForVideo(video)
+                                    }
+                                )
+                                .background(
+                                    NavigationLink(destination: VideoPlayerView(video: video)) {
+                                        EmptyView()
+                                    }
+                                    .opacity(0)
+                                )
                                 .listRowInsets(EdgeInsets())
+                                .listRowSeparator(.hidden)
                                 .id("\(video.id)-\(refreshID)") // 强制刷新视图
                             }
                             .onDelete(perform: deleteVideos)
@@ -74,6 +100,14 @@ struct HomeView: View {
                 .navigationTitle("home_navigationTitle".localized())
                 .onAppear {
                     loadVideos()
+                    
+                    // 检查并更新旧视频的时长
+                    DispatchQueue.global(qos: .background).async {
+                        VideoStorageManager.shared.refreshVideoDurations()
+                        DispatchQueue.main.async {
+                            loadVideos() // 重新加载以显示时长
+                        }
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -267,36 +301,47 @@ struct HomeView: View {
                 .onChange(of: selectedVideoItem) { newItem in
                     if let newItem = newItem {
                         Task {
-                            // 加载视频
-                            if let data = try? await newItem.loadTransferable(type: Data.self) {
-                                // 保存到临时目录
-                                let tempURL = FileManager.default.temporaryDirectory
-                                    .appendingPathComponent(UUID().uuidString)
-                                    .appendingPathExtension("mov")
+                            do {
+                                // 尝试从 PHAsset 获取原始文件名
+                                var originalName: String?
+                                if let assetId = newItem.itemIdentifier {
+                                    let result = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil)
+                                    if let asset = result.firstObject {
+                                        let resources = PHAssetResource.assetResources(for: asset)
+                                        if let resource = resources.first {
+                                            originalName = (resource.originalFilename as NSString).deletingPathExtension
+                                        }
+                                    }
+                                }
                                 
-                                try? data.write(to: tempURL)
-                                
-                                // 生成缩略图
-                                let thumbnail = generateVideoThumbnail(url: tempURL)
-                                
-                                // 保存到 Documents 目录
-                                let newVideo = VideoStorageManager.shared.addLocalVideo(
-                                    name: "相册视频 - \(Date().formatted())",
-                                    posterImage: thumbnail,
-                                    sourceURL: tempURL
-                                )
-                                
-                                // 删除临时文件
-                                try? FileManager.default.removeItem(at: tempURL)
-                                
-                                await MainActor.run {
-                                    loadVideos()
+                                // 尝试加载视频文件
+                                if let movie = try? await newItem.loadTransferable(type: Movie.self) {
+                                    // 优先使用原始文件名，否则使用文件路径中的文件名
+                                    let videoName = originalName ?? movie.url.deletingPathExtension().lastPathComponent
+                                    let sourceURL = movie.url
                                     
-                                    if let newVideo = newVideo {
-                                        currentConvertingVideoId = newVideo.id
+                                    // 生成缩略图
+                                    let thumbnail = generateVideoThumbnail(url: sourceURL)
+                                    
+                                    // 保存到 Documents 目录
+                                    let newVideo = VideoStorageManager.shared.addLocalVideo(
+                                        name: videoName,
+                                        posterImage: thumbnail,
+                                        sourceURL: sourceURL
+                                    )
+                                    
+                                    // 删除临时文件
+                                    try? FileManager.default.removeItem(at: sourceURL)
+                                    
+                                    await MainActor.run {
+                                        loadVideos()
                                         
-                                        // 开始转换视频为音频
-                                        convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
+                                        if let newVideo = newVideo {
+                                            currentConvertingVideoId = newVideo.id
+                                            
+                                            // 开始转换视频为音频
+                                            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
+                                        }
                                     }
                                 }
                             }
@@ -1131,7 +1176,7 @@ struct VideoRowView: View {
     let onStartTranslation: () -> Void
     
     var body: some View {
-        HStack(spacing: 15) {
+        VStack(alignment: .leading, spacing: 0) {
             // 视频海报
             Group {
                 if let posterImage = video.posterImage {
@@ -1139,150 +1184,145 @@ struct VideoRowView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 } else {
-                    Image(systemName: "video.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.gray)
-                        .padding(20)
+                    ZStack {
+                        Color.gray.opacity(0.1)
+                        Image(systemName: "video.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(.gray)
+                            .frame(width: 60, height: 60)
+                    }
                 }
             }
-            .frame(width: 120, height: 80)
-            .background(Color.gray.opacity(0.2))
-            .cornerRadius(8)
+            .frame(height: 130)
+            .frame(maxWidth: .infinity)
             .clipped()
             
             // 视频信息
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 8) {
+                // 视频时长
+                if let duration = video.duration {
+                    Text(formatDuration(duration))
+                        .font(.caption)
+                        .foregroundColor(.ex.text2)
+                        .padding(.top, 8)
+                }
+                
+                // 视频名称
                 Text(video.name)
                     .font(.headline)
                     .foregroundColor(.ex.text1)
                     .lineLimit(2)
                 
-                Text(formatDate(video.createdAt))
-                    .font(.caption)
-                    .foregroundColor(.ex.text2)
-                
-                HStack(spacing: 8) {
-                    if video.isYouTube {
-                        HStack(spacing: 4) {
-                            Image(systemName: "play.rectangle.fill")
-                                .font(.caption)
-                            Text("YouTube")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.red)
-                    } else {
-                        HStack(spacing: 4) {
-                            Image(systemName: "doc.fill")
-                                .font(.caption)
-                            Text("本地视频")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.blue)
-                    }
-                    
-                    // 音频状态标签
-                    if video.hasAudio {
-                        HStack(spacing: 4) {
-                            Image(systemName: "waveform")
-                                .font(.caption)
-                            Text("已转换")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.green)
-                    } else {
-                        Button(action: onConvertAudio) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "waveform")
-                                    .font(.caption)
-                                Text("未转换")
-                                    .font(.caption)
+                HStack(alignment: .center) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            if video.isYouTube {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "play.rectangle.fill")
+                                        .font(.caption)
+                                    Text("YouTube")
+                                        .font(.caption)
+                                }
+                                .foregroundColor(.red)
+                            } else {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "doc.fill")
+                                        .font(.caption)
+                                    Text("本地视频")
+                                        .font(.caption)
+                                }
+                                .foregroundColor(.blue)
                             }
-                            .foregroundColor(.gray)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(4)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    
-                    // 识别状态标签
-                    if video.hasRecognition {
-                        HStack(spacing: 4) {
-                            Image(systemName: "text.bubble")
-                                .font(.caption)
-                            Text("已识别")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.orange)
-                    } else if video.hasAudio {
-                        // 只有音频已转换才能识别
-                        Button(action: onStartRecognition) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "text.bubble")
-                                    .font(.caption)
-                                Text("未识别")
-                                    .font(.caption)
+                            
+                            // 音频状态标签
+                            if video.hasAudio {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "waveform")
+                                        .font(.caption)
+                                    Text("已转换")
+                                        .font(.caption)
+                                }
+                                .foregroundColor(.green)
+                            } else {
+                                Button(action: onConvertAudio) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "waveform")
+                                            .font(.caption)
+                                        Text("未转换")
+                                            .font(.caption)
+                                    }
+                                    .foregroundColor(.gray)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color.gray.opacity(0.1))
+                                    .cornerRadius(4)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .foregroundColor(.gray)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(4)
+                            
+                            // 识别状态标签
+//                            if video.hasRecognition {
+//                                HStack(spacing: 4) {
+//                                    Image(systemName: "text.bubble")
+//                                        .font(.caption)
+//                                    Text("已识别")
+//                                        .font(.caption)
+//                                }
+//                                .foregroundColor(.orange)
+//                            } else if video.hasAudio {
+//                                Button(action: onStartRecognition) {
+//                                    HStack(spacing: 4) {
+//                                        Image(systemName: "text.bubble")
+//                                            .font(.caption)
+//                                        Text("识别")
+//                                            .font(.caption)
+//                                    }
+//                                    .foregroundColor(.blue)
+//                                    .padding(.horizontal, 8)
+//                                    .padding(.vertical, 4)
+//                                    .background(Color.blue.opacity(0.1))
+//                                    .cornerRadius(4)
+//                                }
+//                                .buttonStyle(.plain)
+//                            } else {
+//                                HStack(spacing: 4) {
+//                                    Image(systemName: "text.bubble")
+//                                        .font(.caption)
+//                                    Text("未识别")
+//                                        .font(.caption)
+//                                }
+//                                .foregroundColor(.gray)
+//                            }
+                            
+                            // 翻译状态标签
+//                            if video.hasRecognition && !video.hasTranslation {
+//                                Button(action: onStartTranslation) {
+//                                    HStack(spacing: 4) {
+//                                        Image(systemName: "globe")
+//                                            .font(.caption)
+//                                        Text("翻译")
+//                                            .font(.caption)
+//                                    }
+//                                    .foregroundColor(.purple)
+//                                    .padding(.horizontal, 8)
+//                                    .padding(.vertical, 4)
+//                                    .background(Color.purple.opacity(0.1))
+//                                    .cornerRadius(4)
+//                                }
+//                                .buttonStyle(.plain)
+//                            }
                         }
-                        .buttonStyle(.plain)
-                    } else {
-                        HStack(spacing: 4) {
-                            Image(systemName: "text.bubble")
-                                .font(.caption)
-                            Text("未识别")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.gray)
-                    }
-                    
-                    // 翻译状态标签
-                    if video.hasTranslation {
-                        HStack(spacing: 4) {
-                            Image(systemName: "globe")
-                                .font(.caption)
-                            Text("已翻译")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.purple)
-                    } else if video.hasRecognition {
-                        // 只有识别完成才能翻译
-                        Button(action: onStartTranslation) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "globe")
-                                    .font(.caption)
-                                Text("未翻译")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(.gray)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(4)
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        HStack(spacing: 4) {
-                            Image(systemName: "globe")
-                                .font(.caption)
-                            Text("未翻译")
-                                .font(.caption)
-                        }
-                        .foregroundColor(.gray)
                     }
                 }
+                .padding(.bottom, 12)
             }
-            
-            Spacer()
+            .padding(.horizontal, 16)
         }
-        .padding(.vertical, 8)
-        .contentShape(Rectangle())
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(12)
+        .padding(.horizontal)
+        .padding(.bottom, 8)
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -1291,6 +1331,12 @@ struct VideoRowView: View {
         formatter.timeStyle = .short
         formatter.locale = Locale(identifier: "zh_CN")
         return formatter.string(from: date)
+    }
+    
+    private func formatDuration(_ seconds: Double) -> String {
+        let minutes = Int(seconds) / 60
+        let seconds = Int(seconds) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 }
 
