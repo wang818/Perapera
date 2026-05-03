@@ -15,18 +15,10 @@ struct VideoPlayerView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // 顶部导航栏
             topNavigationBar
-            
-            // 视频播放器
             videoPlayerSection
-            
-            // 字幕区域
-            subtitleSection
-            
-            Spacer()
-            
-            // 底部进度条 + 控制栏
+            subtitleScrollSection
+            Spacer(minLength: 0)
             bottomControlBar
         }
         .background(Color.ex.bg1)
@@ -43,9 +35,7 @@ struct VideoPlayerView: View {
     // MARK: - 顶部导航栏
     private var topNavigationBar: some View {
         HStack(spacing: 12) {
-            Button(action: {
-                dismiss()
-            }) {
+            Button(action: { dismiss() }) {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 18, weight: .medium))
                     .foregroundColor(Color.ex.text1)
@@ -58,9 +48,7 @@ struct VideoPlayerView: View {
             
             Spacer()
             
-            Button(action: {
-                // PiP / AirPlay
-            }) {
+            Button(action: {}) {
                 Image(systemName: "rectangle.on.rectangle")
                     .font(.system(size: 18))
                     .foregroundColor(Color.ex.text1)
@@ -68,37 +56,25 @@ struct VideoPlayerView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.ex.bg1)
     }
     
     // MARK: - 视频播放器
     private var videoPlayerSection: some View {
         ZStack {
             Color.black
-            
             if let player = viewModel.player {
                 VideoPlayer(player: player)
-                    .disabled(true) // 禁用默认控件，使用自定义控件
-                    .onTapGesture {
-                        viewModel.togglePlayPause()
-                    }
+                    .disabled(true)
+                    .onTapGesture { viewModel.togglePlayPause() }
             } else {
-                // 加载中或错误状态
                 VStack(spacing: 16) {
                     if viewModel.isLoading {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                            .tint(.white)
-                        Text("加载中...")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.7))
+                        ProgressView().scaleEffect(1.5).tint(.white)
+                        Text("加载中...").font(.subheadline).foregroundColor(.white.opacity(0.7))
                     } else {
                         Image(systemName: "exclamationmark.triangle")
-                            .font(.system(size: 40))
-                            .foregroundColor(.white.opacity(0.5))
-                        Text("无法加载视频")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.7))
+                            .font(.system(size: 40)).foregroundColor(.white.opacity(0.5))
+                        Text("无法加载视频").font(.subheadline).foregroundColor(.white.opacity(0.7))
                     }
                 }
             }
@@ -107,123 +83,81 @@ struct VideoPlayerView: View {
         .clipped()
     }
     
-    // MARK: - 字幕区域
-    private var subtitleSection: some View {
+    // MARK: - 字幕滚动区域
+    private var subtitleScrollSection: some View {
         Group {
             if viewModel.subtitles.isEmpty {
-                // 无字幕状态 - 显示 Enable AI Subtitles
                 noSubtitleView
-            } else if let subtitle = viewModel.currentSubtitle {
-                // 有字幕 - 显示当前字幕
-                activeSubtitleView(subtitle: subtitle)
             } else {
-                // 有字幕数据但当前时间无字幕
-                VStack(spacing: 8) {
-                    Text(" ")
-                        .font(.system(size: 18))
-                        .padding(.horizontal, 20)
-                        .padding(.top, 24)
-                }
+                subtitleListView
             }
         }
     }
     
-    // MARK: - 无字幕视图
+    // MARK: - 无字幕
     private var noSubtitleView: some View {
         VStack(spacing: 16) {
             Spacer()
-            
             Text("No Subtitles?")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundColor(Color.ex.text1)
             
-            Button(action: {
-                // TODO: 启用 AI 字幕
-            }) {
+            Button(action: {}) {
                 Text("Enable AI Subtitles")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color.ex.text1)
                     .padding(.horizontal, 28)
                     .padding(.vertical, 12)
-                    .background(
-                        Capsule()
-                            .fill(Color(red: 0.78, green: 0.92, blue: 0.58))
-                    )
+                    .background(Capsule().fill(Color(red: 0.78, green: 0.92, blue: 0.58)))
             }
             
             HStack(spacing: 4) {
-                Text("Language Detection")
-                    .font(.system(size: 14))
-                    .foregroundColor(Color.ex.text2)
-                
-                Text("Auto")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color.ex.text1)
-                
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(Color.ex.text2)
+                Text("Language Detection").font(.system(size: 14)).foregroundColor(Color.ex.text2)
+                Text("Auto").font(.system(size: 14, weight: .semibold)).foregroundColor(Color.ex.text1)
+                Image(systemName: "chevron.down").font(.system(size: 10, weight: .medium)).foregroundColor(Color.ex.text2)
             }
-            
             Spacer()
         }
     }
     
-    // MARK: - 有字幕时的显示
-    private func activeSubtitleView(subtitle: SubtitleItem) -> some View {
-        VStack(spacing: 8) {
-            // 翻译字幕
-            if let translatedWords = subtitle.translatedWords {
-                WordHighlightSubtitleView(
-                    words: translatedWords,
-                    currentTime: viewModel.currentTime
-                )
-                .frame(height: 60)
-            } else if !subtitle.translatedText.isEmpty {
-                Text(subtitle.translatedText)
-                    .font(.system(size: 18))
-                    .foregroundColor(Color.ex.text1)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 16)
+    // MARK: - 字幕列表（ScrollViewReader 内联）
+    private var subtitleListView: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(spacing: 16) {
+                    // 上方留白，让第一句可以滚动到中间
+                    Color.clear.frame(height: 60)
+                    
+                    ForEach(Array(viewModel.subtitles.enumerated()), id: \.offset) { index, subtitle in
+                        SentenceCardView(
+                            subtitle: subtitle,
+                            isActive: viewModel.currentSubtitleIndex == index,
+                            currentTime: viewModel.currentTime
+                        )
+                        .id(index)
+                    }
+                    
+                    // 下方留白
+                    Color.clear.frame(height: 60)
+                }
+                .padding(.horizontal, 16)
             }
-            
-            Divider()
-                .padding(.horizontal, 20)
-            
-            // 原文字幕
-            if let words = subtitle.words {
-                WordHighlightSubtitleView(
-                    words: words,
-                    currentTime: viewModel.currentTime
-                )
-                .frame(height: 60)
-            } else {
-                Text(subtitle.originalText)
-                    .font(.system(size: 16))
-                    .foregroundColor(Color.ex.text2)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 8)
+            .onChange(of: viewModel.currentSubtitleIndex) { newIndex in
+                guard newIndex >= 0 else { return }
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    proxy.scrollTo(newIndex, anchor: .center)
+                }
             }
-            
-            // 字幕计数
-            Text("字幕 \(viewModel.currentSubtitleIndex + 1)/\(viewModel.subtitles.count)")
-                .font(.caption2)
-                .foregroundColor(Color.ex.text3)
-                .padding(.bottom, 4)
         }
     }
     
     // MARK: - 底部控制栏
     private var bottomControlBar: some View {
         VStack(spacing: 12) {
-            // 进度条
             progressBar
-            
-            // 功能按钮栏
             toolBar
         }
         .padding(.bottom, 8)
-        .background(Color.ex.bg1)
     }
     
     // MARK: - 进度条
@@ -236,28 +170,16 @@ struct VideoPlayerView: View {
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    // 背景轨道
-                    Capsule()
-                        .fill(Color.ex.text3.opacity(0.3))
-                        .frame(height: 4)
-                    
-                    // 已播放进度
-                    Capsule()
-                        .fill(Color(red: 0.30, green: 0.45, blue: 0.26))
+                    Capsule().fill(Color.ex.text3.opacity(0.3)).frame(height: 4)
+                    Capsule().fill(Color(red: 0.30, green: 0.45, blue: 0.26))
                         .frame(width: progressWidth(in: geometry.size.width), height: 4)
-                    
-                    // 拖动圆点
-                    Circle()
-                        .fill(Color(red: 0.30, green: 0.45, blue: 0.26))
+                    Circle().fill(Color(red: 0.30, green: 0.45, blue: 0.26))
                         .frame(width: 14, height: 14)
                         .offset(x: progressWidth(in: geometry.size.width) - 7)
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { value in
-                                    let ratio = max(0, min(1, value.location.x / geometry.size.width))
-                                    viewModel.seek(to: Double(ratio) * viewModel.duration)
-                                }
-                        )
+                        .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                            let ratio = max(0, min(1, value.location.x / geometry.size.width))
+                            viewModel.seek(to: Double(ratio) * viewModel.duration)
+                        })
                 }
                 .frame(height: 14)
                 .contentShape(Rectangle())
@@ -280,44 +202,20 @@ struct VideoPlayerView: View {
     private var toolBar: some View {
         HStack {
             HStack(spacing: 0) {
-                toolBarButton(icon: "pin", label: "Pin") {
-                    // Pin 功能
-                }
-                
-                toolBarButton(icon: "star.square.on.square", label: "Explain") {
-                    // Explain 功能
-                }
-                
-                toolBarButton(icon: "repeat", label: "Repeat") {
-                    viewModel.replay()
-                }
-                
-                toolBarButton(icon: "gauge.with.dots.needle.33percent", label: "Speed") {
-                    // Speed 功能
-                }
-                
+                toolBarButton(icon: "pin", label: "Pin") {}
+                toolBarButton(icon: "star.square.on.square", label: "Explain") {}
+                toolBarButton(icon: "repeat", label: "Repeat") { viewModel.replay() }
+                toolBarButton(icon: "gauge.with.dots.needle.33percent", label: "Speed") {}
                 toolBarButton(
                     icon: viewModel.isPlaying ? "pause" : "play.fill",
                     label: viewModel.isPlaying ? "Pause" : "Play"
-                ) {
-                    viewModel.togglePlayPause()
-                }
+                ) { viewModel.togglePlayPause() }
             }
-            
             Spacer()
-            
-            // 头像按钮
-            Button(action: {
-                // 用户/角色切换
-            }) {
+            Button(action: {}) {
                 ZStack {
-                    Circle()
-                        .fill(Color.ex.text3.opacity(0.15))
-                        .frame(width: 44, height: 44)
-                    
-                    Image(systemName: "person.2.fill")
-                        .font(.system(size: 18))
-                        .foregroundColor(Color.ex.text2)
+                    Circle().fill(Color.ex.text3.opacity(0.15)).frame(width: 44, height: 44)
+                    Image(systemName: "person.2.fill").font(.system(size: 18)).foregroundColor(Color.ex.text2)
                 }
             }
         }
@@ -325,73 +223,154 @@ struct VideoPlayerView: View {
         .padding(.bottom, 4)
     }
     
-    // MARK: - 工具栏按钮
     private func toolBarButton(icon: String, label: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: 18))
-                    .frame(height: 22)
-                
-                Text(label)
-                    .font(.system(size: 10))
+                Image(systemName: icon).font(.system(size: 18)).frame(height: 22)
+                Text(label).font(.system(size: 10))
             }
             .foregroundColor(Color.ex.text1)
             .frame(width: 56, height: 48)
         }
     }
     
-    // MARK: - 计算进度宽度
     private func progressWidth(in totalWidth: CGFloat) -> CGFloat {
         guard viewModel.duration > 0 else { return 0 }
-        let ratio = CGFloat(viewModel.currentTime / viewModel.duration)
-        return max(0, min(totalWidth, totalWidth * ratio))
+        return max(0, min(totalWidth, totalWidth * CGFloat(viewModel.currentTime / viewModel.duration)))
     }
     
-    // MARK: - 格式化时间
     private func formatTime(_ time: Double) -> String {
         guard !time.isNaN && !time.isInfinite else { return "0:00" }
-        let minutes = Int(time) / 60
-        let seconds = Int(time) % 60
-        return String(format: "%d:%02d", minutes, seconds)
+        return String(format: "%d:%02d", Int(time) / 60, Int(time) % 60)
     }
 }
 
-// MARK: - 词级别高亮字幕组件
-struct WordHighlightSubtitleView: View {
-    let words: [WordTiming]
+// MARK: - 单句字幕卡片
+struct SentenceCardView: View {
+    let subtitle: SubtitleItem
+    let isActive: Bool
     let currentTime: Double
     
+    /// 绿色主题色
+    private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
+    private let greenLight = Color(red: 0.78, green: 0.92, blue: 0.58)
+    
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 4) {
+            if let words = subtitle.words {
+                // 翻译/拼音 + 中文词 上下对齐，使用 FlowLayout 自动换行
+                FlowLayout(spacing: 6) {
                     ForEach(Array(words.enumerated()), id: \.offset) { index, word in
-                        let isActive = currentTime >= word.startTime && currentTime <= word.endTime
+                        let isWordActive = isActive && isWordCurrent(word)
+                        let translatedText = translatedWord(at: index)
                         
-                        Text(word.word)
-                            .font(.system(size: 16))
-                            .fontWeight(isActive ? .bold : .regular)
-                            .foregroundColor(isActive ? Color(red: 0.30, green: 0.45, blue: 0.26) : Color.ex.text1)
-                            .padding(.horizontal, 2)
-                            .background(
-                                isActive ? Color(red: 0.78, green: 0.92, blue: 0.58).opacity(0.3) : Color.clear
-                            )
-                            .cornerRadius(4)
-                            .id(index)
-                            .onChange(of: isActive) { newValue in
-                                if newValue {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        proxy.scrollTo(index, anchor: .center)
-                                    }
-                                }
-                            }
+                        // 每个词：上方翻译/拼音，下方中文，垂直对齐
+                        VStack(spacing: 2) {
+                            // 翻译行（拼音位置）
+                            Text(translatedText)
+                                .font(.system(size: 12))
+                                .foregroundColor(Color.ex.text3)
+                                .lineLimit(1)
+                                .frame(minHeight: 16)
+                            
+                            // 中文词 + 绿色边框高亮
+                            Text(word.word)
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundColor(isWordActive ? greenDark : Color.ex.text1)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .stroke(isWordActive ? greenDark : Color.clear, lineWidth: 2)
+                                )
+                        }
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
+            } else {
+                // 没有词级别信息，显示整句
+                if !subtitle.translatedText.isEmpty {
+                    Text(subtitle.translatedText)
+                        .font(.system(size: 12))
+                        .foregroundColor(Color.ex.text3)
+                }
+                Text(subtitle.originalText)
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(isActive ? greenDark : Color.ex.text1)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isActive ? greenLight.opacity(0.08) : Color.clear)
+        )
+        .opacity(isActive ? 1.0 : 0.5)
+        .animation(.easeInOut(duration: 0.2), value: isActive)
+    }
+    
+    /// 获取对应索引的翻译词（拼音位置显示）
+    private func translatedWord(at index: Int) -> String {
+        guard let translatedWords = subtitle.translatedWords,
+              index < translatedWords.count else {
+            return " " // 空占位，保持布局一致
+        }
+        return translatedWords[index].word
+    }
+    
+    /// 判断当前词是否正在播放
+    /// ASR 的 OffsetStartMs/OffsetEndMs 是相对于句子 StartMs 的偏移量
+    private func isWordCurrent(_ word: WordTiming) -> Bool {
+        let absoluteStart = subtitle.startTime + word.startTime
+        let absoluteEnd = subtitle.startTime + word.endTime
+        return currentTime >= absoluteStart && currentTime <= absoluteEnd
+    }
+}
+
+// MARK: - FlowLayout（自动换行布局）
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 4
+    
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = computeLayout(proposal: proposal, subviews: subviews)
+        return result.size
+    }
+    
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = computeLayout(proposal: proposal, subviews: subviews)
+        for (index, position) in result.positions.enumerated() {
+            subviews[index].place(
+                at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y),
+                proposal: .unspecified
+            )
+        }
+    }
+    
+    private func computeLayout(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, positions: [CGPoint]) {
+        let maxWidth = proposal.width ?? .infinity
+        var positions: [CGPoint] = []
+        var currentX: CGFloat = 0
+        var currentY: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        var totalWidth: CGFloat = 0
+        
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            
+            if currentX + size.width > maxWidth && currentX > 0 {
+                currentX = 0
+                currentY += lineHeight + spacing
+                lineHeight = 0
+            }
+            
+            positions.append(CGPoint(x: currentX, y: currentY))
+            lineHeight = max(lineHeight, size.height)
+            currentX += size.width + spacing
+            totalWidth = max(totalWidth, currentX - spacing)
+        }
+        
+        let totalHeight = currentY + lineHeight
+        return (CGSize(width: totalWidth, height: totalHeight), positions)
     }
 }
 

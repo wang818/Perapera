@@ -21,9 +21,12 @@ struct ASRData: Codable {
 
 struct ASRResultDetail: Codable {
     let FinalSentence: String
+    let SliceSentence: String?
     let StartMs: Int
     let EndMs: Int
     let Words: [ASRWord]?
+    let SpeechSpeed: Double?
+    let WordsNum: Int?
 }
 
 struct ASRWord: Codable {
@@ -38,7 +41,7 @@ struct SubtitleItem: Codable, Identifiable {
     let startTime: Double      // 开始时间（秒）
     let endTime: Double        // 结束时间（秒）
     let originalText: String   // 原文（ASR 识别的文本）
-    let translatedText: String // 译文（日文翻译）
+    let translatedText: String // 译文（中文翻译）
     let words: [WordTiming]?   // 词级别的时间信息（原文）
     let translatedWords: [WordTiming]?  // 词级别的时间信息（译文）
     

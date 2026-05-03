@@ -182,9 +182,9 @@ class VideoPlayerViewModel: ObservableObject {
         // TODO: 从 ASR 识别结果生成字幕
         // 这里创建一些示例字幕用于测试
         subtitles = [
-            SubtitleItem(startTime: 0, endTime: 5, originalText: "这是第一句话", translatedText: "これは最初の文です"),
-            SubtitleItem(startTime: 5, endTime: 10, originalText: "这是第二句话", translatedText: "これは二番目の文です"),
-            SubtitleItem(startTime: 10, endTime: 15, originalText: "这是第三句话", translatedText: "これは三番目の文です"),
+            SubtitleItem(startTime: 0, endTime: 5, originalText: "这是第一句话", translatedText: "This is the first sentence"),
+            SubtitleItem(startTime: 5, endTime: 10, originalText: "这是第二句话", translatedText: "This is the second sentence"),
+            SubtitleItem(startTime: 10, endTime: 15, originalText: "这是第三句话", translatedText: "This is the third sentence"),
         ]
     }
     

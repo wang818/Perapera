@@ -3,7 +3,7 @@
 //  Perapera
 //
 //  Created by Perapera on 2024.
-//
+//. https://cloud.tencent.com/document/api/1093/37823.参考这个网址
 
 import Foundation
 
@@ -24,7 +24,7 @@ struct ASRConfig {
     /// 16k_zh_video: 16k 音视频领域
     /// 16k_en: 16k 英语
     /// 16k_ca: 16k 粤语
-    static let engineModelType = "16k_zh"
+    static let engineModelType = "16k_ja"
     
     /// 识别结果文本编码方式
     /// 0: UTF-8
@@ -54,6 +54,37 @@ struct ASRConfig {
     
     /// 是否进行阿拉伯数字智能转换
     static let convertNumMode: Int = 1
+    
+    // MARK: - Translation Configuration
+    
+    /// 翻译目标语言代码
+    /// zh-CN: 简体中文
+    /// ja-JP: 日语
+    /// en-US: 英语
+    /// ko-KR: 韩语
+    static let translationTargetLanguage = "zh-CN"
+    
+    /// 翻译目标语言显示名称
+    static var translationLanguageName: String {
+        switch translationTargetLanguage {
+        case "zh-CN": return "中文"
+        case "ja-JP": return "日文"
+        case "en-US": return "英文"
+        case "ko-KR": return "韩文"
+        default: return "中文"
+        }
+    }
+    
+    /// 翻译响应 JSON Key
+    static var translationResponseKey: String {
+        switch translationTargetLanguage {
+        case "zh-CN": return "ZhCNWords"
+        case "ja-JP": return "JaJPWords"
+        case "en-US": return "EnUSWords"
+        case "ko-KR": return "KoKRWords"
+        default: return "ZhCNWords"
+        }
+    }
     
     // MARK: - Helper Methods
     

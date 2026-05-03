@@ -51,11 +51,7 @@ struct TranslationRequest: Codable {
 }
 
 struct TranslationResponse: Codable {
-    let jaJPWords: [String]
-    
-    enum CodingKeys: String, CodingKey {
-        case jaJPWords = "JaJPWords"
-    }
+    let translatedWords: [String]
 }
 
 // MARK: - Hunyuan Manager
@@ -223,7 +219,7 @@ class HunyuanManager {
         task.resume()
     }
     
-    /// 翻译 JSON 文件中的 Words 数组为日文
+    /// 翻译 JSON 文件中的 Words 数组为中文
     /// - Parameters:
     ///   - jsonData: 包含 Words 数组的 JSON 数据
     ///   - completion: 完成回调，返回翻译后的 JSON 数据或错误
@@ -256,13 +252,13 @@ class HunyuanManager {
             return
         }
         
-        print("📝 准备翻译 \(allWords.count) 个单词到日文（来自 \(resultDetail.count) 条记录）...")
+        print("📝 准备翻译 \(allWords.count) 个单词到\(ASRConfig.translationLanguageName)（来自 \(resultDetail.count) 条记录）...")
         
         // 3. 调用混元 API 进行翻译
         translateWordsInternal(allWords) { [weak self] result in
             switch result {
             case .success(let translatedWords):
-                print("✅ 翻译成功，共 \(translatedWords.count) 个日文单词")
+                print("✅ 翻译成功，共 \(translatedWords.count) 个\(ASRConfig.translationLanguageName)单词")
                 
                 // 打印翻译对照表（简化版，避免格式化问题）
                 print("\n" + String(repeating: "=", count: 80))
@@ -307,13 +303,15 @@ class HunyuanManager {
         
         // 构建提示词
         let wordsJSON = words.map { "\"\($0)\"" }.joined(separator: ", ")
+        let targetLang = ASRConfig.translationLanguageName
+        let responseKey = ASRConfig.translationResponseKey
         let prompt = """
-        请将以下中文单词翻译成日文，保持原有的顺序，只返回翻译后的日文单词数组，不要添加任何解释或额外内容。
+        请将以下单词翻译成\(targetLang)，保持原有的顺序，只返回翻译后的\(targetLang)单词数组，不要添加任何解释或额外内容。
         
         输入单词数组：[\(wordsJSON)]
         
         请以 JSON 格式返回，格式如下：
-        {"JaJPWords": ["日文1", "日文2", ...]}
+        {"\(responseKey)": ["\(targetLang)1", "\(targetLang)2", ...]}
         """
         
         // 构建请求体（使用腾讯云混元 API 格式）
@@ -425,11 +423,12 @@ class HunyuanManager {
         print("原始响应: \(content)")
         
         // 尝试直接解析 JSON
+        let responseKey = ASRConfig.translationResponseKey
         if let jsonData = content.data(using: .utf8),
            let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-           let jaJPWords = jsonObject["JaJPWords"] as? [String] {
+           let translatedWords = jsonObject[responseKey] as? [String] {
             print("✅ 成功解析 JSON 格式响应")
-            return jaJPWords
+            return translatedWords
         }
         
         // 如果直接解析失败，尝试从文本中提取 JSON 部分
@@ -440,9 +439,9 @@ class HunyuanManager {
             
             if let jsonData = jsonString.data(using: .utf8),
                let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-               let jaJPWords = jsonObject["JaJPWords"] as? [String] {
+               let translatedWords = jsonObject[responseKey] as? [String] {
                 print("✅ 成功从文本中提取 JSON")
-                return jaJPWords
+                return translatedWords
             }
         }
         
@@ -476,13 +475,14 @@ class HunyuanManager {
                 continue
             }
             
-            // 创建 JaJPWords 数组，保持与 Words 相同的结构
-            var jaJPWords: [[String: Any]] = []
+            // 创建翻译词数组，保持与 Words 相同的结构
+            let responseKey = ASRConfig.translationResponseKey
+            var translatedWordDicts: [[String: Any]] = []
             
             for wordDict in words {
                 var newWordDict = wordDict
                 
-                // 替换 Word 字段为日文翻译
+                // 替换 Word 字段为翻译结果
                 if translatedIndex < translatedWords.count {
                     newWordDict["Word"] = translatedWords[translatedIndex]
                     translatedIndex += 1
@@ -490,11 +490,11 @@ class HunyuanManager {
                     newWordDict["Word"] = "N/A"
                 }
                 
-                jaJPWords.append(newWordDict)
+                translatedWordDicts.append(newWordDict)
             }
             
-            // 添加 JaJPWords 字段到当前 detail
-            detail["JaJPWords"] = jaJPWords
+            // 添加翻译词字段到当前 detail
+            detail[responseKey] = translatedWordDicts
             resultDetail[detailIndex] = detail
         }
         
