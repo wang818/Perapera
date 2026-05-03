@@ -1035,17 +1035,12 @@ struct HomeView: View {
             print("📄 识别文本长度: \(recognizedText.count) 字符")
             print("📦 JSON 文件大小: \(ByteCountFormatter.string(fromByteCount: Int64(rawJSON.count), countStyle: .file))")
             
-            // 输出 JSON 内容到控制台（格式化）
+            // 输出完整 JSON 内容到控制台（格式化）
             if let jsonObject = try? JSONSerialization.jsonObject(with: rawJSON),
                let prettyJSON = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
                let jsonString = String(data: prettyJSON, encoding: .utf8) {
-                print("\n📋 JSON 内容预览:")
-                // 只显示前 500 个字符
-                let preview = jsonString.prefix(500)
-                print(preview)
-                if jsonString.count > 500 {
-                    print("... (共 \(jsonString.count) 字符)")
-                }
+                print("\n📋 JSON 完整内容:")
+                print(jsonString)
             }
             
             print(String(repeating: "=", count: 60) + "\n")
