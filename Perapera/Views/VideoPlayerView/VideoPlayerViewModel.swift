@@ -91,13 +91,10 @@ class VideoPlayerViewModel: ObservableObject {
     
     // MARK: - 加载字幕
     private func loadSubtitles() {
-        // 优先尝试从 ASR JSON 文件加载
+        // 从 ASR JSON 文件加载（翻译结果已内嵌在 JSON 中）
         if let asrSubtitles = SubtitleManager.shared.loadSubtitlesFromASRFile(videoId: video.id) {
             subtitles = asrSubtitles
             print("✅ 从 ASR 文件加载字幕成功，共 \(subtitles.count) 条")
-            
-            // 加载翻译结果
-            loadTranslations()
             return
         }
         
@@ -107,74 +104,8 @@ class VideoPlayerViewModel: ObservableObject {
             print("✅ 从 UserDefaults 加载字幕成功，共 \(subtitles.count) 条")
         } else {
             print("📭 没有找到字幕数据")
-            // 如果都没有，生成默认字幕用于测试
             generateDefaultSubtitles()
         }
-    }
-    
-    // MARK: - 加载翻译结果
-    private func loadTranslations() {
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let translationFilePath = documentsPath.appendingPathComponent("\(video.id)_translation.txt")
-        
-        guard FileManager.default.fileExists(atPath: translationFilePath.path) else {
-            print("📭 没有找到翻译文件")
-            return
-        }
-        
-        do {
-            // 读取翻译文件
-            let content = try String(contentsOf: translationFilePath, encoding: .utf8)
-            let translatedWords = content.components(separatedBy: "\n").filter { !$0.isEmpty }
-            
-            print("✅ 加载翻译结果成功，共 \(translatedWords.count) 个词")
-            
-            // 将翻译结果应用到字幕
-            applyTranslationsToSubtitles(translatedWords: translatedWords)
-            
-        } catch {
-            print("❌ 读取翻译文件失败: \(error.localizedDescription)")
-        }
-    }
-    
-    // MARK: - 应用翻译到字幕
-    private func applyTranslationsToSubtitles(translatedWords: [String]) {
-        var translationIndex = 0
-        
-        for (index, subtitle) in subtitles.enumerated() {
-            guard let words = subtitle.words else { continue }
-            
-            // 为每个字幕项创建翻译后的 words 数组
-            var translatedWordTimings: [WordTiming] = []
-            
-            for word in words {
-                if translationIndex < translatedWords.count {
-                    let translatedWord = WordTiming(
-                        word: translatedWords[translationIndex],
-                        startTime: word.startTime,
-                        endTime: word.endTime
-                    )
-                    translatedWordTimings.append(translatedWord)
-                    translationIndex += 1
-                }
-            }
-            
-            // 创建新的字幕项，包含翻译后的文本和 words
-            let translatedText = translatedWordTimings.map { $0.word }.joined()
-            let newSubtitle = SubtitleItem(
-                id: subtitle.id,
-                startTime: subtitle.startTime,
-                endTime: subtitle.endTime,
-                originalText: subtitle.originalText,
-                translatedText: translatedText,
-                words: subtitle.words,
-                translatedWords: translatedWordTimings
-            )
-            
-            subtitles[index] = newSubtitle
-        }
-        
-        print("✅ 翻译已应用到 \(subtitles.count) 条字幕")
     }
     
     // MARK: - 生成默认字幕

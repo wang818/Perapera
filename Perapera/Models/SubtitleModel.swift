@@ -33,6 +33,9 @@ struct ASRWord: Codable {
     let Word: String
     let OffsetStartMs: Int
     let OffsetEndMs: Int
+    var Translation: String?   // 翻译结果
+    var Reading: String?       // 罗马音（romaji）
+    var Furigana: String?      // 假名读音
 }
 
 // MARK: - 字幕项
@@ -66,6 +69,9 @@ struct WordTiming: Codable {
     let word: String
     let startTime: Double
     let endTime: Double
+    var translation: String?   // 翻译结果
+    var reading: String?       // 罗马音（romaji）
+    var furigana: String?      // 假名读音
 }
 
 // MARK: - 字幕数据
@@ -195,7 +201,10 @@ class SubtitleManager {
                     WordTiming(
                         word: word.Word,
                         startTime: Double(word.OffsetStartMs) / 1000.0,
-                        endTime: Double(word.OffsetEndMs) / 1000.0
+                        endTime: Double(word.OffsetEndMs) / 1000.0,
+                        translation: word.Translation,
+                        reading: word.Reading,
+                        furigana: word.Furigana
                     )
                 }
                 

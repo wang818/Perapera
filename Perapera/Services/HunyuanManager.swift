@@ -219,111 +219,120 @@ class HunyuanManager {
         task.resume()
     }
     
-    /// 翻译 JSON 文件中的 Words 数组为中文
+    /// 翻译 JSON 文件中每个 ResultDetail 的 Words，为每个 Word 添加 Translation 和 Reading
     /// - Parameters:
-    ///   - jsonData: 包含 Words 数组的 JSON 数据
+    ///   - jsonData: ASR 识别结果的 JSON 数据
     ///   - completion: 完成回调，返回翻译后的 JSON 数据或错误
     func translateWordsToJapanese(jsonData: Data, completion: @escaping (Result<Data, Error>) -> Void) {
-        // 1. 解析 JSON 获取所有 ResultDetail 中的 Words 数组
-        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-              let response = jsonObject["Response"] as? [String: Any],
-              let data = response["Data"] as? [String: Any],
-              let resultDetail = data["ResultDetail"] as? [[String: Any]] else {
+        // 1. 解析 JSON
+        guard var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+              var response = jsonObject["Response"] as? [String: Any],
+              var data = response["Data"] as? [String: Any],
+              var resultDetail = data["ResultDetail"] as? [[String: Any]] else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法解析 JSON 中的 ResultDetail 数组"])))
             return
         }
         
-        // 2. 收集所有 Words
-        var allWords: [String] = []
-        var wordCounts: [Int] = [] // 记录每个 detail 的单词数量
+        let targetLang = ASRConfig.translationLanguageName
+        let totalSentences = resultDetail.count
+        print("📝 准备逐句翻译 \(totalSentences) 条记录到\(targetLang)...")
         
-        for detail in resultDetail {
-            if let words = detail["Words"] as? [[String: Any]] {
-                let wordValues = words.compactMap { $0["Word"] as? String }
-                allWords.append(contentsOf: wordValues)
-                wordCounts.append(wordValues.count)
-            } else {
-                wordCounts.append(0)
-            }
-        }
+        // 2. 逐句翻译
+        var currentIndex = 0
         
-        if allWords.isEmpty {
-            completion(.failure(NSError(domain: "HunyuanManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "所有 ResultDetail 中的 Words 数组为空"])))
-            return
-        }
-        
-        print("📝 准备翻译 \(allWords.count) 个单词到\(ASRConfig.translationLanguageName)（来自 \(resultDetail.count) 条记录）...")
-        
-        // 3. 调用混元 API 进行翻译
-        translateWordsInternal(allWords) { [weak self] result in
-            switch result {
-            case .success(let translatedWords):
-                print("✅ 翻译成功，共 \(translatedWords.count) 个\(ASRConfig.translationLanguageName)单词")
+        func translateNextSentence() {
+            guard currentIndex < resultDetail.count else {
+                // 所有句子翻译完成，组装最终 JSON
+                data["ResultDetail"] = resultDetail
+                response["Data"] = data
+                jsonObject["Response"] = response
                 
-                // 打印翻译对照表（简化版，避免格式化问题）
-                print("\n" + String(repeating: "=", count: 80))
-                print("📋 翻译结果对照表")
-                print(String(repeating: "=", count: 80))
-                
-                for (index, word) in allWords.enumerated() {
-                    let japanese = index < translatedWords.count ? translatedWords[index] : "N/A"
-                    print("\(index + 1). \(word) → \(japanese)")
-                }
-                
-                print(String(repeating: "=", count: 80))
-                print("✅ 总计: \(allWords.count) 个单词已翻译\n")
-                
-                // 4. 将翻译结果添加到原 JSON 中
-                guard let modifiedData = self?.addTranslationToJSON(
-                    originalData: jsonData,
-                    translatedWords: translatedWords,
-                    wordCounts: wordCounts
-                ) else {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "无法添加翻译结果到 JSON"])))
+                guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
                     return
                 }
                 
-                completion(.success(modifiedData))
+                print("✅ 所有 \(totalSentences) 条记录翻译完成")
+                completion(.success(finalData))
+                return
+            }
+            
+            var detail = resultDetail[currentIndex]
+            guard let words = detail["Words"] as? [[String: Any]], !words.isEmpty else {
+                currentIndex += 1
+                translateNextSentence()
+                return
+            }
+            
+            let wordValues = words.compactMap { $0["Word"] as? String }
+            let sentenceIndex = currentIndex
+            
+            print("📦 翻译第 \(sentenceIndex + 1)/\(totalSentences) 句，共 \(wordValues.count) 个词...")
+            
+            // 调用 API 翻译这一句的所有词
+            translateSentenceWords(wordValues) { result in
+                switch result {
+                case .success(let wordResults):
+                    // 将翻译结果写回 Words 数组的每个元素
+                    var updatedWords = words
+                    for (i, wordResult) in wordResults.enumerated() {
+                        guard i < updatedWords.count else { break }
+                        updatedWords[i]["Translation"] = wordResult.translation
+                        updatedWords[i]["Reading"] = wordResult.reading
+                        updatedWords[i]["Furigana"] = wordResult.furigana
+                    }
+                    detail["Words"] = updatedWords
+                    resultDetail[sentenceIndex] = detail
+                    
+                    print("  ✅ 第 \(sentenceIndex + 1) 句翻译完成")
+                    
+                case .failure(let error):
+                    print("  ⚠️ 第 \(sentenceIndex + 1) 句翻译失败: \(error.localizedDescription)，跳过")
+                }
                 
-            case .failure(let error):
-                print("❌ 翻译失败: \(error.localizedDescription)")
-                completion(.failure(error))
+                currentIndex += 1
+                translateNextSentence()
             }
         }
+        
+        translateNextSentence()
     }
     
-    /// 调用混元 API 翻译单词数组（内部方法）
-    private func translateWordsInternal(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+    // MARK: - 翻译单句的所有词（返回翻译 + 读音）
+    
+    struct WordTranslationResult {
+        let translation: String
+        let reading: String
+        let furigana: String
+    }
+    
+    private func translateSentenceWords(_ words: [String], completion: @escaping (Result<[WordTranslationResult], Error>) -> Void) {
         guard let url = HunyuanConfig.generateRequestURL() else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
             return
         }
         
         let timestamp = Int(Date().timeIntervalSince1970)
-        
-        // 构建提示词
-        let wordsJSON = words.map { "\"\($0)\"" }.joined(separator: ", ")
         let targetLang = ASRConfig.translationLanguageName
-        let responseKey = ASRConfig.translationResponseKey
+        
+        let wordsJSON = words.map { "\"\($0)\"" }.joined(separator: ", ")
         let prompt = """
-        请将以下单词翻译成\(targetLang)，保持原有的顺序，只返回翻译后的\(targetLang)单词数组，不要添加任何解释或额外内容。
+        请将以下日语单词翻译成\(targetLang)，并给出每个日语单词的假名（furigana）和罗马音（romaji）读音。
+        保持原有的顺序，数量必须与输入完全一致（\(words.count)个）。
+        标点符号的翻译、假名和读音都保持原样。
         
         输入单词数组：[\(wordsJSON)]
         
-        请以 JSON 格式返回，格式如下：
-        {"\(responseKey)": ["\(targetLang)1", "\(targetLang)2", ...]}
+        请严格以 JSON 格式返回，格式如下：
+        {"results": [{"t": "翻译", "f": "ふりがな", "r": "romaji"}, ...]}
+        
+        注意：results 数组长度必须是 \(words.count)。
         """
         
-        // 构建请求体（使用腾讯云混元 API 格式）
         let requestBody: [String: Any] = [
             "Model": HunyuanConfig.defaultModel,
-            "Messages": [
-                [
-                    "Role": "user",
-                    "Content": prompt
-                ]
-            ],
-            "Temperature": 0.3,  // 使用较低的温度以获得更稳定的翻译
+            "Messages": [["Role": "user", "Content": prompt]],
+            "Temperature": 0.3,
             "TopP": 1.0
         ]
         
@@ -332,17 +341,15 @@ class HunyuanManager {
             return
         }
         
-        // 创建请求
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.timeoutInterval = 120  // 设置超时时间为 120 秒
+        request.timeoutInterval = 120
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
         request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
         request.setValue("\(timestamp)", forHTTPHeaderField: "X-TC-Timestamp")
         request.httpBody = jsonData
         
-        // 生成签名
         let signature = generateSignature(
             action: "ChatCompletions",
             timestamp: timestamp,
@@ -350,15 +357,11 @@ class HunyuanManager {
         )
         request.setValue(signature, forHTTPHeaderField: "Authorization")
         
-        print("🚀 发送翻译请求到混元 API (共 \(words.count) 个单词)...")
-        
-        // 创建自定义 URLSession 配置
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 120
         configuration.timeoutIntervalForResource = 300
         let session = URLSession(configuration: configuration)
         
-        // 发送请求
         let task = session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -370,18 +373,11 @@ class HunyuanManager {
                 return
             }
             
-            // 打印原始响应（用于调试）
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("📥 API 响应: \(responseString)")
-            }
-            
-            // 解析响应
             do {
                 let chatResponse = try JSONDecoder().decode(HunyuanChatResponse.self, from: data)
                 
-                // 检查是否有错误
-                if let error = chatResponse.Response.Error {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(error.Message) (Code: \(error.Code))"])))
+                if let apiError = chatResponse.Response.Error {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.Message)"])))
                     return
                 }
                 
@@ -390,26 +386,11 @@ class HunyuanManager {
                     return
                 }
                 
-                // 从响应内容中提取 JSON
-                let translatedWords = self.extractTranslatedWords(from: content)
-                completion(.success(translatedWords))
+                let results = self.extractWordTranslationResults(from: content, expectedCount: words.count)
+                completion(.success(results))
                 
             } catch {
                 print("❌ JSON 解析失败: \(error)")
-                if let decodingError = error as? DecodingError {
-                    switch decodingError {
-                    case .keyNotFound(let key, let context):
-                        print("   缺少键: \(key.stringValue), 路径: \(context.codingPath)")
-                    case .typeMismatch(let type, let context):
-                        print("   类型不匹配: \(type), 路径: \(context.codingPath)")
-                    case .valueNotFound(let type, let context):
-                        print("   值不存在: \(type), 路径: \(context.codingPath)")
-                    case .dataCorrupted(let context):
-                        print("   数据损坏: \(context)")
-                    @unknown default:
-                        print("   未知错误")
-                    }
-                }
                 completion(.failure(error))
             }
         }
@@ -417,94 +398,64 @@ class HunyuanManager {
         task.resume()
     }
     
-    /// 从 API 响应内容中提取翻译后的单词数组
-    private func extractTranslatedWords(from content: String) -> [String] {
-        print("\n🔍 开始解析 API 响应内容...")
-        print("原始响应: \(content)")
+    /// 从 API 响应中提取翻译+读音结果
+    private func extractWordTranslationResults(from content: String, expectedCount: Int) -> [WordTranslationResult] {
+        print("🔍 解析翻译响应: \(content.prefix(200))...")
         
-        // 尝试直接解析 JSON
-        let responseKey = ASRConfig.translationResponseKey
-        if let jsonData = content.data(using: .utf8),
-           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-           let translatedWords = jsonObject[responseKey] as? [String] {
-            print("✅ 成功解析 JSON 格式响应")
-            return translatedWords
+        // 先尝试直接解析整个 content
+        if let data = content.data(using: .utf8),
+           let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let results = jsonObject["results"] as? [[String: Any]] {
+            return parseResults(results)
         }
         
-        // 如果直接解析失败，尝试从文本中提取 JSON 部分
-        if let jsonStart = content.range(of: "{"),
-           let jsonEnd = content.range(of: "}", options: .backwards) {
-            let jsonString = String(content[jsonStart.lowerBound...jsonEnd.upperBound])
-            print("🔍 尝试提取 JSON 片段: \(jsonString)")
-            
-            if let jsonData = jsonString.data(using: .utf8),
-               let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-               let translatedWords = jsonObject[responseKey] as? [String] {
-                print("✅ 成功从文本中提取 JSON")
-                return translatedWords
-            }
+        // 尝试从 content 中提取 JSON 片段（处理 markdown 代码块等包裹）
+        // 找到第一个 { 和最后一个 } 之间的内容
+        guard let startIdx = content.firstIndex(of: "{"),
+              let endIdx = content.lastIndex(of: "}") else {
+            print("⚠️ 响应中没有找到 JSON 对象")
+            return []
         }
         
-        print("⚠️ 无法从响应中提取翻译结果，返回空数组")
+        guard startIdx <= endIdx else {
+            print("⚠️ JSON 边界无效")
+            return []
+        }
+        
+        let jsonString = String(content[startIdx...endIdx])
+        
+        if let data = jsonString.data(using: .utf8),
+           let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let results = jsonObject["results"] as? [[String: Any]] {
+            return parseResults(results)
+        }
+        
+        print("⚠️ 无法解析翻译结果，返回空数组")
         return []
     }
     
-    /// 将翻译结果添加到原始 JSON 数据中
-    /// - Parameters:
-    ///   - originalData: 原始 JSON 数据
-    ///   - translatedWords: 所有翻译后的单词（按顺序）
-    ///   - wordCounts: 每个 ResultDetail 的单词数量
-    private func addTranslationToJSON(originalData: Data, translatedWords: [String], wordCounts: [Int]) -> Data? {
-        guard var jsonObject = try? JSONSerialization.jsonObject(with: originalData) as? [String: Any],
-              var response = jsonObject["Response"] as? [String: Any],
-              var data = response["Data"] as? [String: Any],
-              var resultDetail = data["ResultDetail"] as? [[String: Any]] else {
-            return nil
+    /// 解析 results 数组
+    private func parseResults(_ results: [[String: Any]]) -> [WordTranslationResult] {
+        return results.map { item in
+            WordTranslationResult(
+                translation: item["t"] as? String ?? "",
+                reading: item["r"] as? String ?? "",
+                furigana: item["f"] as? String ?? ""
+            )
         }
-        
-        var translatedIndex = 0 // 当前翻译词的索引
-        
-        // 遍历所有 ResultDetail
-        for (detailIndex, wordCount) in wordCounts.enumerated() {
-            guard detailIndex < resultDetail.count else { break }
-            
-            var detail = resultDetail[detailIndex]
-            
-            // 获取当前 detail 的 Words 数组
-            guard let words = detail["Words"] as? [[String: Any]] else {
-                continue
+    }
+    
+    /// 调用混元 API 翻译单词数组（公开方法，用于简单翻译场景）
+    private func translateWordsInternal(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+        let targetLang = ASRConfig.translationLanguageName
+        translateSentenceWords(words) { result in
+            switch result {
+            case .success(let wordResults):
+                completion(.success(wordResults.map { $0.translation }))
+            case .failure(let error):
+                completion(.failure(error))
             }
-            
-            // 创建翻译词数组，保持与 Words 相同的结构
-            let responseKey = ASRConfig.translationResponseKey
-            var translatedWordDicts: [[String: Any]] = []
-            
-            for wordDict in words {
-                var newWordDict = wordDict
-                
-                // 替换 Word 字段为翻译结果
-                if translatedIndex < translatedWords.count {
-                    newWordDict["Word"] = translatedWords[translatedIndex]
-                    translatedIndex += 1
-                } else {
-                    newWordDict["Word"] = "N/A"
-                }
-                
-                translatedWordDicts.append(newWordDict)
-            }
-            
-            // 添加翻译词字段到当前 detail
-            detail[responseKey] = translatedWordDicts
-            resultDetail[detailIndex] = detail
         }
-        
-        // 更新嵌套结构
-        data["ResultDetail"] = resultDetail
-        response["Data"] = data
-        jsonObject["Response"] = response
-        
-        // 转换回 JSON 数据
-        return try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
     }
     
     // MARK: - Tencent Cloud API V3 Signature

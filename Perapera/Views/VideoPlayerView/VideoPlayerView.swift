@@ -251,51 +251,76 @@ struct SentenceCardView: View {
     let isActive: Bool
     let currentTime: Double
     
-    /// 绿色主题色
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
     private let greenLight = Color(red: 0.78, green: 0.92, blue: 0.58)
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 8) {
             if let words = subtitle.words {
-                // 翻译/拼音 + 中文词 上下对齐，使用 FlowLayout 自动换行
+                // 词级别显示：假名 + 原文 + romaji
                 FlowLayout(spacing: 6) {
-                    ForEach(Array(words.enumerated()), id: \.offset) { index, word in
+                    ForEach(Array(words.enumerated()), id: \.offset) { _, word in
                         let isWordActive = isActive && isWordCurrent(word)
-                        let translatedText = translatedWord(at: index)
                         
-                        // 每个词：上方翻译/拼音，下方中文，垂直对齐
-                        VStack(spacing: 2) {
-                            // 翻译行（拼音位置）
-                            Text(translatedText)
-                                .font(.system(size: 12))
+                        VStack(spacing: 1) {
+                            // 假名（furigana）
+                            Text(word.furigana ?? " ")
+                                .font(.system(size: 10))
                                 .foregroundColor(Color.ex.text3)
                                 .lineLimit(1)
-                                .frame(minHeight: 16)
                             
-                            // 中文词 + 绿色边框高亮
+                            // 原文（日语词）
                             Text(word.word)
                                 .font(.system(size: 20, weight: .medium))
                                 .foregroundColor(isWordActive ? greenDark : Color.ex.text1)
-                                .padding(.horizontal, 6)
+                                .padding(.horizontal, 5)
                                 .padding(.vertical, 3)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 4)
                                         .stroke(isWordActive ? greenDark : Color.clear, lineWidth: 2)
                                 )
+                            
+                            // 罗马音（romaji）
+                            Text(word.reading ?? " ")
+                                .font(.system(size: 10))
+                                .foregroundColor(Color.ex.text2)
+                                .lineLimit(1)
                         }
                     }
                 }
+                
+                // 整句中文翻译 - 单独一行，圆角背景
+                let sentenceTranslation = words.compactMap { $0.translation }.joined()
+                if !sentenceTranslation.isEmpty {
+                    Text(sentenceTranslation)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.ex.text1)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.ex.text3.opacity(0.08))
+                        )
+                }
             } else {
                 // 没有词级别信息，显示整句
-                if !subtitle.translatedText.isEmpty {
-                    Text(subtitle.translatedText)
-                        .font(.system(size: 12))
-                        .foregroundColor(Color.ex.text3)
-                }
                 Text(subtitle.originalText)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(isActive ? greenDark : Color.ex.text1)
+                
+                if !subtitle.translatedText.isEmpty {
+                    Text(subtitle.translatedText)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.ex.text1)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.ex.text3.opacity(0.08))
+                        )
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -309,17 +334,6 @@ struct SentenceCardView: View {
         .animation(.easeInOut(duration: 0.2), value: isActive)
     }
     
-    /// 获取对应索引的翻译词（拼音位置显示）
-    private func translatedWord(at index: Int) -> String {
-        guard let translatedWords = subtitle.translatedWords,
-              index < translatedWords.count else {
-            return " " // 空占位，保持布局一致
-        }
-        return translatedWords[index].word
-    }
-    
-    /// 判断当前词是否正在播放
-    /// ASR 的 OffsetStartMs/OffsetEndMs 是相对于句子 StartMs 的偏移量
     private func isWordCurrent(_ word: WordTiming) -> Bool {
         let absoluteStart = subtitle.startTime + word.startTime
         let absoluteEnd = subtitle.startTime + word.endTime
