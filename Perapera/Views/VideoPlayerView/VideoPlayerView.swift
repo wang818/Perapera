@@ -14,24 +14,24 @@ struct VideoPlayerView: View {
     }
     
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
+        VStack(spacing: 0) {
+            // 顶部导航栏
+            topNavigationBar
             
-            VStack(spacing: 0) {
-                // 顶部导航栏
-                topNavigationBar
-                
-                // 视频播放器
-                videoPlayerSection
-                
-                // 字幕区域
-                subtitleSection
-                
-                // 控制栏
-                controlBar
-            }
+            // 视频播放器
+            videoPlayerSection
+            
+            // 字幕区域
+            subtitleSection
+            
+            Spacer()
+            
+            // 底部进度条 + 控制栏
+            bottomControlBar
         }
+        .background(Color.ex.bg1)
         .navigationBarHidden(true)
+        .toolbar(.hidden, for: .tabBar)
         .onAppear {
             viewModel.setupPlayer()
         }
@@ -42,218 +42,318 @@ struct VideoPlayerView: View {
     
     // MARK: - 顶部导航栏
     private var topNavigationBar: some View {
-        HStack {
+        HStack(spacing: 12) {
             Button(action: {
                 dismiss()
             }) {
                 Image(systemName: "chevron.left")
-                    .font(.title2)
-                    .foregroundColor(.white)
-                    .padding()
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(Color.ex.text1)
             }
             
             Text(video.name)
-                .font(.headline)
-                .foregroundColor(.white)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(Color.ex.text1)
                 .lineLimit(1)
             
             Spacer()
             
             Button(action: {
-                // TODO: 更多选项
+                // PiP / AirPlay
             }) {
-                Image(systemName: "ellipsis")
-                    .font(.title2)
-                    .foregroundColor(.white)
-                    .padding()
+                Image(systemName: "rectangle.on.rectangle")
+                    .font(.system(size: 18))
+                    .foregroundColor(Color.ex.text1)
             }
         }
-        .background(Color.black.opacity(0.5))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color.ex.bg1)
     }
     
     // MARK: - 视频播放器
     private var videoPlayerSection: some View {
-        GeometryReader { geometry in
-            ZStack {
-                if let player = viewModel.player {
-                    VideoPlayer(player: player)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .onTapGesture {
-                            viewModel.togglePlayPause()
-                        }
-                } else {
-                    // 加载中或错误状态
-                    VStack(spacing: 20) {
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .scaleEffect(1.5)
-                                .tint(.white)
-                            Text("加载中...")
-                                .foregroundColor(.white)
-                        } else {
-                            Image(systemName: "exclamationmark.triangle")
-                                .font(.system(size: 50))
-                                .foregroundColor(.white)
-                            Text("无法加载视频")
-                                .foregroundColor(.white)
-                        }
+        ZStack {
+            Color.black
+            
+            if let player = viewModel.player {
+                VideoPlayer(player: player)
+                    .disabled(true) // 禁用默认控件，使用自定义控件
+                    .onTapGesture {
+                        viewModel.togglePlayPause()
+                    }
+            } else {
+                // 加载中或错误状态
+                VStack(spacing: 16) {
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(.white)
+                        Text("加载中...")
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.7))
+                    } else {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 40))
+                            .foregroundColor(.white.opacity(0.5))
+                        Text("无法加载视频")
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.7))
                     }
                 }
             }
         }
         .aspectRatio(16/9, contentMode: .fit)
+        .clipped()
     }
     
     // MARK: - 字幕区域
     private var subtitleSection: some View {
-        VStack(spacing: 0) {
-            // 翻译字幕（上）- 日文，带词级别高亮
-            if let subtitle = viewModel.currentSubtitle, let translatedWords = subtitle.translatedWords {
+        Group {
+            if viewModel.subtitles.isEmpty {
+                // 无字幕状态 - 显示 Enable AI Subtitles
+                noSubtitleView
+            } else if let subtitle = viewModel.currentSubtitle {
+                // 有字幕 - 显示当前字幕
+                activeSubtitleView(subtitle: subtitle)
+            } else {
+                // 有字幕数据但当前时间无字幕
+                VStack(spacing: 8) {
+                    Text(" ")
+                        .font(.system(size: 18))
+                        .padding(.horizontal, 20)
+                        .padding(.top, 24)
+                }
+            }
+        }
+    }
+    
+    // MARK: - 无字幕视图
+    private var noSubtitleView: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            
+            Text("No Subtitles?")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundColor(Color.ex.text1)
+            
+            Button(action: {
+                // TODO: 启用 AI 字幕
+            }) {
+                Text("Enable AI Subtitles")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(Color.ex.text1)
+                    .padding(.horizontal, 28)
+                    .padding(.vertical, 12)
+                    .background(
+                        Capsule()
+                            .fill(Color(red: 0.78, green: 0.92, blue: 0.58))
+                    )
+            }
+            
+            HStack(spacing: 4) {
+                Text("Language Detection")
+                    .font(.system(size: 14))
+                    .foregroundColor(Color.ex.text2)
+                
+                Text("Auto")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Color.ex.text1)
+                
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(Color.ex.text2)
+            }
+            
+            Spacer()
+        }
+    }
+    
+    // MARK: - 有字幕时的显示
+    private func activeSubtitleView(subtitle: SubtitleItem) -> some View {
+        VStack(spacing: 8) {
+            // 翻译字幕
+            if let translatedWords = subtitle.translatedWords {
                 WordHighlightSubtitleView(
                     words: translatedWords,
                     currentTime: viewModel.currentTime
                 )
-                .frame(height: 80)
-            } else {
-                SubtitleRow(
-                    text: viewModel.currentSubtitle?.translatedText ?? "",
-                    isActive: viewModel.currentSubtitle != nil && !viewModel.currentSubtitle!.translatedText.isEmpty,
-                    language: .japanese,
-                    placeholder: "日文字幕"
-                )
                 .frame(height: 60)
+            } else if !subtitle.translatedText.isEmpty {
+                Text(subtitle.translatedText)
+                    .font(.system(size: 18))
+                    .foregroundColor(Color.ex.text1)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 16)
             }
             
             Divider()
-                .background(Color.gray.opacity(0.3))
+                .padding(.horizontal, 20)
             
-            // 原文字幕（下）- 中文，带词级别高亮
-            if let subtitle = viewModel.currentSubtitle, let words = subtitle.words {
+            // 原文字幕
+            if let words = subtitle.words {
                 WordHighlightSubtitleView(
                     words: words,
                     currentTime: viewModel.currentTime
                 )
-                .frame(height: 80)
-            } else {
-                SubtitleRow(
-                    text: viewModel.currentSubtitle?.originalText ?? "",
-                    isActive: viewModel.currentSubtitle != nil,
-                    language: .original,
-                    placeholder: "原文字幕"
-                )
                 .frame(height: 60)
+            } else {
+                Text(subtitle.originalText)
+                    .font(.system(size: 16))
+                    .foregroundColor(Color.ex.text2)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 8)
             }
             
-            // 调试信息
-            if viewModel.currentSubtitle != nil {
-                Text("字幕 \(viewModel.currentSubtitleIndex + 1)/\(viewModel.subtitles.count)")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
-                    .padding(.vertical, 4)
-            }
+            // 字幕计数
+            Text("字幕 \(viewModel.currentSubtitleIndex + 1)/\(viewModel.subtitles.count)")
+                .font(.caption2)
+                .foregroundColor(Color.ex.text3)
+                .padding(.bottom, 4)
         }
-        .background(Color.black.opacity(0.8))
     }
     
-    // MARK: - 控制栏
-    private var controlBar: some View {
-        VStack(spacing: 10) {
+    // MARK: - 底部控制栏
+    private var bottomControlBar: some View {
+        VStack(spacing: 12) {
             // 进度条
-            HStack(spacing: 10) {
-                Text(formatTime(viewModel.currentTime))
-                    .font(.caption)
-                    .foregroundColor(.white)
-                    .frame(width: 50)
-                
-                Slider(
-                    value: Binding(
-                        get: { viewModel.currentTime },
-                        set: { viewModel.seek(to: $0) }
-                    ),
-                    in: 0...viewModel.duration
-                )
-                .tint(.blue)
-                
-                Text(formatTime(viewModel.duration))
-                    .font(.caption)
-                    .foregroundColor(.white)
-                    .frame(width: 50)
-            }
-            .padding(.horizontal)
+            progressBar
             
-            // 播放控制按钮
-            HStack(spacing: 40) {
-                // 后退 10 秒
-                Button(action: {
-                    viewModel.skipBackward()
-                }) {
-                    Image(systemName: "gobackward.10")
-                        .font(.title)
-                        .foregroundColor(.white)
+            // 功能按钮栏
+            toolBar
+        }
+        .padding(.bottom, 8)
+        .background(Color.ex.bg1)
+    }
+    
+    // MARK: - 进度条
+    private var progressBar: some View {
+        HStack(spacing: 10) {
+            Text(formatTime(viewModel.currentTime))
+                .font(.system(size: 13, weight: .medium, design: .monospaced))
+                .foregroundColor(Color.ex.text2)
+                .frame(width: 40, alignment: .leading)
+            
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    // 背景轨道
+                    Capsule()
+                        .fill(Color.ex.text3.opacity(0.3))
+                        .frame(height: 4)
+                    
+                    // 已播放进度
+                    Capsule()
+                        .fill(Color(red: 0.30, green: 0.45, blue: 0.26))
+                        .frame(width: progressWidth(in: geometry.size.width), height: 4)
+                    
+                    // 拖动圆点
+                    Circle()
+                        .fill(Color(red: 0.30, green: 0.45, blue: 0.26))
+                        .frame(width: 14, height: 14)
+                        .offset(x: progressWidth(in: geometry.size.width) - 7)
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    let ratio = max(0, min(1, value.location.x / geometry.size.width))
+                                    viewModel.seek(to: Double(ratio) * viewModel.duration)
+                                }
+                        )
                 }
-                
-                // 播放/暂停
-                Button(action: {
-                    viewModel.togglePlayPause()
-                }) {
-                    Image(systemName: viewModel.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 50))
-                        .foregroundColor(.white)
-                }
-                
-                // 前进 10 秒
-                Button(action: {
-                    viewModel.skipForward()
-                }) {
-                    Image(systemName: "goforward.10")
-                        .font(.title)
-                        .foregroundColor(.white)
-                }
-                
-                // 重新播放
-                Button(action: {
-                    viewModel.replay()
-                }) {
-                    Image(systemName: "arrow.counterclockwise.circle")
-                        .font(.title)
-                        .foregroundColor(.white)
+                .frame(height: 14)
+                .contentShape(Rectangle())
+                .onTapGesture { location in
+                    let ratio = max(0, min(1, location.x / geometry.size.width))
+                    viewModel.seek(to: Double(ratio) * viewModel.duration)
                 }
             }
-            .padding(.bottom, 20)
+            .frame(height: 14)
+            
+            Text(formatTime(viewModel.duration))
+                .font(.system(size: 13, weight: .medium, design: .monospaced))
+                .foregroundColor(Color.ex.text2)
+                .frame(width: 40, alignment: .trailing)
         }
-        .background(Color.black.opacity(0.5))
+        .padding(.horizontal, 16)
+    }
+    
+    // MARK: - 功能按钮栏
+    private var toolBar: some View {
+        HStack {
+            HStack(spacing: 0) {
+                toolBarButton(icon: "pin", label: "Pin") {
+                    // Pin 功能
+                }
+                
+                toolBarButton(icon: "star.square.on.square", label: "Explain") {
+                    // Explain 功能
+                }
+                
+                toolBarButton(icon: "repeat", label: "Repeat") {
+                    viewModel.replay()
+                }
+                
+                toolBarButton(icon: "gauge.with.dots.needle.33percent", label: "Speed") {
+                    // Speed 功能
+                }
+                
+                toolBarButton(
+                    icon: viewModel.isPlaying ? "pause" : "play.fill",
+                    label: viewModel.isPlaying ? "Pause" : "Play"
+                ) {
+                    viewModel.togglePlayPause()
+                }
+            }
+            
+            Spacer()
+            
+            // 头像按钮
+            Button(action: {
+                // 用户/角色切换
+            }) {
+                ZStack {
+                    Circle()
+                        .fill(Color.ex.text3.opacity(0.15))
+                        .frame(width: 44, height: 44)
+                    
+                    Image(systemName: "person.2.fill")
+                        .font(.system(size: 18))
+                        .foregroundColor(Color.ex.text2)
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.bottom, 4)
+    }
+    
+    // MARK: - 工具栏按钮
+    private func toolBarButton(icon: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .frame(height: 22)
+                
+                Text(label)
+                    .font(.system(size: 10))
+            }
+            .foregroundColor(Color.ex.text1)
+            .frame(width: 56, height: 48)
+        }
+    }
+    
+    // MARK: - 计算进度宽度
+    private func progressWidth(in totalWidth: CGFloat) -> CGFloat {
+        guard viewModel.duration > 0 else { return 0 }
+        let ratio = CGFloat(viewModel.currentTime / viewModel.duration)
+        return max(0, min(totalWidth, totalWidth * ratio))
     }
     
     // MARK: - 格式化时间
     private func formatTime(_ time: Double) -> String {
+        guard !time.isNaN && !time.isInfinite else { return "0:00" }
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
-}
-
-// MARK: - 字幕行组件
-struct SubtitleRow: View {
-    let text: String
-    let isActive: Bool
-    let language: SubtitleLanguage
-    let placeholder: String
-    
-    enum SubtitleLanguage {
-        case japanese
-        case original
-    }
-    
-    var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            Text(text.isEmpty ? placeholder : text)
-                .font(language == .japanese ? .body : .subheadline)
-                .foregroundColor(isActive ? .yellow : .gray)
-                .fontWeight(isActive ? .bold : .regular)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
+        return String(format: "%d:%02d", minutes, seconds)
     }
 }
 
@@ -270,18 +370,17 @@ struct WordHighlightSubtitleView: View {
                         let isActive = currentTime >= word.startTime && currentTime <= word.endTime
                         
                         Text(word.word)
-                            .font(.subheadline)
+                            .font(.system(size: 16))
                             .fontWeight(isActive ? .bold : .regular)
-                            .foregroundColor(isActive ? .yellow : .white)
+                            .foregroundColor(isActive ? Color(red: 0.30, green: 0.45, blue: 0.26) : Color.ex.text1)
                             .padding(.horizontal, 2)
                             .background(
-                                isActive ? Color.yellow.opacity(0.2) : Color.clear
+                                isActive ? Color(red: 0.78, green: 0.92, blue: 0.58).opacity(0.3) : Color.clear
                             )
                             .cornerRadius(4)
                             .id(index)
                             .onChange(of: isActive) { newValue in
                                 if newValue {
-                                    // 自动滚动到当前高亮的词
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         proxy.scrollTo(index, anchor: .center)
                                     }
@@ -298,7 +397,7 @@ struct WordHighlightSubtitleView: View {
 
 #Preview {
     VideoPlayerView(video: VideoItem(
-        name: "测试视频",
+        name: "IMG_0743.MP4",
         posterImageData: nil,
         videoURL: ""
     ))

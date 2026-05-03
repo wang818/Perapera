@@ -13,6 +13,7 @@ class VideoPlayerViewModel: ObservableObject {
     @Published var currentSubtitle: SubtitleItem?
     @Published var currentSubtitleIndex: Int = -1
     @Published var subtitles: [SubtitleItem] = []
+    @Published var playbackSpeed: Float = 1.0
     
     private var timeObserver: Any?
     private var cancellables = Set<AnyCancellable>()
@@ -241,6 +242,18 @@ class VideoPlayerViewModel: ObservableObject {
     func replay() {
         seek(to: 0)
         player?.play()
+    }
+    
+    // MARK: - 切换播放速度
+    func cycleSpeed() {
+        let speeds: [Float] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+        if let currentIndex = speeds.firstIndex(of: playbackSpeed) {
+            let nextIndex = (currentIndex + 1) % speeds.count
+            playbackSpeed = speeds[nextIndex]
+        } else {
+            playbackSpeed = 1.0
+        }
+        player?.rate = isPlaying ? playbackSpeed : 0
     }
     
     // MARK: - 清理

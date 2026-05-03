@@ -31,7 +31,7 @@ struct ASRConfig {
     /// 1: GB2312
     /// 2: GBK
     /// 3: BIG5
-    static let resTextFormat: Int = 1
+    static let resTextFormat: Int = 3
     
     /// 音频来源
     /// 0: 音频 URL

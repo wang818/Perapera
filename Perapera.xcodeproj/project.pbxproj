@@ -444,6 +444,7 @@
 				1889F1202EF9214800886186 /* Frameworks */,
 				1889F1212EF9214800886186 /* Resources */,
 				64265FB93041787E16BFDC37 /* [CP] Embed Pods Frameworks */,
+				D1902BAD992D7866303C0FE0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -568,17 +569,30 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
-			outputPaths = (
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D1902BAD992D7866303C0FE0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
