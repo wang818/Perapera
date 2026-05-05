@@ -51,16 +51,22 @@ struct HomeView: View {
                 Group {
                     if videos.isEmpty {
                         // 空状态
-                        VStack(spacing: 20) {
-                            Image(systemName: "video.slash")
-                                .font(.system(size: 60))
-                                .foregroundColor(.gray)
+                        VStack(spacing: 16) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.Ex.main.opacity(0.12))
+                                    .frame(width: 100, height: 100)
+                                Image(systemName: "video.slash")
+                                    .font(.system(size: 44))
+                                    .foregroundColor(Color.Ex.main)
+                            }
                             Text("暂无视频")
-                                .font(.headline)
-                                .foregroundColor(.gray)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.Ex.text1)
                             Text("点击右上角 + 添加视频")
                                 .font(.subheadline)
-                                .foregroundColor(.gray.opacity(0.7))
+                                .foregroundColor(.Ex.text2)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
@@ -114,57 +120,77 @@ struct HomeView: View {
                         Button(action: {
                             showingSheet = true
                         }) {
-                            Image(systemName: "plus")
-                                .foregroundStyle(.black)
+                            ZStack {
+                                Circle()
+                                    .fill(Color.Ex.main)
+                                    .frame(width: 32, height: 32)
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
                         }
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
                     VStack(alignment: .leading) {
                         Text("home_sheet_title".localized())
-                            .foregroundColor(.ex.text1)
-                            .font(.headline)
+                            .foregroundColor(.Ex.text1)
+                            .font(.title2)
+                            .fontWeight(.bold)
                             .padding(.top, 40)
                             .padding(.leading, 25)
                         Text("home_sheet_subtitle".localized())
-                            .foregroundColor(.ex.text1)
+                            .foregroundColor(.Ex.text2)
                             .font(.subheadline)
                             .padding(.leading, 25)
                             .padding(.bottom, 20)
                         
                         // 3 Views
-                        VStack(spacing: 20) {
+                        VStack(spacing: 14) {
+                            // YouTube 按钮 - 主题色高亮
                             Button(action: {
                                 print("Item 1 tapped")
                                 showingSheet = false
-                                // Delay slightly to show custom alert smoothly after sheet dismiss
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     showingYoutubeAlert = true
                                 }
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.blue)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.Ex.main.opacity(0.15))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(Color.Ex.main)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("home_sheet_list_title1".localized())
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("home_sheet_list_subtitle1".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.ex("bg2"))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.main.opacity(0.08))
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
+                                )
                             }
                             .padding(.horizontal, 25)
                             
+                            // 文件导入按钮 - 主题色高亮
                             Button(action: {
                                 print("Item 2 tapped")
                                 showingSheet = false
@@ -173,25 +199,37 @@ struct HomeView: View {
                                 }
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "mic")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.green)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.Ex.main.opacity(0.15))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "mic")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(Color.Ex.main)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("home_sheet_list_title2".localized())
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("home_sheet_list_subtitle2".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.ex("bg2"))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.main.opacity(0.08))
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
+                                )
                             }
                             .padding(.horizontal, 25)
                             
@@ -201,25 +239,33 @@ struct HomeView: View {
                                 //viewModel.getZendeskNotice()
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "network")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.purple)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.gray.opacity(0.1))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "network")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(.purple)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("Network Test")
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("Check API connection")
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.ex("bg2"))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.bg2)
+                                .cornerRadius(12)
                             }
                             .padding(.horizontal, 25)
                             
@@ -231,32 +277,40 @@ struct HomeView: View {
                                 }
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "doc")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.orange)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.gray.opacity(0.1))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "doc")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(.orange)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("home_sheet_list_title3".localized())
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("home_sheet_list_subtitle3".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.bg2)
+                                .cornerRadius(12)
                             }
                             .padding(.horizontal, 25)
                         }
                     }
                     .padding(.bottom, 30)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .presentationDetents([.height(420)])
+                    .presentationDetents([.height(440)])
                     .presentationDragIndicator(.visible)
                 }
                 .fileImporter(
@@ -1263,7 +1317,7 @@ struct VideoRowView: View {
             }
             .padding(.horizontal, 16)
         }
-        .background(Color.gray.opacity(0.1))
+        .background(Color.Ex.bg2)
         .cornerRadius(12)
         .padding(.horizontal)
         .padding(.bottom, 8)
