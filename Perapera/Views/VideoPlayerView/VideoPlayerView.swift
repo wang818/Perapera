@@ -65,7 +65,21 @@ struct VideoPlayerView: View {
             if let player = viewModel.player {
                 VideoPlayer(player: player)
                     .disabled(true)
+                
+                // 播放/暂停按钮覆盖层
+                Color.black.opacity(viewModel.isPlaying ? 0.001 : 0.3)
                     .onTapGesture { viewModel.togglePlayPause() }
+                
+                if !viewModel.isPlaying {
+                    Button(action: { viewModel.togglePlayPause() }) {
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 36))
+                            .foregroundColor(.white)
+                            .frame(width: 64, height: 64)
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                }
             } else {
                 VStack(spacing: 16) {
                     if viewModel.isLoading {
