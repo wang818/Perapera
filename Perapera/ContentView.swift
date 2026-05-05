@@ -32,7 +32,7 @@ struct ContentView: View {
         .onAppear {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = UIColor.Ex.tabbar_bg
+            appearance.backgroundColor = UIColor.Ex.homepagebg
 
             // 选中状态
             appearance.stackedLayoutAppearance.selected.iconColor = UIColor.Ex.main

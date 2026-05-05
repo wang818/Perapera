@@ -45,90 +45,115 @@ struct HomeView: View {
     @State private var currentRecognizingVideoId: String?
     @State private var currentTranslatingVideoId: String?
 
+    // 按日期分组视频
+    private var groupedVideos: [(String, [VideoItem])] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-M-d"
+        formatter.locale = Locale(identifier: "zh_CN")
+        let grouped = Dictionary(grouping: videos) { video in
+            formatter.string(from: video.createdAt)
+        }
+        return grouped.sorted { a, b in
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-M-d"
+            let d1 = df.date(from: a.0) ?? Date.distantPast
+            let d2 = df.date(from: b.0) ?? Date.distantPast
+            return d1 > d2
+        }
+    }
+
     var body: some View {
         ZStack {
             NavigationStack {
-                Group {
-                    if videos.isEmpty {
-                        // 空状态
-                        VStack(spacing: 16) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.Ex.main.opacity(0.12))
-                                    .frame(width: 100, height: 100)
-                                Image(systemName: "video.slash")
-                                    .font(.system(size: 44))
-                                    .foregroundColor(Color.Ex.main)
-                            }
-                            Text("暂无视频")
-                                .font(.title3)
-                                .fontWeight(.semibold)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        // 大标题区域
+                        HStack(alignment: .center) {
+                            Text("Perapera")
+                                .font(.system(size: 42, weight: .black, design: .rounded))
                                 .foregroundColor(.Ex.text1)
-                            Text("点击右上角 + 添加视频")
-                                .font(.subheadline)
-                                .foregroundColor(.Ex.text2)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        // 视频列表
-                        List {
-                            ForEach(videos) { video in
-                                VideoRowView(
-                                    video: video,
-                                    onDelete: {
-                                        deleteVideo(video)
-                                    },
-                                    onConvertAudio: {
-                                        convertAudioForVideo(video)
-                                    },
-                                    onStartRecognition: {
-                                        startRecognitionForVideo(video)
-                                    },
-                                    onStartTranslation: {
-                                        startTranslationForVideo(video)
-                                    }
-                                )
-                                .background(
-                                    NavigationLink(destination: VideoPlayerView(video: video)) {
-                                        EmptyView()
-                                    }
-                                    .opacity(0)
-                                )
-                                .listRowInsets(EdgeInsets())
-                                .listRowSeparator(.hidden)
-                                .id("\(video.id)-\(refreshID)") // 强制刷新视图
+                            Spacer()
+                            // 搜索按钮
+                            Button(action: {}) {
+                                Image(systemName: "magnifyingglass")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.Ex.text1)
                             }
-                            .onDelete(perform: deleteVideos)
+                            .padding(.trailing, 12)
+                            // + 按钮
+                            Button(action: { showingSheet = true }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.Ex.main)
+                                        .frame(width: 38, height: 38)
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                            }
                         }
-                        .scrollContentBackground(.hidden)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                        .padding(.bottom, 16)
+
+                        if videos.isEmpty {
+                            // 空状态
+                            VStack(spacing: 16) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.Ex.main.opacity(0.12))
+                                        .frame(width: 100, height: 100)
+                                    Image(systemName: "video.slash")
+                                        .font(.system(size: 44))
+                                        .foregroundColor(Color.Ex.main)
+                                }
+                                Text("暂无视频")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.Ex.text1)
+                                Text("点击右上角 + 添加视频")
+                                    .font(.subheadline)
+                                    .foregroundColor(.Ex.text2)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 80)
+                        } else {
+                            // 按日期分组的视频列表
+                            ForEach(groupedVideos, id: \.0) { dateStr, items in
+                                // 日期分组标题
+                                Text(dateStr)
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(Color.Ex.main)
+                                    .padding(.horizontal, 20)
+                                    .padding(.top, 16)
+                                    .padding(.bottom, 8)
+
+                                ForEach(items) { video in
+                                    NavigationLink(destination: VideoPlayerView(video: video)) {
+                                        VideoRowView(
+                                            video: video,
+                                            onDelete: { deleteVideo(video) },
+                                            onConvertAudio: { convertAudioForVideo(video) },
+                                            onStartRecognition: { startRecognitionForVideo(video) },
+                                            onStartTranslation: { startTranslationForVideo(video) }
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .id("\(video.id)-\(refreshID)")
+                                }
+                            }
+                        }
+
+                        Spacer(minLength: 20)
                     }
                 }
-                .navigationTitle("home_navigationTitle".localized())
+                .background(Color.Ex.homepagebg)
+                .navigationBarHidden(true)
                 .onAppear {
                     loadVideos()
-                    
-                    // 检查并更新旧视频的时长
                     DispatchQueue.global(qos: .background).async {
                         VideoStorageManager.shared.refreshVideoDurations()
-                        DispatchQueue.main.async {
-                            loadVideos() // 重新加载以显示时长
-                        }
-                    }
-                }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            showingSheet = true
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.Ex.main)
-                                    .frame(width: 32, height: 32)
-                                Image(systemName: "plus")
-                                    .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(.white)
-                            }
-                        }
+                        DispatchQueue.main.async { loadVideos() }
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
@@ -1172,169 +1197,72 @@ struct VideoRowView: View {
     let onConvertAudio: () -> Void
     let onStartRecognition: () -> Void
     let onStartTranslation: () -> Void
-    
+
     var body: some View {
+        // 整个卡片包裹在圆角灰色背景矩形里，padding 为 5
         VStack(alignment: .leading, spacing: 0) {
-            // 视频海报
-            Group {
-                if let posterImage = video.posterImage {
-                    Image(uiImage: posterImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else {
-                    ZStack {
-                        Color.gray.opacity(0.1)
-                        Image(systemName: "video.fill")
+            // 缩略图区域
+            ZStack(alignment: .topLeading) {
+                Group {
+                    if let posterImage = video.posterImage {
+                        Image(uiImage: posterImage)
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundColor(.gray)
-                            .frame(width: 60, height: 60)
+                            .aspectRatio(contentMode: .fill)
+                    } else {
+                        Rectangle()
+                            .fill(Color.Ex.bg3)
+                            .overlay(
+                                Image(systemName: "video.fill")
+                                    .font(.system(size: 36))
+                                    .foregroundColor(Color.Ex.text3)
+                            )
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .frame(height: 180)
+                .clipped()
+                .cornerRadius(10)
+
+                // 左上角类型图标角标
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 36, height: 36)
+                    Image(systemName: video.isYouTube ? "play.fill" : "video.fill")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.white)
+                }
+                .padding(10)
             }
-            .frame(height: 130)
-            .frame(maxWidth: .infinity)
-            .clipped()
-            
-            // 视频信息
-            VStack(alignment: .leading, spacing: 8) {
-                // 视频时长
+
+            // 时长 + 标题
+            VStack(alignment: .leading, spacing: 4) {
                 if let duration = video.duration {
                     Text(formatDuration(duration))
-                        .font(.caption)
-                        .foregroundColor(.ex.text2)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.Ex.text2)
                         .padding(.top, 8)
                 }
-                
-                // 视频名称
+
                 Text(video.name)
-                    .font(.headline)
-                    .foregroundColor(.ex.text1)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.Ex.text1)
                     .lineLimit(2)
-                
-                HStack(alignment: .center) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            if video.isYouTube {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "play.rectangle.fill")
-                                        .font(.caption)
-                                    Text("YouTube")
-                                        .font(.caption)
-                                }
-                                .foregroundColor(.red)
-                            } else {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "doc.fill")
-                                        .font(.caption)
-                                    Text("本地视频")
-                                        .font(.caption)
-                                }
-                                .foregroundColor(.blue)
-                            }
-                            
-                            // 音频状态标签
-                            if video.hasAudio {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "waveform")
-                                        .font(.caption)
-                                    Text("已转换")
-                                        .font(.caption)
-                                }
-                                .foregroundColor(.green)
-                            } else {
-                                Button(action: onConvertAudio) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "waveform")
-                                            .font(.caption)
-                                        Text("未转换")
-                                            .font(.caption)
-                                    }
-                                    .foregroundColor(.gray)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color.gray.opacity(0.1))
-                                    .cornerRadius(4)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            
-                            // 识别状态标签
-//                            if video.hasRecognition {
-//                                HStack(spacing: 4) {
-//                                    Image(systemName: "text.bubble")
-//                                        .font(.caption)
-//                                    Text("已识别")
-//                                        .font(.caption)
-//                                }
-//                                .foregroundColor(.orange)
-//                            } else if video.hasAudio {
-//                                Button(action: onStartRecognition) {
-//                                    HStack(spacing: 4) {
-//                                        Image(systemName: "text.bubble")
-//                                            .font(.caption)
-//                                        Text("识别")
-//                                            .font(.caption)
-//                                    }
-//                                    .foregroundColor(.blue)
-//                                    .padding(.horizontal, 8)
-//                                    .padding(.vertical, 4)
-//                                    .background(Color.blue.opacity(0.1))
-//                                    .cornerRadius(4)
-//                                }
-//                                .buttonStyle(.plain)
-//                            } else {
-//                                HStack(spacing: 4) {
-//                                    Image(systemName: "text.bubble")
-//                                        .font(.caption)
-//                                    Text("未识别")
-//                                        .font(.caption)
-//                                }
-//                                .foregroundColor(.gray)
-//                            }
-                            
-                            // 翻译状态标签
-//                            if video.hasRecognition && !video.hasTranslation {
-//                                Button(action: onStartTranslation) {
-//                                    HStack(spacing: 4) {
-//                                        Image(systemName: "globe")
-//                                            .font(.caption)
-//                                        Text("翻译")
-//                                            .font(.caption)
-//                                    }
-//                                    .foregroundColor(.purple)
-//                                    .padding(.horizontal, 8)
-//                                    .padding(.vertical, 4)
-//                                    .background(Color.purple.opacity(0.1))
-//                                    .cornerRadius(4)
-//                                }
-//                                .buttonStyle(.plain)
-//                            }
-                        }
-                    }
-                }
-                .padding(.bottom, 12)
+                    .padding(.bottom, 10)
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 4)
         }
-        .background(Color.Ex.bg2)
-        .cornerRadius(12)
-        .padding(.horizontal)
-        .padding(.bottom, 8)
+        .padding(10)
+        .background(Color.Ex.bg3)
+        .cornerRadius(14)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 10)
     }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "zh_CN")
-        return formatter.string(from: date)
-    }
-    
+
     private func formatDuration(_ seconds: Double) -> String {
         let minutes = Int(seconds) / 60
-        let seconds = Int(seconds) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+        let secs = Int(seconds) % 60
+        return String(format: "%d:%02d", minutes, secs)
     }
 }
 
