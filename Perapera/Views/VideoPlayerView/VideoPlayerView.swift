@@ -23,7 +23,9 @@ struct VideoPlayerView: View {
         }
         .background(Color.ex.bg1)
         .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             viewModel.setupPlayer()
         }
@@ -34,25 +36,22 @@ struct VideoPlayerView: View {
     
     // MARK: - 顶部导航栏
     private var topNavigationBar: some View {
-        HStack(spacing: 12) {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(Color.ex.text1)
+        ZStack {
+            HStack {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(Color.ex.text1)
+                }
+                
+                Spacer()
             }
             
             Text(video.name)
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(Color.ex.text1)
                 .lineLimit(1)
-            
-            Spacer()
-            
-            Button(action: {}) {
-                Image(systemName: "rectangle.on.rectangle")
-                    .font(.system(size: 18))
-                    .foregroundColor(Color.ex.text1)
-            }
+                .padding(.horizontal, 60)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

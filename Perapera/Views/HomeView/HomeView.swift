@@ -780,30 +780,34 @@ struct HomeView: View {
         
         // 上传音频到 COS
         COSUploadManager.shared.uploadFile(fileURL: video.audioURL) { result in
-            switch result {
-            case .success(let cosURL):
-                print("✅ 音频上传成功: \(cosURL)")
-                
-                // 开始语音识别
-                isRecognizing = true
-                ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                    switch result {
-                    case .success(let taskId):
-                        print("✅ 识别任务创建成功，TaskId: \(taskId)")
-                        
-                        // 开始轮询查询识别结果
-                        pollRecognitionResult(taskId: taskId, videoId: video.id)
-                        
-                    case .failure(let error):
-                        print("❌ 创建识别任务失败: \(error.localizedDescription)")
-                        isRecognizing = false
-                        currentRecognizingVideoId = nil
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let cosURL):
+                    print("✅ 音频上传成功: \(cosURL)")
+                    
+                    // 开始语音识别
+                    isRecognizing = true
+                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let taskId):
+                                print("✅ 识别任务创建成功，TaskId: \(taskId)")
+                                
+                                // 开始轮询查询识别结果
+                                pollRecognitionResult(taskId: taskId, videoId: video.id)
+                                
+                            case .failure(let error):
+                                print("❌ 创建识别任务失败: \(error.localizedDescription)")
+                                isRecognizing = false
+                                currentRecognizingVideoId = nil
+                            }
+                        }
                     }
+                    
+                case .failure(let error):
+                    print("❌ 音频上传失败: \(error.localizedDescription)")
+                    currentRecognizingVideoId = nil
                 }
-                
-            case .failure(let error):
-                print("❌ 音频上传失败: \(error.localizedDescription)")
-                currentRecognizingVideoId = nil
             }
         }
     }
@@ -911,31 +915,35 @@ struct HomeView: View {
             bitrate: "64k",
             sampleRate: 48000,
             progress: { progress in
-                conversionProgress = progress
+                DispatchQueue.main.async {
+                    conversionProgress = progress
+                }
             },
             completion: { result in
-                isConverting = false
-                
-                switch result {
-                case .success(let audioURL):
-                    print("✅ 音频转换成功!")
-                    print("📁 音频路径: \(audioURL.path)")
+                DispatchQueue.main.async {
+                    isConverting = false
                     
-                    // 输出文件详细信息到控制台
-                    printAudioFileInfo(audioURL: audioURL)
+                    switch result {
+                    case .success(let audioURL):
+                        print("✅ 音频转换成功!")
+                        print("📁 音频路径: \(audioURL.path)")
+                        
+                        // 输出文件详细信息到控制台
+                        printAudioFileInfo(audioURL: audioURL)
+                        
+                        // 刷新列表（音频文件已保存，状态会自动更新）
+                        loadVideos()
+                        
+                        // 上传音频到 COS 并进行语音识别
+                        uploadAudioAndRecognize(audioURL: audioURL, videoId: videoId)
+                        
+                    case .failure(let error):
+                        print("❌ 音频转换失败: \(error.localizedDescription)")
+                        // TODO: 显示错误提示给用户
+                    }
                     
-                    // 刷新列表（音频文件已保存，状态会自动更新）
-                    loadVideos()
-                    
-                    // 上传音频到 COS 并进行语音识别
-                    uploadAudioAndRecognize(audioURL: audioURL, videoId: videoId)
-                    
-                case .failure(let error):
-                    print("❌ 音频转换失败: \(error.localizedDescription)")
-                    // TODO: 显示错误提示给用户
+                    currentConvertingVideoId = nil
                 }
-                
-                currentConvertingVideoId = nil
             }
         )
     }
@@ -948,28 +956,35 @@ struct HomeView: View {
         COSUploadManager.shared.uploadFile(
             fileURL: audioURL,
             progress: { progress in
-                uploadProgress = progress
+                DispatchQueue.main.async {
+                    uploadProgress = progress
+                }
                 print("上传进度: \(Int(progress * 100))%")
             },
             completion: { result in
-                isUploading = false
+                DispatchQueue.main.async {
+                    isUploading = false
+                }
                 switch result {
                 case .success(let cosURL):
                     print("✅ 音频上传成功!")
                     print("COS访问地址: \(cosURL)")
                     
-                    // 开始语音识别
-                    isRecognizing = true
+                    DispatchQueue.main.async {
+                        isRecognizing = true
+                    }
                     ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                        switch result {
-                        case .success(let taskId):
-                            print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
-                            asrTaskId = taskId
-                            // 开始轮询查询识别结果
-                            pollRecognitionResult(taskId: taskId, videoId: videoId)
-                        case .failure(let error):
-                            print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
-                            isRecognizing = false
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let taskId):
+                                print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
+                                asrTaskId = taskId
+                                // 开始轮询查询识别结果
+                                pollRecognitionResult(taskId: taskId, videoId: videoId)
+                            case .failure(let error):
+                                print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
+                                isRecognizing = false
+                            }
                         }
                     }
                     
@@ -1047,47 +1062,51 @@ struct HomeView: View {
         
         guard retryCount < maxRetries else {
             print("❌ 语音识别超时")
-            isRecognizing = false
+            DispatchQueue.main.async {
+                isRecognizing = false
+            }
             return
         }
         
         ASRManager.shared.queryRecognitionResult(taskId: taskId) { result in
-            switch result {
-            case .success(let (taskResult, rawJSON)):
-                print("📊 识别状态: \(taskResult.StatusStr)")
-                
-                switch taskResult.Status {
-                case 2: // 成功
-                    if let recognizedText = taskResult.Result {
-                        print("✅ 识别成功!")
-                        print("识别结果: \(recognizedText)")
-                        recognitionText = recognizedText
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let (taskResult, rawJSON)):
+                    print("📊 识别状态: \(taskResult.StatusStr)")
+                    
+                    switch taskResult.Status {
+                    case 2: // 成功
+                        if let recognizedText = taskResult.Result {
+                            print("✅ 识别成功!")
+                            print("识别结果: \(recognizedText)")
+                            recognitionText = recognizedText
+                            isRecognizing = false
+                            
+                            // 直接保存原始 JSON 响应
+                            saveRawRecognitionJSON(videoId: videoId, rawJSON: rawJSON, recognizedText: recognizedText)
+                        }
+                        
+                    case 3: // 失败
+                        print("❌ 识别失败: \(taskResult.ErrorMsg ?? "未知错误")")
                         isRecognizing = false
                         
-                        // 直接保存原始 JSON 响应
-                        saveRawRecognitionJSON(videoId: videoId, rawJSON: rawJSON, recognizedText: recognizedText)
+                    case 0, 1: // 等待中或执行中
+                        // 5 秒后继续轮询
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                            pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
+                        }
+                        
+                    default:
+                        print("⚠️ 未知状态: \(taskResult.Status)")
+                        isRecognizing = false
                     }
                     
-                case 3: // 失败
-                    print("❌ 识别失败: \(taskResult.ErrorMsg ?? "未知错误")")
-                    isRecognizing = false
-                    
-                case 0, 1: // 等待中或执行中
-                    // 5 秒后继续轮询
+                case .failure(let error):
+                    print("❌ 查询识别结果失败: \(error.localizedDescription)")
+                    // 失败后重试
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                         pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                     }
-                    
-                default:
-                    print("⚠️ 未知状态: \(taskResult.Status)")
-                    isRecognizing = false
-                }
-                
-            case .failure(let error):
-                print("❌ 查询识别结果失败: \(error.localizedDescription)")
-                // 失败后重试
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                    pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                 }
             }
         }
@@ -1141,7 +1160,9 @@ struct HomeView: View {
         print("🚀 开始翻译识别结果（逐句翻译 + 读音）")
         print(String(repeating: "🌟", count: 40) + "\n")
         
-        viewModel.isTranslating = true
+        DispatchQueue.main.async {
+            viewModel.isTranslating = true
+        }
         
         // 读取 JSON 文件
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -1149,7 +1170,9 @@ struct HomeView: View {
         
         guard let jsonData = try? Data(contentsOf: jsonFileURL) else {
             print("❌ 无法读取 JSON 文件")
-            viewModel.isTranslating = false
+            DispatchQueue.main.async {
+                viewModel.isTranslating = false
+            }
             return
         }
         
