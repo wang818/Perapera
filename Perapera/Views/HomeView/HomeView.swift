@@ -45,126 +45,177 @@ struct HomeView: View {
     @State private var currentRecognizingVideoId: String?
     @State private var currentTranslatingVideoId: String?
 
+    // 按日期分组视频
+    private var groupedVideos: [(String, [VideoItem])] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-M-d"
+        formatter.locale = Locale(identifier: "zh_CN")
+        let grouped = Dictionary(grouping: videos) { video in
+            formatter.string(from: video.createdAt)
+        }
+        return grouped.sorted { a, b in
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-M-d"
+            let d1 = df.date(from: a.0) ?? Date.distantPast
+            let d2 = df.date(from: b.0) ?? Date.distantPast
+            return d1 > d2
+        }
+    }
+
     var body: some View {
         ZStack {
             NavigationStack {
-                Group {
-                    if videos.isEmpty {
-                        // 空状态
-                        VStack(spacing: 20) {
-                            Image(systemName: "video.slash")
-                                .font(.system(size: 60))
-                                .foregroundColor(.gray)
-                            Text("暂无视频")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                            Text("点击右上角 + 添加视频")
-                                .font(.subheadline)
-                                .foregroundColor(.gray.opacity(0.7))
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        // 视频列表
-                        List {
-                            ForEach(videos) { video in
-                                VideoRowView(
-                                    video: video,
-                                    onDelete: {
-                                        deleteVideo(video)
-                                    },
-                                    onConvertAudio: {
-                                        convertAudioForVideo(video)
-                                    },
-                                    onStartRecognition: {
-                                        startRecognitionForVideo(video)
-                                    },
-                                    onStartTranslation: {
-                                        startTranslationForVideo(video)
-                                    }
-                                )
-                                .background(
-                                    NavigationLink(destination: VideoPlayerView(video: video)) {
-                                        EmptyView()
-                                    }
-                                    .opacity(0)
-                                )
-                                .listRowInsets(EdgeInsets())
-                                .listRowSeparator(.hidden)
-                                .id("\(video.id)-\(refreshID)") // 强制刷新视图
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        // 大标题区域
+                        HStack(alignment: .center) {
+                            Text("Perapera")
+                                .font(.system(size: 42, weight: .black, design: .rounded))
+                                .foregroundColor(.Ex.text1)
+                            Spacer()
+                            // 搜索按钮
+                            Button(action: {}) {
+                                Image(systemName: "magnifyingglass")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.Ex.text1)
                             }
-                            .onDelete(perform: deleteVideos)
+                            .padding(.trailing, 12)
+                            // + 按钮
+                            Button(action: { showingSheet = true }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.Ex.main)
+                                        .frame(width: 38, height: 38)
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                            }
                         }
-                        .scrollContentBackground(.hidden)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                        .padding(.bottom, 16)
+
+                        if videos.isEmpty {
+                            // 空状态
+                            VStack(spacing: 16) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.Ex.main.opacity(0.12))
+                                        .frame(width: 100, height: 100)
+                                    Image(systemName: "video.slash")
+                                        .font(.system(size: 44))
+                                        .foregroundColor(Color.Ex.main)
+                                }
+                                Text("暂无视频")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.Ex.text1)
+                                Text("点击右上角 + 添加视频")
+                                    .font(.subheadline)
+                                    .foregroundColor(.Ex.text2)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 80)
+                        } else {
+                            // 按日期分组的视频列表
+                            ForEach(groupedVideos, id: \.0) { dateStr, items in
+                                // 日期分组标题
+                                Text(dateStr)
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(Color.Ex.main)
+                                    .padding(.horizontal, 20)
+                                    .padding(.top, 16)
+                                    .padding(.bottom, 8)
+
+                                ForEach(items) { video in
+                                    NavigationLink(destination: VideoPlayerView(video: video)) {
+                                        VideoRowView(
+                                            video: video,
+                                            onDelete: { deleteVideo(video) },
+                                            onConvertAudio: { convertAudioForVideo(video) },
+                                            onStartRecognition: { startRecognitionForVideo(video) },
+                                            onStartTranslation: { startTranslationForVideo(video) }
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .id("\(video.id)-\(refreshID)")
+                                }
+                            }
+                        }
+
+                        Spacer(minLength: 20)
                     }
                 }
-                .navigationTitle("home_navigationTitle".localized())
+                .background(Color.Ex.homepagebg)
+                .navigationBarHidden(true)
                 .onAppear {
                     loadVideos()
-                    
-                    // 检查并更新旧视频的时长
                     DispatchQueue.global(qos: .background).async {
                         VideoStorageManager.shared.refreshVideoDurations()
-                        DispatchQueue.main.async {
-                            loadVideos() // 重新加载以显示时长
-                        }
-                    }
-                }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            showingSheet = true
-                        }) {
-                            Image(systemName: "plus")
-                                .foregroundStyle(.black)
-                        }
+                        DispatchQueue.main.async { loadVideos() }
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
                     VStack(alignment: .leading) {
                         Text("home_sheet_title".localized())
-                            .foregroundColor(.ex.text1)
-                            .font(.headline)
+                            .foregroundColor(.Ex.text1)
+                            .font(.title2)
+                            .fontWeight(.bold)
                             .padding(.top, 40)
                             .padding(.leading, 25)
                         Text("home_sheet_subtitle".localized())
-                            .foregroundColor(.ex.text1)
+                            .foregroundColor(.Ex.text2)
                             .font(.subheadline)
                             .padding(.leading, 25)
                             .padding(.bottom, 20)
                         
                         // 3 Views
-                        VStack(spacing: 20) {
+                        VStack(spacing: 14) {
+                            // YouTube 按钮 - 主题色高亮
                             Button(action: {
                                 print("Item 1 tapped")
                                 showingSheet = false
-                                // Delay slightly to show custom alert smoothly after sheet dismiss
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     showingYoutubeAlert = true
                                 }
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.blue)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.Ex.main.opacity(0.15))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(Color.Ex.main)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("home_sheet_list_title1".localized())
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("home_sheet_list_subtitle1".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.ex("bg2"))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.main.opacity(0.08))
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
+                                )
                             }
                             .padding(.horizontal, 25)
                             
+                            // 文件导入按钮 - 主题色高亮
                             Button(action: {
                                 print("Item 2 tapped")
                                 showingSheet = false
@@ -173,25 +224,37 @@ struct HomeView: View {
                                 }
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "mic")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.green)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.Ex.main.opacity(0.15))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "mic")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(Color.Ex.main)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("home_sheet_list_title2".localized())
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("home_sheet_list_subtitle2".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.ex("bg2"))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.main.opacity(0.08))
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
+                                )
                             }
                             .padding(.horizontal, 25)
                             
@@ -201,25 +264,33 @@ struct HomeView: View {
                                 //viewModel.getZendeskNotice()
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "network")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.purple)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.gray.opacity(0.1))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "network")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(.purple)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("Network Test")
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("Check API connection")
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.ex("bg2"))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.bg2)
+                                .cornerRadius(12)
                             }
                             .padding(.horizontal, 25)
                             
@@ -231,32 +302,40 @@ struct HomeView: View {
                                 }
                             }) {
                                 HStack(spacing: 15) {
-                                    Image(systemName: "doc")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.orange)
-                                    VStack(alignment: .leading) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.gray.opacity(0.1))
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "doc")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(.orange)
+                                    }
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text("home_sheet_list_title3".localized())
                                             .font(.headline)
-                                            .foregroundColor(.ex.text1)
+                                            .foregroundColor(.Ex.text1)
                                         Text("home_sheet_list_subtitle3".localized())
                                             .font(.subheadline)
-                                            .foregroundColor(.ex.text2)
+                                            .foregroundColor(.Ex.text2)
                                             .lineLimit(1)
                                     }
                                     Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.Ex.text2)
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(10)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.Ex.bg2)
+                                .cornerRadius(12)
                             }
                             .padding(.horizontal, 25)
                         }
                     }
                     .padding(.bottom, 30)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .presentationDetents([.height(420)])
+                    .presentationDetents([.height(440)])
                     .presentationDragIndicator(.visible)
                 }
                 .fileImporter(
@@ -1035,17 +1114,12 @@ struct HomeView: View {
             print("📄 识别文本长度: \(recognizedText.count) 字符")
             print("📦 JSON 文件大小: \(ByteCountFormatter.string(fromByteCount: Int64(rawJSON.count), countStyle: .file))")
             
-            // 输出 JSON 内容到控制台（格式化）
+            // 输出完整 JSON 内容到控制台（格式化）
             if let jsonObject = try? JSONSerialization.jsonObject(with: rawJSON),
                let prettyJSON = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
                let jsonString = String(data: prettyJSON, encoding: .utf8) {
-                print("\n📋 JSON 内容预览:")
-                // 只显示前 500 个字符
-                let preview = jsonString.prefix(500)
-                print(preview)
-                if jsonString.count > 500 {
-                    print("... (共 \(jsonString.count) 字符)")
-                }
+                print("\n📋 JSON 完整内容:")
+                print(jsonString)
             }
             
             print(String(repeating: "=", count: 60) + "\n")
@@ -1064,12 +1138,12 @@ struct HomeView: View {
     /// 翻译识别结果
     private func translateRecognitionResult(videoId: String, recognizedText: String) {
         print("\n" + String(repeating: "🌟", count: 40))
-        print("🚀 开始翻译识别结果（词级别）")
+        print("🚀 开始翻译识别结果（逐句翻译 + 读音）")
         print(String(repeating: "🌟", count: 40) + "\n")
         
         viewModel.isTranslating = true
         
-        // 读取 JSON 文件获取 words 数组
+        // 读取 JSON 文件
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let jsonFileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
         
@@ -1079,50 +1153,32 @@ struct HomeView: View {
             return
         }
         
-        // 解析 JSON 获取所有 words
-        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-              let response = jsonObject["Response"] as? [String: Any],
-              let data = response["Data"] as? [String: Any],
-              let resultDetail = data["ResultDetail"] as? [[String: Any]] else {
-            print("❌ 无法解析 JSON 结构")
-            viewModel.isTranslating = false
-            return
-        }
-        
-        // 收集所有 words
-        var allWords: [String] = []
-        for detail in resultDetail {
-            if let words = detail["Words"] as? [[String: Any]] {
-                let wordValues = words.compactMap { $0["Word"] as? String }
-                allWords.append(contentsOf: wordValues)
-            }
-        }
-        
-        if allWords.isEmpty {
-            print("❌ 没有找到 words 数组")
-            viewModel.isTranslating = false
-            return
-        }
-        
-        print("📝 准备翻译 \(allWords.count) 个单词...")
-        
-        // 调用翻译 API
-        HunyuanManager.shared.translateWords(allWords) { result in
+        // 调用新的逐句翻译 API（会为每个 Word 添加 Translation 和 Reading）
+        HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData) { result in
             DispatchQueue.main.async {
                 viewModel.isTranslating = false
                 
                 switch result {
-                case .success(let translatedWords):
-                    print("✅ 翻译成功，共 \(translatedWords.count) 个日文单词")
+                case .success(let enrichedData):
+                    // 将翻译后的 JSON 覆盖写回原文件
+                    do {
+                        try enrichedData.write(to: jsonFileURL)
+                        print("✅ 翻译结果已写回 JSON 文件: \(jsonFileURL.path)")
+                        
+                        // 输出完整 JSON 到控制台
+                        if let jsonString = String(data: enrichedData, encoding: .utf8) {
+                            print("\n📋 翻译后的 JSON 完整内容:")
+                            print(jsonString)
+                        }
+                        
+                        viewModel.translationResult = "翻译完成，结果已保存到 JSON 文件"
+                    } catch {
+                        print("❌ 写回 JSON 文件失败: \(error.localizedDescription)")
+                        viewModel.translationResult = "翻译成功但保存失败: \(error.localizedDescription)"
+                    }
                     
-                    // 保存翻译结果为简单文本格式
-                    self.saveTranslationResultToTxt(
-                        videoId: videoId,
-                        originalWords: allWords,
-                        translatedWords: translatedWords
-                    )
-                    
-                    viewModel.translationResult = "翻译完成：\(translatedWords.count) 个单词"
+                    // 刷新列表
+                    loadVideos()
                     
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
@@ -1132,39 +1188,6 @@ struct HomeView: View {
         }
     }
     
-    /// 保存翻译结果为简单文本格式
-    private func saveTranslationResultToTxt(videoId: String, originalWords: [String], translatedWords: [String]) {
-        do {
-            // 获取 Documents 目录
-            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            
-            // 生成文件名：videoId_translation.txt
-            let fileName = "\(videoId)_translation.txt"
-            let fileURL = documentsDirectory.appendingPathComponent(fileName)
-            
-            // 构建简单的文本内容：每行一个翻译后的词
-            let content = translatedWords.joined(separator: "\n")
-            
-            // 写入文件
-            try content.write(to: fileURL, atomically: true, encoding: .utf8)
-            
-            print("\n" + String(repeating: "=", count: 60))
-            print("💾 翻译结果已保存为 TXT 文件")
-            print(String(repeating: "=", count: 60))
-            print("📝 文件名: \(fileName)")
-            print("📂 文件路径: \(fileURL.path)")
-            print("📊 单词数量: \(translatedWords.count)")
-            print(String(repeating: "=", count: 60) + "\n")
-            print(String(repeating: "=", count: 60) + "\n")
-            
-            // 更新视频的翻译结果路径
-            // 刷新列表（翻译结果文件已保存，状态会自动更新）
-            loadVideos()
-            
-        } catch {
-            print("❌ 保存翻译结果 TXT 文件失败: \(error.localizedDescription)")
-        }
-    }
 }
 
 // MARK: - Video Row View
@@ -1174,169 +1197,72 @@ struct VideoRowView: View {
     let onConvertAudio: () -> Void
     let onStartRecognition: () -> Void
     let onStartTranslation: () -> Void
-    
+
     var body: some View {
+        // 整个卡片包裹在圆角灰色背景矩形里，padding 为 5
         VStack(alignment: .leading, spacing: 0) {
-            // 视频海报
-            Group {
-                if let posterImage = video.posterImage {
-                    Image(uiImage: posterImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else {
-                    ZStack {
-                        Color.gray.opacity(0.1)
-                        Image(systemName: "video.fill")
+            // 缩略图区域
+            ZStack(alignment: .topLeading) {
+                Group {
+                    if let posterImage = video.posterImage {
+                        Image(uiImage: posterImage)
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundColor(.gray)
-                            .frame(width: 60, height: 60)
+                            .aspectRatio(contentMode: .fill)
+                    } else {
+                        Rectangle()
+                            .fill(Color.Ex.bg3)
+                            .overlay(
+                                Image(systemName: "video.fill")
+                                    .font(.system(size: 36))
+                                    .foregroundColor(Color.Ex.text3)
+                            )
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .frame(height: 180)
+                .clipped()
+                .cornerRadius(10)
+
+                // 左上角类型图标角标
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 36, height: 36)
+                    Image(systemName: video.isYouTube ? "play.fill" : "video.fill")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.white)
+                }
+                .padding(10)
             }
-            .frame(height: 130)
-            .frame(maxWidth: .infinity)
-            .clipped()
-            
-            // 视频信息
-            VStack(alignment: .leading, spacing: 8) {
-                // 视频时长
+
+            // 时长 + 标题
+            VStack(alignment: .leading, spacing: 4) {
                 if let duration = video.duration {
                     Text(formatDuration(duration))
-                        .font(.caption)
-                        .foregroundColor(.ex.text2)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.Ex.text2)
                         .padding(.top, 8)
                 }
-                
-                // 视频名称
+
                 Text(video.name)
-                    .font(.headline)
-                    .foregroundColor(.ex.text1)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.Ex.text1)
                     .lineLimit(2)
-                
-                HStack(alignment: .center) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            if video.isYouTube {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "play.rectangle.fill")
-                                        .font(.caption)
-                                    Text("YouTube")
-                                        .font(.caption)
-                                }
-                                .foregroundColor(.red)
-                            } else {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "doc.fill")
-                                        .font(.caption)
-                                    Text("本地视频")
-                                        .font(.caption)
-                                }
-                                .foregroundColor(.blue)
-                            }
-                            
-                            // 音频状态标签
-                            if video.hasAudio {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "waveform")
-                                        .font(.caption)
-                                    Text("已转换")
-                                        .font(.caption)
-                                }
-                                .foregroundColor(.green)
-                            } else {
-                                Button(action: onConvertAudio) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "waveform")
-                                            .font(.caption)
-                                        Text("未转换")
-                                            .font(.caption)
-                                    }
-                                    .foregroundColor(.gray)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color.gray.opacity(0.1))
-                                    .cornerRadius(4)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            
-                            // 识别状态标签
-//                            if video.hasRecognition {
-//                                HStack(spacing: 4) {
-//                                    Image(systemName: "text.bubble")
-//                                        .font(.caption)
-//                                    Text("已识别")
-//                                        .font(.caption)
-//                                }
-//                                .foregroundColor(.orange)
-//                            } else if video.hasAudio {
-//                                Button(action: onStartRecognition) {
-//                                    HStack(spacing: 4) {
-//                                        Image(systemName: "text.bubble")
-//                                            .font(.caption)
-//                                        Text("识别")
-//                                            .font(.caption)
-//                                    }
-//                                    .foregroundColor(.blue)
-//                                    .padding(.horizontal, 8)
-//                                    .padding(.vertical, 4)
-//                                    .background(Color.blue.opacity(0.1))
-//                                    .cornerRadius(4)
-//                                }
-//                                .buttonStyle(.plain)
-//                            } else {
-//                                HStack(spacing: 4) {
-//                                    Image(systemName: "text.bubble")
-//                                        .font(.caption)
-//                                    Text("未识别")
-//                                        .font(.caption)
-//                                }
-//                                .foregroundColor(.gray)
-//                            }
-                            
-                            // 翻译状态标签
-//                            if video.hasRecognition && !video.hasTranslation {
-//                                Button(action: onStartTranslation) {
-//                                    HStack(spacing: 4) {
-//                                        Image(systemName: "globe")
-//                                            .font(.caption)
-//                                        Text("翻译")
-//                                            .font(.caption)
-//                                    }
-//                                    .foregroundColor(.purple)
-//                                    .padding(.horizontal, 8)
-//                                    .padding(.vertical, 4)
-//                                    .background(Color.purple.opacity(0.1))
-//                                    .cornerRadius(4)
-//                                }
-//                                .buttonStyle(.plain)
-//                            }
-                        }
-                    }
-                }
-                .padding(.bottom, 12)
+                    .padding(.bottom, 10)
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 4)
         }
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(12)
-        .padding(.horizontal)
-        .padding(.bottom, 8)
+        .padding(10)
+        .background(Color.Ex.bg3)
+        .cornerRadius(14)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 10)
     }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "zh_CN")
-        return formatter.string(from: date)
-    }
-    
+
     private func formatDuration(_ seconds: Double) -> String {
         let minutes = Int(seconds) / 60
-        let seconds = Int(seconds) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+        let secs = Int(seconds) % 60
+        return String(format: "%d:%02d", minutes, secs)
     }
 }
 

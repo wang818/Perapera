@@ -21,15 +21,21 @@ struct ASRData: Codable {
 
 struct ASRResultDetail: Codable {
     let FinalSentence: String
+    let SliceSentence: String?
     let StartMs: Int
     let EndMs: Int
     let Words: [ASRWord]?
+    let SpeechSpeed: Double?
+    let WordsNum: Int?
 }
 
 struct ASRWord: Codable {
     let Word: String
     let OffsetStartMs: Int
     let OffsetEndMs: Int
+    var Translation: String?   // 翻译结果
+    var Reading: String?       // 罗马音（romaji）
+    var Furigana: String?      // 假名读音
 }
 
 // MARK: - 字幕项
@@ -38,7 +44,7 @@ struct SubtitleItem: Codable, Identifiable {
     let startTime: Double      // 开始时间（秒）
     let endTime: Double        // 结束时间（秒）
     let originalText: String   // 原文（ASR 识别的文本）
-    let translatedText: String // 译文（日文翻译）
+    let translatedText: String // 译文（中文翻译）
     let words: [WordTiming]?   // 词级别的时间信息（原文）
     let translatedWords: [WordTiming]?  // 词级别的时间信息（译文）
     
@@ -63,6 +69,9 @@ struct WordTiming: Codable {
     let word: String
     let startTime: Double
     let endTime: Double
+    var translation: String?   // 翻译结果
+    var reading: String?       // 罗马音（romaji）
+    var furigana: String?      // 假名读音
 }
 
 // MARK: - 字幕数据
@@ -192,7 +201,10 @@ class SubtitleManager {
                     WordTiming(
                         word: word.Word,
                         startTime: Double(word.OffsetStartMs) / 1000.0,
-                        endTime: Double(word.OffsetEndMs) / 1000.0
+                        endTime: Double(word.OffsetEndMs) / 1000.0,
+                        translation: word.Translation,
+                        reading: word.Reading,
+                        furigana: word.Furigana
                     )
                 }
                 
