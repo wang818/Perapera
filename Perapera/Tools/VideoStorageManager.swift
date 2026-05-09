@@ -282,7 +282,8 @@ class VideoStorageManager {
     }
     
     // MARK: - 刷新视频时长（针对旧数据）
-    func refreshVideoDurations() {
+    @discardableResult
+    func refreshVideoDurations() -> Bool {
         var videos = loadVideos()
         var hasChanges = false
         
@@ -313,6 +314,8 @@ class VideoStorageManager {
         if hasChanges {
             saveVideos(videos)
         }
+        
+        return hasChanges
     }
     
     // MARK: - 清空所有视频

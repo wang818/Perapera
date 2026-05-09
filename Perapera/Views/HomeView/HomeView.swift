@@ -27,7 +27,6 @@ struct Movie: Transferable {
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var videos: [VideoItem] = []
-    @State private var refreshID = UUID() // 用于强制刷新视图
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
@@ -137,9 +136,9 @@ struct HomeView: View {
                                             onStartRecognition: { startRecognitionForVideo(video) },
                                             onStartTranslation: { startTranslationForVideo(video) }
                                         )
+                                        .contentShape(Rectangle())
                                     }
                                     .buttonStyle(.plain)
-                                    .id("\(video.id)-\(refreshID)")
                                 }
                             }
                         }
@@ -152,7 +151,8 @@ struct HomeView: View {
                 .onAppear {
                     loadVideos()
                     DispatchQueue.global(qos: .background).async {
-                        VideoStorageManager.shared.refreshVideoDurations()
+                        let hasChanges = VideoStorageManager.shared.refreshVideoDurations()
+                        guard hasChanges else { return }
                         DispatchQueue.main.async { loadVideos() }
                     }
                 }
@@ -690,7 +690,6 @@ struct HomeView: View {
     /// 加载视频列表
     private func loadVideos() {
         videos = VideoStorageManager.shared.loadVideos()
-        refreshID = UUID() // 触发视图刷新
         printVideosInfo()
     }
     
