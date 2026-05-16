@@ -93,14 +93,18 @@ class ASRManager: NSObject {
     ) {
         let timestamp = Int(Date().timeIntervalSince1970)
         let nonce = Int.random(in: 1000...9999)
-        
+
+        // 对 URL 中的非 ASCII 字符（中文、日文等）做 percent 编码
+        // 腾讯 ASR 服务要求传入合法的 URL，未编码的字符会导致 ASR 拉取音频失败
+        let encodedAudioURL = encodeAudioURL(audioURL)
+
         // 构建请求参数
         let params: [String: Any] = [
             "EngineModelType": ASRConfig.engineModelType,
             "ChannelNum": ASRConfig.channelNum,
             "ResTextFormat": ASRConfig.resTextFormat,
             "SourceType": ASRConfig.sourceType,
-            "Url": audioURL,
+            "Url": encodedAudioURL,
             "FilterDirty": ASRConfig.filterDirty,
             "FilterModal": ASRConfig.filterModal,
             "FilterPunc": ASRConfig.filterPunc,
@@ -295,7 +299,32 @@ class ASRManager: NSObject {
     }
     
     // MARK: - Private Methods
-    
+
+    /// 对 URL 的 path 部分做 percent 编码，保持 scheme/host/query 不变
+    /// 兼容已经编码或者未编码的输入
+    private func encodeAudioURL(_ urlString: String) -> String {
+        // 如果可以直接解析为合法 URL，并且不含未编码字符，原样返回
+        if let _ = URL(string: urlString),
+           urlString.rangeOfCharacter(from: .urlPathAllowed.inverted) == nil ||
+            urlString == (urlString.removingPercentEncoding ?? "") {
+            // 上述条件较宽松，下面统一通过 URLComponents 重新编码 path
+        }
+
+        // 通过 URLComponents 强制对 path 做 percent 编码
+        if var comps = URLComponents(string: urlString) {
+            // URLComponents 在赋值时会自动百分号编码
+            // 把 path 解码后重新赋值，确保中文 / 特殊字符被正确编码
+            let decodedPath = comps.percentEncodedPath.removingPercentEncoding ?? comps.path
+            comps.path = decodedPath
+            if let encoded = comps.url?.absoluteString {
+                return encoded
+            }
+        }
+
+        // 兜底：用 urlQueryAllowed 转一次
+        return urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? urlString
+    }
+
     /// 生成腾讯云 API 签名 (V3)
     private func generateSignature(action: String, timestamp: Int, body: String) -> String {
         let secretId = COSConfig.secretId

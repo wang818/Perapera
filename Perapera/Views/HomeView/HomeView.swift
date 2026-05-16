@@ -799,42 +799,24 @@ struct HomeView: View {
         convertVideoToAudio(videoURL: video.actualVideoURL, videoId: video.id)
     }
     
-    /// 开始识别
+    /// 开始识别（手动触发）
     private func startRecognitionForVideo(_ video: VideoItem) {
         guard video.hasAudio else {
             print("❌ 音频文件不存在，无法识别")
             return
         }
-        
+
         print("🎤 开始语音识别: \(video.name)")
-        currentRecognizingVideoId = video.id
-        
-        // 上传音频到 COS
+
+        // 上传音频到 COS，拿到 COS URL 后走统一识别 → 翻译流程
         COSUploadManager.shared.uploadFile(fileURL: video.audioURL) { result in
             switch result {
             case .success(let cosURL):
                 print("✅ 音频上传成功: \(cosURL)")
-                
-                // 开始语音识别
-                isRecognizing = true
-                ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                    switch result {
-                    case .success(let taskId):
-                        print("✅ 识别任务创建成功，TaskId: \(taskId)")
-                        
-                        // 开始轮询查询识别结果
-                        pollRecognitionResult(taskId: taskId, videoId: video.id)
-                        
-                    case .failure(let error):
-                        print("❌ 创建识别任务失败: \(error.localizedDescription)")
-                        isRecognizing = false
-                        currentRecognizingVideoId = nil
-                    }
-                }
-                
+                startASRRecognition(cosAudioURL: cosURL, videoId: video.id)
+
             case .failure(let error):
                 print("❌ 音频上传失败: \(error.localizedDescription)")
-                currentRecognizingVideoId = nil
             }
         }
     }
@@ -868,7 +850,7 @@ struct HomeView: View {
         }
     }
     
-    /// 保存 YouTube 视频 — 调用 API 获取音频信息
+    /// 保存 YouTube 视频 — 调用 API 获取音频信息，拿到 COS URL 后直接进行识别和翻译
     private func saveYoutubeVideo(url: String) {
         viewModel.fetchYoutubeAudio(url: url) { [self] model in
             guard let model = model else {
@@ -882,7 +864,7 @@ struct HomeView: View {
             // 使用默认海报图
             let defaultPoster = UIImage(systemName: "video.fill")
 
-            // 保存：videoURL 存储 YouTube 原始链接，音频 URL 存储在 audioURL 对应的路径
+            // 保存：videoURL 存储 YouTube 原始链接
             let newVideo = VideoStorageManager.shared.addVideo(
                 name: videoName,
                 posterImage: defaultPoster,
@@ -890,13 +872,38 @@ struct HomeView: View {
                 isYouTube: true
             )
 
-            // 下载音频文件到本地
-            if let audioURL = URL(string: model.url) {
-                downloadYoutubeAudio(from: audioURL, videoId: newVideo.id)
+            // 下载音频文件到本地（用于本地缓存和 hasAudio 检查）
+            if let audioRemoteURL = URL(string: model.url) {
+                downloadYoutubeAudio(from: audioRemoteURL, videoId: newVideo.id)
             }
 
             loadVideos()
-            print("✅ YouTube 视频已保存: \(videoName), 音频URL: \(model.url)")
+            print("✅ YouTube 视频已保存: \(videoName), COS音频URL: \(model.url)")
+
+            // YouTube 音频已经在 COS 上，直接用 COS URL 启动识别（无需再上传一次）
+            startASRRecognition(cosAudioURL: model.url, videoId: newVideo.id)
+        }
+    }
+
+    /// 通用入口：用 COS 音频 URL 启动识别 → 识别完成自动触发翻译
+    /// 适用于 YouTube（API 已返回 COS URL）和本地视频（上传后得到 COS URL）
+    private func startASRRecognition(cosAudioURL: String, videoId: String) {
+        print("🎤 开始 ASR 识别 - videoId: \(videoId), cosURL: \(cosAudioURL)")
+        isRecognizing = true
+        currentRecognizingVideoId = videoId
+
+        ASRManager.shared.createRecognitionTask(audioURL: cosAudioURL) { result in
+            switch result {
+            case .success(let taskId):
+                print("✅ ASR 任务创建成功，TaskId: \(taskId)")
+                asrTaskId = taskId
+                pollRecognitionResult(taskId: taskId, videoId: videoId)
+
+            case .failure(let error):
+                print("❌ 创建 ASR 任务失败: \(error.localizedDescription)")
+                isRecognizing = false
+                currentRecognizingVideoId = nil
+            }
         }
     }
 
@@ -1025,7 +1032,7 @@ struct HomeView: View {
     private func uploadAudioAndRecognize(audioURL: URL, videoId: String) {
         isUploading = true
         uploadProgress = 0.0
-        
+
         COSUploadManager.shared.uploadFile(
             fileURL: audioURL,
             progress: { progress in
@@ -1036,24 +1043,10 @@ struct HomeView: View {
                 isUploading = false
                 switch result {
                 case .success(let cosURL):
-                    print("✅ 音频上传成功!")
-                    print("COS访问地址: \(cosURL)")
-                    
-                    // 开始语音识别
-                    isRecognizing = true
-                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                        switch result {
-                        case .success(let taskId):
-                            print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
-                            asrTaskId = taskId
-                            // 开始轮询查询识别结果
-                            pollRecognitionResult(taskId: taskId, videoId: videoId)
-                        case .failure(let error):
-                            print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
-                            isRecognizing = false
-                        }
-                    }
-                    
+                    print("✅ 音频上传成功! COS访问地址: \(cosURL)")
+                    // 拿到 COS URL 后走与 YouTube 相同的识别 → 翻译流程
+                    startASRRecognition(cosAudioURL: cosURL, videoId: videoId)
+
                 case .failure(let error):
                     print("❌ 音频上传失败: \(error.localizedDescription)")
                     // TODO: 显示错误提示给用户
