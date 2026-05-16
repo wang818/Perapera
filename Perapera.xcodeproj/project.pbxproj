@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06C92FB815DD001114A3 /* YTAudioModel.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -14,6 +15,8 @@
 		18CA306E2F2787DE00CA9B62 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA306C2F2787DE00CA9B62 /* VideoPlayerView.swift */; };
 		18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA306D2F2787DE00CA9B62 /* VideoPlayerViewModel.swift */; };
 		18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30732F27884E00CA9B62 /* SubtitleModel.swift */; };
+		18CA30772F47DE00CA9B64 /* YouTubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30752F47DE00CA9B62 /* YouTubePlayerView.swift */; };
+		18CA30782F47DE00CA9B65 /* URL+YouTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30762F47DE00CA9B63 /* URL+YouTube.swift */; };
 		63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92228B25C99537B2CD47D806 /* Pods_Perapera.framework */; };
 		EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31CE7E2F1491C80040B489 /* LoginModel.swift */; };
 		EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF012F284BCA0007BCA6 /* UserManager.swift */; };
@@ -74,6 +77,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		184C06C92FB815DD001114A3 /* YTAudioModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YTAudioModel.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -82,6 +86,8 @@
 		18CA306C2F2787DE00CA9B62 /* VideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPlayerView.swift; path = VideoPlayerView/VideoPlayerView.swift; sourceTree = "<group>"; };
 		18CA306D2F2787DE00CA9B62 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPlayerViewModel.swift; path = VideoPlayerView/VideoPlayerViewModel.swift; sourceTree = "<group>"; };
 		18CA30732F27884E00CA9B62 /* SubtitleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubtitleModel.swift; path = Models/SubtitleModel.swift; sourceTree = "<group>"; };
+		18CA30752F47DE00CA9B62 /* YouTubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = YouTubePlayerView.swift; path = VideoPlayerView/YouTubePlayerView.swift; sourceTree = "<group>"; };
+		18CA30762F47DE00CA9B63 /* URL+YouTube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+YouTube.swift"; sourceTree = "<group>"; };
 		491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.release.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.release.xcconfig"; sourceTree = "<group>"; };
 		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.debug.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.debug.xcconfig"; sourceTree = "<group>"; };
@@ -222,6 +228,7 @@
 		18CA306B2F2787BC00CA9B62 /* VideoPlayerView */ = {
 			isa = PBXGroup;
 			children = (
+				18CA30752F47DE00CA9B62 /* YouTubePlayerView.swift */,
 				18CA306C2F2787DE00CA9B62 /* VideoPlayerView.swift */,
 				18CA306D2F2787DE00CA9B62 /* VideoPlayerViewModel.swift */,
 			);
@@ -345,6 +352,7 @@
 			children = (
 				ECACBE9D2F0A59430090F990 /* PUserDefault.swift */,
 				ECACBE842EFA58BB0090F990 /* String+Extension.swift */,
+				18CA30762F47DE00CA9B63 /* URL+YouTube.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -402,6 +410,7 @@
 		ECACBF082F0B59880090F990 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				184C06C92FB815DD001114A3 /* YTAudioModel.swift */,
 				EC31CE7E2F1491C80040B489 /* LoginModel.swift */,
 				ECACBF1F2F0BB6A40090F990 /* SendCaptchaModel.swift */,
 				ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */,
@@ -611,6 +620,7 @@
 				EC7FEF2A2F4D58150007BCA6 /* ASRManager.swift in Sources */,
 				EC7FEF2B2F4D58150007BCA6 /* COSUploadManager.swift in Sources */,
 				EC7FEF2C2F4D58150007BCA6 /* HunyuanConfig.swift in Sources */,
+				184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */,
 				EC7FEF2D2F4D58150007BCA6 /* COSConfig.swift in Sources */,
 				EC7FEF2E2F4D58150007BCA6 /* ASRConfig.swift in Sources */,
 				EC7FEF1E2F4D57C90007BCA6 /* AudioConverter.swift in Sources */,
@@ -643,6 +653,8 @@
 				ECACBE782EF938410090F990 /* SettingsRowView.swift in Sources */,
 				18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */,
 				18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */,
+				18CA30772F47DE00CA9B64 /* YouTubePlayerView.swift in Sources */,
+				18CA30782F47DE00CA9B65 /* URL+YouTube.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

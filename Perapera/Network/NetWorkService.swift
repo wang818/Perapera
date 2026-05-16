@@ -73,9 +73,19 @@ let requestClosure: MoyaProvider<AppAPIEndPoint>.RequestClosure = {( endpoint: E
 
 let appApiEndpointClosure = { (target: AppAPIEndPoint) -> Endpoint in
     let sampleResponseClosure = { return EndpointSampleResponse.networkResponse(200, target.sampleData) }
-    let url = target.baseURL.appendingPathComponent(target.path).absoluteString
-    let method = target.method
-    
+
+    var url: String
+    if case .ytAudio(let ytUrl) = target {
+        // ytUrl 已由调用方预编码（? = & / # 等字符均已转义），
+        // 使用 percentEncodedQueryItems 避免二次编码
+        let basePath = target.baseURL.appendingPathComponent(target.path).absoluteString
+        var components = URLComponents(string: basePath)!
+        components.percentEncodedQueryItems = [URLQueryItem(name: "url", value: ytUrl)]
+        url = components.url?.absoluteString ?? basePath
+    } else {
+        url = target.baseURL.appendingPathComponent(target.path).absoluteString
+    }
+
     return Endpoint(url: url, sampleResponseClosure: sampleResponseClosure, method: target.method, task: target.task, httpHeaderFields: target.headers)
 }
 

@@ -58,18 +58,47 @@ struct VideoPlayerView: View {
         .padding(.vertical, 12)
     }
     
+    // MARK: - YouTube 视频 ID
+    private var youtubeVideoID: String? {
+        video.videoURL.youtubeVideoID
+    }
+
     // MARK: - 视频播放器
     private var videoPlayerSection: some View {
         ZStack {
             Color.black
-            if let player = viewModel.player {
+
+            if viewModel.isYouTube, let videoID = youtubeVideoID {
+                // YouTube 播放器
+                YouTubePlayerView(videoID: videoID, controller: viewModel.youtubeController)
+
+                // 播放/暂停按钮覆盖层（仅当 YouTube 播放器 ready 后显示）
+                if !viewModel.isLoading {
+                    Color.black.opacity(viewModel.isPlaying ? 0.001 : 0.3)
+                        .onTapGesture { viewModel.togglePlayPause() }
+                }
+
+                // 大播放按钮（暂停状态时显示）
+                if !viewModel.isPlaying && !viewModel.isLoading {
+                    Button(action: { viewModel.togglePlayPause() }) {
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 36))
+                            .foregroundColor(.white)
+                            .frame(width: 64, height: 64)
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                }
+
+            } else if let player = viewModel.player {
+                // 本地视频 AVPlayer
                 VideoPlayer(player: player)
                     .disabled(true)
-                
+
                 // 播放/暂停按钮覆盖层
                 Color.black.opacity(viewModel.isPlaying ? 0.001 : 0.3)
                     .onTapGesture { viewModel.togglePlayPause() }
-                
+
                 if !viewModel.isPlaying {
                     Button(action: { viewModel.togglePlayPause() }) {
                         Image(systemName: "play.fill")
@@ -80,7 +109,9 @@ struct VideoPlayerView: View {
                             .clipShape(Circle())
                     }
                 }
+
             } else {
+                // 加载中或错误状态
                 VStack(spacing: 16) {
                     if viewModel.isLoading {
                         ProgressView().scaleEffect(1.5).tint(.white)

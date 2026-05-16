@@ -44,6 +44,7 @@ struct HomeView: View {
     @State private var currentConvertingVideoId: String?
     @State private var currentRecognizingVideoId: String?
     @State private var currentTranslatingVideoId: String?
+    @State private var showYoutubeToast: Bool = false
 
     // 按日期分组视频
     private var groupedVideos: [(String, [VideoItem])] {
@@ -154,6 +155,12 @@ struct HomeView: View {
                     DispatchQueue.global(qos: .background).async {
                         VideoStorageManager.shared.refreshVideoDurations()
                         DispatchQueue.main.async { loadVideos() }
+                    }
+                }
+                .toast(isPresented: $showYoutubeToast, message: viewModel.youtubeAudioError ?? "请求失败")
+                .onChange(of: viewModel.youtubeAudioError) { newValue in
+                    if newValue != nil {
+                        showYoutubeToast = true
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
@@ -499,6 +506,30 @@ struct HomeView: View {
                 .padding(.horizontal, 40)
             }
             
+            if viewModel.isFetchingYoutubeAudio {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+
+                VStack(spacing: 20) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .scaleEffect(1.5)
+
+                    Text("正在获取 YouTube 音频...")
+                        .font(.headline)
+                        .foregroundColor(.white)
+
+                    Text("请稍候")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.7))
+                }
+                .padding(40)
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(12)
+                .shadow(radius: 10)
+                .padding(.horizontal, 40)
+            }
+
             if viewModel.isTranslating {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
@@ -837,23 +868,73 @@ struct HomeView: View {
         }
     }
     
-    /// 保存 YouTube 视频
+    /// 保存 YouTube 视频 — 调用 API 获取音频信息
     private func saveYoutubeVideo(url: String) {
-        // 从 URL 提取视频名称
-        let videoName = extractVideoName(from: url)
-        
-        // 使用默认海报图
-        let defaultPoster = UIImage(systemName: "video.fill")
-        
-        let _ = VideoStorageManager.shared.addVideo(
-            name: videoName,
-            posterImage: defaultPoster,
-            videoURL: url,
-            isYouTube: true
-        )
-        
-        loadVideos()
-        print("✅ YouTube 视频已保存: \(videoName)")
+        viewModel.fetchYoutubeAudio(url: url) { [self] model in
+            guard let model = model else {
+                print("❌ YouTube 音频获取失败")
+                return
+            }
+
+            // 使用 API 返回的标题
+            let videoName = model.title.isEmpty ? extractVideoName(from: url) : model.title
+
+            // 使用默认海报图
+            let defaultPoster = UIImage(systemName: "video.fill")
+
+            // 保存：videoURL 存储 YouTube 原始链接，音频 URL 存储在 audioURL 对应的路径
+            let newVideo = VideoStorageManager.shared.addVideo(
+                name: videoName,
+                posterImage: defaultPoster,
+                videoURL: url,
+                isYouTube: true
+            )
+
+            // 下载音频文件到本地
+            if let audioURL = URL(string: model.url) {
+                downloadYoutubeAudio(from: audioURL, videoId: newVideo.id)
+            }
+
+            loadVideos()
+            print("✅ YouTube 视频已保存: \(videoName), 音频URL: \(model.url)")
+        }
+    }
+
+    /// 下载 YouTube 音频到本地（保存为 .opus 以兼容现有 hasAudio 检查）
+    private func downloadYoutubeAudio(from remoteURL: URL, videoId: String) {
+        // 使用 .opus 扩展名以兼容 VideoItem.audioURL / hasAudio
+        let destinationURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("\(videoId).opus")
+
+        // 如果文件已存在，跳过下载
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            print("📁 音频文件已存在: \(destinationURL.path)")
+            loadVideos()
+            return
+        }
+
+        let task = URLSession.shared.downloadTask(with: remoteURL) { localURL, response, error in
+            if let error = error {
+                print("❌ 下载音频失败: \(error.localizedDescription)")
+                return
+            }
+
+            guard let localURL = localURL else {
+                print("❌ 下载音频失败: 无本地文件")
+                return
+            }
+
+            do {
+                try FileManager.default.moveItem(at: localURL, to: destinationURL)
+                print("✅ 音频下载成功: \(destinationURL.path)")
+                DispatchQueue.main.async { [self] in
+                    loadVideos()
+                }
+            } catch {
+                print("❌ 移动音频文件失败: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
     }
     
     /// 从 URL 提取视频名称
