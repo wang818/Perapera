@@ -73,13 +73,13 @@ struct HomeView: View {
                                 .font(.system(size: 42, weight: .black, design: .rounded))
                                 .foregroundColor(.Ex.text1)
                             Spacer()
-                            // 搜索按钮
-                            Button(action: {}) {
-                                Image(systemName: "magnifyingglass")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(.Ex.text1)
-                            }
-                            .padding(.trailing, 12)
+                            // 暂时隐藏搜索按钮
+//                            Button(action: {}) {
+//                                Image(systemName: "magnifyingglass")
+//                                    .font(.system(size: 18, weight: .medium))
+//                                    .foregroundColor(.Ex.text1)
+//                            }
+//                            .padding(.trailing, 12)
                             // + 按钮
                             Button(action: { showingSheet = true }) {
                                 ZStack {

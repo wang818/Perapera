@@ -43,6 +43,14 @@ class YouTubePlayerController: NSObject, ObservableObject {
         }
     }
 
+    func setPlaybackRate(_ rate: Double) {
+        webView?.evaluateJavaScript("if(window.player && window.player.setPlaybackRate) player.setPlaybackRate(\(rate));") { _, error in
+            if let error = error {
+                print("❌ YouTube setPlaybackRate error: \(error.localizedDescription)")
+            }
+        }
+    }
+
     func stopVideo() {
         webView?.evaluateJavaScript("if(window.player && window.player.stopVideo) player.stopVideo();") { _, error in
             if let error = error {

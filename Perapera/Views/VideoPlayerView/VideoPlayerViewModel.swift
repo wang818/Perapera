@@ -20,6 +20,15 @@ class VideoPlayerViewModel: ObservableObject {
     @Published var currentSubtitleIndex: Int = -1
     @Published var subtitles: [SubtitleItem] = []
     @Published var playbackSpeed: Float = 1.0
+    @Published var isSubtitlePinned: Bool = false
+
+    var playbackSpeedText: String {
+        if playbackSpeed.rounded() == playbackSpeed {
+            return String(format: "%.0fx", playbackSpeed)
+        }
+        return String(format: "%.2fx", playbackSpeed)
+            .replacingOccurrences(of: "0x", with: "x")
+    }
 
     /// 是否为 YouTube 视频
     var isYouTube: Bool { video.isYouTube }
@@ -202,7 +211,7 @@ class VideoPlayerViewModel: ObservableObject {
             if isPlaying {
                 player.pause()
             } else {
-                player.play()
+                player.rate = playbackSpeed
             }
         }
     }
@@ -238,8 +247,9 @@ class VideoPlayerViewModel: ObservableObject {
         seek(to: 0)
         if isYouTube {
             youtubeController.play()
+            youtubeController.setPlaybackRate(Double(playbackSpeed))
         } else {
-            player?.play()
+            player?.rate = playbackSpeed
         }
     }
 
@@ -254,10 +264,11 @@ class VideoPlayerViewModel: ObservableObject {
             playbackSpeed = 1.0
         }
 
-        if !isYouTube {
+        if isYouTube {
+            youtubeController.setPlaybackRate(Double(playbackSpeed))
+        } else {
             player?.rate = isPlaying ? playbackSpeed : 0
         }
-        // YouTube 速度控制需要额外的 JS API 调用，暂不实现
     }
 
     // MARK: - 清理

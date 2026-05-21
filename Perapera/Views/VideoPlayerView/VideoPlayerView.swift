@@ -188,8 +188,10 @@ struct VideoPlayerView: View {
             }
             .onChange(of: viewModel.currentSubtitleIndex) { newIndex in
                 guard newIndex >= 0 else { return }
-                withAnimation(.easeInOut(duration: 0.4)) {
-                    proxy.scrollTo(newIndex, anchor: .center)
+                if !viewModel.isSubtitlePinned {
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        proxy.scrollTo(newIndex, anchor: .center)
+                    }
                 }
             }
         }
@@ -246,10 +248,20 @@ struct VideoPlayerView: View {
     private var toolBar: some View {
         HStack {
             HStack(spacing: 0) {
-                toolBarButton(icon: "pin", label: "Pin") {}
-                toolBarButton(icon: "star.square.on.square", label: "Explain") {}
+                toolBarButton(
+                    icon: viewModel.isSubtitlePinned ? "pin.fill" : "pin.slash",
+                    label: viewModel.isSubtitlePinned ? "Pinned" : "Pin"
+                ) {
+                    viewModel.isSubtitlePinned.toggle()
+                }
+                // toolBarButton(icon: "star.square.on.square", label: "Explain") {}
                 toolBarButton(icon: "repeat", label: "Repeat") { viewModel.replay() }
-                toolBarButton(icon: "gauge.with.dots.needle.33percent", label: "Speed") {}
+                toolBarButton(
+                    icon: "gauge.with.dots.needle.33percent",
+                    label: viewModel.playbackSpeedText
+                ) {
+                    viewModel.cycleSpeed()
+                }
                 toolBarButton(
                     icon: viewModel.isPlaying ? "pause" : "play.fill",
                     label: viewModel.isPlaying ? "Pause" : "Play"
