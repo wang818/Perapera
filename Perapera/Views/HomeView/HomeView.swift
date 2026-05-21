@@ -43,6 +43,7 @@ struct HomeView: View {
     @State private var currentConvertingVideoId: String?
     @State private var currentRecognizingVideoId: String?
     @State private var currentTranslatingVideoId: String?
+    @State private var showYoutubeToast: Bool = false
 
     // 按日期分组视频
     private var groupedVideos: [(String, [VideoItem])] {
@@ -154,6 +155,12 @@ struct HomeView: View {
                         let hasChanges = VideoStorageManager.shared.refreshVideoDurations()
                         guard hasChanges else { return }
                         DispatchQueue.main.async { loadVideos() }
+                    }
+                }
+                .toast(isPresented: $showYoutubeToast, message: viewModel.youtubeAudioError ?? "请求失败")
+                .onChange(of: viewModel.youtubeAudioError) { newValue in
+                    if newValue != nil {
+                        showYoutubeToast = true
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
@@ -499,6 +506,30 @@ struct HomeView: View {
                 .padding(.horizontal, 40)
             }
             
+            if viewModel.isFetchingYoutubeAudio {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+
+                VStack(spacing: 20) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .scaleEffect(1.5)
+
+                    Text("正在获取 YouTube 音频...")
+                        .font(.headline)
+                        .foregroundColor(.white)
+
+                    Text("请稍候")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.7))
+                }
+                .padding(40)
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(12)
+                .shadow(radius: 10)
+                .padding(.horizontal, 40)
+            }
+
             if viewModel.isTranslating {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
@@ -767,46 +798,24 @@ struct HomeView: View {
         convertVideoToAudio(videoURL: video.actualVideoURL, videoId: video.id)
     }
     
-    /// 开始识别
+    /// 开始识别（手动触发）
     private func startRecognitionForVideo(_ video: VideoItem) {
         guard video.hasAudio else {
             print("❌ 音频文件不存在，无法识别")
             return
         }
-        
+
         print("🎤 开始语音识别: \(video.name)")
-        currentRecognizingVideoId = video.id
-        
-        // 上传音频到 COS
+
+        // 上传音频到 COS，拿到 COS URL 后走统一识别 → 翻译流程
         COSUploadManager.shared.uploadFile(fileURL: video.audioURL) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let cosURL):
-                    print("✅ 音频上传成功: \(cosURL)")
-                    
-                    // 开始语音识别
-                    isRecognizing = true
-                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                        DispatchQueue.main.async {
-                            switch result {
-                            case .success(let taskId):
-                                print("✅ 识别任务创建成功，TaskId: \(taskId)")
-                                
-                                // 开始轮询查询识别结果
-                                pollRecognitionResult(taskId: taskId, videoId: video.id)
-                                
-                            case .failure(let error):
-                                print("❌ 创建识别任务失败: \(error.localizedDescription)")
-                                isRecognizing = false
-                                currentRecognizingVideoId = nil
-                            }
-                        }
-                    }
-                    
-                case .failure(let error):
-                    print("❌ 音频上传失败: \(error.localizedDescription)")
-                    currentRecognizingVideoId = nil
-                }
+            switch result {
+            case .success(let cosURL):
+                print("✅ 音频上传成功: \(cosURL)")
+                startASRRecognition(cosAudioURL: cosURL, videoId: video.id)
+
+            case .failure(let error):
+                print("❌ 音频上传失败: \(error.localizedDescription)")
             }
         }
     }
@@ -840,23 +849,98 @@ struct HomeView: View {
         }
     }
     
-    /// 保存 YouTube 视频
+    /// 保存 YouTube 视频 — 调用 API 获取音频信息，拿到 COS URL 后直接进行识别和翻译
     private func saveYoutubeVideo(url: String) {
-        // 从 URL 提取视频名称
-        let videoName = extractVideoName(from: url)
-        
-        // 使用默认海报图
-        let defaultPoster = UIImage(systemName: "video.fill")
-        
-        let _ = VideoStorageManager.shared.addVideo(
-            name: videoName,
-            posterImage: defaultPoster,
-            videoURL: url,
-            isYouTube: true
-        )
-        
-        loadVideos()
-        print("✅ YouTube 视频已保存: \(videoName)")
+        viewModel.fetchYoutubeAudio(url: url) { [self] model in
+            guard let model = model else {
+                print("❌ YouTube 音频获取失败")
+                return
+            }
+
+            // 使用 API 返回的标题
+            let videoName = model.title.isEmpty ? extractVideoName(from: url) : model.title
+
+            // 使用默认海报图
+            let defaultPoster = UIImage(systemName: "video.fill")
+
+            // 保存：videoURL 存储 YouTube 原始链接
+            let newVideo = VideoStorageManager.shared.addVideo(
+                name: videoName,
+                posterImage: defaultPoster,
+                videoURL: url,
+                isYouTube: true
+            )
+
+            // 下载音频文件到本地（用于本地缓存和 hasAudio 检查）
+            if let audioRemoteURL = URL(string: model.url) {
+                downloadYoutubeAudio(from: audioRemoteURL, videoId: newVideo.id)
+            }
+
+            loadVideos()
+            print("✅ YouTube 视频已保存: \(videoName), COS音频URL: \(model.url)")
+
+            // YouTube 音频已经在 COS 上，直接用 COS URL 启动识别（无需再上传一次）
+            startASRRecognition(cosAudioURL: model.url, videoId: newVideo.id)
+        }
+    }
+
+    /// 通用入口：用 COS 音频 URL 启动识别 → 识别完成自动触发翻译
+    /// 适用于 YouTube（API 已返回 COS URL）和本地视频（上传后得到 COS URL）
+    private func startASRRecognition(cosAudioURL: String, videoId: String) {
+        print("🎤 开始 ASR 识别 - videoId: \(videoId), cosURL: \(cosAudioURL)")
+        isRecognizing = true
+        currentRecognizingVideoId = videoId
+
+        ASRManager.shared.createRecognitionTask(audioURL: cosAudioURL) { result in
+            switch result {
+            case .success(let taskId):
+                print("✅ ASR 任务创建成功，TaskId: \(taskId)")
+                asrTaskId = taskId
+                pollRecognitionResult(taskId: taskId, videoId: videoId)
+
+            case .failure(let error):
+                print("❌ 创建 ASR 任务失败: \(error.localizedDescription)")
+                isRecognizing = false
+                currentRecognizingVideoId = nil
+            }
+        }
+    }
+
+    /// 下载 YouTube 音频到本地（保存为 .opus 以兼容现有 hasAudio 检查）
+    private func downloadYoutubeAudio(from remoteURL: URL, videoId: String) {
+        // 使用 .opus 扩展名以兼容 VideoItem.audioURL / hasAudio
+        let destinationURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("\(videoId).opus")
+
+        // 如果文件已存在，跳过下载
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            print("📁 音频文件已存在: \(destinationURL.path)")
+            loadVideos()
+            return
+        }
+
+        let task = URLSession.shared.downloadTask(with: remoteURL) { localURL, response, error in
+            if let error = error {
+                print("❌ 下载音频失败: \(error.localizedDescription)")
+                return
+            }
+
+            guard let localURL = localURL else {
+                print("❌ 下载音频失败: 无本地文件")
+                return
+            }
+
+            do {
+                try FileManager.default.moveItem(at: localURL, to: destinationURL)
+                print("✅ 音频下载成功: \(destinationURL.path)")
+                DispatchQueue.main.async { [self] in
+                    loadVideos()
+                }
+            } catch {
+                print("❌ 移动音频文件失败: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
     }
     
     /// 从 URL 提取视频名称
@@ -951,7 +1035,7 @@ struct HomeView: View {
     private func uploadAudioAndRecognize(audioURL: URL, videoId: String) {
         isUploading = true
         uploadProgress = 0.0
-        
+
         COSUploadManager.shared.uploadFile(
             fileURL: audioURL,
             progress: { progress in
@@ -966,27 +1050,10 @@ struct HomeView: View {
                 }
                 switch result {
                 case .success(let cosURL):
-                    print("✅ 音频上传成功!")
-                    print("COS访问地址: \(cosURL)")
-                    
-                    DispatchQueue.main.async {
-                        isRecognizing = true
-                    }
-                    ASRManager.shared.createRecognitionTask(audioURL: cosURL) { result in
-                        DispatchQueue.main.async {
-                            switch result {
-                            case .success(let taskId):
-                                print("✅ 语音识别任务创建成功! TaskId: \(taskId)")
-                                asrTaskId = taskId
-                                // 开始轮询查询识别结果
-                                pollRecognitionResult(taskId: taskId, videoId: videoId)
-                            case .failure(let error):
-                                print("❌ 创建语音识别任务失败: \(error.localizedDescription)")
-                                isRecognizing = false
-                            }
-                        }
-                    }
-                    
+                    print("✅ 音频上传成功! COS访问地址: \(cosURL)")
+                    // 拿到 COS URL 后走与 YouTube 相同的识别 → 翻译流程
+                    startASRRecognition(cosAudioURL: cosURL, videoId: videoId)
+
                 case .failure(let error):
                     print("❌ 音频上传失败: \(error.localizedDescription)")
                     // TODO: 显示错误提示给用户

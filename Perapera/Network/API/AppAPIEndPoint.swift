@@ -15,11 +15,12 @@ enum AppAPIEndPoint {
     case supportLang
     case sendCaptcha(email: String)
     case login(email: String, captcha: String)
+    case ytAudio(url: String)
 }
 
 extension AppAPIEndPoint: TargetType {
     var baseURL: URL {
-        return URL(string: "http://www.perapera.cc/api/v1/")!
+        return URL(string: "https://www.perapera.cc/api/v1/")!
     }
     
     var path: String {
@@ -30,6 +31,7 @@ extension AppAPIEndPoint: TargetType {
         case .supportLang: return "common/support_lang"
         case .sendCaptcha : return "auth/sendCaptcha"
         case .login : return "auth/login"
+        case .ytAudio: return "common/yt_audio"
             
         }
     }
@@ -39,6 +41,7 @@ extension AppAPIEndPoint: TargetType {
         case .zendeskNotice: return .get
         case .supportLang: return .get
         case .sendCaptcha: return .get
+        case .ytAudio: return .get
         default: return .post
         }
     }
@@ -52,6 +55,8 @@ extension AppAPIEndPoint: TargetType {
         case .sendCaptcha(let email):
             let params = ["email" : email]
             return .requestParameters(parameters: params, encoding: URLEncoding.default)
+        case .ytAudio:
+            return .requestPlain
         case .login(let email, let captcha):
             let params = ["email" : email, "captcha" : captcha]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
@@ -65,6 +70,9 @@ extension AppAPIEndPoint: TargetType {
         var headParam : [String : String] = [:]
         let appLanguage = LanguageManager.currentLanguageCode()
         headParam["Accept-Language"] = appLanguage
+        if case .ytAudio = self {
+            headParam["Accept"] = "application/json"
+        }
         return headParam
     }
     
