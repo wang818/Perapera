@@ -268,12 +268,12 @@ struct VideoPlayerView: View {
                 ) { viewModel.togglePlayPause() }
             }
             Spacer()
-            Button(action: {}) {
-                ZStack {
-                    Circle().fill(Color.ex.text3.opacity(0.15)).frame(width: 44, height: 44)
-                    Image(systemName: "person.2.fill").font(.system(size: 18)).foregroundColor(Color.ex.text2)
-                }
-            }
+            // Button(action: {}) {
+            //     ZStack {
+            //         Circle().fill(Color.ex.text3.opacity(0.15)).frame(width: 44, height: 44)
+            //         Image(systemName: "person.2.fill").font(.system(size: 18)).foregroundColor(Color.ex.text2)
+            //     }
+            // }
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 4)
