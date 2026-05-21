@@ -55,8 +55,9 @@ extension AppAPIEndPoint: TargetType {
         case .sendCaptcha(let email):
             let params = ["email" : email]
             return .requestParameters(parameters: params, encoding: URLEncoding.default)
-        case .ytAudio:
-            return .requestPlain
+        case .ytAudio(let url):
+            let params = ["url": url]
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
         case .login(let email, let captcha):
             let params = ["email" : email, "captcha" : captcha]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
@@ -85,7 +86,7 @@ extension AppAPIEndPoint: TargetType {
 enum ContractAPIEndPoint: TargetType {
     case test
     
-    var baseURL: URL { URL(string: "https://api.perapera.com")! }
+    var baseURL: URL { URL(string: "https://api.perapera.cc")! }
     var path: String { "" }
     var method: Moya.Method { .get }
     var task: Task { .requestPlain }

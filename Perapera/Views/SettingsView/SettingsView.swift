@@ -31,80 +31,82 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section(header: Text("settings_account_header".localized()).foregroundColor(Color.ex.main)
-                    .font(.title2)) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 6) {
-                            if userManager.isLoggedIn {
-                                Text(userManager.userEmail ?? "")
-                                    .font(.headline)
-                                    .foregroundColor(.Ex.text1)
-                            } else {
-                                Text("settings_account_not_logged_in".localized())
-                                    .font(.headline)
-                                    .foregroundColor(.Ex.text1)
-                                Text("settings_account_login_description".localized())
-                                    .font(.subheadline)
-                                    .foregroundColor(.Ex.text2)
-                            }
-                        }
-                        
-                        Spacer()
-                        
-                        if !userManager.isLoggedIn {
-                            Button(action: {
-                                // Handle login action
-                                print("Login tapped")
-                                showingLoginView = true
-                            }) {
-                                Text("settings_account_login_button".localized())
-                                    .fontWeight(.medium)
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(Color.Ex.main)
-                                    .cornerRadius(8)
-                            }
-                            .buttonStyle(PlainButtonStyle()) // Prevent list row selection
-                        } else {
-                             Button(action: {
-                                 userManager.logout()
-                             }) {
-                                 Text("logout".localized())
-                                     .fontWeight(.medium)
-                                     .foregroundColor(.white)
-                                     .padding(.horizontal, 16)
-                                     .padding(.vertical, 8)
-                                     .background(Color.gray)
-                                     .cornerRadius(8)
-                             }
-                             .buttonStyle(PlainButtonStyle())
-                        }
-                    }
-                    .padding(.vertical, 6)
-                }
-                
-                Section {
-                    Button(action: {
-                        showPurchaseView = true
-                    }) {
-                        VStack(alignment: .center, spacing: 8) {
-                            Text("settings_pro_title".localized())
-                                .font(.headline)
-                                .foregroundColor(.Ex.text1)
-                            Text("settings_pro_subtitle".localized())
-                                .font(.subheadline)
-                                .foregroundColor(.Ex.text2)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding()
-                        .background(Color.ex.main)
-                        .cornerRadius(10)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .listRowInsets(EdgeInsets()) // Remove default list row padding
-                    .listRowBackground(Color.clear) // Remove default list row background
-                }
+                // 暂时屏蔽登录模块
+//                Section(header: Text("settings_account_header".localized()).foregroundColor(Color.ex.main)
+//                    .font(.title2)) {
+//                    HStack {
+//                        VStack(alignment: .leading, spacing: 6) {
+//                            if userManager.isLoggedIn {
+//                                Text(userManager.userEmail ?? "")
+//                                    .font(.headline)
+//                                    .foregroundColor(.Ex.text1)
+//                            } else {
+//                                Text("settings_account_not_logged_in".localized())
+//                                    .font(.headline)
+//                                    .foregroundColor(.Ex.text1)
+//                                Text("settings_account_login_description".localized())
+//                                    .font(.subheadline)
+//                                    .foregroundColor(.Ex.text2)
+//                            }
+//                        }
+//
+//                        Spacer()
+//
+//                        if !userManager.isLoggedIn {
+//                            Button(action: {
+//                                // Handle login action
+//                                print("Login tapped")
+//                                showingLoginView = true
+//                            }) {
+//                                Text("settings_account_login_button".localized())
+//                                    .fontWeight(.medium)
+//                                    .foregroundColor(.white)
+//                                    .padding(.horizontal, 16)
+//                                    .padding(.vertical, 8)
+//                                    .background(Color.Ex.main)
+//                                    .cornerRadius(8)
+//                            }
+//                            .buttonStyle(PlainButtonStyle()) // Prevent list row selection
+//                        } else {
+//                             Button(action: {
+//                                 userManager.logout()
+//                             }) {
+//                                 Text("logout".localized())
+//                                     .fontWeight(.medium)
+//                                     .foregroundColor(.white)
+//                                     .padding(.horizontal, 16)
+//                                     .padding(.vertical, 8)
+//                                     .background(Color.gray)
+//                                     .cornerRadius(8)
+//                             }
+//                             .buttonStyle(PlainButtonStyle())
+//                        }
+//                    }
+//                    .padding(.vertical, 6)
+//                }
+//
+//                // 暂时屏蔽 Join Perapera Pro 模块
+//                Section {
+//                    Button(action: {
+//                        showPurchaseView = true
+//                    }) {
+//                        VStack(alignment: .center, spacing: 8) {
+//                            Text("settings_pro_title".localized())
+//                                .font(.headline)
+//                                .foregroundColor(.Ex.text1)
+//                            Text("settings_pro_subtitle".localized())
+//                                .font(.subheadline)
+//                                .foregroundColor(.Ex.text2)
+//                        }
+//                        .frame(maxWidth: .infinity, alignment: .center)
+//                        .padding()
+//                        .background(Color.ex.main)
+//                        .cornerRadius(10)
+//                    }
+//                    .buttonStyle(PlainButtonStyle())
+//                    .listRowInsets(EdgeInsets()) // Remove default list row padding
+//                    .listRowBackground(Color.clear) // Remove default list row background
+//                }
                 
                 Section(header: Text("settings_general_header".localized())) {
                     SettingsRowView(imageName: "globe", title: "settings_language_title".localized(), subtitle: "settings_language_subtitle".localized()) {
@@ -122,7 +124,7 @@ struct SettingsView: View {
                 Section(header: Text("settings_feedback_header".localized())) {
                     SettingsRowView(imageName: "envelope.fill", title: "settings_email_title".localized(), subtitle: "settings_email_subtitle".localized()) {
                         print("Email tapped")
-                        if let url = URL(string: "mailto:support@perapera.com") {
+                        if let url = URL(string: "mailto:support@perapera.cc") {
                             UIApplication.shared.open(url)
                         }
                     }
@@ -130,13 +132,13 @@ struct SettingsView: View {
                 
                 Section(header: Text("settings_help".localized())) {
                     SettingsRowView(imageName: "questionmark.circle", title: "settings_faq_title".localized(), subtitle: "") {
-                        if let url = URL(string: "https://www.perapera.com/faq") {
+                        if let url = URL(string: "https://www.perapera.cc/faq") {
                             UIApplication.shared.open(url)
                         }
                     }
                     
                     SettingsRowView(imageName: "info.circle", title: "settings_about_perapera_title".localized(), subtitle: "") {
-                        if let url = URL(string: "https://www.perapera.com/about") {
+                        if let url = URL(string: "https://www.perapera.cc/about") {
                             UIApplication.shared.open(url)
                         }
                     }
@@ -225,4 +227,3 @@ struct ThemeSettingsView: View {
         .toolbar(.hidden, for: .tabBar)
     }
 }
-

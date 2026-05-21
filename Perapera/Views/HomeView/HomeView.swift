@@ -177,7 +177,7 @@ struct HomeView: View {
                             .padding(.leading, 25)
                             .padding(.bottom, 20)
                         
-                        // 3 Views
+                        // 仅保留两个入口
                         VStack(spacing: 14) {
                             // YouTube 按钮 - 主题色高亮
                             Button(action: {
@@ -222,84 +222,84 @@ struct HomeView: View {
                             }
                             .padding(.horizontal, 25)
                             
-                            // 文件导入按钮 - 主题色高亮
-                            Button(action: {
-                                print("Item 2 tapped")
-                                showingSheet = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    showingFileImporter = true
-                                }
-                            }) {
-                                HStack(spacing: 15) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.Ex.main.opacity(0.15))
-                                            .frame(width: 40, height: 40)
-                                        Image(systemName: "mic")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(Color.Ex.main)
-                                    }
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("home_sheet_list_title2".localized())
-                                            .font(.headline)
-                                            .foregroundColor(.Ex.text1)
-                                        Text("home_sheet_list_subtitle2".localized())
-                                            .font(.subheadline)
-                                            .foregroundColor(.Ex.text2)
-                                            .lineLimit(1)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(.Ex.text2)
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                                .background(Color.Ex.main.opacity(0.08))
-                                .cornerRadius(12)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
-                                )
-                            }
-                            .padding(.horizontal, 25)
-                            
-                            Button(action: {
-                                print("Network Test tapped")
-                                showingSheet = false
-                                //viewModel.getZendeskNotice()
-                            }) {
-                                HStack(spacing: 15) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.gray.opacity(0.1))
-                                            .frame(width: 40, height: 40)
-                                        Image(systemName: "network")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(.purple)
-                                    }
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Network Test")
-                                            .font(.headline)
-                                            .foregroundColor(.Ex.text1)
-                                        Text("Check API connection")
-                                            .font(.subheadline)
-                                            .foregroundColor(.Ex.text2)
-                                            .lineLimit(1)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(.Ex.text2)
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                                .background(Color.Ex.bg2)
-                                .cornerRadius(12)
-                            }
-                            .padding(.horizontal, 25)
+                            // 暂时只保留第一个和第四个入口，第二个和第三个先注释。
+//                            Button(action: {
+//                                print("Item 2 tapped")
+//                                showingSheet = false
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                                    showingFileImporter = true
+//                                }
+//                            }) {
+//                                HStack(spacing: 15) {
+//                                    ZStack {
+//                                        RoundedRectangle(cornerRadius: 8)
+//                                            .fill(Color.Ex.main.opacity(0.15))
+//                                            .frame(width: 40, height: 40)
+//                                        Image(systemName: "mic")
+//                                            .resizable()
+//                                            .frame(width: 20, height: 20)
+//                                            .foregroundColor(Color.Ex.main)
+//                                    }
+//                                    VStack(alignment: .leading, spacing: 2) {
+//                                        Text("home_sheet_list_title2".localized())
+//                                            .font(.headline)
+//                                            .foregroundColor(.Ex.text1)
+//                                        Text("home_sheet_list_subtitle2".localized())
+//                                            .font(.subheadline)
+//                                            .foregroundColor(.Ex.text2)
+//                                            .lineLimit(1)
+//                                    }
+//                                    Spacer()
+//                                    Image(systemName: "chevron.right")
+//                                        .font(.caption)
+//                                        .foregroundColor(.Ex.text2)
+//                                }
+//                                .padding(.horizontal, 16)
+//                                .padding(.vertical, 12)
+//                                .background(Color.Ex.main.opacity(0.08))
+//                                .cornerRadius(12)
+//                                .overlay(
+//                                    RoundedRectangle(cornerRadius: 12)
+//                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
+//                                )
+//                            }
+//                            .padding(.horizontal, 25)
+//
+//                            Button(action: {
+//                                print("Network Test tapped")
+//                                showingSheet = false
+//                                //viewModel.getZendeskNotice()
+//                            }) {
+//                                HStack(spacing: 15) {
+//                                    ZStack {
+//                                        RoundedRectangle(cornerRadius: 8)
+//                                            .fill(Color.gray.opacity(0.1))
+//                                            .frame(width: 40, height: 40)
+//                                        Image(systemName: "network")
+//                                            .resizable()
+//                                            .frame(width: 20, height: 20)
+//                                            .foregroundColor(.purple)
+//                                    }
+//                                    VStack(alignment: .leading, spacing: 2) {
+//                                        Text("Network Test")
+//                                            .font(.headline)
+//                                            .foregroundColor(.Ex.text1)
+//                                        Text("Check API connection")
+//                                            .font(.subheadline)
+//                                            .foregroundColor(.Ex.text2)
+//                                            .lineLimit(1)
+//                                    }
+//                                    Spacer()
+//                                    Image(systemName: "chevron.right")
+//                                        .font(.caption)
+//                                        .foregroundColor(.Ex.text2)
+//                                }
+//                                .padding(.horizontal, 16)
+//                                .padding(.vertical, 12)
+//                                .background(Color.Ex.bg2)
+//                                .cornerRadius(12)
+//                            }
+//                            .padding(.horizontal, 25)
                             
                             Button(action: {
                                 print("Item 3 tapped")
@@ -340,9 +340,9 @@ struct HomeView: View {
                             .padding(.horizontal, 25)
                         }
                     }
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 24)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .presentationDetents([.height(440)])
+                    .presentationDetents([.height(300)])
                     .presentationDragIndicator(.visible)
                 }
                 .fileImporter(
@@ -1053,7 +1053,6 @@ struct HomeView: View {
                     print("✅ 音频上传成功! COS访问地址: \(cosURL)")
                     // 拿到 COS URL 后走与 YouTube 相同的识别 → 翻译流程
                     startASRRecognition(cosAudioURL: cosURL, videoId: videoId)
-
                 case .failure(let error):
                     print("❌ 音频上传失败: \(error.localizedDescription)")
                     // TODO: 显示错误提示给用户

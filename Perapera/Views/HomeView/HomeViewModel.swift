@@ -72,12 +72,7 @@ class HomeViewModel: ObservableObject {
         isFetchingYoutubeAudio = true
         youtubeAudioError = nil
 
-        // 预编码 YouTube URL 中的特殊字符，使其作为 query 参数值时能被正确解析
-        var allowed = CharacterSet.urlQueryAllowed
-        allowed.remove(charactersIn: "?&=+/#:")
-        let encodedURL = url.addingPercentEncoding(withAllowedCharacters: allowed) ?? url
-
-        appApi.rx.request(.ytAudio(url: encodedURL))
+        appApi.rx.request(.ytAudio(url: url))
             .asObservable()
             .mapObject(YTAudioModel.self)
             .subscribe(onNext: { [weak self] model in
