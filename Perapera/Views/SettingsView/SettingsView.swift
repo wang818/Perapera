@@ -138,7 +138,7 @@ struct SettingsView: View {
                     }
                     
                     SettingsRowView(imageName: "info.circle", title: "settings_about_perapera_title".localized(), subtitle: "") {
-                        if let url = URL(string: "https://www.perapera.cc/about") {
+                        if let url = URL(string: "https://www.perapera.cc") {
                             UIApplication.shared.open(url)
                         }
                     }

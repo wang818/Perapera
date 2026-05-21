@@ -74,6 +74,7 @@
 		ECACBF432F0BC8170090F990 /* AppIcon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF312F0BC8170090F990 /* AppIcon-76.png */; };
 		ECACBF442F0BC8170090F990 /* AppIcon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */; };
 		ECACBF452F0BC8170090F990 /* AppIcon-29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF272F0BC8170090F990 /* AppIcon-29@3x.png */; };
+		F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -166,6 +167,7 @@
 		ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@2x.png"; sourceTree = "<group>"; };
 		ECACBF332F0BC8170090F990 /* AppIcon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-83.5@2x.png"; sourceTree = "<group>"; };
 		ECACBF342F0BC8170090F990 /* AppIcon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-1024.png"; sourceTree = "<group>"; };
+		F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +206,7 @@
 				EC7FEF282F4D58150007BCA6 /* Services */,
 				18CA30702F27881100CA9B62 /* Models */,
 				ECACBF162F0B5CE70090F990 /* Info.plist */,
+				F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */,
 				ECACBF0E2F0B59880090F990 /* Network */,
 				ECACBEA32F0A6C6F0090F990 /* Icon */,
 				ECACBE832EFA58980090F990 /* Tools */,
@@ -542,6 +545,7 @@
 				1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */,
 				ECACBE982F0A38490090F990 /* EXThemeColorDark.json in Resources */,
 				ECACBE992F0A38490090F990 /* EXThemeColorLight.json in Resources */,
+				F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,9 +582,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -595,9 +603,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -832,9 +844,9 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册以导入视频文件";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -867,9 +879,9 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册以导入视频文件";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
