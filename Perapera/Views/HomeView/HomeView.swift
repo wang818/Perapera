@@ -36,7 +36,6 @@ struct HomeView: View {
     @State private var uploadProgress: Double = 0.0
     @State private var isUploading: Bool = false
     @State private var asrTaskId: Int?
-    @State private var recognitionText: String = ""
     @State private var isRecognizing: Bool = false
     @State private var isConverting: Bool = false
     @State private var conversionProgress: Double = 0.0
@@ -554,108 +553,6 @@ struct HomeView: View {
                 .padding(.horizontal, 40)
             }
             
-            if !recognitionText.isEmpty && !isRecognizing {
-                VStack {
-                    Spacer()
-                    
-                    VStack(alignment: .leading, spacing: 15) {
-                        HStack {
-                            Text("识别结果")
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                recognitionText = ""
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        
-                        ScrollView {
-                            Text(recognitionText)
-                                .font(.body)
-                                .foregroundColor(.primary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .frame(maxHeight: 200)
-                        
-                        Button(action: {
-                            UIPasteboard.general.string = recognitionText
-                        }) {
-                            HStack {
-                                Image(systemName: "doc.on.doc")
-                                Text("复制文本")
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                        }
-                    }
-                    .padding(20)
-                    .background(Color(UIColor.systemBackground))
-                    .cornerRadius(12)
-                    .shadow(radius: 10)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
-                }
-            }
-            
-            if !viewModel.translationResult.isEmpty && !viewModel.isTranslating {
-                VStack {
-                    Spacer()
-                    
-                    VStack(alignment: .leading, spacing: 15) {
-                        HStack {
-                            Text("翻译结果")
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                viewModel.translationResult = ""
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        
-                        ScrollView {
-                            Text(viewModel.translationResult)
-                                .font(.system(.body, design: .monospaced))
-                                .foregroundColor(.primary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .frame(maxHeight: 300)
-                        
-                        Button(action: {
-                            UIPasteboard.general.string = viewModel.translationResult
-                        }) {
-                            HStack {
-                                Image(systemName: "doc.on.doc")
-                                Text("复制结果")
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                        }
-                    }
-                    .padding(20)
-                    .background(Color(UIColor.systemBackground))
-                    .cornerRadius(12)
-                    .shadow(radius: 10)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
-                }
-            }
-            
             if showingYoutubeAlert {
                 Color.clear
                     .contentShape(Rectangle())
@@ -1149,7 +1046,6 @@ struct HomeView: View {
                         if let recognizedText = taskResult.Result {
                             print("✅ 识别成功!")
                             print("识别结果: \(recognizedText)")
-                            recognitionText = recognizedText
                             isRecognizing = false
                             
                             // 直接保存原始 JSON 响应
@@ -1264,18 +1160,15 @@ struct HomeView: View {
                             print(jsonString)
                         }
                         
-                        viewModel.translationResult = "翻译完成，结果已保存到 JSON 文件"
                     } catch {
                         print("❌ 写回 JSON 文件失败: \(error.localizedDescription)")
-                        viewModel.translationResult = "翻译成功但保存失败: \(error.localizedDescription)"
                     }
-                    
+
                     // 刷新列表
                     loadVideos()
-                    
+
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
-                    viewModel.translationResult = "翻译失败: \(error.localizedDescription)"
                 }
             }
         }

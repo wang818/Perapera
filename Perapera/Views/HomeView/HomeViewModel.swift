@@ -11,8 +11,6 @@ import RxSwift
 
 class HomeViewModel: ObservableObject {
     @Published var isTranslating: Bool = false
-    @Published var translationResult: String = ""
-    @Published var translationError: String?
     @Published var isFetchingYoutubeAudio: Bool = false
     @Published var youtubeAudioError: String?
     @Published var youtubeErrorLog: String?
@@ -23,7 +21,6 @@ class HomeViewModel: ObservableObject {
     func translate123Json(videoId: String? = nil) {
         guard let path = Bundle.main.path(forResource: "123", ofType: "json"),
               let jsonData = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
-            translationError = "无法读取 123.json 文件"
             print("❌ 无法读取 123.json 文件")
             return
         }
@@ -33,7 +30,6 @@ class HomeViewModel: ObservableObject {
         print(String(repeating: "🌟", count: 40) + "\n")
 
         isTranslating = true
-        translationError = nil
 
         HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData) { [weak self] result in
             DispatchQueue.main.async {
@@ -48,8 +44,6 @@ class HomeViewModel: ObservableObject {
                         print(jsonString)
                         print(String(repeating: "=", count: 80) + "\n")
 
-                        self?.translationResult = jsonString
-
                         // 保存翻译结果为 txt 文件到 Documents 目录
                         self?.saveTranslationResultToTxt(jsonString: jsonString, videoId: videoId)
                     }
@@ -61,8 +55,6 @@ class HomeViewModel: ObservableObject {
                     print("错误信息: \(error.localizedDescription)")
                     print(String(repeating: "=", count: 80) + "\n")
 
-                    self?.translationError = error.localizedDescription
-                    self?.translationResult = "翻译失败: \(error.localizedDescription)"
                 }
             }
         }
