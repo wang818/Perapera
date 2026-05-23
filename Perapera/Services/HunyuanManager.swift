@@ -223,7 +223,9 @@ class HunyuanManager {
     /// - Parameters:
     ///   - jsonData: ASR 识别结果的 JSON 数据
     ///   - completion: 完成回调，返回翻译后的 JSON 数据或错误
-    func translateWordsToJapanese(jsonData: Data, completion: @escaping (Result<Data, Error>) -> Void) {
+    typealias TranslationProgress = (Int, Int, Int) -> Void
+
+    func translateWordsToJapanese(jsonData: Data, progress: TranslationProgress? = nil, completion: @escaping (Result<Data, Error>) -> Void) {
         // 1. 解析 JSON
         guard var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               var response = jsonObject["Response"] as? [String: Any],
@@ -268,7 +270,8 @@ class HunyuanManager {
             let sentenceIndex = currentIndex
             
             print("📦 翻译第 \(sentenceIndex + 1)/\(totalSentences) 句，共 \(wordValues.count) 个词...")
-            
+            progress?(sentenceIndex + 1, totalSentences, wordValues.count)
+
             // 调用 API 翻译这一句的所有词
             translateSentenceWords(wordValues) { result in
                 switch result {

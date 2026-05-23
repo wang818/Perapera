@@ -37,6 +37,11 @@ struct HomeView: View {
     @State private var isUploading: Bool = false
     @State private var asrTaskId: Int?
     @State private var isRecognizing: Bool = false
+    @State private var showProcessComplete: Bool = false
+    @State private var processCompleteSuccess: Bool = true
+    @State private var translatingCurrent: Int = 0
+    @State private var translatingTotal: Int = 0
+    @State private var translatingWords: Int = 0
     @State private var isConverting: Bool = false
     @State private var conversionProgress: Double = 0.0
     @State private var currentConvertingVideoId: String?
@@ -44,6 +49,20 @@ struct HomeView: View {
     @State private var currentTranslatingVideoId: String?
     @State private var showYoutubeToast: Bool = false
     @State private var showYoutubeErrorLog: Bool = false
+
+    // 根据当前状态动态返回提示文字
+    private var processingMessage: String {
+        if viewModel.isFetchingYoutubeAudio { return "YouTube地址解析中..." }
+        if isRecognizing { return "正在识别语音文件..." }
+        if viewModel.isTranslating {
+            if translatingTotal > 0 {
+                return "正在翻译 \(translatingCurrent)/\(translatingTotal) 句，共 \(translatingWords) 个词..."
+            }
+            return "正在翻译..."
+        }
+        if showProcessComplete { return processCompleteSuccess ? "识别成功" : "识别失败" }
+        return ""
+    }
 
     // 按日期分组视频
     private var groupedVideos: [(String, [VideoItem])] {
@@ -479,72 +498,26 @@ struct HomeView: View {
                 .padding(.horizontal, 40)
             }
             
-            if isRecognizing {
+            // YouTube解析 → 识别 → 翻译 统一加载弹窗
+            if viewModel.isFetchingYoutubeAudio || isRecognizing || viewModel.isTranslating || showProcessComplete {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
-                
+
                 VStack(spacing: 20) {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .scaleEffect(1.5)
-                    
-                    Text("语音识别中...")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    
-                    if let taskId = asrTaskId {
-                        Text("任务ID: \(taskId)")
-                            .font(.caption)
-                            .foregroundColor(.white.opacity(0.7))
+                    if showProcessComplete {
+                        Image(systemName: processCompleteSuccess ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .resizable()
+                            .frame(width: 44, height: 44)
+                            .foregroundColor(processCompleteSuccess ? .green : .red)
+                    } else {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .scaleEffect(1.5)
                     }
-                }
-                .padding(40)
-                .background(Color(UIColor.systemBackground))
-                .cornerRadius(12)
-                .shadow(radius: 10)
-                .padding(.horizontal, 40)
-            }
-            
-            if viewModel.isFetchingYoutubeAudio {
-                Color.black.opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
 
-                VStack(spacing: 20) {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .scaleEffect(1.5)
-
-                    Text("正在获取 YouTube 音频...")
+                    Text(processingMessage)
                         .font(.headline)
-                        .foregroundColor(.white)
-
-                    Text("请稍候")
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.7))
-                }
-                .padding(40)
-                .background(Color(UIColor.systemBackground))
-                .cornerRadius(12)
-                .shadow(radius: 10)
-                .padding(.horizontal, 40)
-            }
-
-            if viewModel.isTranslating {
-                Color.black.opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: 20) {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .scaleEffect(1.5)
-                    
-                    Text("正在翻译...")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    
-                    Text("使用混元大模型翻译中")
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(.black)
                 }
                 .padding(40)
                 .background(Color(UIColor.systemBackground))
@@ -756,6 +729,7 @@ struct HomeView: View {
     
     /// 保存 YouTube 视频 — 调用 API 获取音频信息，拿到 COS URL 后直接进行识别和翻译
     private func saveYoutubeVideo(url: String) {
+        showProcessComplete = false
         viewModel.fetchYoutubeAudio(url: url) { [self] model in
             guard let model = model else {
                 print("❌ YouTube 音频获取失败")
@@ -1128,6 +1102,9 @@ struct HomeView: View {
         
         DispatchQueue.main.async {
             viewModel.isTranslating = true
+            translatingCurrent = 0
+            translatingTotal = 0
+            translatingWords = 0
         }
         
         // 读取 JSON 文件
@@ -1143,7 +1120,13 @@ struct HomeView: View {
         }
         
         // 调用新的逐句翻译 API（会为每个 Word 添加 Translation 和 Reading）
-        HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData) { result in
+        HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData, progress: { current, total, wordCount in
+            DispatchQueue.main.async {
+                translatingCurrent = current
+                translatingTotal = total
+                translatingWords = wordCount
+            }
+        }) { result in
             DispatchQueue.main.async {
                 viewModel.isTranslating = false
                 
@@ -1153,13 +1136,13 @@ struct HomeView: View {
                     do {
                         try enrichedData.write(to: jsonFileURL)
                         print("✅ 翻译结果已写回 JSON 文件: \(jsonFileURL.path)")
-                        
+
                         // 输出完整 JSON 到控制台
                         if let jsonString = String(data: enrichedData, encoding: .utf8) {
                             print("\n📋 翻译后的 JSON 完整内容:")
                             print(jsonString)
                         }
-                        
+
                     } catch {
                         print("❌ 写回 JSON 文件失败: \(error.localizedDescription)")
                     }
@@ -1167,8 +1150,20 @@ struct HomeView: View {
                     // 刷新列表
                     loadVideos()
 
+                    // 显示完成提示
+                    processCompleteSuccess = true
+                    showProcessComplete = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        showProcessComplete = false
+                    }
+
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
+                    processCompleteSuccess = false
+                    showProcessComplete = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        showProcessComplete = false
+                    }
                 }
             }
         }
