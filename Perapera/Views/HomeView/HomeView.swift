@@ -44,6 +44,7 @@ struct HomeView: View {
     @State private var currentRecognizingVideoId: String?
     @State private var currentTranslatingVideoId: String?
     @State private var showYoutubeToast: Bool = false
+    @State private var showYoutubeErrorLog: Bool = false
 
     // 按日期分组视频
     private var groupedVideos: [(String, [VideoItem])] {
@@ -157,10 +158,9 @@ struct HomeView: View {
                         DispatchQueue.main.async { loadVideos() }
                     }
                 }
-                .toast(isPresented: $showYoutubeToast, message: viewModel.youtubeAudioError ?? "请求失败")
                 .onChange(of: viewModel.youtubeAudioError) { newValue in
                     if newValue != nil {
-                        showYoutubeToast = true
+                        showYoutubeErrorLog = true
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
@@ -713,6 +713,14 @@ struct HomeView: View {
                 .shadow(radius: 10)
                 .padding(.horizontal, 40)
             }
+
+            if showYoutubeErrorLog, let errorLog = viewModel.youtubeErrorLog {
+                YoutubeErrorLogView(
+                    isPresented: $showYoutubeErrorLog,
+                    logText: errorLog,
+                    errorMessage: viewModel.youtubeAudioError
+                )
+            }
         }
     }
     
@@ -860,13 +868,10 @@ struct HomeView: View {
             // 使用 API 返回的标题
             let videoName = model.title.isEmpty ? extractVideoName(from: url) : model.title
 
-            // 使用默认海报图
-            let defaultPoster = UIImage(systemName: "video.fill")
-
-            // 保存：videoURL 存储 YouTube 原始链接
+            // 保存：videoURL 存储 YouTube 原始链接，不指定海报图（使用默认占位图标）
             let newVideo = VideoStorageManager.shared.addVideo(
                 name: videoName,
-                posterImage: defaultPoster,
+                posterImage: nil,
                 videoURL: url,
                 isYouTube: true
             )
@@ -1301,7 +1306,9 @@ struct VideoRowView: View {
                             .fill(Color.Ex.bg3)
                             .overlay(
                                 Image(systemName: "video.fill")
-                                    .font(.system(size: 36))
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24, height: 24)
                                     .foregroundColor(Color.Ex.text3)
                             )
                     }
@@ -1314,7 +1321,7 @@ struct VideoRowView: View {
                 // 左上角类型图标角标
                 ZStack {
                     Circle()
-                        .fill(.ultraThinMaterial)
+                        .fill(Color.black.opacity(0.35))
                         .frame(width: 36, height: 36)
                     Image(systemName: video.isYouTube ? "play.fill" : "video.fill")
                         .font(.system(size: 14, weight: .medium))
@@ -1351,6 +1358,117 @@ struct VideoRowView: View {
         let minutes = Int(seconds) / 60
         let secs = Int(seconds) % 60
         return String(format: "%d:%02d", minutes, secs)
+    }
+}
+
+// MARK: - YouTube Error Log View
+
+struct YoutubeErrorLogView: View {
+    @Binding var isPresented: Bool
+    let logText: String
+    let errorMessage: String?
+
+    @State private var showCopiedToast: Bool = false
+
+    var body: some View {
+        ZStack {
+            // Dimmed background overlay
+            Color.black.opacity(0.45)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    isPresented = false
+                }
+
+            // Modal card
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                        .font(.system(size: 18))
+                    Text("YouTube 导入错误")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Button(action: { isPresented = false }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 22))
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 12)
+
+                Divider()
+                    .padding(.horizontal, 20)
+
+                // Console log content
+                ScrollView {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        Text(logText)
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(.primary)
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .frame(maxHeight: 320)
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(8)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+
+                Divider()
+                    .padding(.horizontal, 20)
+
+                // Bottom buttons
+                HStack(spacing: 12) {
+                    // Copy button
+                    Button(action: {
+                        UIPasteboard.general.string = logText
+                        showCopiedToast = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            showCopiedToast = false
+                        }
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: showCopiedToast ? "checkmark" : "doc.on.doc")
+                                .font(.system(size: 14))
+                            Text(showCopiedToast ? "已复制" : "复制日志")
+                                .font(.system(size: 14, weight: .medium))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundColor(.blue)
+                        .cornerRadius(8)
+                    }
+
+                    // Close button
+                    Button(action: { isPresented = false }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 14))
+                            Text("关闭")
+                                .font(.system(size: 14, weight: .medium))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.gray.opacity(0.15))
+                        .foregroundColor(.primary)
+                        .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 16)
+            }
+            .frame(maxWidth: 400)
+            .background(Color(UIColor.systemBackground))
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 10)
+            .padding(.horizontal, 20)
+        }
     }
 }
 

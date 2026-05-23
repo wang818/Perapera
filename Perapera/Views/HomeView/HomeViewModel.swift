@@ -15,6 +15,7 @@ class HomeViewModel: ObservableObject {
     @Published var translationError: String?
     @Published var isFetchingYoutubeAudio: Bool = false
     @Published var youtubeAudioError: String?
+    @Published var youtubeErrorLog: String?
 
     private let disposeBag = DisposeBag()
 
@@ -71,6 +72,7 @@ class HomeViewModel: ObservableObject {
     func fetchYoutubeAudio(url: String, completion: @escaping (YTAudioModel?) -> Void) {
         isFetchingYoutubeAudio = true
         youtubeAudioError = nil
+        youtubeErrorLog = nil
 
         appApi.rx.request(.ytAudio(url: url))
             .asObservable()
@@ -84,6 +86,12 @@ class HomeViewModel: ObservableObject {
                     } else {
                         print("❌ YouTube 音频获取失败，status: \(model.status)")
                         self?.youtubeAudioError = "获取失败"
+                        self?.youtubeErrorLog = Self.buildErrorLog(
+                            requestURL: url,
+                            status: model.status,
+                            title: model.title,
+                            error: nil
+                        )
                         completion(nil)
                     }
                 }
@@ -92,10 +100,94 @@ class HomeViewModel: ObservableObject {
                     self?.isFetchingYoutubeAudio = false
                     print("❌ YouTube 音频请求错误: \(error.localizedDescription)")
                     self?.youtubeAudioError = error.localizedDescription
+                    self?.youtubeErrorLog = Self.buildErrorLog(
+                        requestURL: url,
+                        status: nil,
+                        title: nil,
+                        error: error
+                    )
                     completion(nil)
                 }
             })
             .disposed(by: disposeBag)
+    }
+
+    /// Build a detailed console log string for YouTube import errors
+    private static func buildErrorLog(requestURL: String, status: String?, title: String?, error: Error?) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+
+        var log = String(repeating: "=", count: 60) + "\n"
+        log += "❌ YouTube Audio Import Error\n"
+        log += String(repeating: "=", count: 60) + "\n"
+        log += "🕐 Timestamp: \(formatter.string(from: Date()))\n"
+        log += "🔗 Request URL: \(requestURL)\n"
+        log += "🌐 API Endpoint: https://www.perapera.cc/api/v1/common/yt_audio\n"
+
+        if let status = status {
+            log += "📊 Response Status: \(status)\n"
+        }
+        if let title = title, !title.isEmpty {
+            log += "📝 Video Title: \(title)\n"
+        }
+        if let error = error {
+            log += "🚫 Error: \(error.localizedDescription)\n"
+            let nsError = error as NSError
+            log += "⚠️  Error Code: \(nsError.code)\n"
+            log += "📍 Domain: \(nsError.domain)\n"
+            if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? Error {
+                log += "📎 Underlying Error: \(underlying.localizedDescription)\n"
+            }
+        }
+
+        let moyaError = error as? MoyaError
+        if let moyaError = moyaError {
+            switch moyaError {
+            case .underlying(let underlyingError, let response):
+                log += "🔍 Moya Underlying Error: \(underlyingError.localizedDescription)\n"
+                if let response = response {
+                    log += "📡 HTTP Status Code: \(response.statusCode)\n"
+                    if let body = String(data: response.data, encoding: .utf8) {
+                        log += "📦 Response Body: \(body)\n"
+                    }
+                }
+            case .statusCode(let response):
+                log += "📡 HTTP Status Code: \(response.statusCode)\n"
+                if let body = String(data: response.data, encoding: .utf8) {
+                    log += "📦 Response Body: \(body)\n"
+                }
+            case .objectMapping(let mappingError, let response):
+                log += "🗺️  Mapping Error: \(mappingError.localizedDescription)\n"
+                log += "📡 HTTP Status Code: \(response.statusCode)\n"
+                if let body = String(data: response.data, encoding: .utf8) {
+                    log += "📦 Response Body: \(body)\n"
+                }
+            default:
+                log += "🔍 Moya Error: \(moyaError.localizedDescription)\n"
+            }
+        }
+
+        let targetURL = URL(string: requestURL)
+        log += "\n💡 Possible Causes\n"
+        log += String(repeating: "-", count: 40) + "\n"
+        if let url = targetURL, url.youtubeVideoID != nil {
+            log += "  • Invalid or unsupported YouTube URL\n"
+            log += "  • Video is unavailable or region-restricted\n"
+            log += "  • Video is age-restricted or private\n"
+        } else {
+            log += "  • URL is not a valid YouTube link\n"
+        }
+        log += "  • Network connectivity issue\n"
+        log += "  • Backend API service unavailable\n"
+        log += "  • Rate limiting or quota exceeded\n"
+
+        log += "\n" + String(repeating: "=", count: 60) + "\n"
+
+        // Also print to console
+        print(log)
+
+        return log
     }
 
     /// 保存翻译结果为 txt 文件到 Documents 目录
