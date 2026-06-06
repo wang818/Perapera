@@ -403,52 +403,48 @@ struct HomeView: View {
                 }
                 .photosPicker(isPresented: $showingPhotoPicker, selection: $selectedVideoItem, matching: .videos)
                 .onChange(of: selectedVideoItem) { newItem in
-                    if let newItem = newItem {
-                        Task {
-                            do {
-                                // 尝试从 PHAsset 获取原始文件名
-                                var originalName: String?
-                                if let assetId = newItem.itemIdentifier {
-                                    let result = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil)
-                                    if let asset = result.firstObject {
-                                        let resources = PHAssetResource.assetResources(for: asset)
-                                        if let resource = resources.first {
-                                            originalName = (resource.originalFilename as NSString).deletingPathExtension
-                                        }
-                                    }
-                                }
-                                
-                                // 尝试加载视频文件
-                                if let movie = try? await newItem.loadTransferable(type: Movie.self) {
-                                    // 优先使用原始文件名，否则使用文件路径中的文件名
-                                    let videoName = originalName ?? movie.url.deletingPathExtension().lastPathComponent
-                                    let sourceURL = movie.url
-                                    
-                                    // 生成缩略图
-                                    let thumbnail = generateVideoThumbnail(url: sourceURL)
-                                    
-                                    // 保存到 Documents 目录
-                                    let newVideo = VideoStorageManager.shared.addLocalVideo(
-                                        name: videoName,
-                                        posterImage: thumbnail,
-                                        sourceURL: sourceURL
-                                    )
-                                    
-                                    // 删除临时文件
-                                    try? FileManager.default.removeItem(at: sourceURL)
-                                    
-                                    await MainActor.run {
-                                        loadVideos()
-                                        
-                                        if let newVideo = newVideo {
-                                            currentConvertingVideoId = newVideo.id
-                                            
-                                            // 开始转换视频为音频
-                                            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
-                                        }
-                                    }
+                    guard let newItem = newItem else { return }
+                    Task {
+                        // 尝试从 PHAsset 获取原始文件名
+                        var originalName: String?
+                        if let assetId = newItem.itemIdentifier {
+                            let result = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil)
+                            if let asset = result.firstObject {
+                                let resources = PHAssetResource.assetResources(for: asset)
+                                if let resource = resources.first {
+                                    originalName = (resource.originalFilename as NSString).deletingPathExtension
                                 }
                             }
+                        }
+
+                        if let movie = try? await newItem.loadTransferable(type: Movie.self) {
+                            let sourceURL = movie.url
+                            // 优先使用原始文件名，否则使用文件路径中的文件名
+                            let videoName = originalName ?? sourceURL.deletingPathExtension().lastPathComponent
+
+                            print("Selected media file: \(sourceURL.lastPathComponent)")
+
+                            // 生成缩略图
+                            let thumbnail = generateVideoThumbnail(url: sourceURL)
+
+                            // 保存到 Documents 目录
+                            if let newVideo = VideoStorageManager.shared.addLocalVideo(
+                                name: videoName,
+                                posterImage: thumbnail,
+                                sourceURL: sourceURL
+                            ) {
+                                // 删除临时文件
+                                try? FileManager.default.removeItem(at: sourceURL)
+
+                                await MainActor.run {
+                                    loadVideos()
+                                    currentConvertingVideoId = newVideo.id
+                                    // 开始转换视频为音频
+                                    convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
+                                }
+                            }
+                        } else {
+                            print("❌ 无法从相册加载视频文件")
                         }
                     }
                 }
