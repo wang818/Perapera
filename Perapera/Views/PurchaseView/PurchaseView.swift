@@ -15,7 +15,6 @@ struct PlanModel: Identifiable {
     let subTitle: String?
     let tag: String?
 }
-
 struct PurchaseView: View {
     @Environment(\.dismiss) var dismiss
     @State private var selectedPlanIndex = 1 // Default to Yearly
@@ -57,23 +56,36 @@ struct PurchaseView: View {
     ]
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Features List
                     VStack(spacing: 20) {
-                        FeatureRow(icon: "text.book.closed", color: .green, title: "purchase_feature_grammar_title".localized(), subtitle: "purchase_feature_grammar_subtitle".localized())
-                        FeatureRow(icon: "doc.text", color: .red, title: "purchase_feature_transcription_title".localized(), subtitle: "purchase_feature_transcription_subtitle".localized())
-                        FeatureRow(icon: "globe", color: .purple, title: "purchase_feature_translation_title".localized(), subtitle: "purchase_feature_translation_subtitle".localized())
+                        FeatureRow(
+                            icon: "text.book.closed",
+                            color: .green,
+                            title: "purchase_feature_grammar_title".localized(),
+                            subtitle: "purchase_feature_grammar_subtitle".localized()
+                        )
+                        FeatureRow(
+                            icon: "doc.text",
+                            color: .red,
+                            title: "purchase_feature_transcription_title".localized(),
+                            subtitle: "purchase_feature_transcription_subtitle".localized()
+                        )
+                        FeatureRow(
+                            icon: "globe",
+                            color: .purple,
+                            title: "purchase_feature_translation_title".localized(),
+                            subtitle: "purchase_feature_translation_subtitle".localized()
+                        )
                     }
                     .padding(.vertical)
-                    
-                    // Plans
+
                     VStack(alignment: .leading, spacing: 10) {
                         Text("purchase_choose_plan".localized())
                             .font(.headline)
                             .padding(.horizontal)
-                        
+
                         ForEach(0..<plans.count, id: \.self) { index in
                             PlanRow(plan: plans[index], isSelected: selectedPlanIndex == index)
                                 .onTapGesture {
@@ -81,8 +93,7 @@ struct PurchaseView: View {
                                 }
                         }
                     }
-                    
-                    // Action Button
+
                     Button(action: {
                         // Purchase action
                     }) {
@@ -96,15 +107,14 @@ struct PurchaseView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top, 10)
-                    
-                    // Footer
+
                     HStack(spacing: 20) {
                         Button(action: {}) {
                             Text("purchase_privacy_policy".localized())
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
-                        
+
                         Button(action: {}) {
                             Text("purchase_terms_of_use".localized())
                                 .font(.caption)
@@ -126,7 +136,7 @@ struct PurchaseView: View {
                             .foregroundColor(.primary)
                     }
                 }
-                
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         // Restore purchase action

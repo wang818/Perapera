@@ -131,7 +131,7 @@ struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack(spacing: 30) {
                 // Email Input
                 VStack(alignment: .leading, spacing: 8) {

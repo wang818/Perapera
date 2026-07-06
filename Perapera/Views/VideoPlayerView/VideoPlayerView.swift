@@ -1,6 +1,7 @@
 import SwiftUI
 import AVKit
 import AVFoundation
+import UIKit
 
 struct VideoPlayerView: View {
     let video: VideoItem
@@ -24,8 +25,6 @@ struct VideoPlayerView: View {
         .background(Color.ex.bg1)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .tabBar)
-        .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             viewModel.setupPlayer()
         }
@@ -229,10 +228,13 @@ struct VideoPlayerView: View {
                 }
                 .frame(height: 14)
                 .contentShape(Rectangle())
-                .onTapGesture { location in
-                    let ratio = max(0, min(1, location.x / geometry.size.width))
-                    viewModel.seek(to: Double(ratio) * viewModel.duration)
-                }
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onEnded { value in
+                            let ratio = max(0, min(1, value.location.x / geometry.size.width))
+                            viewModel.seek(to: Double(ratio) * viewModel.duration)
+                        }
+                )
             }
             .frame(height: 14)
             
@@ -314,36 +316,7 @@ struct SentenceCardView: View {
         VStack(alignment: .leading, spacing: 8) {
             if let words = subtitle.words {
                 // 词级别显示：假名 + 原文 + romaji
-                FlowLayout(spacing: 6) {
-                    ForEach(Array(words.enumerated()), id: \.offset) { _, word in
-                        let isWordActive = isActive && isWordCurrent(word)
-                        
-                        VStack(spacing: 1) {
-                            // 假名（furigana）
-                            Text(word.furigana ?? " ")
-                                .font(.system(size: 10))
-                                .foregroundColor(Color.ex.text3)
-                                .lineLimit(1)
-                            
-                            // 原文（日语词）
-                            Text(word.word)
-                                .font(.system(size: 20, weight: .medium))
-                                .foregroundColor(isWordActive ? greenDark : Color.ex.text1)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 3)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .stroke(isWordActive ? greenDark : Color.clear, lineWidth: 2)
-                                )
-                            
-                            // 罗马音（romaji）
-                            Text(word.reading ?? " ")
-                                .font(.system(size: 10))
-                                .foregroundColor(Color.ex.text2)
-                                .lineLimit(1)
-                        }
-                    }
-                }
+                WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
                 
                 // 整句中文翻译 - 单独一行，圆角背景
                 let sentenceTranslation = words.compactMap { $0.translation }.joined()
@@ -397,50 +370,116 @@ struct SentenceCardView: View {
     }
 }
 
-// MARK: - FlowLayout（自动换行布局）
-struct FlowLayout: Layout {
-    var spacing: CGFloat = 4
-    
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = computeLayout(proposal: proposal, subviews: subviews)
-        return result.size
-    }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = computeLayout(proposal: proposal, subviews: subviews)
-        for (index, position) in result.positions.enumerated() {
-            subviews[index].place(
-                at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y),
-                proposal: .unspecified
-            )
+// MARK: - 兼容旧系统的自动换行词组布局
+struct WordWrapView: View {
+    let words: [WordTiming]
+    let isSentenceActive: Bool
+    let currentTime: Double
+    let subtitleStartTime: Double
+
+    private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
+
+    var body: some View {
+        GeometryReader { geometry in
+            self.generateContent(in: geometry)
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: contentHeight(for: UIScreen.main.bounds.width - 24))
     }
-    
-    private func computeLayout(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, positions: [CGPoint]) {
-        let maxWidth = proposal.width ?? .infinity
-        var positions: [CGPoint] = []
-        var currentX: CGFloat = 0
-        var currentY: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        var totalWidth: CGFloat = 0
-        
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            
-            if currentX + size.width > maxWidth && currentX > 0 {
-                currentX = 0
-                currentY += lineHeight + spacing
-                lineHeight = 0
+
+    private func generateContent(in geometry: GeometryProxy) -> some View {
+        var width = CGFloat.zero
+        var height = CGFloat.zero
+
+        return ZStack(alignment: .topLeading) {
+            ForEach(Array(words.enumerated()), id: \.offset) { _, word in
+                wordView(for: word)
+                    .padding(.trailing, 6)
+                    .padding(.bottom, 6)
+                    .alignmentGuide(.leading) { dimension in
+                        if width + dimension.width > geometry.size.width {
+                            width = 0
+                            height -= dimension.height
+                        }
+                        let result = width
+                        width += dimension.width
+                        return -result
+                    }
+                    .alignmentGuide(.top) { _ in
+                        let result = height
+                        return result
+                    }
             }
-            
-            positions.append(CGPoint(x: currentX, y: currentY))
-            lineHeight = max(lineHeight, size.height)
-            currentX += size.width + spacing
-            totalWidth = max(totalWidth, currentX - spacing)
         }
-        
-        let totalHeight = currentY + lineHeight
-        return (CGSize(width: totalWidth, height: totalHeight), positions)
+    }
+
+    private func wordView(for word: WordTiming) -> some View {
+        let isWordActive = isSentenceActive && isWordCurrent(word)
+
+        return VStack(spacing: 1) {
+            Text(word.furigana ?? " ")
+                .font(.system(size: 10))
+                .foregroundColor(Color.ex.text3)
+                .lineLimit(1)
+
+            Text(word.word)
+                .font(.system(size: 20, weight: .medium))
+                .foregroundColor(isWordActive ? greenDark : Color.ex.text1)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 3)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .stroke(isWordActive ? greenDark : Color.clear, lineWidth: 2)
+                )
+
+            Text(word.reading ?? " ")
+                .font(.system(size: 10))
+                .foregroundColor(Color.ex.text2)
+                .lineLimit(1)
+        }
+    }
+
+    private func isWordCurrent(_ word: WordTiming) -> Bool {
+        let absoluteStart = subtitleStartTime + word.startTime
+        let absoluteEnd = subtitleStartTime + word.endTime
+        return currentTime >= absoluteStart && currentTime <= absoluteEnd
+    }
+
+    private func contentHeight(for availableWidth: CGFloat) -> CGFloat {
+        var currentLineWidth: CGFloat = 0
+        var currentLineHeight: CGFloat = 0
+        var totalHeight: CGFloat = 0
+
+        for word in words {
+            let size = estimatedWordSize(for: word)
+            let itemWidth = size.width + 6
+            let itemHeight = size.height + 6
+
+            if currentLineWidth + itemWidth > availableWidth && currentLineWidth > 0 {
+                totalHeight += currentLineHeight
+                currentLineWidth = 0
+                currentLineHeight = 0
+            }
+
+            currentLineWidth += itemWidth
+            currentLineHeight = max(currentLineHeight, itemHeight)
+        }
+
+        return max(totalHeight + currentLineHeight, 1)
+    }
+
+    private func estimatedWordSize(for word: WordTiming) -> CGSize {
+        let furigana = (word.furigana ?? " ") as NSString
+        let original = word.word as NSString
+        let reading = (word.reading ?? " ") as NSString
+
+        let furiganaSize = furigana.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
+        let originalSize = original.size(withAttributes: [.font: UIFont.systemFont(ofSize: 20, weight: .medium)])
+        let readingSize = reading.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
+
+        let width = max(furiganaSize.width, originalSize.width + 10, readingSize.width)
+        let height = furiganaSize.height + originalSize.height + readingSize.height + 6
+        return CGSize(width: ceil(width), height: ceil(height))
     }
 }
 

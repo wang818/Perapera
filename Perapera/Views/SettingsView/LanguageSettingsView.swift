@@ -58,8 +58,6 @@ struct LanguageSettingsView: View {
         }
         .navigationTitle("settings_language_title".localized())
         .listStyle(InsetGroupedListStyle())
-        .toolbarRole(.editor)
-        .toolbar(.hidden, for: .tabBar)
         .onAppear {
             appLanguage = LanguageManager.getCurrentAppLanguage()
             aiLanguage = LanguageManager.getAILanguage()
@@ -95,6 +93,7 @@ struct LanguageSettingsView: View {
             )
         }
     }
+
     private func languageRow(title: String, subtitle: String, currentValue: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
@@ -188,8 +187,6 @@ struct LanguageSelectionSheet: View {
                 .padding(.bottom, 30)
             }
         }
-        .presentationDetents([.height(500)])
-        .presentationDragIndicator(.visible)
     }
     
     private func titleForType(_ type: LanguageSelectionType) -> String {
@@ -233,7 +230,7 @@ struct LanguageSelectionSheet: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationView {
         LanguageSettingsView()
     }
 }

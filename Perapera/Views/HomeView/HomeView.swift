@@ -1,28 +1,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
-import PhotosUI
 import Photos
 import AVFoundation
-
-struct Movie: Transferable {
-    let url: URL
-    
-    static var transferRepresentation: some TransferRepresentation {
-        FileRepresentation(contentType: .movie) { movie in
-            SentTransferredFile(movie.url)
-        } importing: { received in
-            let fileName = received.file.lastPathComponent
-            let copy = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-            
-            if FileManager.default.fileExists(atPath: copy.path) {
-                try FileManager.default.removeItem(at: copy)
-            }
-            
-            try FileManager.default.copyItem(at: received.file, to: copy)
-            return Self.init(url: copy)
-        }
-    }
-}
+import UIKit
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
@@ -31,7 +11,6 @@ struct HomeView: View {
     @State private var showingYoutubeAlert = false
     @State private var showingFileImporter = false
     @State private var showingPhotoPicker = false
-    @State private var selectedVideoItem: PhotosPickerItem?
     @State private var youtubeUrl = ""
     @State private var uploadProgress: Double = 0.0
     @State private var isUploading: Bool = false
@@ -83,7 +62,7 @@ struct HomeView: View {
 
     var body: some View {
         ZStack {
-            NavigationStack {
+            NavigationView {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         // 大标题区域
@@ -360,8 +339,6 @@ struct HomeView: View {
                     }
                     .padding(.bottom, 24)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .presentationDetents([.height(300)])
-                    .presentationDragIndicator(.visible)
                 }
                 .fileImporter(
                     isPresented: $showingFileImporter,
@@ -401,51 +378,9 @@ struct HomeView: View {
                         print("File selection error: \(error.localizedDescription)")
                     }
                 }
-                .photosPicker(isPresented: $showingPhotoPicker, selection: $selectedVideoItem, matching: .videos)
-                .onChange(of: selectedVideoItem) { newItem in
-                    guard let newItem = newItem else { return }
-                    Task {
-                        // 尝试从 PHAsset 获取原始文件名
-                        var originalName: String?
-                        if let assetId = newItem.itemIdentifier {
-                            let result = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil)
-                            if let asset = result.firstObject {
-                                let resources = PHAssetResource.assetResources(for: asset)
-                                if let resource = resources.first {
-                                    originalName = (resource.originalFilename as NSString).deletingPathExtension
-                                }
-                            }
-                        }
-
-                        if let movie = try? await newItem.loadTransferable(type: Movie.self) {
-                            let sourceURL = movie.url
-                            // 优先使用原始文件名，否则使用文件路径中的文件名
-                            let videoName = originalName ?? sourceURL.deletingPathExtension().lastPathComponent
-
-                            print("Selected media file: \(sourceURL.lastPathComponent)")
-
-                            // 生成缩略图
-                            let thumbnail = generateVideoThumbnail(url: sourceURL)
-
-                            // 保存到 Documents 目录
-                            if let newVideo = VideoStorageManager.shared.addLocalVideo(
-                                name: videoName,
-                                posterImage: thumbnail,
-                                sourceURL: sourceURL
-                            ) {
-                                // 删除临时文件
-                                try? FileManager.default.removeItem(at: sourceURL)
-
-                                await MainActor.run {
-                                    loadVideos()
-                                    currentConvertingVideoId = newVideo.id
-                                    // 开始转换视频为音频
-                                    convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
-                                }
-                            }
-                        } else {
-                            print("❌ 无法从相册加载视频文件")
-                        }
+                .sheet(isPresented: $showingPhotoPicker) {
+                    VideoPicker { sourceURL in
+                        processPickedVideo(sourceURL)
                     }
                 }
             }
@@ -742,6 +677,19 @@ struct HomeView: View {
                 videoURL: url,
                 isYouTube: true
             )
+            
+            // 尝试获取 YouTube 缩略图并更新
+            if let videoId = extractYoutubeVideoId(from: url),
+               let thumbnailUrl = URL(string: "https://img.youtube.com/vi/\(videoId)/hqdefault.jpg") {
+                URLSession.shared.dataTask(with: thumbnailUrl) { data, _, _ in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            VideoStorageManager.shared.updateVideo(id: newVideo.id, posterImage: image)
+                            self.loadVideos()
+                        }
+                    }
+                }.resume()
+            }
 
             // 下载音频文件到本地（用于本地缓存和 hasAudio 检查）
             if let audioRemoteURL = URL(string: model.url) {
@@ -856,6 +804,24 @@ struct HomeView: View {
         } catch {
             print("❌ 生成缩略图失败: \(error.localizedDescription)")
             return nil
+        }
+    }
+
+    /// 处理从系统相册选择的视频
+    private func processPickedVideo(_ sourceURL: URL) {
+        let videoName = sourceURL.deletingPathExtension().lastPathComponent
+        print("Selected media file: \(sourceURL.lastPathComponent)")
+
+        let thumbnail = generateVideoThumbnail(url: sourceURL)
+
+        if let newVideo = VideoStorageManager.shared.addLocalVideo(
+            name: videoName,
+            posterImage: thumbnail,
+            sourceURL: sourceURL
+        ) {
+            loadVideos()
+            currentConvertingVideoId = newVideo.id
+            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
         }
     }
     
@@ -1165,6 +1131,48 @@ struct HomeView: View {
         }
     }
     
+}
+
+struct VideoPicker: UIViewControllerRepresentable {
+    let onPick: (URL) -> Void
+    @Environment(\.presentationMode) private var presentationMode
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        picker.sourceType = .savedPhotosAlbum
+        picker.mediaTypes = ["public.movie"]
+        picker.videoQuality = .typeMedium
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    final class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        private let parent: VideoPicker
+
+        init(_ parent: VideoPicker) {
+            self.parent = parent
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.presentationMode.wrappedValue.dismiss()
+        }
+
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
+            if let url = info[.mediaURL] as? URL {
+                parent.onPick(url)
+            }
+            parent.presentationMode.wrappedValue.dismiss()
+        }
+    }
 }
 
 // MARK: - Video Row View

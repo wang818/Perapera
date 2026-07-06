@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PodcastView: View {
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 Image(systemName: "mic.fill")
                     .resizable()
