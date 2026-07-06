@@ -161,184 +161,13 @@ struct HomeView: View {
                     }
                 }
                 .sheet(isPresented: $showingSheet) {
-                    VStack(alignment: .leading) {
-                        Text("home_sheet_title".localized())
-                            .foregroundColor(.Ex.text1)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .padding(.top, 40)
-                            .padding(.leading, 25)
-                        Text("home_sheet_subtitle".localized())
-                            .foregroundColor(.Ex.text2)
-                            .font(.subheadline)
-                            .padding(.leading, 25)
-                            .padding(.bottom, 20)
-                        
-                        // 仅保留两个入口
-                        VStack(spacing: 14) {
-                            // YouTube 按钮 - 主题色高亮
-                            Button(action: {
-                                print("Item 1 tapped")
-                                showingSheet = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    showingYoutubeAlert = true
-                                }
-                            }) {
-                                HStack(spacing: 15) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.Ex.main.opacity(0.15))
-                                            .frame(width: 40, height: 40)
-                                        Image(systemName: "photo")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(Color.Ex.main)
-                                    }
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("home_sheet_list_title1".localized())
-                                            .font(.headline)
-                                            .foregroundColor(.Ex.text1)
-                                        Text("home_sheet_list_subtitle1".localized())
-                                            .font(.subheadline)
-                                            .foregroundColor(.Ex.text2)
-                                            .lineLimit(1)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(.Ex.text2)
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                                .background(Color.Ex.main.opacity(0.08))
-                                .cornerRadius(12)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
-                                )
-                            }
-                            .padding(.horizontal, 25)
-                            
-                            // 暂时只保留第一个和第四个入口，第二个和第三个先注释。
-//                            Button(action: {
-//                                print("Item 2 tapped")
-//                                showingSheet = false
-//                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-//                                    showingFileImporter = true
-//                                }
-//                            }) {
-//                                HStack(spacing: 15) {
-//                                    ZStack {
-//                                        RoundedRectangle(cornerRadius: 8)
-//                                            .fill(Color.Ex.main.opacity(0.15))
-//                                            .frame(width: 40, height: 40)
-//                                        Image(systemName: "mic")
-//                                            .resizable()
-//                                            .frame(width: 20, height: 20)
-//                                            .foregroundColor(Color.Ex.main)
-//                                    }
-//                                    VStack(alignment: .leading, spacing: 2) {
-//                                        Text("home_sheet_list_title2".localized())
-//                                            .font(.headline)
-//                                            .foregroundColor(.Ex.text1)
-//                                        Text("home_sheet_list_subtitle2".localized())
-//                                            .font(.subheadline)
-//                                            .foregroundColor(.Ex.text2)
-//                                            .lineLimit(1)
-//                                    }
-//                                    Spacer()
-//                                    Image(systemName: "chevron.right")
-//                                        .font(.caption)
-//                                        .foregroundColor(.Ex.text2)
-//                                }
-//                                .padding(.horizontal, 16)
-//                                .padding(.vertical, 12)
-//                                .background(Color.Ex.main.opacity(0.08))
-//                                .cornerRadius(12)
-//                                .overlay(
-//                                    RoundedRectangle(cornerRadius: 12)
-//                                        .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
-//                                )
-//                            }
-//                            .padding(.horizontal, 25)
-//
-//                            Button(action: {
-//                                print("Network Test tapped")
-//                                showingSheet = false
-//                                //viewModel.getZendeskNotice()
-//                            }) {
-//                                HStack(spacing: 15) {
-//                                    ZStack {
-//                                        RoundedRectangle(cornerRadius: 8)
-//                                            .fill(Color.gray.opacity(0.1))
-//                                            .frame(width: 40, height: 40)
-//                                        Image(systemName: "network")
-//                                            .resizable()
-//                                            .frame(width: 20, height: 20)
-//                                            .foregroundColor(.purple)
-//                                    }
-//                                    VStack(alignment: .leading, spacing: 2) {
-//                                        Text("Network Test")
-//                                            .font(.headline)
-//                                            .foregroundColor(.Ex.text1)
-//                                        Text("Check API connection")
-//                                            .font(.subheadline)
-//                                            .foregroundColor(.Ex.text2)
-//                                            .lineLimit(1)
-//                                    }
-//                                    Spacer()
-//                                    Image(systemName: "chevron.right")
-//                                        .font(.caption)
-//                                        .foregroundColor(.Ex.text2)
-//                                }
-//                                .padding(.horizontal, 16)
-//                                .padding(.vertical, 12)
-//                                .background(Color.Ex.bg2)
-//                                .cornerRadius(12)
-//                            }
-//                            .padding(.horizontal, 25)
-                            
-                            Button(action: {
-                                print("Item 3 tapped")
-                                showingSheet = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    showingPhotoPicker = true
-                                }
-                            }) {
-                                HStack(spacing: 15) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.gray.opacity(0.1))
-                                            .frame(width: 40, height: 40)
-                                        Image(systemName: "doc")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(.orange)
-                                    }
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("home_sheet_list_title3".localized())
-                                            .font(.headline)
-                                            .foregroundColor(.Ex.text1)
-                                        Text("home_sheet_list_subtitle3".localized())
-                                            .font(.subheadline)
-                                            .foregroundColor(.Ex.text2)
-                                            .lineLimit(1)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(.Ex.text2)
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                                .background(Color.Ex.bg2)
-                                .cornerRadius(12)
-                            }
-                            .padding(.horizontal, 25)
-                        }
+                    if #available(iOS 16.0, *) {
+                        addMenuSheetContent
+                            .presentationDetents([.height(240)])
+                            .presentationDragIndicator(.visible)
+                    } else {
+                        addMenuSheetContent
                     }
-                    .padding(.bottom, 24)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .fileImporter(
                     isPresented: $showingFileImporter,
@@ -523,6 +352,106 @@ struct HomeView: View {
                 )
             }
         }
+    }
+
+    private var addMenuSheetContent: some View {
+        VStack(alignment: .leading) {
+            Text("home_sheet_title".localized())
+                .foregroundColor(.Ex.text1)
+                .font(.title3)
+                .fontWeight(.bold)
+                .padding(.top, 22)
+                .padding(.leading, 22)
+            Text("home_sheet_subtitle".localized())
+                .foregroundColor(.Ex.text2)
+                .font(.subheadline)
+                .padding(.leading, 22)
+                .padding(.bottom, 14)
+
+            VStack(spacing: 10) {
+                Button(action: {
+                    print("Item 1 tapped")
+                    showingSheet = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        showingYoutubeAlert = true
+                    }
+                }) {
+                    HStack(spacing: 15) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.Ex.main.opacity(0.15))
+                                .frame(width: 38, height: 38)
+                            Image(systemName: "photo")
+                                .resizable()
+                                .frame(width: 18, height: 18)
+                                .foregroundColor(Color.Ex.main)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("home_sheet_list_title1".localized())
+                                .font(.headline)
+                                .foregroundColor(.Ex.text1)
+                            Text("home_sheet_list_subtitle1".localized())
+                                .font(.subheadline)
+                                .foregroundColor(.Ex.text2)
+                                .lineLimit(1)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.Ex.text2)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color.Ex.main.opacity(0.08))
+                    .cornerRadius(12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.Ex.main.opacity(0.3), lineWidth: 1)
+                    )
+                }
+                .padding(.horizontal, 22)
+
+                Button(action: {
+                    print("Item 3 tapped")
+                    showingSheet = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        showingPhotoPicker = true
+                    }
+                }) {
+                    HStack(spacing: 15) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.gray.opacity(0.1))
+                                .frame(width: 38, height: 38)
+                            Image(systemName: "doc")
+                                .resizable()
+                                .frame(width: 18, height: 18)
+                                .foregroundColor(.orange)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("home_sheet_list_title3".localized())
+                                .font(.headline)
+                                .foregroundColor(.Ex.text1)
+                            Text("home_sheet_list_subtitle3".localized())
+                                .font(.subheadline)
+                                .foregroundColor(.Ex.text2)
+                                .lineLimit(1)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.Ex.text2)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color.Ex.bg2)
+                    .cornerRadius(12)
+                }
+                .padding(.horizontal, 22)
+            }
+        }
+        .padding(.bottom, 18)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     // MARK: - Helper Methods
