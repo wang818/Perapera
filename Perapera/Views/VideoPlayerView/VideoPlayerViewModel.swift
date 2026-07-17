@@ -158,6 +158,11 @@ class VideoPlayerViewModel: ObservableObject {
         if let asrSubtitles = SubtitleManager.shared.loadSubtitlesFromASRFile(videoId: video.id) {
             subtitles = asrSubtitles
             print("✅ 从 ASR 文件加载字幕成功，共 \(subtitles.count) 条")
+            // 默认选中第一句
+            if !subtitles.isEmpty {
+                currentSubtitle = subtitles[0]
+                currentSubtitleIndex = 0
+            }
             return
         }
 
@@ -165,6 +170,10 @@ class VideoPlayerViewModel: ObservableObject {
         if let subtitleData = SubtitleManager.shared.loadSubtitles(for: video.id) {
             subtitles = subtitleData.subtitles
             print("✅ 从 UserDefaults 加载字幕成功，共 \(subtitles.count) 条")
+            if !subtitles.isEmpty {
+                currentSubtitle = subtitles[0]
+                currentSubtitleIndex = 0
+            }
         } else {
             print("📭 没有找到字幕数据")
             generateDefaultSubtitles()
@@ -185,19 +194,23 @@ class VideoPlayerViewModel: ObservableObject {
     // MARK: - 更新当前字幕
 
     private func updateCurrentSubtitle(at time: Double) {
-        guard let index = subtitles.firstIndex(where: { $0.isActive(at: time) }) else {
-            if currentSubtitle != nil {
-                currentSubtitle = nil
-                currentSubtitleIndex = -1
+        // 找当前时间匹配的字幕
+        if let index = subtitles.firstIndex(where: { $0.isActive(at: time) }) {
+            let newSubtitle = subtitles[index]
+            if newSubtitle.id != currentSubtitle?.id {
+                currentSubtitle = newSubtitle
+                currentSubtitleIndex = index
+                print("📝 字幕切换: [\(index + 1)/\(subtitles.count)] \(String(format: "%.1f", time))s")
             }
             return
         }
 
-        let newSubtitle = subtitles[index]
-        if newSubtitle.id != currentSubtitle?.id {
-            currentSubtitle = newSubtitle
-            currentSubtitleIndex = index
-            print("📝 字幕切换: [\(index + 1)/\(subtitles.count)] \(String(format: "%.1f", time))s")
+        // 没有活跃字幕时，找下一个即将播放的字幕（第一个 endTime > currentTime）
+        if let nextIndex = subtitles.firstIndex(where: { $0.endTime > time }) {
+            if currentSubtitleIndex != nextIndex {
+                currentSubtitle = subtitles[nextIndex]
+                currentSubtitleIndex = nextIndex
+            }
         }
     }
 

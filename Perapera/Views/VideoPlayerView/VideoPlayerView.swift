@@ -189,6 +189,13 @@ struct VideoPlayerView: View {
                 }
                 .padding(.horizontal, 16)
             }
+            .onAppear {
+                // 初始滚动到第一条字幕
+                let initialIndex = viewModel.currentSubtitleIndex
+                if initialIndex >= 0 {
+                    proxy.scrollTo(initialIndex, anchor: .center)
+                }
+            }
             .onChange(of: viewModel.currentSubtitleIndex) { newIndex in
                 guard newIndex >= 0 else { return }
                 if !viewModel.isSubtitlePinned {
@@ -468,9 +475,8 @@ struct WordWrapView: View {
     }
 
     private func isWordCurrent(_ word: WordTiming) -> Bool {
-        let absoluteStart = subtitleStartTime + word.startTime
-        let absoluteEnd = subtitleStartTime + word.endTime
-        return currentTime >= absoluteStart && currentTime <= absoluteEnd
+        // word.startTime/endTime 已经是绝对时间（秒），不需要再加 subtitleStartTime
+        return currentTime >= word.startTime && currentTime <= word.endTime
     }
 }
 
