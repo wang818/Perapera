@@ -72,8 +72,9 @@ struct VideoPlayerView: View {
 
                 // 播放/暂停按钮覆盖层（仅当 YouTube 播放器 ready 后显示）
                 if !viewModel.isLoading {
-                    Color.black.opacity(viewModel.isPlaying ? 0.001 : 0.3)
+                    (viewModel.isPlaying ? Color.clear : Color.black.opacity(0.3))
                         .onTapGesture { viewModel.togglePlayPause() }
+                        .animation(.none, value: viewModel.isPlaying)
                 }
 
                 // 大播放按钮（暂停状态时显示）
@@ -86,6 +87,7 @@ struct VideoPlayerView: View {
                             .background(Color.black.opacity(0.5))
                             .clipShape(Circle())
                     }
+                    .transition(.opacity)
                 }
 
             } else if let player = viewModel.player {
@@ -93,9 +95,10 @@ struct VideoPlayerView: View {
                 VideoPlayer(player: player)
                     .disabled(true)
 
-                // 播放/暂停按钮覆盖层
-                Color.black.opacity(viewModel.isPlaying ? 0.001 : 0.3)
+                // 播放/暂停按钮覆盖层（透明确保可点击暂停）
+                (viewModel.isPlaying ? Color.clear : Color.black.opacity(0.3))
                     .onTapGesture { viewModel.togglePlayPause() }
+                    .animation(.none, value: viewModel.isPlaying)
 
                 if !viewModel.isPlaying {
                     Button(action: { viewModel.togglePlayPause() }) {
@@ -106,6 +109,7 @@ struct VideoPlayerView: View {
                             .background(Color.black.opacity(0.5))
                             .clipShape(Circle())
                     }
+                    .transition(.opacity)
                 }
 
             } else {
@@ -370,7 +374,7 @@ struct SentenceCardView: View {
     }
 }
 
-// MARK: - 兼容旧系统的自动换行词组布局
+// MARK: - 自动换行词组布局（VStack + HStack，避免 alignment guide 导致的布局异常）
 struct WordWrapView: View {
     let words: [WordTiming]
     let isSentenceActive: Bool
@@ -380,39 +384,62 @@ struct WordWrapView: View {
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
 
     var body: some View {
+        // 在 GeometryReader 内计算每行能放多少个词，用 VStack+HStack 渲染
         GeometryReader { geometry in
-            self.generateContent(in: geometry)
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: contentHeight(for: UIScreen.main.bounds.width - 24))
-    }
-
-    private func generateContent(in geometry: GeometryProxy) -> some View {
-        var width = CGFloat.zero
-        var height = CGFloat.zero
-
-        return ZStack(alignment: .topLeading) {
-            ForEach(Array(words.enumerated()), id: \.offset) { _, word in
-                wordView(for: word)
-                    .padding(.trailing, 6)
-                    .padding(.bottom, 6)
-                    .alignmentGuide(.leading) { dimension in
-                        if width + dimension.width > geometry.size.width {
-                            width = 0
-                            height -= dimension.height
+            let rows = computeRows(availableWidth: geometry.size.width)
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    HStack(spacing: 6) {
+                        ForEach(Array(row.enumerated()), id: \.offset) { _, word in
+                            wordView(for: word)
                         }
-                        let result = width
-                        width += dimension.width
-                        return -result
                     }
-                    .alignmentGuide(.top) { _ in
-                        let result = height
-                        return result
-                    }
+                }
             }
         }
+        .frame(minHeight: estimatedTotalHeight(maxWidth: UIScreen.main.bounds.width - 56))
     }
 
+    // MARK: - 按可用宽度分行
+    private func computeRows(availableWidth: CGFloat) -> [[WordTiming]] {
+        var rows: [[WordTiming]] = []
+        var currentRow: [WordTiming] = []
+        var currentWidth: CGFloat = 0
+
+        for word in words {
+            let wordWidth = estimatedWordWidth(word) + 6 // trailing spacing
+            if currentWidth + wordWidth > availableWidth && !currentRow.isEmpty {
+                rows.append(currentRow)
+                currentRow = [word]
+                currentWidth = wordWidth
+            } else {
+                currentRow.append(word)
+                currentWidth += wordWidth
+            }
+        }
+        if !currentRow.isEmpty { rows.append(currentRow) }
+        return rows
+    }
+
+    private func estimatedWordWidth(_ word: WordTiming) -> CGFloat {
+        let original = word.word as NSString
+        let furigana = (word.furigana ?? " ") as NSString
+        let reading = (word.reading ?? " ") as NSString
+
+        let fSize = furigana.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
+        let oSize = original.size(withAttributes: [.font: UIFont.systemFont(ofSize: 20, weight: .medium)])
+        let rSize = reading.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
+
+        return ceil(max(fSize.width, oSize.width + 10, rSize.width))
+    }
+
+    private func estimatedTotalHeight(maxWidth: CGFloat) -> CGFloat {
+        let rows = computeRows(availableWidth: maxWidth)
+        let lineHeight: CGFloat = 64 // furigana(12) + word(28) + reading(12) + spacing
+        return CGFloat(rows.count) * lineHeight + CGFloat(max(0, rows.count - 1)) * 4
+    }
+
+    // MARK: - 单个词的 View
     private func wordView(for word: WordTiming) -> some View {
         let isWordActive = isSentenceActive && isWordCurrent(word)
 
@@ -437,49 +464,13 @@ struct WordWrapView: View {
                 .foregroundColor(Color.ex.text2)
                 .lineLimit(1)
         }
+        .fixedSize() // 防止单词被截断
     }
 
     private func isWordCurrent(_ word: WordTiming) -> Bool {
         let absoluteStart = subtitleStartTime + word.startTime
         let absoluteEnd = subtitleStartTime + word.endTime
         return currentTime >= absoluteStart && currentTime <= absoluteEnd
-    }
-
-    private func contentHeight(for availableWidth: CGFloat) -> CGFloat {
-        var currentLineWidth: CGFloat = 0
-        var currentLineHeight: CGFloat = 0
-        var totalHeight: CGFloat = 0
-
-        for word in words {
-            let size = estimatedWordSize(for: word)
-            let itemWidth = size.width + 6
-            let itemHeight = size.height + 6
-
-            if currentLineWidth + itemWidth > availableWidth && currentLineWidth > 0 {
-                totalHeight += currentLineHeight
-                currentLineWidth = 0
-                currentLineHeight = 0
-            }
-
-            currentLineWidth += itemWidth
-            currentLineHeight = max(currentLineHeight, itemHeight)
-        }
-
-        return max(totalHeight + currentLineHeight, 1)
-    }
-
-    private func estimatedWordSize(for word: WordTiming) -> CGSize {
-        let furigana = (word.furigana ?? " ") as NSString
-        let original = word.word as NSString
-        let reading = (word.reading ?? " ") as NSString
-
-        let furiganaSize = furigana.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
-        let originalSize = original.size(withAttributes: [.font: UIFont.systemFont(ofSize: 20, weight: .medium)])
-        let readingSize = reading.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
-
-        let width = max(furiganaSize.width, originalSize.width + 10, readingSize.width)
-        let height = furiganaSize.height + originalSize.height + readingSize.height + 6
-        return CGSize(width: ceil(width), height: ceil(height))
     }
 }
 

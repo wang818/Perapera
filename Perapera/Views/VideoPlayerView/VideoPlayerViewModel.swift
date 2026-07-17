@@ -210,8 +210,10 @@ class VideoPlayerViewModel: ObservableObject {
             guard let player = player else { return }
             if isPlaying {
                 player.pause()
+                isPlaying = false
             } else {
-                player.rate = playbackSpeed
+                player.play()
+                isPlaying = true
             }
         }
     }

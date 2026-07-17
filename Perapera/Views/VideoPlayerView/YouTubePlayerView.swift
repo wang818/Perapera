@@ -32,7 +32,13 @@ class YouTubePlayerController: NSObject, ObservableObject {
     }
 
     func togglePlayPause() {
-        if isPlaying { pause() } else { play() }
+        if isPlaying {
+            pause()
+            isPlaying = false
+        } else {
+            play()
+            isPlaying = true
+        }
     }
 
     func seek(to seconds: Double) {
