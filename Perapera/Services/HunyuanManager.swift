@@ -83,9 +83,18 @@ struct TranslationResponse: Codable {
 
 class HunyuanManager {
     static let shared = HunyuanManager()
-    
+
     private init() {}
-    
+
+    /// 共享的 URLSession（避免并发时创建大量临时 session）
+    private lazy var translationSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 120
+        config.timeoutIntervalForResource = 300
+        config.httpMaximumConnectionsPerHost = 10
+        return URLSession(configuration: config)
+    }()
+
     // MARK: - Translation Methods
     
     /// 翻译单词数组（公开方法）
@@ -242,71 +251,96 @@ class HunyuanManager {
             completion(.failure(NSError(domain: "HunyuanManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法解析 JSON 中的 ResultDetail 数组"])))
             return
         }
-        
+
         let targetLang = ASRConfig.translationLanguageName
         let totalSentences = resultDetail.count
-        print("📝 准备逐句翻译 \(totalSentences) 条记录到\(targetLang)...")
-        
-        // 2. 逐句翻译
-        var currentIndex = 0
-        
-        func translateNextSentence() {
-            guard currentIndex < resultDetail.count else {
-                // 所有句子翻译完成，组装最终 JSON
-                data["ResultDetail"] = resultDetail
-                response["Data"] = data
-                jsonObject["Response"] = response
-                
-                guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+        print("📝 准备并发翻译 \(totalSentences) 条记录到\(targetLang)（最大 8 并发）...")
+
+        // 2. 并发翻译
+        let maxConcurrency = 8
+        let semaphore = DispatchSemaphore(value: maxConcurrency)
+        let group = DispatchGroup()
+        let writeQueue = DispatchQueue(label: "com.perapera.translation.write")
+        let progressLock = NSLock()
+        var completedCount = 0
+        var hadErrors = false
+
+        for index in 0..<totalSentences {
+            let detail = resultDetail[index]
+            guard let words = detail["Words"] as? [[String: Any]], !words.isEmpty else {
+                // 句子没有词，直接跳过（同时也推进进度）
+                progressLock.lock()
+                completedCount += 1
+                let cnt = completedCount
+                progressLock.unlock()
+                progress?(cnt, totalSentences, 0)
+                continue
+            }
+
+            let wordValues = words.compactMap { $0["Word"] as? String }
+            let sentenceIndex = index
+
+            group.enter()
+            semaphore.wait()
+
+            translateSentenceWords(wordValues) { [weak self] result in
+                guard let self = self else {
+                    semaphore.signal()
+                    group.leave()
                     return
                 }
-                
-                print("✅ 所有 \(totalSentences) 条记录翻译完成")
-                completion(.success(finalData))
-                return
-            }
-            
-            var detail = resultDetail[currentIndex]
-            guard let words = detail["Words"] as? [[String: Any]], !words.isEmpty else {
-                currentIndex += 1
-                translateNextSentence()
-                return
-            }
-            
-            let wordValues = words.compactMap { $0["Word"] as? String }
-            let sentenceIndex = currentIndex
-            
-            print("📦 翻译第 \(sentenceIndex + 1)/\(totalSentences) 句，共 \(wordValues.count) 个词...")
-            progress?(sentenceIndex + 1, totalSentences, wordValues.count)
 
-            // 调用 API 翻译这一句的所有词
-            translateSentenceWords(wordValues) { result in
                 switch result {
                 case .success(let wordResults):
-                    // 将翻译结果写回 Words 数组的每个元素
-                    var updatedWords = words
-                    for (i, wordResult) in wordResults.enumerated() {
-                        guard i < updatedWords.count else { break }
-                        updatedWords[i]["Translation"] = wordResult.translation
-                        updatedWords[i]["Reading"] = wordResult.reading
-                        updatedWords[i]["Furigana"] = wordResult.furigana
+                    // 同步写入避免竞态（写入很快，不阻塞）
+                    writeQueue.sync {
+                        var updatedWords = words
+                        for (i, wordResult) in wordResults.enumerated() {
+                            guard i < updatedWords.count else { break }
+                            updatedWords[i]["Translation"] = wordResult.translation
+                            updatedWords[i]["Reading"] = wordResult.reading
+                            updatedWords[i]["Furigana"] = wordResult.furigana
+                        }
+                        var updatedDetail = detail
+                        updatedDetail["Words"] = updatedWords
+                        resultDetail[sentenceIndex] = updatedDetail
                     }
-                    detail["Words"] = updatedWords
-                    resultDetail[sentenceIndex] = detail
-                    
-                    print("  ✅ 第 \(sentenceIndex + 1) 句翻译完成")
-                    
+                    print("  ✅ 第 \(sentenceIndex + 1)/\(totalSentences) 句翻译完成")
+
                 case .failure(let error):
-                    print("  ⚠️ 第 \(sentenceIndex + 1) 句翻译失败: \(error.localizedDescription)，跳过")
+                    print("  ⚠️ 第 \(sentenceIndex + 1)/\(totalSentences) 句翻译失败: \(error.localizedDescription)，跳过")
+                    hadErrors = true
                 }
-                
-                currentIndex += 1
-                translateNextSentence()
+
+                progressLock.lock()
+                completedCount += 1
+                let cnt = completedCount
+                progressLock.unlock()
+                progress?(cnt, totalSentences, wordValues.count)
+
+                semaphore.signal()
+                group.leave()
             }
         }
-        
-        translateNextSentence()
+
+        // 3. 所有翻译完成后组装最终 JSON
+        group.notify(queue: .global()) {
+            if hadErrors {
+                print("⚠️ 部分句子翻译失败，继续保存已翻译的内容")
+            }
+
+            data["ResultDetail"] = resultDetail
+            response["Data"] = data
+            jsonObject["Response"] = response
+
+            guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+                completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+                return
+            }
+
+            print("✅ 所有 \(totalSentences) 条记录翻译完成（并发模式）")
+            completion(.success(finalData))
+        }
     }
     
     // MARK: - 翻译单句的所有词（返回翻译 + 读音）
@@ -367,12 +401,7 @@ class HunyuanManager {
 
         print("🚀 TokenHub 翻译请求: \(words.count) 个词, model=\(HunyuanConfig.defaultModel)")
 
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 120
-        configuration.timeoutIntervalForResource = 300
-        let session = URLSession(configuration: configuration)
-
-        let task = session.dataTask(with: request) { data, response, error in
+        let task = translationSession.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
