@@ -33,6 +33,7 @@
 		EC7FEF2E2F4D58150007BCA6 /* ASRConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF222F4D58150007BCA6 /* ASRConfig.swift */; };
 		EC7FEF302F4D59B10007BCA6 /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF2F2F4D59B10007BCA6 /* COSConfig.local.swift */; };
 		EC7FEF322F4D59C80007BCA6 /* HunyuanConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF312F4D59C80007BCA6 /* HunyuanConfig.local.swift */; };
+		EC7FEF342F6000010007BCA6 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF332F6000010007BCA6 /* PurchaseManager.swift */; };
 		ECACBE702EF937930090F990 /* PodcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6E2EF937930090F990 /* PodcastView.swift */; };
 		ECACBE712EF937930090F990 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6D2EF937930090F990 /* HomeView.swift */; };
 		ECACBE722EF937930090F990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE6F2EF937930090F990 /* SettingsView.swift */; };
@@ -107,6 +108,7 @@
 		EC7FEF272F4D58150007BCA6 /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanManager.swift; sourceTree = "<group>"; };
 		EC7FEF2F2F4D59B10007BCA6 /* COSConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COSConfig.local.swift; sourceTree = "<group>"; };
 		EC7FEF312F4D59C80007BCA6 /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanConfig.local.swift; sourceTree = "<group>"; };
+		EC7FEF332F6000010007BCA6 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		ECACBE6D2EF937930090F990 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		ECACBE6E2EF937930090F990 /* PodcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastView.swift; sourceTree = "<group>"; };
 		ECACBE6F2EF937930090F990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 		EC7FEF282F4D58150007BCA6 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EC7FEF332F6000010007BCA6 /* PurchaseManager.swift */,
 				EC7FEF312F4D59C80007BCA6 /* HunyuanConfig.local.swift */,
 				EC7FEF2F2F4D59B10007BCA6 /* COSConfig.local.swift */,
 				EC7FEF222F4D58150007BCA6 /* ASRConfig.swift */,
@@ -632,6 +635,7 @@
 				EC7FEF2A2F4D58150007BCA6 /* ASRManager.swift in Sources */,
 				EC7FEF2B2F4D58150007BCA6 /* COSUploadManager.swift in Sources */,
 				EC7FEF2C2F4D58150007BCA6 /* HunyuanConfig.swift in Sources */,
+				EC7FEF342F6000010007BCA6 /* PurchaseManager.swift in Sources */,
 				184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */,
 				EC7FEF2D2F4D58150007BCA6 /* COSConfig.swift in Sources */,
 				EC7FEF2E2F4D58150007BCA6 /* ASRConfig.swift in Sources */,
@@ -834,7 +838,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2026.07.15;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
@@ -854,7 +858,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perapera.ai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -870,7 +874,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2026.07.15;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
@@ -890,7 +894,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perapera.ai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

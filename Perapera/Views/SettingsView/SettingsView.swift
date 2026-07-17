@@ -22,6 +22,7 @@ class SettingsViewModel: ObservableObject {
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @ObservedObject private var userManager = UserManager.shared
+    @ObservedObject private var purchaseManager = PurchaseManager.shared
     @State private var showingLoginView = false
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
@@ -92,7 +93,7 @@ struct SettingsView: View {
                             Text("settings_pro_title".localized())
                                 .font(.headline)
                                 .foregroundColor(.Ex.text1)
-                            Text("settings_pro_subtitle".localized())
+                            Text(purchaseManager.currentPlanDisplayName ?? "settings_pro_subtitle".localized())
                                 .font(.subheadline)
                                 .foregroundColor(.Ex.text2)
                         }
@@ -167,6 +168,8 @@ struct SettingsView: View {
             )
             .onAppear {
                 viewModel.fetchSupportLanguages()
+                purchaseManager.loadProducts()
+                purchaseManager.refreshEntitlements()
             }
             .fullScreenCover(isPresented: $showingLoginView) {
                 LoginView()

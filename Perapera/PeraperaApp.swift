@@ -14,6 +14,9 @@ struct PeraperaApp: App {
         #if DEBUG
         COSConfig.setupLocalCredentials()
         #endif
+
+        // 提前初始化内购状态，保证设置页和购买页打开时可以直接拿到本地权益。
+        _ = PurchaseManager.shared
     }
 
     var body: some Scene {

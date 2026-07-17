@@ -1,28 +1,25 @@
-//
-//  PurchaseView.swift
-//  Perapera
-//
-//  Created by Perapera on 2024.
-//
-
 import SwiftUI
+import UIKit
 
 struct PlanModel: Identifiable {
-    let id = UUID()
-    let title: String
-    let price: String
+    let id: String
+    let fallbackTitle: String
+    let fallbackPrice: String
     let features: [String]
     let subTitle: String?
     let tag: String?
 }
+
 struct PurchaseView: View {
-    @Environment(\.dismiss) var dismiss
-    @State private var selectedPlanIndex = 1 // Default to Yearly
-    
-    let plans: [PlanModel] = [
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var purchaseManager = PurchaseManager.shared
+    @State private var selectedProductID = PurchaseManager.proYearlyProductID
+
+    private let plans: [PlanModel] = [
         PlanModel(
-            title: "purchase_plan_monthly_pro_title".localized(),
-            price: "purchase_plan_monthly_pro_price".localized(),
+            id: PurchaseManager.proMonthlyProductID,
+            fallbackTitle: "purchase_plan_monthly_pro_title".localized(),
+            fallbackPrice: "purchase_plan_monthly_pro_price".localized(),
             features: [
                 "purchase_feature_transcription_30".localized(),
                 "purchase_feature_explanation_unlimited".localized(),
@@ -32,8 +29,9 @@ struct PurchaseView: View {
             tag: nil
         ),
         PlanModel(
-            title: "purchase_plan_yearly_pro_title".localized(),
-            price: "purchase_plan_yearly_pro_price".localized(),
+            id: PurchaseManager.proYearlyProductID,
+            fallbackTitle: "purchase_plan_yearly_pro_title".localized(),
+            fallbackPrice: "purchase_plan_yearly_pro_price".localized(),
             features: [
                 "purchase_feature_transcription_30".localized(),
                 "purchase_feature_explanation_unlimited".localized(),
@@ -43,8 +41,9 @@ struct PurchaseView: View {
             tag: "purchase_plan_yearly_pro_tag".localized()
         ),
         PlanModel(
-            title: "purchase_plan_monthly_basic_title".localized(),
-            price: "purchase_plan_monthly_basic_price".localized(),
+            id: PurchaseManager.basicMonthlyProductID,
+            fallbackTitle: "purchase_plan_monthly_basic_title".localized(),
+            fallbackPrice: "purchase_plan_monthly_basic_price".localized(),
             features: [
                 "purchase_feature_transcription_3".localized(),
                 "purchase_feature_explanation_limited".localized(),
@@ -54,11 +53,34 @@ struct PurchaseView: View {
             tag: nil
         )
     ]
-    
+
+    private var selectedPlan: PlanModel? {
+        plans.first(where: { $0.id == selectedProductID })
+    }
+
+    private var actionButtonTitle: String {
+        if purchaseManager.currentProductID == selectedProductID {
+            return "Current Plan"
+        }
+        return "purchase_subscribe_now".localized()
+    }
+
+    private var statusText: String? {
+        purchaseManager.lastError ?? purchaseManager.lastMessage
+    }
+
+    private var statusColor: Color {
+        purchaseManager.lastError == nil ? .green : .red
+    }
+
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
+                    if let currentPlanName = purchaseManager.currentPlanDisplayName {
+                        currentPlanBanner(planName: currentPlanName)
+                    }
+
                     VStack(spacing: 20) {
                         FeatureRow(
                             icon: "text.book.closed",
@@ -82,40 +104,73 @@ struct PurchaseView: View {
                     .padding(.vertical)
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("purchase_choose_plan".localized())
-                            .font(.headline)
-                            .padding(.horizontal)
+                        HStack {
+                            Text("purchase_choose_plan".localized())
+                                .font(.headline)
+                            Spacer()
+                            if purchaseManager.isLoadingProducts {
+                                ProgressView()
+                                    .scaleEffect(0.9)
+                            }
+                        }
+                        .padding(.horizontal)
 
-                        ForEach(0..<plans.count, id: \.self) { index in
-                            PlanRow(plan: plans[index], isSelected: selectedPlanIndex == index)
-                                .onTapGesture {
-                                    selectedPlanIndex = index
-                                }
+                        ForEach(plans) { plan in
+                            PlanRow(
+                                plan: plan,
+                                productInfo: purchaseManager.productsByID[plan.id],
+                                isSelected: selectedProductID == plan.id,
+                                isCurrentPlan: purchaseManager.currentProductID == plan.id
+                            )
+                            .onTapGesture {
+                                selectedProductID = plan.id
+                                purchaseManager.clearMessages()
+                            }
                         }
                     }
 
                     Button(action: {
-                        // Purchase action
+                        guard purchaseManager.currentProductID != selectedProductID else { return }
+                        purchaseManager.purchase(productID: selectedProductID)
                     }) {
-                        Text("purchase_subscribe_now".localized())
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.ex.main)
-                            .cornerRadius(12)
+                        HStack(spacing: 8) {
+                            if purchaseManager.isProcessingPurchase {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            }
+                            Text(actionButtonTitle)
+                                .font(.headline)
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(purchaseManager.currentProductID == selectedProductID ? Color.gray : Color.ex.main)
+                        .cornerRadius(12)
                     }
+                    .disabled(purchaseManager.isProcessingPurchase || purchaseManager.currentProductID == selectedProductID || selectedPlan == nil)
                     .padding(.horizontal)
                     .padding(.top, 10)
 
+                    if let statusText = statusText {
+                        Text(statusText)
+                            .font(.footnote)
+                            .foregroundColor(statusColor)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 24)
+                    }
+
                     HStack(spacing: 20) {
-                        Button(action: {}) {
+                        Button(action: {
+                            openURL("https://www.perapera.cc/privacy")
+                        }) {
                             Text("purchase_privacy_policy".localized())
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
 
-                        Button(action: {}) {
+                        Button(action: {
+                            openURL("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
+                        }) {
                             Text("purchase_terms_of_use".localized())
                                 .font(.caption)
                                 .foregroundColor(.gray)
@@ -139,15 +194,49 @@ struct PurchaseView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Restore purchase action
+                        purchaseManager.restorePurchases()
                     }) {
                         Text("purchase_restore".localized())
                             .font(.subheadline)
                             .foregroundColor(.primary)
                     }
+                    .disabled(purchaseManager.isProcessingPurchase)
+                }
+            }
+            .onAppear {
+                purchaseManager.loadProducts()
+                purchaseManager.refreshEntitlements()
+                if selectedPlan == nil, let firstPlan = plans.first {
+                    selectedProductID = firstPlan.id
                 }
             }
         }
+    }
+
+    private func currentPlanBanner(planName: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.seal.fill")
+                .foregroundColor(.green)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Active Plan")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text(planName)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+            }
+            Spacer()
+        }
+        .padding()
+        .background(Color.green.opacity(0.08))
+        .cornerRadius(12)
+        .padding(.horizontal)
+        .padding(.top, 12)
+    }
+
+    private func openURL(_ urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        UIApplication.shared.open(url)
     }
 }
 
@@ -181,7 +270,9 @@ struct FeatureRow: View {
 
 struct PlanRow: View {
     let plan: PlanModel
+    let productInfo: StoreProductInfo?
     let isSelected: Bool
+    let isCurrentPlan: Bool
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -190,7 +281,7 @@ struct PlanRow: View {
                     Image(systemName: isSelected ? "circle.inset.filled" : "circle")
                         .foregroundColor(isSelected ? .black : .gray)
                     
-                    Text(plan.title)
+                    Text(productInfo?.displayName ?? plan.fallbackTitle)
                         .font(.headline)
                     
                     if let tag = plan.tag {
@@ -203,13 +294,28 @@ struct PlanRow: View {
                             .background(Color.black)
                             .cornerRadius(4)
                     }
+
+                    if isCurrentPlan {
+                        Text("Active")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.green)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.12))
+                            .cornerRadius(4)
+                    }
                     
                     Spacer()
                     
                     VStack(alignment: .trailing) {
-                        Text(plan.price)
+                        Text(productInfo?.displayPrice ?? plan.fallbackPrice)
                             .font(.headline)
-                        if let sub = plan.subTitle {
+                        if let period = productInfo?.subscriptionPeriodText {
+                            Text(period)
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        } else if let sub = plan.subTitle {
                             Text(sub)
                                 .font(.caption)
                                 .foregroundColor(.gray)
