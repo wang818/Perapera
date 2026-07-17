@@ -137,3 +137,11 @@
 "settings_subtitle_pinyin_subtitle" = "在上方显示拼音";
 "settings_subtitle_chinese_char_title" = "中文字符";
 "settings_subtitle_chinese_char_subtitle" = "调整繁简显示偏好";
+
+// Cloud Provider
+"cloud_provider_title" = "云服务提供商";
+"cloud_provider_subtitle" = "选择云服务提供商";
+"cloud_provider_tencent" = "腾讯云";
+"cloud_provider_aliyun" = "阿里云";
+"cloud_provider_tencent_desc" = "腾讯云 ASR + COS + 混元大模型";
+"cloud_provider_aliyun_desc" = "阿里云 fun-asr + 腾讯混元翻译";

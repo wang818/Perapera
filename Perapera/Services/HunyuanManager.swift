@@ -10,36 +10,61 @@ import CommonCrypto
 
 // MARK: - Response Models
 
+/// TokenHub / OpenAI 兼容响应模型
+struct OpenAIChatResponse: Codable {
+    let id: String?
+    let object: String?
+    let choices: [OpenAIChoice]?
+    let error: OpenAIErrorInfo?
+
+    struct OpenAIChoice: Codable {
+        let message: OpenAIMessage?
+        let finish_reason: String?
+    }
+
+    struct OpenAIMessage: Codable {
+        let role: String?
+        let content: String?
+    }
+
+    struct OpenAIErrorInfo: Codable {
+        let message: String
+        let type: String?
+        let code: String?
+    }
+}
+
+/// 旧版腾讯云混元响应模型（保留兼容）
 struct HunyuanChatResponse: Codable {
     let Response: ResponseData
-    
+
     struct ResponseData: Codable {
-        let RequestId: String
+        let RequestId: String?
         let Choices: [Choice]?
         let Created: Int?
         let Usage: Usage?
         let Error: ErrorInfo?
     }
-    
+
     struct Choice: Codable {
-        let Message: Message
+        let Message: Message?
         let FinishReason: String?
     }
-    
+
     struct Message: Codable {
-        let Role: String
-        let Content: String
+        let Role: String?
+        let Content: String?
     }
-    
+
     struct Usage: Codable {
-        let PromptTokens: Int
-        let CompletionTokens: Int
-        let TotalTokens: Int
+        let PromptTokens: Int?
+        let CompletionTokens: Int?
+        let TotalTokens: Int?
     }
-    
+
     struct ErrorInfo: Codable {
-        let Code: String
-        let Message: String
+        let Code: String?
+        let Message: String?
     }
 }
 
@@ -126,96 +151,79 @@ class HunyuanManager {
             completion(.failure(NSError(domain: "HunyuanManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
             return
         }
-        
-        let timestamp = Int(Date().timeIntervalSince1970)
-        
-        // 构建提示词
+
+        let apiKey = HunyuanConfig.apiKey
+        guard !apiKey.isEmpty else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -9, userInfo: [NSLocalizedDescriptionKey: "TokenHub API Key 未配置"])))
+            return
+        }
+
         let prompt = """
         请将以下中文文本翻译成\(targetLanguage)，保持原文的语气和含义，只返回翻译结果，不要添加任何解释或额外内容。
-        
+
         原文：
         \(text)
         """
-        
-        // 构建请求体
+
+        // OpenAI 兼容格式
         let requestBody: [String: Any] = [
-            "Model": HunyuanConfig.defaultModel,
-            "Messages": [
-                [
-                    "Role": "user",
-                    "Content": prompt
-                ]
-            ],
-            "Temperature": 0.3,
-            "TopP": 1.0
+            "model": HunyuanConfig.defaultModel,
+            "messages": [["role": "user", "content": prompt]],
+            "temperature": 0.3,
+            "top_p": 1.0
         ]
-        
+
         guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
             return
         }
-        
-        // 创建请求
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
-        request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
-        request.setValue("\(timestamp)", forHTTPHeaderField: "X-TC-Timestamp")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
-        
-        // 生成签名
-        let signature = generateSignature(
-            action: "ChatCompletions",
-            timestamp: timestamp,
-            body: String(data: jsonData, encoding: .utf8) ?? ""
-        )
-        request.setValue(signature, forHTTPHeaderField: "Authorization")
-        
-        print("🚀 发送文本翻译请求到混元 API...")
+
+        print("🚀 发送文本翻译请求到 TokenHub API...")
         print("📝 原文长度: \(text.count) 字符")
-        
-        // 发送请求
+
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            
+
             guard let data = data else {
                 completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
                 return
             }
-            
-            // 打印原始响应（用于调试）
+
             if let responseString = String(data: data, encoding: .utf8) {
-                print("📥 API 响应: \(responseString)")
+                print("📥 API 响应: \(responseString.prefix(500))")
             }
-            
-            // 解析响应
+
             do {
-                let chatResponse = try JSONDecoder().decode(HunyuanChatResponse.self, from: data)
-                
-                // 检查是否有错误
-                if let error = chatResponse.Response.Error {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(error.Message) (Code: \(error.Code))"])))
+                let chatResponse = try JSONDecoder().decode(OpenAIChatResponse.self, from: data)
+
+                if let apiError = chatResponse.error {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.message)"])))
                     return
                 }
-                
-                guard let content = chatResponse.Response.Choices?.first?.Message.Content else {
+
+                guard let content = chatResponse.choices?.first?.message?.content else {
                     completion(.failure(NSError(domain: "HunyuanManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
                     return
                 }
-                
+
                 print("✅ 翻译成功")
                 completion(.success(content))
-                
+
             } catch {
                 print("❌ JSON 解析失败: \(error)")
                 completion(.failure(error))
             }
         }
-        
+
         task.resume()
     }
     
@@ -314,90 +322,96 @@ class HunyuanManager {
             completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
             return
         }
-        
-        let timestamp = Int(Date().timeIntervalSince1970)
+
+        let apiKey = HunyuanConfig.apiKey
+        guard !apiKey.isEmpty else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -9, userInfo: [NSLocalizedDescriptionKey: "TokenHub API Key 未配置，请在 HunyuanConfig.local.swift 中设置 _localApiKey"])))
+            return
+        }
+
         let targetLang = ASRConfig.translationLanguageName
-        
+
         let wordsJSON = words.map { "\"\($0)\"" }.joined(separator: ", ")
         let prompt = """
         请将以下日语单词翻译成\(targetLang)，并给出每个日语单词的假名（furigana）和罗马音（romaji）读音。
         保持原有的顺序，数量必须与输入完全一致（\(words.count)个）。
         标点符号的翻译、假名和读音都保持原样。
-        
+
         输入单词数组：[\(wordsJSON)]
-        
+
         请严格以 JSON 格式返回，格式如下：
         {"results": [{"t": "翻译", "f": "ふりがな", "r": "romaji"}, ...]}
-        
+
         注意：results 数组长度必须是 \(words.count)。
         """
-        
+
+        // OpenAI 兼容格式（小写 key）
         let requestBody: [String: Any] = [
-            "Model": HunyuanConfig.defaultModel,
-            "Messages": [["Role": "user", "Content": prompt]],
-            "Temperature": 0.3,
-            "TopP": 1.0
+            "model": HunyuanConfig.defaultModel,
+            "messages": [["role": "user", "content": prompt]],
+            "temperature": 0.3,
+            "top_p": 1.0
         ]
-        
+
         guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
             return
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.timeoutInterval = 120
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        request.setValue(HunyuanConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
-        request.setValue("ChatCompletions", forHTTPHeaderField: "X-TC-Action")
-        request.setValue("\(timestamp)", forHTTPHeaderField: "X-TC-Timestamp")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
-        
-        let signature = generateSignature(
-            action: "ChatCompletions",
-            timestamp: timestamp,
-            body: String(data: jsonData, encoding: .utf8) ?? ""
-        )
-        request.setValue(signature, forHTTPHeaderField: "Authorization")
-        
+
+        print("🚀 TokenHub 翻译请求: \(words.count) 个词, model=\(HunyuanConfig.defaultModel)")
+
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 120
         configuration.timeoutIntervalForResource = 300
         let session = URLSession(configuration: configuration)
-        
+
         let task = session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            
+
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
             guard let data = data else {
                 completion(.failure(NSError(domain: "HunyuanManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
                 return
             }
-            
+
+            // 打印原始响应用于调试
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📥 TokenHub 响应 HTTP \(statusCode): \(responseString.prefix(500))")
+            }
+
             do {
-                let chatResponse = try JSONDecoder().decode(HunyuanChatResponse.self, from: data)
-                
-                if let apiError = chatResponse.Response.Error {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.Message)"])))
+                let chatResponse = try JSONDecoder().decode(OpenAIChatResponse.self, from: data)
+
+                // 检查 OpenAI 格式错误
+                if let apiError = chatResponse.error {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.message)"])))
                     return
                 }
-                
-                guard let content = chatResponse.Response.Choices?.first?.Message.Content else {
+
+                guard let content = chatResponse.choices?.first?.message?.content else {
                     completion(.failure(NSError(domain: "HunyuanManager", code: -7, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
                     return
                 }
-                
+
                 let results = self.extractWordTranslationResults(from: content, expectedCount: words.count)
                 completion(.success(results))
-                
+
             } catch {
                 print("❌ JSON 解析失败: \(error)")
                 completion(.failure(error))
             }
         }
-        
+
         task.resume()
     }
     
@@ -450,7 +464,6 @@ class HunyuanManager {
     
     /// 调用混元 API 翻译单词数组（公开方法，用于简单翻译场景）
     private func translateWordsInternal(_ words: [String], completion: @escaping (Result<[String], Error>) -> Void) {
-        let targetLang = ASRConfig.translationLanguageName
         translateSentenceWords(words) { result in
             switch result {
             case .success(let wordResults):

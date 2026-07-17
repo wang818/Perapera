@@ -73,10 +73,10 @@ struct ASRResultResponse: Codable {
     }
 }
 
-class ASRManager: NSObject {
-    
+class ASRManager: NSObject, ASRServiceProtocol {
+
     static let shared = ASRManager()
-    
+
     private override init() {
         super.init()
     }
@@ -201,10 +201,10 @@ class ASRManager: NSObject {
     /// 查询识别结果
     /// - Parameters:
     ///   - taskId: 任务 ID
-    ///   - completion: 完成回调，返回原始 JSON Data 和解析后的结果
+    ///   - completion: 完成回调，返回统一的 ASRTaskResult
     func queryRecognitionResult(
         taskId: Int,
-        completion: @escaping (Result<(taskResult: ASRResultResponse.TaskResult, rawJSON: Data), Error>) -> Void
+        completion: @escaping (Result<ASRTaskResult, Error>) -> Void
     ) {
         let timestamp = Int(Date().timeIntervalSince1970)
         
@@ -264,8 +264,9 @@ class ASRManager: NSObject {
                         if let error = result.Response.Error {
                             completion(.failure(NSError(domain: "ASRManager", code: -3, userInfo: [NSLocalizedDescriptionKey: error.Message])))
                         } else if let taskResult = result.Response.Data {
-                            // 返回解析后的结果和原始 JSON 数据
-                            completion(.success((taskResult: taskResult, rawJSON: data)))
+                            // 映射为统一的 ASRTaskResult
+                            let sharedResult = ASRManager.mapToSharedResult(taskResult: taskResult, rawJSON: data)
+                            completion(.success(sharedResult))
                         } else {
                             completion(.failure(NSError(domain: "ASRManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "未返回任务结果"])))
                         }
@@ -399,5 +400,47 @@ class ASRManager: NSObject {
     private func hmacSHA256Hex(key: Data, data: String) -> String {
         let result = hmacSHA256(key: key, data: data)
         return result.map { String(format: "%02x", $0) }.joined()
+    }
+
+    // MARK: - Mapping
+
+    /// 将腾讯云 ASR 响应映射为统一的 ASRTaskResult
+    static func mapToSharedResult(
+        taskResult: ASRResultResponse.TaskResult,
+        rawJSON: Data
+    ) -> ASRTaskResult {
+        let sentences = taskResult.ResultDetail?.map { detail in
+            ASRSentenceItem(
+                FinalSentence: detail.FinalSentence,
+                SliceSentence: detail.SliceSentence,
+                WrittenText: detail.WrittenText,
+                StartMs: detail.StartMs,
+                EndMs: detail.EndMs,
+                SpeechSpeed: detail.SpeechSpeed,
+                WordsNum: detail.WordsNum,
+                Words: detail.Words?.map { word in
+                    ASRWordItem(
+                        Word: word.Word,
+                        OffsetStartMs: word.OffsetStartMs,
+                        OffsetEndMs: word.OffsetEndMs
+                    )
+                },
+                SpeakerId: detail.SpeakerId,
+                EmotionalEnergy: detail.EmotionalEnergy,
+                SilenceTime: detail.SilenceTime,
+                EmotionType: detail.EmotionType
+            )
+        }
+
+        return ASRTaskResult(
+            taskId: taskResult.TaskId,
+            status: taskResult.Status,
+            statusStr: taskResult.StatusStr,
+            result: taskResult.Result,
+            resultDetail: sentences,
+            audioDuration: taskResult.AudioDuration,
+            errorMsg: taskResult.ErrorMsg,
+            rawJSON: rawJSON
+        )
     }
 }

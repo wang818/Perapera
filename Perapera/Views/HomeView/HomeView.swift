@@ -464,24 +464,24 @@ struct HomeView: View {
     
     /// 输出 videos 变量信息到控制台
     private func printVideosInfo() {
-        print("\n" + String(repeating: "=", count: 70))
-        print("📹 当前视频列表 (共 \(videos.count) 个)")
-        print(String(repeating: "=", count: 70))
+//        print("\n" + String(repeating: "=", count: 70))
+//        print("📹 当前视频列表 (共 \(videos.count) 个)")
+//        print(String(repeating: "=", count: 70))
         
         if videos.isEmpty {
             print("📭 列表为空")
         } else {
             for (index, video) in videos.enumerated() {
-                print("\n[\(index + 1)] 视频信息:")
-                print("  🆔 ID: \(video.id)")
-                print("  📝 名称: \(video.name)")
-                print("  🎬 视频路径: \(video.videoURL)")
-                
-                print("  🕐 创建时间: \(formatDateForConsole(video.createdAt))")
+//                print("\n[\(index + 1)] 视频信息:")
+//                print("  🆔 ID: \(video.id)")
+//                print("  📝 名称: \(video.name)")
+//                print("  🎬 视频路径: \(video.videoURL)")
+//                
+//                print("  🕐 创建时间: \(formatDateForConsole(video.createdAt))")
                 
                 if let posterImage = video.posterImage {
                     let size = posterImage.size
-                    print("  🖼️  海报图: 有 (\(Int(size.width))x\(Int(size.height)))")
+//                    print("  🖼️  海报图: 有 (\(Int(size.width))x\(Int(size.height)))")
                 } else {
                     print("  🖼️  海报图: 无")
                 }
@@ -494,12 +494,12 @@ struct HomeView: View {
                 }
                 
                 // 检查文件状态
-                print("  📊 文件状态:")
-                print("    🎵 音频文件: \(video.hasAudio ? "✅ 已转换" : "❌ 未转换") - \(video.audioURL.path)")
-                print("    📝 识别结果: \(video.hasRecognition ? "✅ 已识别" : "❌ 未识别") - \(video.recognitionURL.path)")
-                print("    🌐 翻译结果: \(video.hasTranslation ? "✅ 已翻译" : "❌ 未翻译") - \(video.translationURL.path)")
-                
-                print("  " + String(repeating: "-", count: 66))
+//                print("  📊 文件状态:")
+//                print("    🎵 音频文件: \(video.hasAudio ? "✅ 已转换" : "❌ 未转换") - \(video.audioURL.path)")
+//                print("    📝 识别结果: \(video.hasRecognition ? "✅ 已识别" : "❌ 未识别") - \(video.recognitionURL.path)")
+//                print("    🌐 翻译结果: \(video.hasTranslation ? "✅ 已翻译" : "❌ 未翻译") - \(video.translationURL.path)")
+//                
+//                print("  " + String(repeating: "-", count: 66))
             }
         }
         
@@ -640,7 +640,8 @@ struct HomeView: View {
         isRecognizing = true
         currentRecognizingVideoId = videoId
 
-        ASRManager.shared.createRecognitionTask(audioURL: cosAudioURL) { result in
+        let asrService = ASRManagerFactory.shared.getService()
+        asrService.createRecognitionTask(audioURL: cosAudioURL) { result in
             switch result {
             case .success(let taskId):
                 print("✅ ASR 任务创建成功，TaskId: \(taskId)")
@@ -900,35 +901,36 @@ struct HomeView: View {
             return
         }
         
-        ASRManager.shared.queryRecognitionResult(taskId: taskId) { result in
+        let asrService = ASRManagerFactory.shared.getService()
+        asrService.queryRecognitionResult(taskId: taskId) { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let (taskResult, rawJSON)):
-                    print("📊 识别状态: \(taskResult.StatusStr)")
-                    
-                    switch taskResult.Status {
+                case .success(let taskResult):
+                    print("📊 识别状态: \(taskResult.statusStr)")
+
+                    switch taskResult.status {
                     case 2: // 成功
-                        if let recognizedText = taskResult.Result {
+                        if let recognizedText = taskResult.result {
                             print("✅ 识别成功!")
                             print("识别结果: \(recognizedText)")
                             isRecognizing = false
-                            
+
                             // 直接保存原始 JSON 响应
-                            saveRawRecognitionJSON(videoId: videoId, rawJSON: rawJSON, recognizedText: recognizedText)
+                            saveRawRecognitionJSON(videoId: videoId, rawJSON: taskResult.rawJSON, recognizedText: recognizedText)
                         }
-                        
+
                     case 3: // 失败
-                        print("❌ 识别失败: \(taskResult.ErrorMsg ?? "未知错误")")
+                        print("❌ 识别失败: \(taskResult.errorMsg ?? "未知错误")")
                         isRecognizing = false
-                        
+
                     case 0, 1: // 等待中或执行中
                         // 5 秒后继续轮询
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                             pollRecognitionResult(taskId: taskId, videoId: videoId, retryCount: retryCount + 1)
                         }
-                        
+
                     default:
-                        print("⚠️ 未知状态: \(taskResult.Status)")
+                        print("⚠️ 未知状态: \(taskResult.status)")
                         isRecognizing = false
                     }
                     

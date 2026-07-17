@@ -14,4 +14,10 @@
 #import <ffmpegkit/FFprobeKit.h>
 #import <ffmpegkit/ReturnCode.h>
 
+// Import Aliyun nuisdk for fun-asr
+#import <nuisdk/NeoNui.h>
+
+// Import Aliyun ASR Bridge
+#import "Services/AliyunASRBridge.h"
+
 #endif /* Perapera_Bridging_Header_h */

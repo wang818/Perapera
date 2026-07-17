@@ -109,3 +109,11 @@
 "purchase_subscribe_now" = "지금 구독";
 "purchase_privacy_policy" = "개인정보 처리방침";
 "purchase_terms_of_use" = "이용 약관";
+
+// Cloud Provider
+"cloud_provider_title" = "클라우드 제공업체";
+"cloud_provider_subtitle" = "클라우드 서비스 선택";
+"cloud_provider_tencent" = "Tencent Cloud";
+"cloud_provider_aliyun" = "Alibaba Cloud";
+"cloud_provider_tencent_desc" = "Tencent Cloud ASR + COS + Hunyuan";
+"cloud_provider_aliyun_desc" = "Alibaba fun-asr + Tencent Hunyuan 번역";

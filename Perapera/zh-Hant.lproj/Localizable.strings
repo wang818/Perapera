@@ -109,3 +109,11 @@
 "purchase_subscribe_now" = "立即購買";
 "purchase_privacy_policy" = "隱私政策";
 "purchase_terms_of_use" = "使用條款";
+
+// Cloud Provider
+"cloud_provider_title" = "雲服務提供商";
+"cloud_provider_subtitle" = "選擇雲服務提供商";
+"cloud_provider_tencent" = "騰訊雲";
+"cloud_provider_aliyun" = "阿里雲";
+"cloud_provider_tencent_desc" = "騰訊雲 ASR + COS + 混元大模型";
+"cloud_provider_aliyun_desc" = "阿里雲 fun-asr + 騰訊混元翻譯";

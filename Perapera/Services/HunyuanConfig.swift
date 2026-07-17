@@ -13,63 +13,60 @@ struct HunyuanConfig {
     // 本地开发配置（在 HunyuanConfig.local.swift 中设置）
     internal static var _localSecretId: String = ""
     internal static var _localSecretKey: String = ""
-    
-    /// 腾讯云 SecretId
-    /// 优先使用本地配置，其次使用环境变量
+    internal static var _localApiKey: String = ""
+
+    /// 腾讯云 SecretId（旧版 TC3 签名鉴权，已弃用）
     static var secretId: String {
-        // 确保本地配置已加载
         _ = _ensureLocalConfigLoaded
-        
         #if DEBUG
-        let id = _localSecretId.isEmpty ? (ProcessInfo.processInfo.environment["HUNYUAN_SECRET_ID"] ?? "") : _localSecretId
-        return id
+        return _localSecretId.isEmpty ? (ProcessInfo.processInfo.environment["HUNYUAN_SECRET_ID"] ?? "") : _localSecretId
         #else
         return ProcessInfo.processInfo.environment["HUNYUAN_SECRET_ID"] ?? ""
         #endif
     }
-    
-    /// 腾讯云 SecretKey
-    /// 优先使用本地配置，其次使用环境变量
+
+    /// 腾讯云 SecretKey（旧版 TC3 签名鉴权，已弃用）
     static var secretKey: String {
-        // 确保本地配置已加载
         _ = _ensureLocalConfigLoaded
-        
         #if DEBUG
-        let key = _localSecretKey.isEmpty ? (ProcessInfo.processInfo.environment["HUNYUAN_SECRET_KEY"] ?? "") : _localSecretKey
-        return key
+        return _localSecretKey.isEmpty ? (ProcessInfo.processInfo.environment["HUNYUAN_SECRET_KEY"] ?? "") : _localSecretKey
         #else
         return ProcessInfo.processInfo.environment["HUNYUAN_SECRET_KEY"] ?? ""
         #endif
     }
-    
-    // 确保本地配置已加载的标志
+
+    /// TokenHub API Key（新版 Bearer Token 鉴权）
+    static var apiKey: String {
+        _ = _ensureLocalConfigLoaded
+        #if DEBUG
+        return _localApiKey.isEmpty ? (ProcessInfo.processInfo.environment["TOKENHUB_API_KEY"] ?? "") : _localApiKey
+        #else
+        return ProcessInfo.processInfo.environment["TOKENHUB_API_KEY"] ?? ""
+        #endif
+    }
+
     private static let _ensureLocalConfigLoaded: Void = {
         setupLocalCredentials()
         return ()
     }()
-    
-    /// 腾讯云混元 API 域名
+
+    /// TokenHub API 基础 URL（OpenAI 兼容）
+    static let apiBaseURL = "https://tokenhub-intl.tencentmaas.com/v1"
+
+    /// 默认使用的模型（已迁移至 TokenHub hy3-preview）
+    static let defaultModel = "hy3-preview"
+
+    /// 旧版配置（保留兼容）
     static let apiHost = "hunyuan.tencentcloudapi.com"
-    
-    /// API 版本
     static let apiVersion = "2023-09-01"
-    
-    /// 服务名称
     static let service = "hunyuan"
-    
-    /// 默认使用的模型
-    static let defaultModel = "hunyuan-turbo"
-    
-    /// 最大 token 数
     static let maxTokens = 4096
-    
-    /// 温度参数（控制输出多样性）
     static let temperature: Double = 0.7
-    
+
     // MARK: - Helper Methods
-    
-    /// 生成请求 URL
+
+    /// 生成请求 URL（新版 TokenHub OpenAI 兼容 API）
     static func generateRequestURL() -> URL? {
-        return URL(string: "https://\(apiHost)/")
+        return URL(string: "\(apiBaseURL)/chat/completions")
     }
 }

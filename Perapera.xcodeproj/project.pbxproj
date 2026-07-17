@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12F9361FE9C4DB348755E24B /* AliyunConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BFA8B811D6FC2E58196CE7 /* AliyunConfig.local.swift */; };
 		184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06C92FB815DD001114A3 /* YTAudioModel.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
@@ -17,7 +18,16 @@
 		18CA30742F27884E00CA9B62 /* SubtitleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30732F27884E00CA9B62 /* SubtitleModel.swift */; };
 		18CA30772F47DE00CA9B64 /* YouTubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30752F47DE00CA9B62 /* YouTubePlayerView.swift */; };
 		18CA30782F47DE00CA9B65 /* URL+YouTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA30762F47DE00CA9B63 /* URL+YouTube.swift */; };
+		256E2DD8D3AEE1D1C765A718 /* nuisdk.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B950CB5B3444447904A02CD3 /* nuisdk.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		33BB0F35E24C81AA7A6D54E8 /* AliyunASRBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 4739C102F4270184739631DA /* AliyunASRBridge.m */; };
 		63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92228B25C99537B2CD47D806 /* Pods_Perapera.framework */; };
+		8D47E4E3737A4E29C50962E3 /* ASRManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DBA1B3F27376F07A60951 /* ASRManagerFactory.swift */; };
+		A1769A4D4FF645A42FF0401C /* AliyunConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6E2B464B64828669523DBB /* AliyunConfig.swift */; };
+		A6DC24D2993C40DC9982B676 /* nuisdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B950CB5B3444447904A02CD3 /* nuisdk.framework */; };
+		AA340D6122CC9990D2E80BEF /* CloudProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501E4672BB8A5D4FE58D520 /* CloudProvider.swift */; };
+		BF3AB14D96C17D7177305499 /* AliyunASRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677A4C17105E2159A00E34AB /* AliyunASRManager.swift */; };
+		BFFC074CB29BF0C14B7D3D14 /* ASRServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC9C03BCCD37B438A81065E /* ASRServiceProtocol.swift */; };
+		CBD4FA104434F520E056DF72 /* AliyunASRBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 08764CF056B1A12FBA7E2F0F /* AliyunASRBridge.h */; };
 		EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31CE7E2F1491C80040B489 /* LoginModel.swift */; };
 		EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF012F284BCA0007BCA6 /* UserManager.swift */; };
 		EC7FEF052F284EE50007BCA6 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */; };
@@ -78,7 +88,22 @@
 		F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3FA5B99442E3262088CE3C4B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				256E2DD8D3AEE1D1C765A718 /* nuisdk.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		08764CF056B1A12FBA7E2F0F /* AliyunASRBridge.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AliyunASRBridge.h; path = AliyunASRBridge.h; sourceTree = "<group>"; };
 		184C06C92FB815DD001114A3 /* YTAudioModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YTAudioModel.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
@@ -90,9 +115,17 @@
 		18CA30732F27884E00CA9B62 /* SubtitleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubtitleModel.swift; path = Models/SubtitleModel.swift; sourceTree = "<group>"; };
 		18CA30752F47DE00CA9B62 /* YouTubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = YouTubePlayerView.swift; path = VideoPlayerView/YouTubePlayerView.swift; sourceTree = "<group>"; };
 		18CA30762F47DE00CA9B63 /* URL+YouTube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+YouTube.swift"; sourceTree = "<group>"; };
+		261DBA1B3F27376F07A60951 /* ASRManagerFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ASRManagerFactory.swift; path = ASRManagerFactory.swift; sourceTree = "<group>"; };
+		2AC9C03BCCD37B438A81065E /* ASRServiceProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ASRServiceProtocol.swift; path = ASRServiceProtocol.swift; sourceTree = "<group>"; };
+		2B6E2B464B64828669523DBB /* AliyunConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AliyunConfig.swift; path = AliyunConfig.swift; sourceTree = "<group>"; };
+		4739C102F4270184739631DA /* AliyunASRBridge.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AliyunASRBridge.m; path = AliyunASRBridge.m; sourceTree = "<group>"; };
 		491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.release.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.release.xcconfig"; sourceTree = "<group>"; };
+		677A4C17105E2159A00E34AB /* AliyunASRManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AliyunASRManager.swift; path = AliyunASRManager.swift; sourceTree = "<group>"; };
 		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B501E4672BB8A5D4FE58D520 /* CloudProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CloudProvider.swift; path = Models/CloudProvider.swift; sourceTree = "<group>"; };
+		B950CB5B3444447904A02CD3 /* nuisdk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = nuisdk.framework; sourceTree = "<group>"; };
 		CFAB7CB32CEF237A51D6C48C /* Pods-Perapera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.debug.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.debug.xcconfig"; sourceTree = "<group>"; };
+		D7BFA8B811D6FC2E58196CE7 /* AliyunConfig.local.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AliyunConfig.local.swift; sourceTree = "<group>"; };
 		EC31CE7E2F1491C80040B489 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EC7FEF012F284BCA0007BCA6 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		EC7FEF032F284EE50007BCA6 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
@@ -178,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */,
+				A6DC24D2993C40DC9982B676 /* nuisdk.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +252,8 @@
 				1889F12A2EF9214B00886186 /* Assets.xcassets */,
 				1889F12C2EF9214B00886186 /* Preview Content */,
 				ECACBE7C2EFA57210090F990 /* Localizable.strings */,
+				5D33D56B8D4AFA52E63CB0B8 /* Services */,
+				22611DE2038F1B9746B44255 /* Frameworks */,
 			);
 			path = Perapera;
 			sourceTree = "<group>";
@@ -244,8 +280,31 @@
 			isa = PBXGroup;
 			children = (
 				18CA30732F27884E00CA9B62 /* SubtitleModel.swift */,
+				B501E4672BB8A5D4FE58D520 /* CloudProvider.swift */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		22611DE2038F1B9746B44255 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B950CB5B3444447904A02CD3 /* nuisdk.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5D33D56B8D4AFA52E63CB0B8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2AC9C03BCCD37B438A81065E /* ASRServiceProtocol.swift */,
+				2B6E2B464B64828669523DBB /* AliyunConfig.swift */,
+				677A4C17105E2159A00E34AB /* AliyunASRManager.swift */,
+				261DBA1B3F27376F07A60951 /* ASRManagerFactory.swift */,
+				08764CF056B1A12FBA7E2F0F /* AliyunASRBridge.h */,
+				4739C102F4270184739631DA /* AliyunASRBridge.m */,
+			);
+			name = Services;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		6003A9B52417A3737F56402B /* Frameworks */ = {
@@ -293,6 +352,7 @@
 				EC7FEF252F4D58150007BCA6 /* COSUploadManager.swift */,
 				EC7FEF262F4D58150007BCA6 /* HunyuanConfig.swift */,
 				EC7FEF272F4D58150007BCA6 /* HunyuanManager.swift */,
+				D7BFA8B811D6FC2E58196CE7 /* AliyunConfig.local.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -449,6 +509,17 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		8FA47126D85F36B9BEEE3D23 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBD4FA104434F520E056DF72 /* AliyunASRBridge.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		1889F1222EF9214800886186 /* Perapera */ = {
 			isa = PBXNativeTarget;
@@ -460,6 +531,8 @@
 				1889F1212EF9214800886186 /* Resources */,
 				64265FB93041787E16BFDC37 /* [CP] Embed Pods Frameworks */,
 				D1902BAD992D7866303C0FE0 /* [CP] Copy Pods Resources */,
+				8FA47126D85F36B9BEEE3D23 /* Headers */,
+				3FA5B99442E3262088CE3C4B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -671,6 +744,13 @@
 				18CA306F2F2787DE00CA9B62 /* VideoPlayerViewModel.swift in Sources */,
 				18CA30772F47DE00CA9B64 /* YouTubePlayerView.swift in Sources */,
 				18CA30782F47DE00CA9B65 /* URL+YouTube.swift in Sources */,
+				AA340D6122CC9990D2E80BEF /* CloudProvider.swift in Sources */,
+				BFFC074CB29BF0C14B7D3D14 /* ASRServiceProtocol.swift in Sources */,
+				A1769A4D4FF645A42FF0401C /* AliyunConfig.swift in Sources */,
+				BF3AB14D96C17D7177305499 /* AliyunASRManager.swift in Sources */,
+				8D47E4E3737A4E29C50962E3 /* ASRManagerFactory.swift in Sources */,
+				33BB0F35E24C81AA7A6D54E8 /* AliyunASRBridge.m in Sources */,
+				12F9361FE9C4DB348755E24B /* AliyunConfig.local.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -843,7 +923,16 @@
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Perapera\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Perapera/Services\"",
+					"\"$(SRCROOT)/Perapera/Models\"",
+				);
 				INFOPLIST_FILE = Perapera/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用于身份认证提交，是否允许打开相机？";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
@@ -862,6 +951,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.perapera.ai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Perapera/Perapera-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -879,7 +969,16 @@
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Perapera\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Perapera/Services\"",
+					"\"$(SRCROOT)/Perapera/Models\"",
+				);
 				INFOPLIST_FILE = Perapera/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用于身份认证提交，是否允许打开相机？";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
@@ -898,6 +997,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.perapera.ai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Perapera/Perapera-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

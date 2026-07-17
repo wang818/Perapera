@@ -27,6 +27,7 @@ struct SettingsView: View {
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
     @State private var showSubtitleSettings = false
+    @State private var showCloudProviderSettings = false
     @State private var showPurchaseView = false
 
     var body: some View {
@@ -117,6 +118,9 @@ struct SettingsView: View {
                     SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
                         showThemeSettings = true
                     }
+                    SettingsRowView(imageName: "cloud.fill", title: "cloud_provider_title".localized(), subtitle: "cloud_provider_subtitle".localized()) {
+                        showCloudProviderSettings = true
+                    }
                 }
                 
                 
@@ -163,6 +167,11 @@ struct SettingsView: View {
                     NavigationLink(
                         destination: SubtitleSettingsView(),
                         isActive: $showSubtitleSettings
+                    ) { EmptyView() }
+
+                    NavigationLink(
+                        destination: CloudProviderSettingsView(),
+                        isActive: $showCloudProviderSettings
                     ) { EmptyView() }
                 }
             )
@@ -224,6 +233,63 @@ struct ThemeSettingsView: View {
                         .foregroundColor(.primary)
                 }
             }
+        }
+    }
+}
+
+// MARK: - Cloud Provider Settings View
+
+struct CloudProviderSettingsView: View {
+    @StateObject private var providerManager = CloudProviderManager.shared
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        List {
+            ForEach(CloudProvider.allCases) { provider in
+                Button(action: {
+                    providerManager.currentProvider = provider
+                }) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(provider.displayName)
+                                .foregroundColor(.primary)
+                            Text(providerDescription(provider))
+                                .font(.caption)
+                                .foregroundColor(.Ex.text2)
+                        }
+                        Spacer()
+                        if providerManager.currentProvider == provider {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+        }
+        .navigationTitle("cloud_provider_title".localized())
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+    }
+
+    private func providerDescription(_ provider: CloudProvider) -> String {
+        switch provider {
+        case .tencent:
+            return "cloud_provider_tencent_desc".localized()
+        case .aliyun:
+            return "cloud_provider_aliyun_desc".localized()
         }
     }
 }

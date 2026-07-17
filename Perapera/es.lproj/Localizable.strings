@@ -102,3 +102,11 @@
 "purchase_subscribe_now" = "Suscribirse ahora";
 "purchase_privacy_policy" = "Política de privacidad";
 "purchase_terms_of_use" = "Términos de uso";
+
+// Cloud Provider
+"cloud_provider_title" = "Cloud Provider";
+"cloud_provider_subtitle" = "Select cloud service provider";
+"cloud_provider_tencent" = "Tencent Cloud";
+"cloud_provider_aliyun" = "Alibaba Cloud";
+"cloud_provider_tencent_desc" = "Tencent Cloud ASR + COS + Hunyuan";
+"cloud_provider_aliyun_desc" = "Alibaba fun-asr + Tencent Hunyuan translation";
