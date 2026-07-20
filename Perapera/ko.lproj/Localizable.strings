@@ -18,6 +18,21 @@
 "home_sheet_list_subtitle3" = "사진 앱에서 미디어 가져오기";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URL을 입력하세요";
+"home_youtube_parsing" = "Youtube URL 분석 중...";
+"home_recognizing_audio" = "음성 파일을 인식하는 중...";
+"home_translating" = "번역 중...";
+"home_translating_progress" = "%d/%d 문장을 번역 중, 총 %d개 단어...";
+"home_recognition_success" = "인식에 성공했습니다";
+"home_recognition_failed" = "인식에 실패했습니다";
+"home_empty_title" = "아직 동영상이 없습니다";
+"home_empty_subtitle" = "오른쪽 상단의 + 를 눌러 동영상을 추가하세요";
+"home_uploading_progress" = "업로드 중... %d%%";
+"home_converting_audio_progress" = "오디오 변환 중... %d%%";
+"home_converting_to_opus" = "비디오를 Opus 형식으로 변환하는 중";
+"home_unnamed_video" = "이름 없는 동영상";
+"home_youtube_import_error" = "YouTube 가져오기 오류";
+"home_log_copied" = "복사됨";
+"home_copy_log" = "로그 복사";
 "colse" = "닫기";
 "save" = "저장";
 

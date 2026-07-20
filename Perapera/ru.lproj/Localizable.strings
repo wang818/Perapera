@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "Импорт медиа из ваших фото";
 "home_Youtube_Alert_title" = "URL Youtube";
 "home_Youtube_Alert_textFiled_placeholder" = "Введите URL";
+"home_youtube_parsing" = "Анализ URL Youtube...";
+"home_recognizing_audio" = "Распознавание аудиофайла...";
+"home_translating" = "Перевод...";
+"home_translating_progress" = "Перевод %d/%d предложений, всего %d слов...";
+"home_recognition_success" = "Распознавание успешно.";
+"home_recognition_failed" = "Ошибка распознавания.";
+"home_empty_title" = "Пока нет видео";
+"home_empty_subtitle" = "Нажмите + в правом верхнем углу, чтобы добавить видео";
+"home_uploading_progress" = "Загрузка... %d%%";
+"home_converting_audio_progress" = "Конвертация аудио... %d%%";
+"home_converting_to_opus" = "Конвертация видео в формат Opus";
+"home_unnamed_video" = "Видео без названия";
+"home_youtube_import_error" = "Ошибка импорта YouTube";
+"home_log_copied" = "Скопировано";
+"home_copy_log" = "Копировать журнал";
 "colse" = "Закрыть";
 "save" = "Сохранить";
 

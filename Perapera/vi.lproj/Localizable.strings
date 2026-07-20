@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "Nhập phương tiện từ ảnh của bạn";
 "home_Youtube_Alert_title" = "URL Youtube";
 "home_Youtube_Alert_textFiled_placeholder" = "Nhập URL";
+"home_youtube_parsing" = "Đang phân tích URL Youtube...";
+"home_recognizing_audio" = "Đang nhận dạng tệp âm thanh...";
+"home_translating" = "Đang dịch...";
+"home_translating_progress" = "Đang dịch %d/%d câu, tổng cộng %d từ...";
+"home_recognition_success" = "Nhận dạng thành công.";
+"home_recognition_failed" = "Nhận dạng thất bại.";
+"home_empty_title" = "Chưa có video";
+"home_empty_subtitle" = "Nhấn + ở góc trên bên phải để thêm video";
+"home_uploading_progress" = "Đang tải lên... %d%%";
+"home_converting_audio_progress" = "Đang chuyển đổi âm thanh... %d%%";
+"home_converting_to_opus" = "Đang chuyển đổi video sang định dạng Opus";
+"home_unnamed_video" = "Video chưa đặt tên";
+"home_youtube_import_error" = "Lỗi nhập YouTube";
+"home_log_copied" = "Đã sao chép";
+"home_copy_log" = "Sao chép nhật ký";
 "colse" = "Đóng";
 "save" = "Lưu";
 

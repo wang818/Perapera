@@ -31,15 +31,15 @@ struct HomeView: View {
 
     // 根据当前状态动态返回提示文字
     private var processingMessage: String {
-        if viewModel.isFetchingYoutubeAudio { return "YouTube地址解析中..." }
-        if isRecognizing { return "正在识别语音文件..." }
+        if viewModel.isFetchingYoutubeAudio { return "home_youtube_parsing".localized() }
+        if isRecognizing { return "home_recognizing_audio".localized() }
         if viewModel.isTranslating {
             if translatingTotal > 0 {
-                return "正在翻译 \(translatingCurrent)/\(translatingTotal) 句，共 \(translatingWords) 个词..."
+                return "home_translating_progress".localized(translatingCurrent, translatingTotal, translatingWords)
             }
-            return "正在翻译..."
+            return "home_translating".localized()
         }
-        if showProcessComplete { return processCompleteSuccess ? "识别成功" : "识别失败" }
+        if showProcessComplete { return processCompleteSuccess ? "home_recognition_success".localized() : "home_recognition_failed".localized() }
         return ""
     }
 
@@ -105,11 +105,11 @@ struct HomeView: View {
                                         .font(.system(size: 44))
                                         .foregroundColor(Color.Ex.main)
                                 }
-                                Text("暂无视频")
+                                Text("home_empty_title".localized())
                                     .font(.title3)
                                     .fontWeight(.semibold)
                                     .foregroundColor(.Ex.text1)
-                                Text("点击右上角 + 添加视频")
+                                Text("home_empty_subtitle".localized())
                                     .font(.subheadline)
                                     .foregroundColor(.Ex.text2)
                             }
@@ -223,7 +223,7 @@ struct HomeView: View {
                         .progressViewStyle(.linear)
                         .tint(.blue)
                     
-                    Text("上传中... \(Int(uploadProgress * 100))%")
+                    Text("home_uploading_progress".localized(Int(uploadProgress * 100)))
                         .font(.headline)
                         .foregroundColor(.white)
                 }
@@ -243,11 +243,11 @@ struct HomeView: View {
                         .progressViewStyle(.linear)
                         .tint(.green)
                     
-                    Text("转换音频中... \(Int(conversionProgress * 100))%")
+                    Text("home_converting_audio_progress".localized(Int(conversionProgress * 100)))
                         .font(.headline)
                         .foregroundColor(.white)
                     
-                    Text("正在将视频转换为 Opus 格式")
+                    Text("home_converting_to_opus".localized())
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.7))
                 }
@@ -311,7 +311,7 @@ struct HomeView: View {
                         Button(action: {
                             showingYoutubeAlert = false
                         }) {
-                            Text("关闭")
+                            Text("colse".localized())
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color.gray.opacity(0.2))
@@ -327,7 +327,7 @@ struct HomeView: View {
                             }
                             showingYoutubeAlert = false
                         }) {
-                            Text("保存")
+                            Text("save".localized())
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color.blue)
@@ -704,7 +704,7 @@ struct HomeView: View {
             }
             return url.lastPathComponent
         }
-        return "未命名视频"
+        return "home_unnamed_video".localized()
     }
     
     /// 提取 YouTube 视频 ID
@@ -1209,7 +1209,7 @@ struct YoutubeErrorLogView: View {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.orange)
                         .font(.system(size: 18))
-                    Text("YouTube 导入错误")
+                    Text("home_youtube_import_error".localized())
                         .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.primary)
                     Spacer()
@@ -1258,7 +1258,7 @@ struct YoutubeErrorLogView: View {
                         HStack(spacing: 6) {
                             Image(systemName: showCopiedToast ? "checkmark" : "doc.on.doc")
                                 .font(.system(size: 14))
-                            Text(showCopiedToast ? "已复制" : "复制日志")
+                            Text(showCopiedToast ? "home_log_copied".localized() : "home_copy_log".localized())
                                 .font(.system(size: 14, weight: .medium))
                         }
                         .frame(maxWidth: .infinity)
@@ -1273,7 +1273,7 @@ struct YoutubeErrorLogView: View {
                         HStack(spacing: 6) {
                             Image(systemName: "xmark")
                                 .font(.system(size: 14))
-                            Text("关闭")
+                            Text("colse".localized())
                                 .font(.system(size: 14, weight: .medium))
                         }
                         .frame(maxWidth: .infinity)

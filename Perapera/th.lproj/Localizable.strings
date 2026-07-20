@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "นำเข้าสื่อจากรูปภาพของคุณ";
 "home_Youtube_Alert_title" = "URL Youtube";
 "home_Youtube_Alert_textFiled_placeholder" = "ป้อน URL";
+"home_youtube_parsing" = "กำลังวิเคราะห์ URL ของ Youtube...";
+"home_recognizing_audio" = "กำลังรู้จำไฟล์เสียง...";
+"home_translating" = "กำลังแปล...";
+"home_translating_progress" = "กำลังแปล %d/%d ประโยค รวม %d คำ...";
+"home_recognition_success" = "รู้จำสำเร็จ";
+"home_recognition_failed" = "รู้จำล้มเหลว";
+"home_empty_title" = "ยังไม่มีวิดีโอ";
+"home_empty_subtitle" = "แตะ + ที่มุมขวาบนเพื่อเพิ่มวิดีโอ";
+"home_uploading_progress" = "กำลังอัปโหลด... %d%%";
+"home_converting_audio_progress" = "กำลังแปลงเสียง... %d%%";
+"home_converting_to_opus" = "กำลังแปลงวิดีโอเป็นรูปแบบ Opus";
+"home_unnamed_video" = "วิดีโอไม่มีชื่อ";
+"home_youtube_import_error" = "ข้อผิดพลาดในการนำเข้า YouTube";
+"home_log_copied" = "คัดลอกแล้ว";
+"home_copy_log" = "คัดลอกบันทึก";
 "colse" = "ปิด";
 "save" = "บันทึก";
 

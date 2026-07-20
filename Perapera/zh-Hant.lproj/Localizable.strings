@@ -18,6 +18,21 @@
 "home_sheet_list_subtitle3" = "從您的相簿匯入媒體檔案";
 "home_Youtube_Alert_title" = "Youtube網址";
 "home_Youtube_Alert_textFiled_placeholder" = "請輸入網址";
+"home_youtube_parsing" = "YouTube 網址解析中...";
+"home_recognizing_audio" = "正在識別語音檔案...";
+"home_translating" = "正在翻譯...";
+"home_translating_progress" = "正在翻譯 %d/%d 句，共 %d 個詞...";
+"home_recognition_success" = "識別成功";
+"home_recognition_failed" = "識別失敗";
+"home_empty_title" = "暫無影片";
+"home_empty_subtitle" = "點擊右上角 + 新增影片";
+"home_uploading_progress" = "上傳中... %d%%";
+"home_converting_audio_progress" = "轉換音訊中... %d%%";
+"home_converting_to_opus" = "正在將影片轉換為 Opus 格式";
+"home_unnamed_video" = "未命名影片";
+"home_youtube_import_error" = "YouTube 匯入錯誤";
+"home_log_copied" = "已複製";
+"home_copy_log" = "複製日誌";
 "colse" = "關閉";
 "save" = "儲存";
 

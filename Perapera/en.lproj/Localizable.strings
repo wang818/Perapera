@@ -18,6 +18,21 @@
 "home_sheet_list_subtitle3" = "Import media from your photos";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "Enter URL";
+"home_youtube_parsing" = "Parsing Youtube URL...";
+"home_recognizing_audio" = "Recognizing audio file...";
+"home_translating" = "Translating...";
+"home_translating_progress" = "Translating %d/%d sentences, %d words total...";
+"home_recognition_success" = "Recognition successful.";
+"home_recognition_failed" = "Recognition failed.";
+"home_empty_title" = "No videos yet";
+"home_empty_subtitle" = "Tap + in the top-right corner to add a video";
+"home_uploading_progress" = "Uploading... %d%%";
+"home_converting_audio_progress" = "Converting audio... %d%%";
+"home_converting_to_opus" = "Converting video to Opus format";
+"home_unnamed_video" = "Untitled Video";
+"home_youtube_import_error" = "YouTube Import Error";
+"home_log_copied" = "Copied";
+"home_copy_log" = "Copy Log";
 "colse" = "Close";
 "save" = "Save";
 

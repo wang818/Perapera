@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "استيراد الوسائط من صورك";
 "home_Youtube_Alert_title" = "رابط يوتيوب";
 "home_Youtube_Alert_textFiled_placeholder" = "أدخل الرابط";
+"home_youtube_parsing" = "جارٍ تحليل رابط يوتيوب...";
+"home_recognizing_audio" = "جارٍ التعرّف على الملف الصوتي...";
+"home_translating" = "جارٍ الترجمة...";
+"home_translating_progress" = "جارٍ ترجمة %d/%d جملة، بإجمالي %d كلمة...";
+"home_recognition_success" = "تم التعرّف بنجاح.";
+"home_recognition_failed" = "فشل التعرّف.";
+"home_empty_title" = "لا توجد فيديوهات بعد";
+"home_empty_subtitle" = "اضغط على + في أعلى اليمين لإضافة فيديو";
+"home_uploading_progress" = "جارٍ الرفع... %d%%";
+"home_converting_audio_progress" = "جارٍ تحويل الصوت... %d%%";
+"home_converting_to_opus" = "جارٍ تحويل الفيديو إلى تنسيق Opus";
+"home_unnamed_video" = "فيديو بدون اسم";
+"home_youtube_import_error" = "خطأ في استيراد YouTube";
+"home_log_copied" = "تم النسخ";
+"home_copy_log" = "نسخ السجل";
 "colse" = "إغلاق";
 "save" = "حفظ";
 

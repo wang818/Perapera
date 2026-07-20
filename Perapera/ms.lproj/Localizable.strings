@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "Import media dari foto anda";
 "home_Youtube_Alert_title" = "URL Youtube";
 "home_Youtube_Alert_textFiled_placeholder" = "Masukkan URL";
+"home_youtube_parsing" = "Sedang menganalisis URL Youtube...";
+"home_recognizing_audio" = "Sedang mengenal pasti fail audio...";
+"home_translating" = "Sedang menterjemah...";
+"home_translating_progress" = "Sedang menterjemah %d/%d ayat, jumlah %d perkataan...";
+"home_recognition_success" = "Pengecaman berjaya.";
+"home_recognition_failed" = "Pengecaman gagal.";
+"home_empty_title" = "Belum ada video";
+"home_empty_subtitle" = "Ketik + di penjuru kanan atas untuk menambah video";
+"home_uploading_progress" = "Memuat naik... %d%%";
+"home_converting_audio_progress" = "Menukar audio... %d%%";
+"home_converting_to_opus" = "Menukar video kepada format Opus";
+"home_unnamed_video" = "Video Tanpa Nama";
+"home_youtube_import_error" = "Ralat import YouTube";
+"home_log_copied" = "Disalin";
+"home_copy_log" = "Salin log";
 "colse" = "Tutup";
 "save" = "Simpan";
 

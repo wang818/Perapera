@@ -18,6 +18,21 @@
 "home_sheet_list_subtitle3" = "写真アプリからメディアをインポート";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URLを入力してください";
+"home_youtube_parsing" = "Youtube URLを解析中...";
+"home_recognizing_audio" = "音声ファイルを認識中...";
+"home_translating" = "翻訳中...";
+"home_translating_progress" = "%d/%d 文を翻訳中、合計 %d 語...";
+"home_recognition_success" = "認識に成功しました";
+"home_recognition_failed" = "認識に失敗しました";
+"home_empty_title" = "まだ動画がありません";
+"home_empty_subtitle" = "右上の + をタップして動画を追加";
+"home_uploading_progress" = "アップロード中... %d%%";
+"home_converting_audio_progress" = "音声を変換中... %d%%";
+"home_converting_to_opus" = "動画を Opus 形式に変換しています";
+"home_unnamed_video" = "無題の動画";
+"home_youtube_import_error" = "YouTube のインポートエラー";
+"home_log_copied" = "コピーしました";
+"home_copy_log" = "ログをコピー";
 "colse" = "閉じる";
 "save" = "保存";
 

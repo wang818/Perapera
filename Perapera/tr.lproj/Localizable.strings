@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "Fotoğraflarınızdan medya içe aktarın";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URL Girin";
+"home_youtube_parsing" = "Youtube URL çözümleniyor...";
+"home_recognizing_audio" = "Ses dosyası tanınıyor...";
+"home_translating" = "Çevriliyor...";
+"home_translating_progress" = "%d/%d cümle çevriliyor, toplam %d kelime...";
+"home_recognition_success" = "Tanıma başarılı.";
+"home_recognition_failed" = "Tanıma başarısız.";
+"home_empty_title" = "Henüz video yok";
+"home_empty_subtitle" = "Video eklemek için sağ üstteki + düğmesine dokunun";
+"home_uploading_progress" = "Yükleniyor... %d%%";
+"home_converting_audio_progress" = "Ses dönüştürülüyor... %d%%";
+"home_converting_to_opus" = "Video Opus formatına dönüştürülüyor";
+"home_unnamed_video" = "Adsız Video";
+"home_youtube_import_error" = "YouTube içe aktarma hatası";
+"home_log_copied" = "Kopyalandı";
+"home_copy_log" = "Günlüğü kopyala";
 "colse" = "Kapat";
 "save" = "Kaydet";
 

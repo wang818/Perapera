@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "Mag-import ng media mula sa iyong mga larawan";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "Ilagay ang URL";
+"home_youtube_parsing" = "Sinusuri ang Youtube URL...";
+"home_recognizing_audio" = "Kinikilala ang audio file...";
+"home_translating" = "Isinasalin...";
+"home_translating_progress" = "Isinasalin ang %d/%d pangungusap, kabuuang %d salita...";
+"home_recognition_success" = "Matagumpay ang pagkilala.";
+"home_recognition_failed" = "Hindi nakilala.";
+"home_empty_title" = "Wala pang mga video";
+"home_empty_subtitle" = "I-tap ang + sa kanang itaas para magdagdag ng video";
+"home_uploading_progress" = "Ina-upload... %d%%";
+"home_converting_audio_progress" = "Kino-convert ang audio... %d%%";
+"home_converting_to_opus" = "Kino-convert ang video sa format na Opus";
+"home_unnamed_video" = "Walang Pamagat na Video";
+"home_youtube_import_error" = "Error sa pag-import ng YouTube";
+"home_log_copied" = "Nakopya na";
+"home_copy_log" = "Kopyahin ang log";
 "colse" = "Isara";
 "save" = "I-save";
 

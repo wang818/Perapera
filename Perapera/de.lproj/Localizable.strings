@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "Medien aus Ihren Fotos importieren";
 "home_Youtube_Alert_title" = "Youtube-URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URL eingeben";
+"home_youtube_parsing" = "Youtube-URL wird analysiert...";
+"home_recognizing_audio" = "Audiodatei wird erkannt...";
+"home_translating" = "Wird übersetzt...";
+"home_translating_progress" = "%d/%d Sätze werden übersetzt, insgesamt %d Wörter...";
+"home_recognition_success" = "Erkennung erfolgreich.";
+"home_recognition_failed" = "Erkennung fehlgeschlagen.";
+"home_empty_title" = "Noch keine Videos";
+"home_empty_subtitle" = "Tippe oben rechts auf +, um ein Video hinzuzufügen";
+"home_uploading_progress" = "Wird hochgeladen... %d%%";
+"home_converting_audio_progress" = "Audio wird konvertiert... %d%%";
+"home_converting_to_opus" = "Video wird in das Opus-Format konvertiert";
+"home_unnamed_video" = "Unbenanntes Video";
+"home_youtube_import_error" = "YouTube-Importfehler";
+"home_log_copied" = "Kopiert";
+"home_copy_log" = "Protokoll kopieren";
 "colse" = "Schließen";
 "save" = "Speichern";
 

@@ -11,6 +11,21 @@
 "home_sheet_list_subtitle3" = "သင့်ဓာတ်ပုံများမှ မီဒီယာထည့်သွင်းရန်";
 "home_Youtube_Alert_title" = "Youtube URL";
 "home_Youtube_Alert_textFiled_placeholder" = "URL ထည့်ပါ";
+"home_youtube_parsing" = "Youtube URL ကို စစ်ဆေးနေသည်...";
+"home_recognizing_audio" = "အသံဖိုင်ကို ခွဲခြားနေသည်...";
+"home_translating" = "ဘာသာပြန်နေသည်...";
+"home_translating_progress" = "စာကြောင်း %d/%d ကို ဘာသာပြန်နေသည်၊ စကားလုံး စုစုပေါင်း %d လုံး...";
+"home_recognition_success" = "ခွဲခြားမှု အောင်မြင်သည်။";
+"home_recognition_failed" = "ခွဲခြားမှု မအောင်မြင်ပါ။";
+"home_empty_title" = "ဗီဒီယို မရှိသေးပါ";
+"home_empty_subtitle" = "ဗီဒီယိုထည့်ရန် ညာဘက်အပေါ်ထောင့်ရှိ + ကို နှိပ်ပါ";
+"home_uploading_progress" = "တင်နေသည်... %d%%";
+"home_converting_audio_progress" = "အသံပြောင်းနေသည်... %d%%";
+"home_converting_to_opus" = "ဗီဒီယိုကို Opus ဖော်မက်သို့ ပြောင်းနေသည်";
+"home_unnamed_video" = "အမည်မပေးထားသော ဗီဒီယို";
+"home_youtube_import_error" = "YouTube တင်သွင်းမှု အမှား";
+"home_log_copied" = "ကူးယူပြီး";
+"home_copy_log" = "မှတ်တမ်းကို ကူးယူရန်";
 "colse" = "ပိတ်ရန်";
 "save" = "သိမ်းဆည်းရန်";
 

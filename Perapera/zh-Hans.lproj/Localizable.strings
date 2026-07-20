@@ -18,6 +18,21 @@
 "home_sheet_list_subtitle3" = "从您的相册导入媒体文件";
 "home_Youtube_Alert_title" = "Youtube网址";
 "home_Youtube_Alert_textFiled_placeholder" = "请输入网址";
+"home_youtube_parsing" = "YouTube地址解析中...";
+"home_recognizing_audio" = "正在识别语音文件...";
+"home_translating" = "正在翻译...";
+"home_translating_progress" = "正在翻译 %d/%d 句，共 %d 个词...";
+"home_recognition_success" = "识别成功";
+"home_recognition_failed" = "识别失败";
+"home_empty_title" = "暂无视频";
+"home_empty_subtitle" = "点击右上角 + 添加视频";
+"home_uploading_progress" = "上传中... %d%%";
+"home_converting_audio_progress" = "转换音频中... %d%%";
+"home_converting_to_opus" = "正在将视频转换为 Opus 格式";
+"home_unnamed_video" = "未命名视频";
+"home_youtube_import_error" = "YouTube 导入错误";
+"home_log_copied" = "已复制";
+"home_copy_log" = "复制日志";
 "colse" = "关闭";
 "save" = "保存";
 
