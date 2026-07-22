@@ -16,6 +16,12 @@ enum AppAPIEndPoint {
     case sendCaptcha(email: String)
     case login(email: String, captcha: String)
     case ytAudio(url: String)
+    case iapVerify(parameters: [String: Any])
+    case iapStatus
+    case iapProducts
+    case iapRestore(parameters: [String: Any])
+    case iapNotifications(payload: [String: Any])
+    case iapProductEntitlement(productID: String)
 }
 
 extension AppAPIEndPoint: TargetType {
@@ -32,6 +38,12 @@ extension AppAPIEndPoint: TargetType {
         case .sendCaptcha : return "auth/sendCaptcha"
         case .login : return "auth/login"
         case .ytAudio: return "common/yt_audio"
+        case .iapVerify: return "iap/verify"
+        case .iapStatus: return "iap/status"
+        case .iapProducts: return "iap/products"
+        case .iapRestore: return "iap/restore"
+        case .iapNotifications: return "iap/notifications"
+        case .iapProductEntitlement(let productID): return "iap/products/\(productID)/entitlement"
             
         }
     }
@@ -42,6 +54,9 @@ extension AppAPIEndPoint: TargetType {
         case .supportLang: return .get
         case .sendCaptcha: return .get
         case .ytAudio: return .get
+        case .iapStatus: return .get
+        case .iapProducts: return .get
+        case .iapProductEntitlement: return .get
         default: return .post
         }
     }
@@ -61,6 +76,12 @@ extension AppAPIEndPoint: TargetType {
         case .login(let email, let captcha):
             let params = ["email" : email, "captcha" : captcha]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+        case .iapVerify(let parameters):
+            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .iapRestore(let parameters):
+            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .iapNotifications(let payload):
+            return .requestParameters(parameters: payload, encoding: JSONEncoding.default)
 
         default:
             return .requestPlain
@@ -74,11 +95,40 @@ extension AppAPIEndPoint: TargetType {
         if case .ytAudio = self {
             headParam["Accept"] = "application/json"
         }
+        if requiresAuthorization, let authorizationValue = authorizationHeaderValue {
+            headParam["Authorization"] = authorizationValue
+        }
         return headParam
     }
     
     var sampleData: Data {
         return Data()
+    }
+
+    private var requiresAuthorization: Bool {
+        switch self {
+        case .userInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private var authorizationHeaderValue: String? {
+        guard let token = rawAccessToken else { return nil }
+        return "Bearer \(token)"
+    }
+
+    private var rawAccessToken: String? {
+        let accessToken = UserManager.shared.currentUser?.access_token.isEmpty == false
+            ? UserManager.shared.currentUser?.access_token
+            : (PUserDefault.getVauleForKey(key: "access_token") as? String)
+
+        guard let token = accessToken?.trimmingCharacters(in: .whitespacesAndNewlines), !token.isEmpty else {
+            return nil
+        }
+
+        return token
     }
 }
 

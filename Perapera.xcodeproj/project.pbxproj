@@ -85,6 +85,7 @@
 		ECDFE842300DB9EE0091E22C /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDFE82E300DB9EE0091E22C /* COSConfig.local.swift */; };
 		ECDFE843300DB9EE0091E22C /* COSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDFE82D300DB9EE0091E22C /* COSConfig.swift */; };
 		ECDFE844300DB9EE0091E22C /* AliyunASRBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = ECDFE824300DB9EE0091E22C /* AliyunASRBridge.h */; };
+		F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70809101111 /* IAPModel.swift */; };
 		F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -202,6 +203,7 @@
 		ECDFE831300DB9EE0091E22C /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanConfig.local.swift; sourceTree = "<group>"; };
 		ECDFE832300DB9EE0091E22C /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanManager.swift; sourceTree = "<group>"; };
 		ECDFE833300DB9EE0091E22C /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F70809101111 /* IAPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPModel.swift; sourceTree = "<group>"; };
 		F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -445,6 +447,7 @@
 			isa = PBXGroup;
 			children = (
 				184C06C92FB815DD001114A3 /* YTAudioModel.swift */,
+				F1A2B3C4D5E6F70809101111 /* IAPModel.swift */,
 				EC31CE7E2F1491C80040B489 /* LoginModel.swift */,
 				ECACBF1F2F0BB6A40090F990 /* SendCaptchaModel.swift */,
 				ECACBF1B2F0B8D5F0090F990 /* SupportLanguageModel.swift */,
@@ -709,6 +712,7 @@
 				ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */,
 				ECACBE722EF937930090F990 /* SettingsView.swift in Sources */,
 				EC31CE7F2F1491C80040B489 /* LoginModel.swift in Sources */,
+				F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */,
 				ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */,
 				18CA306E2F2787DE00CA9B62 /* VideoPlayerView.swift in Sources */,
 				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,

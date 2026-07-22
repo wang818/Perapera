@@ -206,8 +206,15 @@ struct PurchaseView: View {
             .onAppear {
                 purchaseManager.loadProducts()
                 purchaseManager.refreshEntitlements()
-                if selectedPlan == nil, let firstPlan = plans.first {
+                if let currentProductID = purchaseManager.currentProductID {
+                    selectedProductID = currentProductID
+                } else if selectedPlan == nil, let firstPlan = plans.first {
                     selectedProductID = firstPlan.id
+                }
+            }
+            .onChange(of: purchaseManager.currentProductID) { newValue in
+                if let newValue {
+                    selectedProductID = newValue
                 }
             }
         }
