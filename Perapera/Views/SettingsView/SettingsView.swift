@@ -29,6 +29,7 @@ struct SettingsView: View {
     @State private var showSubtitleSettings = false
     @State private var showCloudProviderSettings = false
     @State private var showPurchaseView = false
+    @State private var showDeleteAccountConfirm = false
 
     var body: some View {
         NavigationView {
@@ -145,7 +146,22 @@ struct SettingsView: View {
                             UIApplication.shared.open(url)
                         }
                     }
-                    
+
+                }
+
+                Section {
+                    Button(action: {
+                        showDeleteAccountConfirm = true
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("settings_delete_account_title".localized())
+                                .font(.headline)
+                                .foregroundColor(.red)
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 
@@ -185,6 +201,16 @@ struct SettingsView: View {
             }
             .fullScreenCover(isPresented: $showPurchaseView) {
                 PurchaseView()
+            }
+            .alert(isPresented: $showDeleteAccountConfirm) {
+                Alert(
+                    title: Text("settings_delete_account_title".localized()),
+                    message: Text("settings_delete_account_message".localized()),
+                    primaryButton: .destructive(Text("settings_delete_account_confirm".localized())) {
+                        print("Delete account confirmed")
+                    },
+                    secondaryButton: .cancel(Text("colse".localized()))
+                )
             }
         }
     }

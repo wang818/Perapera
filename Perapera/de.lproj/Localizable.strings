@@ -88,6 +88,9 @@
 "login_resend_code_timer" = "Erneut senden in %ds";
 "login_success" = "Anmeldung erfolgreich";
 "logout" = "Abmelden";
+"settings_delete_account_title" = "Konto löschen";
+"settings_delete_account_message" = "Wenn Ihr Konto gelöscht wird, kann es nicht wiederhergestellt werden. Möchten Sie fortfahren?";
+"settings_delete_account_confirm" = "Konto löschen";
 
 "purchase_restore" = "Kauf wiederherstellen";
 "purchase_feature_grammar_title" = "Grammatikanalyse";

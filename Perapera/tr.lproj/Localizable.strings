@@ -86,6 +86,9 @@
 "login_send_code_success" = "Doğrulama kodu başarıyla gönderildi";
 "login_success" = "Giriş başarılı";
 "logout" = "Çıkış Yap";
+"settings_delete_account_title" = "Hesabı Sil";
+"settings_delete_account_message" = "Hesabınız silindikten sonra kurtarılamaz. Devam etmek istediğinize emin misiniz?";
+"settings_delete_account_confirm" = "Hesabı Sil";
 
 "purchase_restore" = "Satın Almayı Geri Yükle";
 "purchase_feature_grammar_title" = "Dilbilgisi Analizi";

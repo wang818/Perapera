@@ -86,6 +86,9 @@
 "login_send_code_success" = "အတည်ပြုကုဒ် ပေးပို့ပြီးပါပြီ";
 "login_success" = "အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်";
 "logout" = "အကောင့်ထွက်ရန်";
+"settings_delete_account_title" = "အကောင့်ကို ဖျက်ပစ်ရန်";
+"settings_delete_account_message" = "အကောင့်ကို ဖျက်ပစ်ပါက ပြန်လည်ရယူ၍မရတော့ပါ။ ဆက်လက်လုပ်ဆောင်ရန် သေချာပါသလား?";
+"settings_delete_account_confirm" = "အကောင့်ကို ဖျက်ပစ်ရန်";
 
 "purchase_restore" = "ဝယ်ယူမှုကို ပြန်လည်ရယူပါ";
 "purchase_feature_grammar_title" = "သဒ္ဒါခွဲခြမ်းစိတ်ဖြာခြင်း";

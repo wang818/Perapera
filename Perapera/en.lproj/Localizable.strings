@@ -95,6 +95,9 @@
 "login_resend_code_timer" = "Resend in %ds";
 "login_success" = "Login successful";
 "logout" = "Log Out";
+"settings_delete_account_title" = "Delete Account";
+"settings_delete_account_message" = "Once you delete your account, it cannot be recovered. Are you sure you want to continue?";
+"settings_delete_account_confirm" = "Delete Account";
 "purchase_restore" = "Restore Purchase";
 "purchase_feature_grammar_title" = "Grammar Analysis";
 "purchase_feature_grammar_subtitle" = "Analyze grammar and support deeper questions";

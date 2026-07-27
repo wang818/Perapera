@@ -95,6 +95,9 @@
 "login_resend_code_timer" = "%d秒后重发";
 "login_success" = "登录成功";
 "logout" = "退出登录";
+"settings_delete_account_title" = "注销账号";
+"settings_delete_account_message" = "注销账号后无法恢复，确定要继续吗？";
+"settings_delete_account_confirm" = "注销账号";
 "purchase_restore" = "恢复购买";
 "purchase_feature_grammar_title" = "分析语法";
 "purchase_feature_grammar_subtitle" = "分析语法并支持更深入的提问";

@@ -95,6 +95,9 @@
 "login_resend_code_timer" = "%d秒後重發";
 "login_success" = "登錄成功";
 "logout" = "登出";
+"settings_delete_account_title" = "註銷帳號";
+"settings_delete_account_message" = "註銷帳號後將無法復原，確定要繼續嗎？";
+"settings_delete_account_confirm" = "註銷帳號";
 
 "purchase_restore" = "恢復購買";
 "purchase_feature_grammar_title" = "語法分析";

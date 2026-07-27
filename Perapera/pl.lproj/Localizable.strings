@@ -86,6 +86,9 @@
 "login_send_code_success" = "Kod weryfikacyjny został wysłany pomyślnie";
 "login_success" = "Logowanie udane";
 "logout" = "Wyloguj się";
+"settings_delete_account_title" = "Usuń konto";
+"settings_delete_account_message" = "Po usunięciu konta nie będzie można go przywrócić. Czy na pewno chcesz kontynuować?";
+"settings_delete_account_confirm" = "Usuń konto";
 
 "purchase_restore" = "Przywróć zakup";
 "purchase_feature_grammar_title" = "Analiza gramatyki";

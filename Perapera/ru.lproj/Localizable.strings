@@ -88,6 +88,9 @@
 "login_resend_code_timer" = "Отправить снова через %ds";
 "login_success" = "Вход выполнен успешно";
 "logout" = "Выйти";
+"settings_delete_account_title" = "Удалить аккаунт";
+"settings_delete_account_message" = "После удаления аккаунт восстановить будет невозможно. Продолжить?";
+"settings_delete_account_confirm" = "Удалить аккаунт";
 
 "purchase_restore" = "Восстановить покупку";
 "purchase_feature_grammar_title" = "Грамматический анализ";

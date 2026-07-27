@@ -86,6 +86,9 @@
 "login_send_code_success" = "Kod pengesahan berjaya dihantar";
 "login_success" = "Log masuk berjaya";
 "logout" = "Log keluar";
+"settings_delete_account_title" = "Padam Akaun";
+"settings_delete_account_message" = "Selepas akaun dipadamkan, ia tidak boleh dipulihkan. Adakah anda pasti ingin meneruskan?";
+"settings_delete_account_confirm" = "Padam Akaun";
 
 "purchase_restore" = "Pulihkan Pembelian";
 "purchase_feature_grammar_title" = "Analisis Tatabahasa";

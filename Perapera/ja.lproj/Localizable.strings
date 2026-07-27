@@ -95,6 +95,9 @@
 "login_resend_code_timer" = "%d秒後に再送信";
 "login_success" = "ログイン成功";
 "logout" = "ログアウト";
+"settings_delete_account_title" = "アカウントを削除";
+"settings_delete_account_message" = "アカウントを削除すると復元できません。続行しますか？";
+"settings_delete_account_confirm" = "アカウントを削除";
 
 "purchase_restore" = "購入を復元";
 "purchase_feature_grammar_title" = "文法分析";

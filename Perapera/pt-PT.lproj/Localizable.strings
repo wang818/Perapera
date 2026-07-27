@@ -88,6 +88,9 @@
 "login_resend_code_timer" = "Reenviar em %ds";
 "login_success" = "Login efetuado com sucesso";
 "logout" = "Sair";
+"settings_delete_account_title" = "Eliminar conta";
+"settings_delete_account_message" = "Depois de eliminar a sua conta, não será possível recuperá-la. Tem a certeza de que pretende continuar?";
+"settings_delete_account_confirm" = "Eliminar conta";
 
 "purchase_restore" = "Restaurar compra";
 "purchase_feature_grammar_title" = "Análise gramatical";

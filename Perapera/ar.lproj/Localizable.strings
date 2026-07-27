@@ -86,6 +86,9 @@
 "login_send_code_success" = "تم إرسال رمز التحقق بنجاح";
 "login_success" = "تم تسجيل الدخول بنجاح";
 "logout" = "تسجيل الخروج";
+"settings_delete_account_title" = "حذف الحساب";
+"settings_delete_account_message" = "بعد حذف حسابك، لا يمكن استعادته. هل تريد المتابعة؟";
+"settings_delete_account_confirm" = "حذف الحساب";
 
 "purchase_restore" = "استعادة الشراء";
 "purchase_feature_grammar_title" = "تحليل القواعد";

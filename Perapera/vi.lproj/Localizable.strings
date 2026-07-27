@@ -86,6 +86,9 @@
 "login_send_code_success" = "Gửi mã xác minh thành công";
 "login_success" = "Đăng nhập thành công";
 "logout" = "Đăng xuất";
+"settings_delete_account_title" = "Xóa tài khoản";
+"settings_delete_account_message" = "Sau khi xóa tài khoản, bạn sẽ không thể khôi phục lại. Bạn có chắc chắn muốn tiếp tục?";
+"settings_delete_account_confirm" = "Xóa tài khoản";
 
 "purchase_restore" = "Khôi phục mua hàng";
 "purchase_feature_grammar_title" = "Phân tích ngữ pháp";

@@ -86,6 +86,9 @@
 "login_send_code_success" = "Matagumpay na naipadala ang verification code";
 "login_success" = "Matagumpay ang pag-login";
 "logout" = "Mag-log out";
+"settings_delete_account_title" = "Tanggalin ang Account";
+"settings_delete_account_message" = "Kapag tinanggal ang iyong account, hindi na ito maaaring maibalik. Sigurado ka bang gusto mong magpatuloy?";
+"settings_delete_account_confirm" = "Tanggalin ang Account";
 
 "purchase_restore" = "Ibalik ang Pagbili";
 "purchase_feature_grammar_title" = "Pagsusuri ng Gramatika";

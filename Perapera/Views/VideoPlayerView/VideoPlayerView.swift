@@ -3,6 +3,57 @@ import AVKit
 import AVFoundation
 import UIKit
 
+struct TabBarHiderModifier: ViewModifier {
+    @State private var hostingController: UITabBarController?
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                DispatchQueue.main.async {
+                    self.hostingController = Self.findTabBarController()
+                    self.hostingController?.tabBar.isHidden = true
+                }
+            }
+            .onDisappear {
+                DispatchQueue.main.async {
+                    self.hostingController?.tabBar.isHidden = false
+                }
+            }
+    }
+
+    private static func findTabBarController() -> UITabBarController? {
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }) ?? UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first else {
+            return nil
+        }
+
+        if let tab = window.rootViewController as? UITabBarController {
+            return tab
+        }
+        if let nav = window.rootViewController as? UINavigationController,
+           let tab = nav.topViewController as? UITabBarController {
+            return tab
+        }
+        var current: UIViewController? = window.rootViewController
+        while let next = current {
+            if let tab = next as? UITabBarController {
+                return tab
+            }
+            if let presented = next.presentedViewController {
+                current = presented
+                continue
+            }
+            current = next.children.first
+        }
+        return nil
+    }
+}
+
 struct VideoPlayerView: View {
     let video: VideoItem
     
@@ -25,6 +76,7 @@ struct VideoPlayerView: View {
         .background(Color.ex.bg1)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
+        .modifier(TabBarHiderModifier())
         .onAppear {
             viewModel.setupPlayer()
         }
