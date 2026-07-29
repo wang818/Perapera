@@ -163,6 +163,17 @@ struct SettingsView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
+                .alert(isPresented: $showDeleteAccountConfirm) {
+                    Alert(
+                        title: Text("settings_delete_account_title".localized()),
+                        message: Text("settings_delete_account_message".localized()),
+                        primaryButton: .destructive(Text("settings_delete_account_confirm".localized())) {
+                            userManager.deleteAccount { _, _ in
+                            }
+                        },
+                        secondaryButton: .cancel(Text("colse".localized()))
+                    )
+                }
                 
                 
                 

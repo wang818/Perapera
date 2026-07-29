@@ -85,8 +85,8 @@
 		ECDFE842300DB9EE0091E22C /* COSConfig.local.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDFE82E300DB9EE0091E22C /* COSConfig.local.swift */; };
 		ECDFE843300DB9EE0091E22C /* COSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDFE82D300DB9EE0091E22C /* COSConfig.swift */; };
 		ECDFE844300DB9EE0091E22C /* AliyunASRBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = ECDFE824300DB9EE0091E22C /* AliyunASRBridge.h */; };
-		F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70809101111 /* IAPModel.swift */; };
 		F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */; };
+		F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70809101111 /* IAPModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -203,8 +203,8 @@
 		ECDFE831300DB9EE0091E22C /* HunyuanConfig.local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanConfig.local.swift; sourceTree = "<group>"; };
 		ECDFE832300DB9EE0091E22C /* HunyuanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HunyuanManager.swift; sourceTree = "<group>"; };
 		ECDFE833300DB9EE0091E22C /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
-		F1A2B3C4D5E6F70809101111 /* IAPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPModel.swift; sourceTree = "<group>"; };
 		F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F70809101111 /* IAPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -929,7 +929,7 @@
 					"\"$(SRCROOT)/Perapera/Models\"",
 				);
 				INFOPLIST_FILE = Perapera/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用于身份认证提交，是否允许打开相机？";
+				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用，是否允许打开相机？";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册以导入视频文件";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -975,7 +975,7 @@
 					"\"$(SRCROOT)/Perapera/Models\"",
 				);
 				INFOPLIST_FILE = Perapera/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用于身份认证提交，是否允许打开相机？";
+				INFOPLIST_KEY_NSCameraUsageDescription = "扫描二维码或拍照用，是否允许打开相机？";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "访问相册照片将用于上传二维码或其他照片，是否允许访问相册？";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册以导入视频文件";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
