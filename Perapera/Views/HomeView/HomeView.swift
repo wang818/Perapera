@@ -543,15 +543,11 @@ struct HomeView: View {
     }
 
     /// 根据视频类型选择进入播放页的方式
-    /// - YouTube：传 pendingYouTubeURL，播放页会执行完整流水线（下音频、ASR、翻译）
+    /// - YouTube：直接传当前视频对象，播放页点击按钮后再执行完整流水线
     /// - 本地：直接传 video，播放页只负责播放
     @ViewBuilder
     private func destinationView(for video: VideoItem) -> some View {
-        if video.isYouTube {
-            VideoPlayerView(pendingYouTubeURL: video.videoURL)
-        } else {
-            VideoPlayerView(video: video)
-        }
+        VideoPlayerView(video: video)
     }
     
     /// 批量删除视频

@@ -87,6 +87,9 @@ struct VideoPlayerView: View {
         VStack(spacing: 0) {
             topNavigationBar
             videoPlayerSection
+            if viewModel.shouldShowYouTubeProcessButton {
+                youtubeProcessSection
+            }
             subtitleScrollSection
             if !viewModel.pipelineStatusMessage.isEmpty {
                 Text(viewModel.pipelineStatusMessage)
@@ -104,7 +107,6 @@ struct VideoPlayerView: View {
         .modifier(TabBarHiderModifier())
         .onAppear {
             viewModel.setupPlayer()
-            viewModel.startYouTubePipelineIfNeeded()
         }
         .onDisappear {
             viewModel.cleanup()
@@ -136,7 +138,7 @@ struct VideoPlayerView: View {
                 Spacer()
             }
             
-            Text(video.name)
+            Text(viewModel.video.name)
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(Color.ex.text1)
                 .lineLimit(1)
@@ -148,7 +150,7 @@ struct VideoPlayerView: View {
     
     // MARK: - YouTube 视频 ID
     private var youtubeVideoID: String? {
-        video.videoURL.youtubeVideoID
+        viewModel.video.videoURL.youtubeVideoID
     }
 
     // MARK: - 视频播放器
@@ -218,6 +220,33 @@ struct VideoPlayerView: View {
         }
         .aspectRatio(16/9, contentMode: .fit)
         .clipped()
+    }
+
+    private var youtubeProcessSection: some View {
+        VStack(spacing: 10) {
+            Button(action: {
+                viewModel.startYouTubePipelineFromButton()
+            }) {
+                HStack(spacing: 8) {
+                    if viewModel.isProcessingYouTubePipeline {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .tint(.white)
+                    }
+                    Text(viewModel.youtubeProcessButtonTitle)
+                        .font(.system(size: 15, weight: .semibold))
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 44)
+                .background(viewModel.isProcessingYouTubePipeline ? Color.gray : Color.Ex.main)
+                .cornerRadius(12)
+            }
+            .disabled(viewModel.isProcessingYouTubePipeline)
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
     }
     
     // MARK: - 字幕滚动区域

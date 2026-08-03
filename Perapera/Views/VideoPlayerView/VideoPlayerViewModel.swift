@@ -29,6 +29,8 @@ class VideoPlayerViewModel: ObservableObject {
 
     // 流水线状态（仅 YouTube 新增 URL 时使用）
     @Published var pipelineStatusMessage: String = ""
+    @Published var isProcessingYouTubePipeline: Bool = false
+    @Published var hasCompletedYouTubeTranslation: Bool = false
 
     private let disposeBag = DisposeBag()
 
@@ -43,6 +45,23 @@ class VideoPlayerViewModel: ObservableObject {
     /// 是否为 YouTube 视频
     var isYouTube: Bool { video.isYouTube }
 
+    /// 当前播放页可用于处理的 YouTube URL
+    var youtubeSourceURL: String? {
+        if let pendingYouTubeURL, !pendingYouTubeURL.isEmpty {
+            return pendingYouTubeURL
+        }
+        guard video.isYouTube, !video.videoURL.isEmpty else { return nil }
+        return video.videoURL
+    }
+
+    var shouldShowYouTubeProcessButton: Bool {
+        youtubeSourceURL != nil && !hasCompletedYouTubeTranslation
+    }
+
+    var youtubeProcessButtonTitle: String {
+        isProcessingYouTubePipeline ? "处理中..." : "开始处理"
+    }
+
     private var timeObserver: Any?
     private var cancellables = Set<AnyCancellable>()
 
@@ -50,12 +69,14 @@ class VideoPlayerViewModel: ObservableObject {
         self.video = video
         self.pendingYouTubeURL = pendingYouTubeURL
         loadSubtitles()
+        hasCompletedYouTubeTranslation = hasTranslatedContentInASRFile(videoId: video.id)
     }
 
     /// 替换当前 video（YouTube 流水线获取真实信息后调用）
     func updateVideo(_ newVideo: VideoItem) {
         self.video = newVideo
         loadSubtitles()
+        hasCompletedYouTubeTranslation = hasTranslatedContentInASRFile(videoId: newVideo.id)
     }
 
     // MARK: - 设置播放器
@@ -325,17 +346,20 @@ class VideoPlayerViewModel: ObservableObject {
 
     // MARK: - YouTube URL 流水线（首页输入 URL → 播放页完成全部流程）
 
-    /// 启动完整的 YouTube 流程：yt_audio → 保存本地 → 缩略图 → 音频 → ASR → 翻译
-    func startYouTubePipelineIfNeeded() {
-        guard let url = pendingYouTubeURL else { return }
+    /// 点击按钮后启动完整流程：重置 → yt_audio → 下载音频 → ASR → 轮询 → 翻译
+    func startYouTubePipelineFromButton() {
+        guard !isProcessingYouTubePipeline, let url = youtubeSourceURL else { return }
+        resetYouTubePipelineState()
         startYouTubePipeline(url: url)
     }
 
-    func startYouTubePipeline(url: String) {
+    private func startYouTubePipeline(url: String) {
         DispatchQueue.main.async { [weak self] in
+            self?.isProcessingYouTubePipeline = true
             self?.pipelineStatusMessage = "开始处理 YouTube 视频…"
         }
-        // 1) 调 yt_audio 拿基本信息
+
+        // 1) 调 yt_audio 拿音频信息 + COS URL
         appApi.rx.request(.ytAudio(url: url))
             .asObservable()
             .mapObject(YTAudioModel.self)
@@ -346,6 +370,7 @@ class VideoPlayerViewModel: ObservableObject {
                 }
             }, onError: { [weak self] error in
                 DispatchQueue.main.async {
+                    self?.isProcessingYouTubePipeline = false
                     self?.pipelineStatusMessage = "yt_audio 失败：\(error.localizedDescription)"
                     print("❌ YouTube 流水线失败: \(error.localizedDescription)")
                 }
@@ -355,47 +380,31 @@ class VideoPlayerViewModel: ObservableObject {
 
     private func handleYoutubeAudioResult(model: YTAudioModel, originalURL: String) {
         guard model.status == "ok" else {
+            isProcessingYouTubePipeline = false
             pipelineStatusMessage = "yt_audio 返回 status != ok"
             print("❌ YouTube 流水线 status: \(model.status)")
             return
         }
 
-        // 2) 保存到本地视频列表
         let videoName = model.title.isEmpty ? Self.fallbackYoutubeTitle(from: originalURL) : model.title
-        let newVideo = VideoStorageManager.shared.addVideo(
-            name: videoName,
-            posterImage: nil,
-            videoURL: originalURL,
-            isYouTube: true
-        )
-        updateVideo(newVideo)
-        pipelineStatusMessage = "已保存到本地：\(videoName)"
+        pipelineStatusMessage = "已获取音频信息：\(videoName)"
 
-        // 3) 异步下 YouTube 缩略图
-        if let videoId = Self.extractYoutubeVideoId(from: originalURL),
-           let thumbnailUrl = URL(string: "https://img.youtube.com/vi/\(videoId)/hqdefault.jpg") {
-            URLSession.shared.dataTask(with: thumbnailUrl) { [weak self] data, _, _ in
-                guard let self = self else { return }
-                if let data = data, let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        VideoStorageManager.shared.updateVideo(id: newVideo.id, posterImage: image)
-                    }
-                }
-            }.resume()
-        }
-
-        // 4) 下音频到本地
+        // 2) 下载音频到本地
         if let audioRemoteURL = URL(string: model.url) {
-            downloadYoutubeAudio(from: audioRemoteURL, videoId: newVideo.id)
+            pipelineStatusMessage = "开始下载音频…"
+            downloadYoutubeAudio(from: audioRemoteURL, videoId: video.id)
         } else {
+            isProcessingYouTubePipeline = false
             print("❌ YouTube 音频 URL 无效，无法下载")
+            pipelineStatusMessage = "音频 URL 无效，无法下载"
+            return
         }
 
-        print("✅ YouTube 视频已保存: \(videoName), COS音频URL: \(model.url)")
+        print("✅ 已拿到 YouTube 音频信息: \(videoName), COS音频URL: \(model.url)")
         pipelineStatusMessage = "正在启动 ASR 识别…"
 
-        // 5) 启动 ASR
-        startASRRecognition(cosAudioURL: model.url, videoId: newVideo.id)
+        // 3) 启动 ASR
+        startASRRecognition(cosAudioURL: model.url, videoId: video.id)
     }
 
     /// 复用首页的下音频逻辑
@@ -404,19 +413,31 @@ class VideoPlayerViewModel: ObservableObject {
             .appendingPathComponent("\(videoId).opus")
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             print("📁 音频文件已存在: \(destinationURL.path)")
+            DispatchQueue.main.async {
+                self.pipelineStatusMessage = "音频已准备完成，继续识别…"
+            }
             return
         }
         let task = URLSession.shared.downloadTask(with: remoteURL) { localURL, response, error in
             if let error = error {
                 print("❌ 下载音频失败: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.pipelineStatusMessage = "下载音频失败：\(error.localizedDescription)"
+                }
                 return
             }
             guard let localURL = localURL else { return }
             do {
                 try FileManager.default.moveItem(at: localURL, to: destinationURL)
                 print("✅ 音频下载成功: \(destinationURL.path)")
+                DispatchQueue.main.async {
+                    self.pipelineStatusMessage = "音频下载完成，等待识别结果…"
+                }
             } catch {
                 print("❌ 移动音频文件失败: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.pipelineStatusMessage = "保存音频失败：\(error.localizedDescription)"
+                }
             }
         }
         task.resume()
@@ -431,10 +452,14 @@ class VideoPlayerViewModel: ObservableObject {
             switch result {
             case .success(let taskId):
                 print("✅ ASR 任务创建成功，TaskId: \(taskId)")
+                DispatchQueue.main.async {
+                    self?.pipelineStatusMessage = "ASR 任务已创建，开始轮询结果…"
+                }
                 self?.pollRecognitionResult(taskId: taskId, videoId: videoId)
             case .failure(let error):
                 print("❌ 创建 ASR 任务失败: \(error.localizedDescription)")
                 DispatchQueue.main.async {
+                    self?.isProcessingYouTubePipeline = false
                     self?.pipelineStatusMessage = "ASR 创建失败：\(error.localizedDescription)"
                 }
             }
@@ -448,6 +473,7 @@ class VideoPlayerViewModel: ObservableObject {
             print("❌ 语音识别超时")
             DispatchQueue.main.async {
                 self.pipelineStatusMessage = "语音识别超时"
+                self.isProcessingYouTubePipeline = false
             }
             return
         }
@@ -471,13 +497,16 @@ class VideoPlayerViewModel: ObservableObject {
                         } else {
                             print("⚠️ 识别成功但结果为空")
                             self?.pipelineStatusMessage = "识别成功但无结果"
+                            self?.isProcessingYouTubePipeline = false
                         }
 
                     case 3: // 失败
                         print("❌ 识别失败: \(taskResult.errorMsg ?? "未知错误")")
                         self?.pipelineStatusMessage = "识别失败：\(taskResult.errorMsg ?? "未知错误")"
+                        self?.isProcessingYouTubePipeline = false
 
                     case 0, 1: // 等待 / 执行中
+                        self?.pipelineStatusMessage = "语音识别中…"
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                             self?.pollRecognitionResult(
                                 taskId: taskId,
@@ -489,6 +518,7 @@ class VideoPlayerViewModel: ObservableObject {
                     default:
                         print("⚠️ 未知状态: \(taskResult.status)")
                         self?.pipelineStatusMessage = "识别状态未知：\(taskResult.status)"
+                        self?.isProcessingYouTubePipeline = false
                     }
 
                 case .failure(let error):
@@ -521,6 +551,7 @@ class VideoPlayerViewModel: ObservableObject {
             print("❌ 保存原始 JSON 失败: \(error.localizedDescription)")
             DispatchQueue.main.async {
                 self.pipelineStatusMessage = "保存识别结果失败：\(error.localizedDescription)"
+                self.isProcessingYouTubePipeline = false
             }
         }
     }
@@ -537,6 +568,7 @@ class VideoPlayerViewModel: ObservableObject {
             print("❌ 无法读取 JSON 文件")
             DispatchQueue.main.async {
                 self.pipelineStatusMessage = "无法读取识别 JSON"
+                self.isProcessingYouTubePipeline = false
             }
             return
         }
@@ -550,18 +582,77 @@ class VideoPlayerViewModel: ObservableObject {
                         try enrichedData.write(to: jsonFileURL)
                         print("✅ 翻译结果已写回 JSON 文件: \(jsonFileURL.path)")
                         self?.pipelineStatusMessage = "翻译完成"
+                        self?.hasCompletedYouTubeTranslation = true
+                        self?.isProcessingYouTubePipeline = false
                         self?.loadSubtitles()
                     } catch {
                         print("❌ 写回 JSON 文件失败: \(error.localizedDescription)")
                         self?.pipelineStatusMessage = "写回 JSON 失败：\(error.localizedDescription)"
+                        self?.isProcessingYouTubePipeline = false
                     }
 
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
                     self?.pipelineStatusMessage = "翻译失败：\(error.localizedDescription)"
+                    self?.isProcessingYouTubePipeline = false
                 }
             }
         }
+    }
+
+    private func resetYouTubePipelineState() {
+        let fileManager = FileManager.default
+        [video.audioURL, video.recognitionURL, video.translationURL].forEach { url in
+            guard fileManager.fileExists(atPath: url.path) else { return }
+            do {
+                try fileManager.removeItem(at: url)
+                print("🧹 已删除旧文件: \(url.lastPathComponent)")
+            } catch {
+                print("❌ 删除旧文件失败: \(url.lastPathComponent), \(error.localizedDescription)")
+            }
+        }
+
+        subtitles = []
+        currentSubtitle = nil
+        currentSubtitleIndex = -1
+        hasCompletedYouTubeTranslation = false
+        pipelineStatusMessage = "已重置旧结果，准备开始处理…"
+    }
+
+    private func hasTranslatedContentInASRFile(videoId: String) -> Bool {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let jsonFileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
+
+        guard let data = try? Data(contentsOf: jsonFileURL),
+              let jsonObject = try? JSONSerialization.jsonObject(with: data) else {
+            return false
+        }
+
+        return containsTranslatedContent(in: jsonObject)
+    }
+
+    private func containsTranslatedContent(in object: Any) -> Bool {
+        if let dictionary = object as? [String: Any] {
+            for (key, value) in dictionary {
+                if key == "Translation",
+                   let translation = value as? String,
+                   !translation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    return true
+                }
+
+                if containsTranslatedContent(in: value) {
+                    return true
+                }
+            }
+        }
+
+        if let array = object as? [Any] {
+            for item in array where containsTranslatedContent(in: item) {
+                return true
+            }
+        }
+
+        return false
     }
 
     // MARK: - 工具
