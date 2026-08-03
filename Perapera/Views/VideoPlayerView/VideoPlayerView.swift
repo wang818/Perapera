@@ -298,7 +298,10 @@ struct VideoPlayerView: View {
                         SentenceCardView(
                             subtitle: subtitle,
                             isActive: viewModel.currentSubtitleIndex == index,
-                            currentTime: viewModel.currentTime
+                            currentTime: viewModel.currentTime,
+                            onTap: {
+                                viewModel.seek(to: subtitle.startTime)
+                            }
                         )
                         .id(index)
                     }
@@ -438,6 +441,7 @@ struct SentenceCardView: View {
     let subtitle: SubtitleItem
     let isActive: Bool
     let currentTime: Double
+    let onTap: () -> Void
     
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
     private let greenLight = Color(red: 0.78, green: 0.92, blue: 0.58)
@@ -489,6 +493,8 @@ struct SentenceCardView: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(isActive ? greenLight.opacity(0.08) : Color.clear)
         )
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
         .opacity(isActive ? 1.0 : 0.5)
         .animation(.easeInOut(duration: 0.2), value: isActive)
     }

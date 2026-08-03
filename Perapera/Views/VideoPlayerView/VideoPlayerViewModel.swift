@@ -269,10 +269,21 @@ class VideoPlayerViewModel: ObservableObject {
     // MARK: - 跳转到指定时间
 
     func seek(to time: Double) {
-        if isYouTube {
-            youtubeController.seek(to: time)
+        let targetTime: Double
+        if duration > 0 {
+            targetTime = max(0, min(duration, time))
         } else {
-            let cmTime = CMTime(seconds: time, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+            targetTime = max(0, time)
+        }
+
+        currentTime = targetTime
+        updateCurrentSubtitle(at: targetTime)
+
+        if isYouTube {
+            youtubeController.currentTime = targetTime
+            youtubeController.seek(to: targetTime)
+        } else {
+            let cmTime = CMTime(seconds: targetTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
             player?.seek(to: cmTime, toleranceBefore: .zero, toleranceAfter: .zero)
         }
     }
