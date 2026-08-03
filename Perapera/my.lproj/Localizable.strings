@@ -42,6 +42,15 @@
 "settings_pro_title" = "Perapera Pro သို့ ဝင်ရောက်ရန်";
 "settings_pro_subtitle" = "AI ဖြင့် အင်္ဂါရပ်အားလုံးကို ဖွင့်ရန်";
 
+/* Perapera Pro အဖွဲ့ဝင်အခြေအနေ (ဆက်တင်များ) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "လစဉ်";
+"Yearly" = "နှစ်စဉ်";
+"Current month remaining" = "ယခုလ လက်ကျန်အချိန်";
+"Point card remaining" = "ပွိုင့်ကတ် လက်ကျန်အချိန်";
+"%d hr" = "%d နာရီ";
+"%d min" = "%d မိနစ်";
+
 "settings_general_header" = "အထွေထွေ";
 "settings_language_title" = "အက်ပ်ဘာသာစကား";
 "settings_language_subtitle" = "အက်ပ်ဘာသာစကား ရွေးချယ်ရန်";

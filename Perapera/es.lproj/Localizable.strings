@@ -42,6 +42,15 @@
 "settings_pro_title" = "Únete a Perapera Pro";
 "settings_pro_subtitle" = "Desbloquea todas las funciones con IA";
 
+/* Estado de membresía de Perapera Pro (Ajustes) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Mensual";
+"Yearly" = "Anual";
+"Current month remaining" = "Tiempo restante de este mes";
+"Point card remaining" = "Tiempo restante de la tarjeta de puntos";
+"%d hr" = "%d h";
+"%d min" = "%d min";
+
 "settings_general_header" = "General";
 "settings_language_title" = "Idioma de la App";
 "settings_language_subtitle" = "Elige el idioma de la aplicación";

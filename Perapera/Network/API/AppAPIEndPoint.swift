@@ -24,6 +24,7 @@ enum AppAPIEndPoint {
     case iapNotifications(payload: [String: Any])
     case iapProductEntitlement(productID: String)
     case deleteAccount
+    case currentUser
 }
 
 extension AppAPIEndPoint: TargetType {
@@ -48,6 +49,7 @@ extension AppAPIEndPoint: TargetType {
         case .iapNotifications: return "iap/notifications"
         case .iapProductEntitlement(let productID): return "iap/products/\(productID)/entitlement"
         case .deleteAccount: return "users/delete_account"
+        case .currentUser: return "users/me"
 
         }
     }
@@ -62,6 +64,7 @@ extension AppAPIEndPoint: TargetType {
         case .iapStatus: return .get
         case .iapProducts: return .get
         case .iapProductEntitlement: return .get
+        case .currentUser: return .get
         case .deleteAccount: return .delete
         default: return .post
         }
@@ -119,7 +122,7 @@ extension AppAPIEndPoint: TargetType {
 
     private var requiresAuthorization: Bool {
         switch self {
-        case .userInfo, .ytAudio, .ytInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement, .deleteAccount:
+        case .userInfo, .ytAudio, .ytInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement, .deleteAccount, .currentUser:
             return true
         default:
             return false

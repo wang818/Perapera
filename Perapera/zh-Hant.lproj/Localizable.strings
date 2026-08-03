@@ -49,6 +49,15 @@
 "settings_pro_title" = "加入 Perapera Pro";
 "settings_pro_subtitle" = "用AI解鎖全部功能";
 
+/* Perapera Pro 會員狀態（設定） */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "月卡";
+"Yearly" = "年卡";
+"Current month remaining" = "當月 剩餘時間";
+"Point card remaining" = "點卡 剩餘時間";
+"%d hr" = "%d 小時";
+"%d min" = "%d 分鐘";
+
 "settings_general_header" = "通用";
 "settings_language_title" = "App語言";
 "settings_language_subtitle" = "選擇App內使用語言";

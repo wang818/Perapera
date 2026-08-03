@@ -42,6 +42,15 @@
 "settings_pro_title" = "انضم إلى Perapera Pro";
 "settings_pro_subtitle" = "فتح جميع الميزات مع الذكاء الاصطناعي";
 
+/* Perapera Pro membership status (Settings) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "شهري";
+"Yearly" = "سنوي";
+"Current month remaining" = "الوقت المتبقي لهذا الشهر";
+"Point card remaining" = "الوقت المتبقي لبطاقة النقاط";
+"%d hr" = "%d ساعة";
+"%d min" = "%d دقيقة";
+
 "settings_general_header" = "عام";
 "settings_language_title" = "لغة التطبيق";
 "settings_language_subtitle" = "اختر لغة التطبيق";

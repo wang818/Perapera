@@ -49,6 +49,15 @@
 "settings_pro_title" = "Perapera Pro 가입";
 "settings_pro_subtitle" = "AI로 모든 기능 잠금 해제";
 
+/* Perapera Pro 멤버십 상태 (설정) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "월간";
+"Yearly" = "연간";
+"Current month remaining" = "이번 달 남은 시간";
+"Point card remaining" = "포인트 카드 남은 시간";
+"%d hr" = "%d시간";
+"%d min" = "%d분";
+
 "settings_general_header" = "일반";
 "settings_language_title" = "앱 언어";
 "settings_language_subtitle" = "앱에서 사용할 언어 선택";

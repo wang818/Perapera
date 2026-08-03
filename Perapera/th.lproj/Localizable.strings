@@ -42,6 +42,15 @@
 "settings_pro_title" = "เข้าร่วม Perapera Pro";
 "settings_pro_subtitle" = "ปลดล็อกฟีเจอร์ทั้งหมดด้วย AI";
 
+/* สถานะสมาชิก Perapera Pro (การตั้งค่า) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "รายเดือน";
+"Yearly" = "รายปี";
+"Current month remaining" = "เวลาคงเหลือของเดือนนี้";
+"Point card remaining" = "เวลาคงเหลือของบัตรแต้ม";
+"%d hr" = "%d ชม.";
+"%d min" = "%d นาที";
+
 "settings_general_header" = "ทั่วไป";
 "settings_language_title" = "ภาษาของแอป";
 "settings_language_subtitle" = "เลือกภาษาของแอป";

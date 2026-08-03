@@ -221,12 +221,9 @@ class VideoPlayerViewModel: ObservableObject {
     // MARK: - 生成默认字幕
 
     private func generateDefaultSubtitles() {
-        // TODO: 从 ASR 识别结果生成字幕
-        subtitles = [
-            SubtitleItem(startTime: 0, endTime: 5, originalText: "这是第一句话", translatedText: "This is the first sentence"),
-            SubtitleItem(startTime: 5, endTime: 10, originalText: "这是第二句话", translatedText: "This is the second sentence"),
-            SubtitleItem(startTime: 10, endTime: 15, originalText: "这是第三句话", translatedText: "This is the third sentence"),
-        ]
+        subtitles = []
+        currentSubtitle = nil
+        currentSubtitleIndex = -1
     }
 
     // MARK: - 更新当前字幕

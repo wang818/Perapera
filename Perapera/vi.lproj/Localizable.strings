@@ -42,6 +42,15 @@
 "settings_pro_title" = "Tham gia Perapera Pro";
 "settings_pro_subtitle" = "Mở khóa tất cả các tính năng với AI";
 
+/* Trạng thái thành viên Perapera Pro (Cài đặt) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Hàng tháng";
+"Yearly" = "Hàng năm";
+"Current month remaining" = "Thời gian còn lại trong tháng này";
+"Point card remaining" = "Thời gian còn lại của thẻ điểm";
+"%d hr" = "%d giờ";
+"%d min" = "%d phút";
+
 "settings_general_header" = "Chung";
 "settings_language_title" = "Ngôn ngữ ứng dụng";
 "settings_language_subtitle" = "Chọn ngôn ngữ ứng dụng";

@@ -49,6 +49,15 @@
 "settings_pro_title" = "Perapera Proに参加";
 "settings_pro_subtitle" = "AIですべての機能をロック解除";
 
+/* Perapera Pro メンバーシップ状態（設定） */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "月額";
+"Yearly" = "年額";
+"Current month remaining" = "今月の残り時間";
+"Point card remaining" = "ポイントカードの残り時間";
+"%d hr" = "%d 時間";
+"%d min" = "%d 分";
+
 "settings_general_header" = "一般";
 "settings_language_title" = "アプリの言語";
 "settings_language_subtitle" = "アプリ内で使用する言語を選択";

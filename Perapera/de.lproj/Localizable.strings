@@ -42,6 +42,15 @@
 "settings_pro_title" = "Perapera Pro beitreten";
 "settings_pro_subtitle" = "Alle Funktionen mit KI freischalten";
 
+/* Perapera Pro membership status (Settings) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Monatlich";
+"Yearly" = "Jährlich";
+"Current month remaining" = "Verbleibende Zeit diesen Monat";
+"Point card remaining" = "Verbleibende Zeit der Punktekarte";
+"%d hr" = "%d Std.";
+"%d min" = "%d Min.";
+
 "settings_general_header" = "Allgemein";
 "settings_language_title" = "App-Sprache";
 "settings_language_subtitle" = "App-Sprache wählen";

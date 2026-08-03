@@ -92,12 +92,21 @@ struct SettingsView: View {
                         showPurchaseView = true
                     }) {
                         VStack(alignment: .center, spacing: 8) {
-                            Text("settings_pro_title".localized())
-                                .font(.headline)
-                                .foregroundColor(.Ex.text1)
-                            Text(purchaseManager.currentPlanDisplayName ?? "settings_pro_subtitle".localized())
-                                .font(.subheadline)
-                                .foregroundColor(.Ex.text2)
+                            if let userInfo = userManager.currentUserInfo, userInfo.hasActivePro {
+                                Text("Perapera Pro".localized())
+                                    .font(.headline)
+                                    .foregroundColor(.Ex.text1)
+                                Text(userInfo.currentMonthRemainingDescription)
+                                    .font(.subheadline)
+                                    .foregroundColor(.Ex.text2)
+                            } else {
+                                Text("settings_pro_title".localized())
+                                    .font(.headline)
+                                    .foregroundColor(.Ex.text1)
+                                Text(purchaseManager.currentPlanDisplayName ?? "settings_pro_subtitle".localized())
+                                    .font(.subheadline)
+                                    .foregroundColor(.Ex.text2)
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()
@@ -206,6 +215,7 @@ struct SettingsView: View {
                 viewModel.fetchSupportLanguages()
                 purchaseManager.loadProducts()
                 purchaseManager.refreshEntitlements()
+                userManager.fetchCurrentUser()
             }
             .fullScreenCover(isPresented: $showingLoginView) {
                 LoginView()

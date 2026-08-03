@@ -42,6 +42,15 @@
 "settings_pro_title" = "Sertai Perapera Pro";
 "settings_pro_subtitle" = "Buka kunci semua ciri dengan AI";
 
+/* Status keahlian Perapera Pro (Tetapan) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Bulanan";
+"Yearly" = "Tahunan";
+"Current month remaining" = "Baki masa bulan ini";
+"Point card remaining" = "Baki masa kad mata";
+"%d hr" = "%d jam";
+"%d min" = "%d minit";
+
 "settings_general_header" = "Umum";
 "settings_language_title" = "Bahasa Aplikasi";
 "settings_language_subtitle" = "Pilih bahasa aplikasi";

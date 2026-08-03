@@ -49,6 +49,15 @@
 "settings_pro_title" = "Join Perapera Pro";
 "settings_pro_subtitle" = "Unlock all features with AI";
 
+/* Perapera Pro membership status (Settings) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Monthly";
+"Yearly" = "Yearly";
+"Current month remaining" = "Current month remaining";
+"Point card remaining" = "Point card remaining";
+"%d hr" = "%d hr";
+"%d min" = "%d min";
+
 "settings_general_header" = "General";
 "settings_language_title" = "App Language";
 "settings_language_subtitle" = "Choose app language";

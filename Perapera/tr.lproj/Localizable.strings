@@ -42,6 +42,15 @@
 "settings_pro_title" = "Perapera Pro'ya Katıl";
 "settings_pro_subtitle" = "AI ile tüm özelliklerin kilidini aç";
 
+/* Perapera Pro üyelik durumu (Ayarlar) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Aylık";
+"Yearly" = "Yıllık";
+"Current month remaining" = "Bu ay kalan süre";
+"Point card remaining" = "Puan kartı kalan süre";
+"%d hr" = "%d sa";
+"%d min" = "%d dk";
+
 "settings_general_header" = "Genel";
 "settings_language_title" = "Uygulama Dili";
 "settings_language_subtitle" = "Uygulama dilini seçin";

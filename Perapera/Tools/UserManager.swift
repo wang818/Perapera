@@ -15,6 +15,7 @@ class UserManager: ObservableObject {
     static let shared = UserManager()
 
     @Published var currentUser: LoginModel?
+    @Published var currentUserInfo: UserInfoModel?
     @Published var isLoggedIn: Bool = false
     @Published var userEmail: String?
 
@@ -53,6 +54,24 @@ class UserManager: ObservableObject {
 
     func logout() {
         clearLocalUser()
+    }
+
+    /// Fetches the current user profile from `GET /users/me` and stores it.
+    /// The profile carries Pro membership info (annual/monthly expire dates),
+    /// surfaced via `UserInfoModel.hasActivePro` and `remainingProTimeDescription()`.
+    func fetchCurrentUser() {
+        guard isLoggedIn else { return }
+        appApi.rx.request(.currentUser)
+            .asObservable()
+            .mapObject(UserInfoModel.self)
+            .subscribe(onNext: { [weak self] model in
+                DispatchQueue.main.async {
+                    self?.currentUserInfo = model
+                }
+            }, onError: { error in
+                print("fetchCurrentUser failed: \(error.localizedDescription)")
+            })
+            .disposed(by: disposeBag)
     }
 
     private func clearLocalUser() {

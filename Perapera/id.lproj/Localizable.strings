@@ -42,6 +42,15 @@
 "settings_pro_title" = "Bergabung dengan Perapera Pro";
 "settings_pro_subtitle" = "Buka semua fitur dengan AI";
 
+/* Status keanggotaan Perapera Pro (Pengaturan) */
+"Perapera Pro" = "Perapera Pro";
+"Monthly" = "Bulanan";
+"Yearly" = "Tahunan";
+"Current month remaining" = "Sisa waktu bulan ini";
+"Point card remaining" = "Sisa waktu kartu poin";
+"%d hr" = "%d jam";
+"%d min" = "%d menit";
+
 "settings_general_header" = "Umum";
 "settings_language_title" = "Bahasa Aplikasi";
 "settings_language_subtitle" = "Pilih bahasa aplikasi";
