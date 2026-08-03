@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06C92FB815DD001114A3 /* YTAudioModel.swift */; };
+		184C06CC2FB815F1001114A5 /* YTBasicInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
 		1889F1292EF9214800886186 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1282EF9214800886186 /* ContentView.swift */; };
 		1889F12B2EF9214B00886186 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1889F12A2EF9214B00886186 /* Assets.xcassets */; };
@@ -105,6 +106,7 @@
 
 /* Begin PBXFileReference section */
 		184C06C92FB815DD001114A3 /* YTAudioModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YTAudioModel.swift; sourceTree = "<group>"; };
+		184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YTBasicInfoModel.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1889F1262EF9214800886186 /* PeraperaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeraperaApp.swift; sourceTree = "<group>"; };
 		1889F1282EF9214800886186 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 			isa = PBXGroup;
 			children = (
 				184C06C92FB815DD001114A3 /* YTAudioModel.swift */,
+				184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */,
 				F1A2B3C4D5E6F70809101111 /* IAPModel.swift */,
 				EC31CE7E2F1491C80040B489 /* LoginModel.swift */,
 				ECACBF1F2F0BB6A40090F990 /* SendCaptchaModel.swift */,
@@ -699,6 +702,7 @@
 				ECACBF202F0BB6A40090F990 /* SendCaptchaModel.swift in Sources */,
 				1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */,
 				184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */,
+				184C06CC2FB815F1001114A5 /* YTBasicInfoModel.swift in Sources */,
 				EC7FEF1E2F4D57C90007BCA6 /* AudioConverter.swift in Sources */,
 				EC7FEF1F2F4D57C90007BCA6 /* VideoStorageManager.swift in Sources */,
 				ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */,

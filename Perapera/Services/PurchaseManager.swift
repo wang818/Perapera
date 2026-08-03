@@ -14,6 +14,12 @@ enum SubscriptionTier: String, Codable {
     }
 }
 
+enum TranslationBlockReason: Equatable {
+    case noActivePlan
+    case unknownEntitlementExpiration
+    case insufficientRemainingTime(remaining: TimeInterval, required: TimeInterval)
+}
+
 struct StoreProductInfo: Identifiable, Equatable {
     let id: String
     let displayName: String
@@ -149,10 +155,25 @@ private final class IAPStatusModel: HandyJSON, ResponseStatusable {
 
 private final class IAPEntitlementModel: HandyJSON, ResponseStatusable {
     var product_id: String = ""
+    var type: String = ""
     var entitled: Bool?
     var has_entitlement: Bool?
     var active: Bool?
     var is_active: Bool?
+    var will_renew: Bool?
+    var auto_renew_status: Bool?
+    var is_in_grace_period: Bool?
+    var is_in_billing_retry: Bool?
+    var purchase_date: String = ""
+    var purchaseDate: String = ""
+    var expires_date: String = ""
+    var expiration_date: String = ""
+    var expires_at: String = ""
+    var expireDate: String = ""
+    var expiresDate: String = ""
+    var grace_period_expires_date: String = ""
+    var quantity_remaining: Int = 0
+    var environment: String = ""
     var message: String = ""
     var detail: String = ""
     var statusCode: Int?
@@ -165,6 +186,34 @@ private final class IAPEntitlementModel: HandyJSON, ResponseStatusable {
 
     var hasAccess: Bool {
         entitled == true || has_entitlement == true || active == true || is_active == true
+    }
+
+    var resolvedExpirationDate: Date? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let fallbackFormatter = ISO8601DateFormatter()
+        let candidates = [
+            expires_date,
+            expiration_date,
+            expires_at,
+            expireDate,
+            expiresDate
+        ]
+        for raw in candidates {
+            if raw.isEmpty { continue }
+            if let date = formatter.date(from: raw) ?? fallbackFormatter.date(from: raw) {
+                return date
+            }
+        }
+        return nil
+    }
+
+    func remainingTimeInterval(referenceDate: Date = Date()) -> TimeInterval? {
+        guard hasAccess else { return nil }
+        guard let expiration = resolvedExpirationDate else {
+            return hasAccess ? .greatestFiniteMagnitude : nil
+        }
+        return expiration.timeIntervalSince(referenceDate)
     }
 
     var resolvedMessage: String? {
@@ -258,6 +307,43 @@ final class PurchaseManager: ObservableObject {
     var currentPlanDisplayName: String? {
         guard let currentProductID = currentProductID else { return nil }
         return productsByID[currentProductID]?.displayName ?? fallbackPlanName(for: currentProductID)
+    }
+
+    fileprivate var currentEntitlement: IAPEntitlementModel? {
+        guard let currentProductID = currentProductID else { return nil }
+        return remoteEntitlementsByProductID[currentProductID]
+    }
+
+    fileprivate func entitlementRemainingSeconds(referenceDate: Date = Date()) -> TimeInterval? {
+        guard let currentProductID = currentProductID,
+              let entitlement = remoteEntitlementsByProductID[currentProductID] else {
+            return nil
+        }
+        return entitlement.remainingTimeInterval(referenceDate: referenceDate)
+    }
+
+    func canTranslate(audioDurationSeconds: TimeInterval, referenceDate: Date = Date()) -> Bool {
+        guard audioDurationSeconds > 0 else { return true }
+        guard hasActivePlan else { return false }
+        guard let remaining = entitlementRemainingSeconds(referenceDate: referenceDate) else {
+            return false
+        }
+        return remaining + 1.0 >= audioDurationSeconds
+    }
+
+    func translationBlockedReason(audioDurationSeconds: TimeInterval,
+                                  referenceDate: Date = Date()) -> TranslationBlockReason? {
+        guard audioDurationSeconds > 0 else { return nil }
+        if !hasActivePlan {
+            return .noActivePlan
+        }
+        guard let remaining = entitlementRemainingSeconds(referenceDate: referenceDate) else {
+            return .unknownEntitlementExpiration
+        }
+        if remaining + 1.0 < audioDurationSeconds {
+            return .insufficientRemainingTime(remaining: remaining, required: audioDurationSeconds)
+        }
+        return nil
     }
 
     func loadProducts() {

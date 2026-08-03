@@ -15,6 +15,9 @@ class HomeViewModel: ObservableObject {
     @Published var youtubeAudioError: String?
     @Published var youtubeErrorLog: String?
 
+    // 输入 URL 后解析出的预览（首页直接显示）
+    @Published var youtubePreview: YTBasicInfoModel?
+
     private let disposeBag = DisposeBag()
 
     /// 翻译 123.json 文件
@@ -60,47 +63,80 @@ class HomeViewModel: ObservableObject {
         }
     }
 
-    /// 调用 YouTube 音频 API，获取音频信息
+    /// 用 yt_info 接口拿基本信息（不下载、不消耗时长），并入库
     func fetchYoutubeAudio(url: String, completion: @escaping (YTAudioModel?) -> Void) {
         isFetchingYoutubeAudio = true
         youtubeAudioError = nil
         youtubeErrorLog = nil
 
-        appApi.rx.request(.ytAudio(url: url))
+        appApi.rx.request(.ytInfo(url: url))
             .asObservable()
-            .mapObject(YTAudioModel.self)
-            .subscribe(onNext: { [weak self] model in
+            .subscribe(onNext: { [weak self] response in
+                guard let self = self else { return }
                 DispatchQueue.main.async {
-                    self?.isFetchingYoutubeAudio = false
-                    if model.status == "ok" {
-                        print("✅ YouTube 音频获取成功: \(model.title)")
-                        completion(model)
-                    } else {
-                        print("❌ YouTube 音频获取失败，status: \(model.status)")
-                        self?.youtubeAudioError = "获取失败"
-                        self?.youtubeErrorLog = Self.buildErrorLog(
-                            requestURL: url,
-                            status: model.status,
-                            title: model.title,
-                            error: nil
-                        )
-                        completion(nil)
+                    self.isFetchingYoutubeAudio = false
+                    let data = response.data
+                    let json = String(data: data, encoding: .utf8) ?? ""
+                    let basicInfo = YTBasicInfoModel.deserialize(from: json)
+                    if let basicInfo = basicInfo {
+                        self.youtubePreview = basicInfo
+                        self.saveYouTubeVideoToLocal(url: url, info: basicInfo)
                     }
+                    let model = YTAudioModel()
+                    model.status = "ok"
+                    model.title = basicInfo?.title ?? ""
+                    completion(model)
                 }
             }, onError: { [weak self] error in
                 DispatchQueue.main.async {
                     self?.isFetchingYoutubeAudio = false
-                    print("❌ YouTube 音频请求错误: \(error.localizedDescription)")
+                    print("❌ yt_info 请求错误: \(error.localizedDescription)")
                     self?.youtubeAudioError = error.localizedDescription
-                    self?.youtubeErrorLog = Self.buildErrorLog(
-                        requestURL: url,
-                        status: nil,
-                        title: nil,
-                        error: error
-                    )
                     completion(nil)
                 }
             })
+            .disposed(by: disposeBag)
+    }
+
+    private func saveYouTubeVideoToLocal(url: String, info: YTBasicInfoModel) {
+        let videoName = info.title.isEmpty ? "YouTube - \(info.video_id)" : info.title
+        let duration = Double(info.video_length) ?? 0
+        let thumbnailURL = info.bestThumbnail?.url
+
+        _ = VideoStorageManager.shared.addVideo(
+            name: videoName,
+            posterImage: nil,
+            videoURL: url,
+            isYouTube: true,
+            duration: duration,
+            youtubeVideoID: info.video_id,
+            author: info.author,
+            numberOfViews: info.number_of_views,
+            videoDescription: info.description,
+            channelID: info.channel_id,
+            category: info.category,
+            publishedTime: info.published_time,
+            keywords: info.keywords,
+            thumbnailURL: thumbnailURL
+        )
+
+        NotificationCenter.default.post(name: NSNotification.Name("HomeViewShouldRefreshVideos"), object: nil)
+    }
+
+    /// 用 yt_info 接口只拿基本信息（不下载、不消耗时长）
+    func refreshYoutubePreview(url: String) {
+        appApi.rx.request(.ytInfo(url: url))
+            .asObservable()
+            .subscribe(onNext: { [weak self] response in
+                guard let self = self else { return }
+                let data = response.data
+                if let json = String(data: data, encoding: .utf8),
+                   let model = YTBasicInfoModel.deserialize(from: json) {
+                    DispatchQueue.main.async {
+                        self.youtubePreview = model
+                    }
+                }
+            }, onError: { _ in })
             .disposed(by: disposeBag)
     }
 
@@ -115,7 +151,7 @@ class HomeViewModel: ObservableObject {
         log += String(repeating: "=", count: 60) + "\n"
         log += "🕐 Timestamp: \(formatter.string(from: Date()))\n"
         log += "🔗 Request URL: \(requestURL)\n"
-        log += "🌐 API Endpoint: https://www.perapera.cc/api/v1/common/yt_audio\n"
+        //log += "🌐 API Endpoint: https://www.perapera.cc/api/v1/common/yt_audio\n" //这一句隐藏，不然暴露接口
 
         if let status = status {
             log += "📊 Response Status: \(status)\n"

@@ -56,20 +56,45 @@ struct TabBarHiderModifier: ViewModifier {
 
 struct VideoPlayerView: View {
     let video: VideoItem
-    
+    let pendingYouTubeURL: String?
+
     @StateObject private var viewModel: VideoPlayerViewModel
     @Environment(\.dismiss) private var dismiss
-    
+
     init(video: VideoItem) {
         self.video = video
-        _viewModel = StateObject(wrappedValue: VideoPlayerViewModel(video: video))
+        self.pendingYouTubeURL = nil
+        _viewModel = StateObject(wrappedValue: VideoPlayerViewModel(video: video, pendingYouTubeURL: nil))
     }
-    
+
+    init(pendingYouTubeURL: String) {
+        let placeholderID = UUID().uuidString
+        let placeholder = VideoItem(
+            id: placeholderID,
+            name: "YouTube - \(Self.preferredYouTubeID(from: pendingYouTubeURL) ?? placeholderID)",
+            posterImageData: nil,
+            videoURL: pendingYouTubeURL,
+            createdAt: Date(),
+            isYouTube: true,
+            duration: nil
+        )
+        self.video = placeholder
+        self.pendingYouTubeURL = pendingYouTubeURL
+        _viewModel = StateObject(wrappedValue: VideoPlayerViewModel(video: placeholder, pendingYouTubeURL: pendingYouTubeURL))
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             topNavigationBar
             videoPlayerSection
             subtitleScrollSection
+            if !viewModel.pipelineStatusMessage.isEmpty {
+                Text(viewModel.pipelineStatusMessage)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 6)
+            }
             Spacer(minLength: 0)
             bottomControlBar
         }
@@ -79,10 +104,23 @@ struct VideoPlayerView: View {
         .modifier(TabBarHiderModifier())
         .onAppear {
             viewModel.setupPlayer()
+            viewModel.startYouTubePipelineIfNeeded()
         }
         .onDisappear {
             viewModel.cleanup()
         }
+    }
+
+    private static func preferredYouTubeID(from url: String) -> String? {
+        if url.contains("youtube.com") {
+            if let comps = URLComponents(string: url),
+               let id = comps.queryItems?.first(where: { $0.name == "v" })?.value {
+                return id
+            }
+        } else if url.contains("youtu.be") {
+            return URL(string: url)?.lastPathComponent
+        }
+        return nil
     }
     
     // MARK: - 顶部导航栏

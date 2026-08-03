@@ -28,6 +28,7 @@ struct HomeView: View {
     @State private var currentTranslatingVideoId: String?
     @State private var showYoutubeToast: Bool = false
     @State private var showYoutubeErrorLog: Bool = false
+    @State private var pendingYoutubeURL: String?
 
     // 根据当前状态动态返回提示文字
     private var processingMessage: String {
@@ -127,7 +128,7 @@ struct HomeView: View {
                                     .padding(.bottom, 8)
 
                                 ForEach(items) { video in
-                                    NavigationLink(destination: VideoPlayerView(video: video)) {
+                                    NavigationLink(destination: destinationView(for: video)) {
                                         VideoRowView(
                                             video: video,
                                             onDelete: { deleteVideo(video) },
@@ -160,6 +161,9 @@ struct HomeView: View {
                         showYoutubeErrorLog = true
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HomeViewShouldRefreshVideos"))) { _ in
+                    loadVideos()
+                }
                 .sheet(isPresented: $showingSheet) {
                     if #available(iOS 16.0, *) {
                         addMenuSheetContent
@@ -167,6 +171,14 @@ struct HomeView: View {
                             .presentationDragIndicator(.visible)
                     } else {
                         addMenuSheetContent
+                    }
+                }
+                .fullScreenCover(isPresented: Binding<Bool>(
+                    get: { pendingYoutubeURL != nil },
+                    set: { if !$0 { pendingYoutubeURL = nil } }
+                )) {
+                    if let url = pendingYoutubeURL {
+                        VideoPlayerView(pendingYouTubeURL: url)
                     }
                 }
                 .fileImporter(
@@ -306,7 +318,17 @@ struct HomeView: View {
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
                         .padding(.horizontal)
-                    
+                        .onChange(of: youtubeUrl) { newValue in
+                            let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if trimmed.contains("youtube.com") || trimmed.contains("youtu.be") {
+                                viewModel.refreshYoutubePreview(url: trimmed)
+                            }
+                        }
+
+                    if let preview = viewModel.youtubePreview {
+                        youtubePreviewCard(preview: preview)
+                    }
+
                     HStack(spacing: 20) {
                         Button(action: {
                             showingYoutubeAlert = false
@@ -320,10 +342,10 @@ struct HomeView: View {
                         }
                         
                         Button(action: {
-                            // 保存 YouTube 视频
-                            if !youtubeUrl.isEmpty {
-                                saveYoutubeVideo(url: youtubeUrl)
-                                youtubeUrl = ""
+                            // 只调 yt_audio 拿信息，弹框关闭，不跳播放页
+                            let urlToOpen = youtubeUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if !urlToOpen.isEmpty {
+                                viewModel.fetchYoutubeAudio(url: urlToOpen) { _ in }
                             }
                             showingYoutubeAlert = false
                         }) {
@@ -519,6 +541,18 @@ struct HomeView: View {
         VideoStorageManager.shared.deleteVideo(id: video.id)
         loadVideos()
     }
+
+    /// 根据视频类型选择进入播放页的方式
+    /// - YouTube：传 pendingYouTubeURL，播放页会执行完整流水线（下音频、ASR、翻译）
+    /// - 本地：直接传 video，播放页只负责播放
+    @ViewBuilder
+    private func destinationView(for video: VideoItem) -> some View {
+        if video.isYouTube {
+            VideoPlayerView(pendingYouTubeURL: video.videoURL)
+        } else {
+            VideoPlayerView(video: video)
+        }
+    }
     
     /// 批量删除视频
     private func deleteVideos(at offsets: IndexSet) {
@@ -531,11 +565,15 @@ struct HomeView: View {
     
     /// 转换音频
     private func convertAudioForVideo(_ video: VideoItem) {
+        if let reason = canStartTranslation(for: video) {
+            showTranslationBlockedAlert(reason: reason)
+            return
+        }
         print("🎵 开始转换音频: \(video.name)")
         currentConvertingVideoId = video.id
         convertVideoToAudio(videoURL: video.actualVideoURL, videoId: video.id)
     }
-    
+
     /// 开始识别（手动触发）
     private func startRecognitionForVideo(_ video: VideoItem) {
         guard video.hasAudio else {
@@ -557,26 +595,31 @@ struct HomeView: View {
             }
         }
     }
-    
+
     /// 开始翻译
     private func startTranslationForVideo(_ video: VideoItem) {
         guard video.hasRecognition else {
             print("❌ 识别结果不存在，无法翻译")
             return
         }
-        
+
+        if let reason = canStartTranslation(for: video) {
+            showTranslationBlockedAlert(reason: reason)
+            return
+        }
+
         print("🌐 开始翻译: \(video.name)")
-        
+
         // 读取识别结果
         do {
             let recognitionData = try Data(contentsOf: video.recognitionURL)
-            
+
             // 解析获取识别文本
             if let jsonObject = try? JSONSerialization.jsonObject(with: recognitionData) as? [String: Any],
                let response = jsonObject["Response"] as? [String: Any],
                let data = response["Data"] as? [String: Any],
                let result = data["Result"] as? String {
-                
+
                 // 开始翻译
                 translateRecognitionResult(videoId: video.id, recognizedText: result)
             } else {
@@ -586,51 +629,122 @@ struct HomeView: View {
             print("❌ 读取识别结果失败: \(error.localizedDescription)")
         }
     }
-    
-    /// 保存 YouTube 视频 — 调用 API 获取音频信息，拿到 COS URL 后直接进行识别和翻译
-    private func saveYoutubeVideo(url: String) {
-        showProcessComplete = false
-        viewModel.fetchYoutubeAudio(url: url) { [self] model in
-            guard let model = model else {
-                print("❌ YouTube 音频获取失败")
-                return
-            }
 
-            // 使用 API 返回的标题
-            let videoName = model.title.isEmpty ? extractVideoName(from: url) : model.title
+    /// 根据会员剩余时间 + 音频时长判断是否允许开始翻译
+    private func canStartTranslation(for video: VideoItem) -> TranslationBlockReason? {
+        let duration = video.duration
+        return PurchaseManager.shared.translationBlockedReason(audioDurationSeconds: duration!)
+    }
 
-            // 保存：videoURL 存储 YouTube 原始链接，不指定海报图（使用默认占位图标）
-            let newVideo = VideoStorageManager.shared.addVideo(
-                name: videoName,
-                posterImage: nil,
-                videoURL: url,
-                isYouTube: true
-            )
-            
-            // 尝试获取 YouTube 缩略图并更新
-            if let videoId = extractYoutubeVideoId(from: url),
-               let thumbnailUrl = URL(string: "https://img.youtube.com/vi/\(videoId)/hqdefault.jpg") {
-                URLSession.shared.dataTask(with: thumbnailUrl) { data, _, _ in
-                    if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async {
-                            VideoStorageManager.shared.updateVideo(id: newVideo.id, posterImage: image)
-                            self.loadVideos()
-                        }
-                    }
-                }.resume()
-            }
-
-            // 下载音频文件到本地（用于本地缓存和 hasAudio 检查）
-            if let audioRemoteURL = URL(string: model.url) {
-                downloadYoutubeAudio(from: audioRemoteURL, videoId: newVideo.id)
-            }
-
-            loadVideos()
-            print("✅ YouTube 视频已保存: \(videoName), COS音频URL: \(model.url)")
-
-            // YouTube 音频已经在 COS 上，直接用 COS URL 启动识别（无需再上传一次）
-            startASRRecognition(cosAudioURL: model.url, videoId: newVideo.id)
+    /// 展示会员时间不足提示
+    private func showTranslationBlockedAlert(reason: TranslationBlockReason) {
+        let title = "home_translation_blocked_title".localized()
+        let message: String
+        switch reason {
+        case .noActivePlan:
+            message = "home_translation_blocked_no_plan".localized()
+        case .unknownEntitlementExpiration:
+            message = "home_translation_blocked_unknown".localized()
+        case .insufficientRemainingTime(let remaining, let required):
+            let remainingText = Self.formatDuration(seconds: max(0, remaining))
+            let requiredText = Self.formatDuration(seconds: max(0, required))
+            message = "home_translation_blocked_insufficient".localized(remainingText, requiredText)
         }
+
+        showAlert(title: title, message: message)
+    }
+
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "common_ok".localized(), style: .default))
+        if let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }),
+           var top = window.rootViewController {
+            while let presented = top.presentedViewController {
+                top = presented
+            }
+            top.present(alert, animated: true)
+        }
+    }
+
+    private static func formatDuration(seconds: TimeInterval) -> String {
+        let total = max(0, Int(seconds))
+        let hours = total / 3600
+        let minutes = (total % 3600) / 60
+        let secs = total % 60
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, secs)
+        }
+        return String(format: "%d:%02d", minutes, secs)
+    }
+
+    @ViewBuilder
+    private func youtubePreviewCard(preview: YTBasicInfoModel) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            if let urlString = preview.bestThumbnail?.url,
+               let url = URL(string: urlString) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                    case .success(let image):
+                        image.resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .overlay(Image(systemName: "photo").foregroundColor(.gray))
+                    @unknown default:
+                        Rectangle().fill(Color.gray.opacity(0.2))
+                    }
+                }
+                .frame(width: 120, height: 70)
+                .clipped()
+                .cornerRadius(6)
+            } else {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 120, height: 70)
+                    .cornerRadius(6)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(preview.title.isEmpty ? "YouTube" : preview.title)
+                    .font(.subheadline)
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                HStack(spacing: 8) {
+                    Image(systemName: "clock")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(Self.formatDuration(seconds: TimeInterval(preview.durationSeconds)))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    if !preview.author.isEmpty {
+                        Text("·")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(preview.author)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(8)
+        .background(Color.gray.opacity(0.08))
+        .cornerRadius(8)
+        .padding(.horizontal)
+    }
+    
+    /// 已迁移到 VideoPlayerView 处理（首页仅负责把 URL 推给播放页）
+    private func saveYoutubeVideo(url: String) {
+        print("ℹ️ saveYoutubeVideo 已废弃，URL 已转交给 VideoPlayerView")
     }
 
     /// 通用入口：用 COS 音频 URL 启动识别 → 识别完成自动触发翻译
@@ -1114,6 +1228,9 @@ struct VideoRowView: View {
     let onStartRecognition: () -> Void
     let onStartTranslation: () -> Void
 
+    @State private var loadedThumbnail: UIImage?
+    @State private var isLoadingThumbnail: Bool = false
+
     var body: some View {
         // 整个卡片包裹在圆角灰色背景矩形里，padding 为 5
         VStack(alignment: .leading, spacing: 0) {
@@ -1124,6 +1241,31 @@ struct VideoRowView: View {
                         Image(uiImage: posterImage)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                    } else if video.isYouTube,
+                              let thumbnail = video.thumbnailURL,
+                              let url = URL(string: thumbnail) {
+                        if let img = loadedThumbnail {
+                            Image(uiImage: img)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } else if isLoadingThumbnail {
+                            Rectangle()
+                                .fill(Color.Ex.bg3)
+                                .overlay(
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                )
+                        } else {
+                            Rectangle()
+                                .fill(Color.Ex.bg3)
+                                .overlay(
+                                    Image(systemName: "play.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 24, height: 24)
+                                        .foregroundColor(Color.Ex.text3)
+                                )
+                        }
                     } else {
                         Rectangle()
                             .fill(Color.Ex.bg3)
@@ -1140,6 +1282,14 @@ struct VideoRowView: View {
                 .frame(height: 180)
                 .clipped()
                 .cornerRadius(10)
+                .onAppear {
+                    if video.isYouTube,
+                       let thumbnail = video.thumbnailURL,
+                       URL(string: thumbnail) != nil,
+                       loadedThumbnail == nil {
+                        loadThumbnail(from: thumbnail)
+                    }
+                }
 
                 // 左上角类型图标角标
                 ZStack {
@@ -1181,6 +1331,23 @@ struct VideoRowView: View {
         let minutes = Int(seconds) / 60
         let secs = Int(seconds) % 60
         return String(format: "%d:%02d", minutes, secs)
+    }
+
+    private func loadThumbnail(from urlString: String) {
+        guard !isLoadingThumbnail else { return }
+        isLoadingThumbnail = true
+        guard let url = URL(string: urlString) else {
+            isLoadingThumbnail = false
+            return
+        }
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            DispatchQueue.main.async {
+                self.isLoadingThumbnail = false
+                if let data = data, let image = UIImage(data: data) {
+                    self.loadedThumbnail = image
+                }
+            }
+        }.resume()
     }
 }
 

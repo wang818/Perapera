@@ -11,23 +11,43 @@ struct VideoItem: Codable, Identifiable {
     let createdAt: Date
     let isYouTube: Bool // 是否是 YouTube 视频
     let duration: Double? // 视频时长（秒）
-    
-    init(id: String? = nil, name: String, posterImageData: Data?, videoURL: String, createdAt: Date? = nil, isYouTube: Bool = false, duration: Double? = nil) {
+
+    // YouTube 元信息（仅 isYouTube == true 时使用）
+    let youtubeVideoID: String?
+    let author: String?
+    let numberOfViews: String?
+    let videoDescription: String?
+    let channelID: String?
+    let category: String?
+    let publishedTime: String?
+    let keywords: [String]?
+    let thumbnailURL: String?
+
+    init(id: String? = nil, name: String, posterImageData: Data?, videoURL: String, createdAt: Date? = nil, isYouTube: Bool = false, duration: Double? = nil, youtubeVideoID: String? = nil, author: String? = nil, numberOfViews: String? = nil, videoDescription: String? = nil, channelID: String? = nil, category: String? = nil, publishedTime: String? = nil, keywords: [String]? = nil, thumbnailURL: String? = nil) {
         if let id = id {
             self.id = id
         } else {
             let timestamp = Int(Date().timeIntervalSince1970)
             self.id = "\(UUID().uuidString)-\(timestamp)"
         }
-        
+
         self.name = name
         self.posterImageData = posterImageData
         self.videoURL = videoURL
         self.createdAt = createdAt ?? Date()
         self.isYouTube = isYouTube
         self.duration = duration
+        self.youtubeVideoID = youtubeVideoID
+        self.author = author
+        self.numberOfViews = numberOfViews
+        self.videoDescription = videoDescription
+        self.channelID = channelID
+        self.category = category
+        self.publishedTime = publishedTime
+        self.keywords = keywords
+        self.thumbnailURL = thumbnailURL
     }
-    
+
     // 自定义解码，处理旧数据兼容性
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -37,7 +57,7 @@ struct VideoItem: Codable, Identifiable {
         videoURL = try container.decode(String.self, forKey: .videoURL)
         createdAt = try container.decode(Date.self, forKey: .createdAt)
         duration = try container.decodeIfPresent(Double.self, forKey: .duration)
-        
+
         // 兼容旧数据：如果没有 isYouTube 字段，根据 URL 判断
         if let isYouTube = try? container.decode(Bool.self, forKey: .isYouTube) {
             self.isYouTube = isYouTube
@@ -45,10 +65,22 @@ struct VideoItem: Codable, Identifiable {
             // 旧数据：根据 URL 判断是否是 YouTube
             self.isYouTube = videoURL.contains("youtube") || videoURL.contains("youtu.be")
         }
+
+        // YouTube 元信息（旧数据可能没有 → 解码失败时给 nil）
+        self.youtubeVideoID = try? container.decodeIfPresent(String.self, forKey: .youtubeVideoID)
+        self.author = try? container.decodeIfPresent(String.self, forKey: .author)
+        self.numberOfViews = try? container.decodeIfPresent(String.self, forKey: .numberOfViews)
+        self.videoDescription = try? container.decodeIfPresent(String.self, forKey: .videoDescription)
+        self.channelID = try? container.decodeIfPresent(String.self, forKey: .channelID)
+        self.category = try? container.decodeIfPresent(String.self, forKey: .category)
+        self.publishedTime = try? container.decodeIfPresent(String.self, forKey: .publishedTime)
+        self.keywords = try? container.decodeIfPresent([String].self, forKey: .keywords)
+        self.thumbnailURL = try? container.decodeIfPresent(String.self, forKey: .thumbnailURL)
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case id, name, posterImageData, videoURL, createdAt, isYouTube, duration
+        case youtubeVideoID, author, numberOfViews, videoDescription, channelID, category, publishedTime, keywords, thumbnailURL
     }
     
     // 获取海报图片
@@ -154,23 +186,32 @@ class VideoStorageManager {
     }
     
     // MARK: - 添加单个视频
-    func addVideo(name: String, posterImage: UIImage?, videoURL: String, isYouTube: Bool = false, duration: Double? = nil) -> VideoItem {
+    func addVideo(name: String, posterImage: UIImage?, videoURL: String, isYouTube: Bool = false, duration: Double? = nil, youtubeVideoID: String? = nil, author: String? = nil, numberOfViews: String? = nil, videoDescription: String? = nil, channelID: String? = nil, category: String? = nil, publishedTime: String? = nil, keywords: [String]? = nil, thumbnailURL: String? = nil) -> VideoItem {
         var videos = loadVideos()
-        
+
         // 压缩图片
         let compressedImageData = compressImage(posterImage)
-        
+
         let newVideo = VideoItem(
             name: name,
             posterImageData: compressedImageData,
             videoURL: videoURL,
             isYouTube: isYouTube,
-            duration: duration
+            duration: duration,
+            youtubeVideoID: youtubeVideoID,
+            author: author,
+            numberOfViews: numberOfViews,
+            videoDescription: videoDescription,
+            channelID: channelID,
+            category: category,
+            publishedTime: publishedTime,
+            keywords: keywords,
+            thumbnailURL: thumbnailURL
         )
-        
+
         videos.insert(newVideo, at: 0) // 插入到最前面
         saveVideos(videos)
-        
+
         return newVideo
     }
     
@@ -257,26 +298,36 @@ class VideoStorageManager {
     }
     
     // MARK: - 更新视频
-    func updateVideo(id: String, name: String? = nil, posterImage: UIImage? = nil, videoURL: String? = nil) {
+    func updateVideo(id: String, name: String? = nil, posterImage: UIImage? = nil, videoURL: String? = nil, youtubeVideoID: String? = nil, author: String? = nil, numberOfViews: String? = nil, videoDescription: String? = nil, channelID: String? = nil, category: String? = nil, publishedTime: String? = nil, keywords: [String]? = nil, thumbnailURL: String? = nil) {
         var videos = loadVideos()
-        
+
         guard let index = videos.firstIndex(where: { $0.id == id }) else {
             print("❌ 未找到ID为 \(id) 的视频")
             return
         }
-        
+
         let oldVideo = videos[index]
         let compressedImageData = posterImage != nil ? compressImage(posterImage) : oldVideo.posterImageData
-        
+
         let updatedVideo = VideoItem(
             id: oldVideo.id,
             name: name ?? oldVideo.name,
             posterImageData: compressedImageData,
             videoURL: videoURL ?? oldVideo.videoURL,
+            createdAt: oldVideo.createdAt,
             isYouTube: oldVideo.isYouTube,
-            duration: oldVideo.duration
+            duration: oldVideo.duration,
+            youtubeVideoID: youtubeVideoID ?? oldVideo.youtubeVideoID,
+            author: author ?? oldVideo.author,
+            numberOfViews: numberOfViews ?? oldVideo.numberOfViews,
+            videoDescription: videoDescription ?? oldVideo.videoDescription,
+            channelID: channelID ?? oldVideo.channelID,
+            category: category ?? oldVideo.category,
+            publishedTime: publishedTime ?? oldVideo.publishedTime,
+            keywords: keywords ?? oldVideo.keywords,
+            thumbnailURL: thumbnailURL ?? oldVideo.thumbnailURL
         )
-        
+
         videos[index] = updatedVideo
         saveVideos(videos)
     }
@@ -290,25 +341,34 @@ class VideoStorageManager {
         for i in 0..<videos.count {
             let video = videos[i]
             if video.duration == nil && !video.isYouTube {
-                // 如果是本地视频，尝试获取时长
-                let asset = AVURLAsset(url: video.actualVideoURL)
-                let duration = CMTimeGetSeconds(asset.duration)
-                
-                if !duration.isNaN && duration > 0 {
-                    let updatedVideo = VideoItem(
-                        id: video.id,
-                        name: video.name,
-                        posterImageData: video.posterImageData,
-                        videoURL: video.videoURL,
-                        createdAt: video.createdAt,
-                        isYouTube: video.isYouTube,
-                        duration: duration
-                    )
-                    videos[i] = updatedVideo
-                    hasChanges = true
-                    print("✅ 已更新视频时长: \(video.name) - \(duration)s")
-                }
-            }
+                        // 如果是本地视频，尝试获取时长
+                        let asset = AVURLAsset(url: video.actualVideoURL)
+                        let duration = CMTimeGetSeconds(asset.duration)
+
+                        if !duration.isNaN && duration > 0 {
+                            let updatedVideo = VideoItem(
+                                id: video.id,
+                                name: video.name,
+                                posterImageData: video.posterImageData,
+                                videoURL: video.videoURL,
+                                createdAt: video.createdAt,
+                                isYouTube: video.isYouTube,
+                                duration: duration,
+                                youtubeVideoID: video.youtubeVideoID,
+                                author: video.author,
+                                numberOfViews: video.numberOfViews,
+                                videoDescription: video.videoDescription,
+                                channelID: video.channelID,
+                                category: video.category,
+                                publishedTime: video.publishedTime,
+                                keywords: video.keywords,
+                                thumbnailURL: video.thumbnailURL
+                            )
+                            videos[i] = updatedVideo
+                            hasChanges = true
+                            print("✅ 已更新视频时长: \(video.name) - \(duration)s")
+                        }
+                    }
         }
         
         if hasChanges {

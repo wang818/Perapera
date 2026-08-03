@@ -16,6 +16,7 @@ enum AppAPIEndPoint {
     case sendCaptcha(email: String)
     case login(email: String, captcha: String)
     case ytAudio(url: String)
+    case ytInfo(url: String)
     case iapVerify(parameters: [String: Any])
     case iapStatus
     case iapProducts
@@ -39,6 +40,7 @@ extension AppAPIEndPoint: TargetType {
         case .sendCaptcha : return "auth/sendCaptcha"
         case .login : return "auth/login"
         case .ytAudio: return "common/yt_audio"
+        case .ytInfo: return "common/yt_info"
         case .iapVerify: return "iap/verify"
         case .iapStatus: return "iap/status"
         case .iapProducts: return "iap/products"
@@ -56,6 +58,7 @@ extension AppAPIEndPoint: TargetType {
         case .supportLang: return .get
         case .sendCaptcha: return .get
         case .ytAudio: return .get
+        case .ytInfo: return .get
         case .iapStatus: return .get
         case .iapProducts: return .get
         case .iapProductEntitlement: return .get
@@ -74,6 +77,9 @@ extension AppAPIEndPoint: TargetType {
             let params = ["email" : email]
             return .requestParameters(parameters: params, encoding: URLEncoding.default)
         case .ytAudio(let url):
+            let params = ["url": url]
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        case .ytInfo(let url):
             let params = ["url": url]
             return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
         case .login(let email, let captcha):
@@ -98,6 +104,9 @@ extension AppAPIEndPoint: TargetType {
         if case .ytAudio = self {
             headParam["Accept"] = "application/json"
         }
+        if case .ytInfo = self {
+            headParam["Accept"] = "application/json"
+        }
         if requiresAuthorization, let authorizationValue = authorizationHeaderValue {
             headParam["Authorization"] = authorizationValue
         }
@@ -110,7 +119,7 @@ extension AppAPIEndPoint: TargetType {
 
     private var requiresAuthorization: Bool {
         switch self {
-        case .userInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement, .deleteAccount:
+        case .userInfo, .ytAudio, .ytInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement, .deleteAccount:
             return true
         default:
             return false
