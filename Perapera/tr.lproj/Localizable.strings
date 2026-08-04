@@ -93,6 +93,7 @@
 "settings_title" = "Ayarlar";
 "settings_help" = "Yardım";
 "login_send_code_success" = "Doğrulama kodu başarıyla gönderildi";
+"login_spam_hint" = "E-posta spam klasörünüze düşebilir.";
 "login_success" = "Giriş başarılı";
 "logout" = "Çıkış Yap";
 "settings_delete_account_title" = "Hesabı Sil";

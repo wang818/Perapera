@@ -102,6 +102,7 @@
 "login_send_code_success" = "인증 코드 전송 성공";
 "login_resend_code" = "코드 재전송";
 "login_resend_code_timer" = "%d초 후 재전송";
+"login_spam_hint" = "이메일이 스팸함으로 들어갈 수 있습니다.";
 "login_success" = "로그인 성공";
 "logout" = "로그아웃";
 "settings_delete_account_title" = "계정 삭제";

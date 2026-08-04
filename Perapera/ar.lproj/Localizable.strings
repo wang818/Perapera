@@ -93,6 +93,7 @@
 "settings_title" = "الإعدادات";
 "settings_help" = "مساعدة";
 "login_send_code_success" = "تم إرسال رمز التحقق بنجاح";
+"login_spam_hint" = "قد تصل الرسالة إلى مجلد البريد العشوائي.";
 "login_success" = "تم تسجيل الدخول بنجاح";
 "logout" = "تسجيل الخروج";
 "settings_delete_account_title" = "حذف الحساب";

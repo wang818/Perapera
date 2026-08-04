@@ -95,6 +95,7 @@
 "login_send_code_success" = "Código de verificación enviado con éxito";
 "login_resend_code" = "Reenviar código";
 "login_resend_code_timer" = "Reenviar en %ds";
+"login_spam_hint" = "El correo puede llegar a tu carpeta de spam.";
 "login_success" = "Inicio de sesión exitoso";
 "logout" = "Cerrar sesión";
 "settings_delete_account_title" = "Eliminar cuenta";

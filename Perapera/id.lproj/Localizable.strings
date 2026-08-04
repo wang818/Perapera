@@ -93,6 +93,7 @@
 "settings_title" = "Pengaturan";
 "settings_help" = "Bantuan";
 "login_send_code_success" = "Kode verifikasi berhasil dikirim";
+"login_spam_hint" = "Email mungkin masuk ke folder spam.";
 "login_success" = "Login berhasil";
 "logout" = "Keluar";
 "settings_delete_account_title" = "Hapus Akun";

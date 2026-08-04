@@ -93,6 +93,7 @@
 "settings_title" = "Ustawienia";
 "settings_help" = "Pomoc";
 "login_send_code_success" = "Kod weryfikacyjny został wysłany pomyślnie";
+"login_spam_hint" = "E-mail może trafić do folderu spam.";
 "login_success" = "Logowanie udane";
 "logout" = "Wyloguj się";
 "settings_delete_account_title" = "Usuń konto";

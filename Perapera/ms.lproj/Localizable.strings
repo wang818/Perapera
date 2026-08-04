@@ -93,6 +93,7 @@
 "settings_title" = "Tetapan";
 "settings_help" = "Bantuan";
 "login_send_code_success" = "Kod pengesahan berjaya dihantar";
+"login_spam_hint" = "E-mel mungkin masuk ke folder spam.";
 "login_success" = "Log masuk berjaya";
 "logout" = "Log keluar";
 "settings_delete_account_title" = "Padam Akaun";

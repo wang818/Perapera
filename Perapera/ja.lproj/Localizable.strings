@@ -102,6 +102,7 @@
 "login_send_code_success" = "認証コードの送信に成功しました";
 "login_resend_code" = "再送信";
 "login_resend_code_timer" = "%d秒後に再送信";
+"login_spam_hint" = "メールが迷惑メールフォルダに届く場合があります。";
 "login_success" = "ログイン成功";
 "logout" = "ログアウト";
 "settings_delete_account_title" = "アカウントを削除";

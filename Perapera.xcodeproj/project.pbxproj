@@ -530,6 +530,7 @@
 				D1902BAD992D7866303C0FE0 /* [CP] Copy Pods Resources */,
 				8FA47126D85F36B9BEEE3D23 /* Headers */,
 				3FA5B99442E3262088CE3C4B /* Embed Frameworks */,
+                                F2A3B4C5D6E7F8091A2B3C4D /* Strip nuisdk simulator slices */,
 			);
 			buildRules = (
 			);
@@ -668,6 +669,21 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Perapera/Pods-Perapera-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+                F2A3B4C5D6E7F8091A2B3C4D /* Strip nuisdk simulator slices */ = {
+                        isa = PBXShellScriptBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                        );
+                        inputPaths = (
+                        );
+                        name = "Strip nuisdk simulator slices";
+                        outputPaths = (
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                        shellPath = /bin/sh;
+                        shellScript = "if [[ \"$PLATFORM_NAME\" == *simulator* ]]; then\n  exit 0\nfi\n\nFRAMEWORK_PATH=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nuisdk.framework\"\nFRAMEWORK_BINARY=\"$FRAMEWORK_PATH/nuisdk\"\n\nif [ ! -f \"$FRAMEWORK_BINARY\" ]; then\n  echo \"nuisdk.framework not found, skipping strip\"\n  exit 0\nfi\n\nARCHS_TO_STRIP=\"x86_64 i386\"\nBINARY_INFO=$(lipo -info \"$FRAMEWORK_BINARY\")\n\nfor ARCH in $ARCHS_TO_STRIP; do\n  if echo \"$BINARY_INFO\" | grep -qw \"$ARCH\"; then\n    echo \"Stripping $ARCH from nuisdk.framework\"\n    lipo -remove \"$ARCH\" \"$FRAMEWORK_BINARY\" -output \"$FRAMEWORK_BINARY\"\n  fi\ndone\n\nif [ -n \"$EXPANDED_CODE_SIGN_IDENTITY\" ]; then\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --preserve-metadata=identifier,entitlements \"$FRAMEWORK_PATH\"\nfi\n";
+                        showEnvVarsInLog = 0;
+                };
 		D1902BAD992D7866303C0FE0 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -917,7 +933,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2026.07.15;
+				CURRENT_PROJECT_VERSION = 2026.08.03;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
@@ -946,7 +962,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perapera.ai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -963,7 +979,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2026.07.15;
+				CURRENT_PROJECT_VERSION = 2026.08.03;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
@@ -992,7 +1008,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perapera.ai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -95,6 +95,7 @@
 "login_send_code_success" = "Bestätigungscode erfolgreich gesendet";
 "login_resend_code" = "Code erneut senden";
 "login_resend_code_timer" = "Erneut senden in %ds";
+"login_spam_hint" = "Die E-Mail kann im Spam-Ordner landen.";
 "login_success" = "Anmeldung erfolgreich";
 "logout" = "Abmelden";
 "settings_delete_account_title" = "Konto löschen";

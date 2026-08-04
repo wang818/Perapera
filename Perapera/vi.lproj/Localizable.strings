@@ -93,6 +93,7 @@
 "settings_title" = "Cài đặt";
 "settings_help" = "Trợ giúp";
 "login_send_code_success" = "Gửi mã xác minh thành công";
+"login_spam_hint" = "Email có thể xuất hiện trong thư mục spam.";
 "login_success" = "Đăng nhập thành công";
 "logout" = "Đăng xuất";
 "settings_delete_account_title" = "Xóa tài khoản";

@@ -95,6 +95,7 @@
 "login_send_code_success" = "Код подтверждения успешно отправлен";
 "login_resend_code" = "Отправить код снова";
 "login_resend_code_timer" = "Отправить снова через %ds";
+"login_spam_hint" = "Письмо может попасть в папку со спамом.";
 "login_success" = "Вход выполнен успешно";
 "logout" = "Выйти";
 "settings_delete_account_title" = "Удалить аккаунт";

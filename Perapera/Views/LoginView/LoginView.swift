@@ -189,6 +189,12 @@ struct LoginView: View {
                         .cornerRadius(12)
                 }
                 .disabled(viewModel.isButtonDisabled)
+
+                Text("login_spam_hint".localized())
+                    .font(.caption)
+                    .foregroundColor(.Ex.text2)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 
                 Spacer()
             }

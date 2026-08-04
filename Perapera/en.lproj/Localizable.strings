@@ -102,6 +102,7 @@
 "login_send_code_success" = "Verification code sent successfully";
 "login_resend_code" = "Resend Code";
 "login_resend_code_timer" = "Resend in %ds";
+"login_spam_hint" = "The email may arrive in your spam folder.";
 "login_success" = "Login successful";
 "logout" = "Log Out";
 "settings_delete_account_title" = "Delete Account";

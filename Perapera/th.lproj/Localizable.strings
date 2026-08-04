@@ -93,6 +93,7 @@
 "settings_title" = "การตั้งค่า";
 "settings_help" = "ช่วยเหลือ";
 "login_send_code_success" = "ส่งรหัสยืนยันสำเร็จ";
+"login_spam_hint" = "อีเมลอาจไปอยู่ในโฟลเดอร์สแปม";
 "login_success" = "เข้าสู่ระบบสำเร็จ";
 "logout" = "ออกจากระบบ";
 "settings_delete_account_title" = "ลบบัญชี";

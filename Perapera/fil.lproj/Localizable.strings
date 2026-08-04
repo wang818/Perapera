@@ -93,6 +93,7 @@
 "settings_title" = "Mga Setting";
 "settings_help" = "Tulong";
 "login_send_code_success" = "Matagumpay na naipadala ang verification code";
+"login_spam_hint" = "Maaaring mapunta ang email sa iyong spam folder.";
 "login_success" = "Matagumpay ang pag-login";
 "logout" = "Mag-log out";
 "settings_delete_account_title" = "Tanggalin ang Account";

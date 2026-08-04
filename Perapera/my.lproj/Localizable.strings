@@ -93,6 +93,7 @@
 "settings_title" = "ဆက်တင်များ";
 "settings_help" = "အကူအညီ";
 "login_send_code_success" = "အတည်ပြုကုဒ် ပေးပို့ပြီးပါပြီ";
+"login_spam_hint" = "အီးမေးလ်သည် spam ဖိုလ်ဒါထဲသို့ ရောက်သွားနိုင်ပါသည်။";
 "login_success" = "အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်";
 "logout" = "အကောင့်ထွက်ရန်";
 "settings_delete_account_title" = "အကောင့်ကို ဖျက်ပစ်ရန်";
