@@ -53,8 +53,8 @@ struct HunyuanConfig {
     /// TokenHub API 基础 URL（OpenAI 兼容）
     static let apiBaseURL = "https://tokenhub-intl.tencentmaas.com/v1"
 
-    /// 默认使用的模型（已迁移至 TokenHub hy3-preview）
-    static let defaultModel = "hy3-preview"
+    /// 默认使用的模型
+    static let defaultModel = "deepseek-v4-flash-202605"
 
     /// 旧版配置（保留兼容）
     static let apiHost = "hunyuan.tencentcloudapi.com"
