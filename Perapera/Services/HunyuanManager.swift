@@ -264,6 +264,7 @@ class HunyuanManager {
         let progressLock = NSLock()
         var completedCount = 0
         var hadErrors = false
+        var failedSentenceIndices: [Int] = []
 
         for index in 0..<totalSentences {
             let detail = resultDetail[index]
@@ -283,7 +284,7 @@ class HunyuanManager {
             group.enter()
             semaphore.wait()
 
-            translateSentenceWords(wordValues) { [weak self] result in
+            translateSentenceWordsWithRetry(wordValues) { [weak self] result in
                 guard let self = self else {
                     semaphore.signal()
                     group.leave()
@@ -304,12 +305,19 @@ class HunyuanManager {
                         var updatedDetail = detail
                         updatedDetail["Words"] = updatedWords
                         resultDetail[sentenceIndex] = updatedDetail
+
+                        if self.sentenceNeedsRetry(updatedWords) {
+                            failedSentenceIndices.append(sentenceIndex)
+                        }
                     }
                     print("  ✅ 第 \(sentenceIndex + 1)/\(totalSentences) 句翻译完成")
 
                 case .failure(let error):
                     print("  ⚠️ 第 \(sentenceIndex + 1)/\(totalSentences) 句翻译失败: \(error.localizedDescription)，跳过")
                     hadErrors = true
+                    writeQueue.sync {
+                        failedSentenceIndices.append(sentenceIndex)
+                    }
                 }
 
                 progressLock.lock()
@@ -329,17 +337,138 @@ class HunyuanManager {
                 print("⚠️ 部分句子翻译失败，继续保存已翻译的内容")
             }
 
-            data["ResultDetail"] = resultDetail
-            response["Data"] = data
-            jsonObject["Response"] = response
+            let uniqueFailedSentenceIndices = Array(Set(failedSentenceIndices)).sorted()
 
-            guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-                completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+            self.retryIncompleteSentences(indices: uniqueFailedSentenceIndices, in: resultDetail) { repairedResultDetail in
+                data["ResultDetail"] = repairedResultDetail
+                response["Data"] = data
+                jsonObject["Response"] = response
+
+                guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+                    return
+                }
+
+                print("✅ 所有 \(totalSentences) 条记录翻译完成（并发模式）")
+                completion(.success(finalData))
+            }
+        }
+    }
+
+    private func retryIncompleteSentences(
+        indices: [Int],
+        in resultDetail: [[String: Any]],
+        completion: @escaping ([[String: Any]]) -> Void
+    ) {
+        guard !indices.isEmpty else {
+            completion(resultDetail)
+            return
+        }
+
+        var mutableResultDetail = resultDetail
+
+        func retry(at position: Int) {
+            guard position < indices.count else {
+                completion(mutableResultDetail)
                 return
             }
 
-            print("✅ 所有 \(totalSentences) 条记录翻译完成（并发模式）")
-            completion(.success(finalData))
+            let sentenceIndex = indices[position]
+            guard sentenceIndex < mutableResultDetail.count,
+                  let words = mutableResultDetail[sentenceIndex]["Words"] as? [[String: Any]],
+                  !words.isEmpty else {
+                retry(at: position + 1)
+                return
+            }
+
+            let wordValues = words.compactMap { $0["Word"] as? String }
+            print("🔧 补翻第 \(sentenceIndex + 1) 句，共 \(indices.count) 句待补")
+
+            translateSentenceWordsWithRetry(wordValues, maxAttempts: 4) { result in
+                switch result {
+                case .success(let wordResults):
+                    var updatedWords = words
+                    for (i, wordResult) in wordResults.enumerated() {
+                        guard i < updatedWords.count else { break }
+                        updatedWords[i]["Translation"] = wordResult.translation
+                        updatedWords[i]["Reading"] = wordResult.reading
+                        updatedWords[i]["Furigana"] = wordResult.furigana
+                    }
+
+                    if !self.sentenceNeedsRetry(updatedWords) {
+                        var updatedDetail = mutableResultDetail[sentenceIndex]
+                        updatedDetail["Words"] = updatedWords
+                        mutableResultDetail[sentenceIndex] = updatedDetail
+                        print("  ✅ 第 \(sentenceIndex + 1) 句补翻完成")
+                    } else {
+                        print("  ⚠️ 第 \(sentenceIndex + 1) 句补翻后仍不完整")
+                    }
+
+                case .failure(let error):
+                    print("  ⚠️ 第 \(sentenceIndex + 1) 句补翻失败: \(error.localizedDescription)")
+                }
+
+                retry(at: position + 1)
+            }
+        }
+
+        retry(at: 0)
+    }
+
+    private func sentenceNeedsRetry(_ words: [[String: Any]]) -> Bool {
+        words.contains { word in
+            guard let original = word["Word"] as? String else { return false }
+            let trimmedOriginal = original.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmedOriginal.isEmpty {
+                return false
+            }
+
+            let punctuationOnly = trimmedOriginal.trimmingCharacters(
+                in: CharacterSet.punctuationCharacters
+                    .union(.symbols)
+                    .union(.whitespacesAndNewlines)
+            ).isEmpty
+            if punctuationOnly {
+                return false
+            }
+
+            let translation = (word["Translation"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let reading = (word["Reading"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let furigana = (word["Furigana"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+            return translation.isEmpty || reading.isEmpty || furigana.isEmpty
+        }
+    }
+
+    private func translateSentenceWordsWithRetry(
+        _ words: [String],
+        maxAttempts: Int = 3,
+        attempt: Int = 1,
+        completion: @escaping (Result<[WordTranslationResult], Error>) -> Void
+    ) {
+        translateSentenceWords(words) { [weak self] result in
+            switch result {
+            case .success(let wordResults):
+                completion(.success(wordResults))
+            case .failure(let error):
+                guard attempt < maxAttempts else {
+                    completion(.failure(error))
+                    return
+                }
+
+                let nextAttempt = attempt + 1
+                let retryDelay = Double(attempt)
+                print("🔁 单句翻译失败，\(retryDelay)s 后重试第 \(nextAttempt)/\(maxAttempts) 次: \(error.localizedDescription)")
+
+                DispatchQueue.global().asyncAfter(deadline: .now() + retryDelay) {
+                    self?.translateSentenceWordsWithRetry(
+                        words,
+                        maxAttempts: maxAttempts,
+                        attempt: nextAttempt,
+                        completion: completion
+                    )
+                }
+            }
         }
     }
     
@@ -433,6 +562,29 @@ class HunyuanManager {
                 }
 
                 let results = self.extractWordTranslationResults(from: content, expectedCount: words.count)
+                guard results.count == words.count else {
+                    completion(.failure(NSError(
+                        domain: "HunyuanManager",
+                        code: -10,
+                        userInfo: [NSLocalizedDescriptionKey: "翻译结果数量不匹配，期望 \(words.count) 个，实际 \(results.count) 个"]
+                    )))
+                    return
+                }
+
+                let hasMeaningfulContent = results.contains {
+                    !$0.translation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                    !$0.furigana.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                    !$0.reading.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                }
+                guard hasMeaningfulContent else {
+                    completion(.failure(NSError(
+                        domain: "HunyuanManager",
+                        code: -11,
+                        userInfo: [NSLocalizedDescriptionKey: "翻译结果为空"]
+                    )))
+                    return
+                }
+
                 completion(.success(results))
 
             } catch {

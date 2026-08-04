@@ -31,6 +31,7 @@ class VideoPlayerViewModel: ObservableObject {
     @Published var pipelineStatusMessage: String = ""
     @Published var isProcessingYouTubePipeline: Bool = false
     @Published var hasCompletedYouTubeTranslation: Bool = false
+    @Published private var hasResolvedTranslationState: Bool = false
 
     private let disposeBag = DisposeBag()
 
@@ -55,33 +56,34 @@ class VideoPlayerViewModel: ObservableObject {
     }
 
     var shouldShowYouTubeProcessButton: Bool {
-        youtubeSourceURL != nil && !hasCompletedYouTubeTranslation
+        youtubeSourceURL != nil && hasResolvedTranslationState && !hasCompletedYouTubeTranslation
     }
 
     var youtubeProcessButtonTitle: String {
-        isProcessingYouTubePipeline ? "处理中..." : "开始处理"
+        isProcessingYouTubePipeline ? "video_player_process_in_progress".localized() : "video_player_process_start".localized()
     }
 
     private var timeObserver: Any?
     private var cancellables = Set<AnyCancellable>()
+    private var hasPreparedPlaybackData = false
 
     init(video: VideoItem, pendingYouTubeURL: String? = nil) {
         self.video = video
         self.pendingYouTubeURL = pendingYouTubeURL
-        loadSubtitles()
-        hasCompletedYouTubeTranslation = hasTranslatedContentInASRFile(videoId: video.id)
     }
 
     /// 替换当前 video（YouTube 流水线获取真实信息后调用）
     func updateVideo(_ newVideo: VideoItem) {
         self.video = newVideo
-        loadSubtitles()
-        hasCompletedYouTubeTranslation = hasTranslatedContentInASRFile(videoId: newVideo.id)
+        hasPreparedPlaybackData = false
+        hasResolvedTranslationState = false
+        preparePlaybackDataIfNeeded(forceReload: true)
     }
 
     // MARK: - 设置播放器
 
     func setupPlayer() {
+        preparePlaybackDataIfNeeded()
         if video.isYouTube {
             setupYouTubePlayer()
         } else {
@@ -191,29 +193,51 @@ class VideoPlayerViewModel: ObservableObject {
 
     // MARK: - 加载字幕
 
-    private func loadSubtitles() {
-        // 从 ASR JSON 文件加载（翻译结果已内嵌在 JSON 中）
-        if let asrSubtitles = SubtitleManager.shared.loadSubtitlesFromASRFile(videoId: video.id) {
-            subtitles = asrSubtitles
-            print("✅ 从 ASR 文件加载字幕成功，共 \(subtitles.count) 条")
-            // 默认选中第一句
-            if !subtitles.isEmpty {
-                currentSubtitle = subtitles[0]
-                currentSubtitleIndex = 0
-            }
+    private func preparePlaybackDataIfNeeded(forceReload: Bool = false) {
+        if hasPreparedPlaybackData && !forceReload {
             return
         }
+        hasPreparedPlaybackData = true
+        hasResolvedTranslationState = false
 
-        // 如果 ASR 文件不存在，尝试从 UserDefaults 加载已保存的字幕
-        if let subtitleData = SubtitleManager.shared.loadSubtitles(for: video.id) {
-            subtitles = subtitleData.subtitles
-            print("✅ 从 UserDefaults 加载字幕成功，共 \(subtitles.count) 条")
-            if !subtitles.isEmpty {
-                currentSubtitle = subtitles[0]
-                currentSubtitleIndex = 0
+        let videoId = video.id
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+
+            let loadedSubtitles: [SubtitleItem]
+            if let asrSubtitles = SubtitleManager.shared.loadSubtitlesFromASRFile(videoId: videoId) {
+                loadedSubtitles = asrSubtitles
+                print("✅ 从 ASR 文件加载字幕成功，共 \(loadedSubtitles.count) 条")
+            } else if let subtitleData = SubtitleManager.shared.loadSubtitles(for: videoId) {
+                loadedSubtitles = subtitleData.subtitles
+                print("✅ 从 UserDefaults 加载字幕成功，共 \(loadedSubtitles.count) 条")
+            } else {
+                loadedSubtitles = []
+                print("📭 没有找到字幕数据")
             }
+
+            let hasCompletedTranslation = self.areSubtitlesFullyTranslated(loadedSubtitles)
+
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, self.video.id == videoId else { return }
+                self.applyLoadedSubtitles(loadedSubtitles, hasCompletedTranslation: hasCompletedTranslation)
+            }
+        }
+    }
+
+    private func applyLoadedSubtitles(_ loadedSubtitles: [SubtitleItem], hasCompletedTranslation: Bool) {
+        subtitles = loadedSubtitles
+        hasCompletedYouTubeTranslation = hasCompletedTranslation
+        hasResolvedTranslationState = true
+
+        if hasCompletedTranslation && !isProcessingYouTubePipeline {
+            pipelineStatusMessage = ""
+        }
+
+        if !subtitles.isEmpty {
+            currentSubtitle = subtitles[0]
+            currentSubtitleIndex = 0
         } else {
-            print("📭 没有找到字幕数据")
             generateDefaultSubtitles()
         }
     }
@@ -224,6 +248,46 @@ class VideoPlayerViewModel: ObservableObject {
         subtitles = []
         currentSubtitle = nil
         currentSubtitleIndex = -1
+    }
+
+    private func areSubtitlesFullyTranslated(_ subtitles: [SubtitleItem]) -> Bool {
+        var foundTranslatableWord = false
+
+        for subtitle in subtitles {
+            guard let words = subtitle.words, !words.isEmpty else {
+                continue
+            }
+
+            foundTranslatableWord = true
+
+            let hasMissingAnnotations = words.contains { word in
+                let trimmedOriginal = word.word.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmedOriginal.isEmpty {
+                    return false
+                }
+
+                let punctuationOnly = trimmedOriginal.trimmingCharacters(
+                    in: CharacterSet.punctuationCharacters
+                        .union(.symbols)
+                        .union(.whitespacesAndNewlines)
+                ).isEmpty
+                if punctuationOnly {
+                    return false
+                }
+
+                let translation = (word.translation ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                let reading = (word.reading ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                let furigana = (word.furigana ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+
+                return translation.isEmpty || reading.isEmpty || furigana.isEmpty
+            }
+
+            if hasMissingAnnotations {
+                return false
+            }
+        }
+
+        return foundTranslatableWord
     }
 
     // MARK: - 更新当前字幕
@@ -364,7 +428,7 @@ class VideoPlayerViewModel: ObservableObject {
     private func startYouTubePipeline(url: String) {
         DispatchQueue.main.async { [weak self] in
             self?.isProcessingYouTubePipeline = true
-            self?.pipelineStatusMessage = "开始处理 YouTube 视频…"
+            self?.pipelineStatusMessage = "video_player_process_youtube_start_message".localized()
         }
 
         // 1) 调 yt_audio 拿音频信息 + COS URL
@@ -589,10 +653,11 @@ class VideoPlayerViewModel: ObservableObject {
                     do {
                         try enrichedData.write(to: jsonFileURL)
                         print("✅ 翻译结果已写回 JSON 文件: \(jsonFileURL.path)")
-                        self?.pipelineStatusMessage = "翻译完成"
                         self?.hasCompletedYouTubeTranslation = true
                         self?.isProcessingYouTubePipeline = false
-                        self?.loadSubtitles()
+                        self?.pipelineStatusMessage = ""
+                        self?.hasPreparedPlaybackData = false
+                        self?.preparePlaybackDataIfNeeded(forceReload: true)
                     } catch {
                         print("❌ 写回 JSON 文件失败: \(error.localizedDescription)")
                         self?.pipelineStatusMessage = "写回 JSON 失败：\(error.localizedDescription)"
@@ -624,43 +689,8 @@ class VideoPlayerViewModel: ObservableObject {
         currentSubtitle = nil
         currentSubtitleIndex = -1
         hasCompletedYouTubeTranslation = false
-        pipelineStatusMessage = "已重置旧结果，准备开始处理…"
-    }
-
-    private func hasTranslatedContentInASRFile(videoId: String) -> Bool {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let jsonFileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
-
-        guard let data = try? Data(contentsOf: jsonFileURL),
-              let jsonObject = try? JSONSerialization.jsonObject(with: data) else {
-            return false
-        }
-
-        return containsTranslatedContent(in: jsonObject)
-    }
-
-    private func containsTranslatedContent(in object: Any) -> Bool {
-        if let dictionary = object as? [String: Any] {
-            for (key, value) in dictionary {
-                if key == "Translation",
-                   let translation = value as? String,
-                   !translation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    return true
-                }
-
-                if containsTranslatedContent(in: value) {
-                    return true
-                }
-            }
-        }
-
-        if let array = object as? [Any] {
-            for item in array where containsTranslatedContent(in: item) {
-                return true
-            }
-        }
-
-        return false
+        hasResolvedTranslationState = true
+        pipelineStatusMessage = "video_player_process_reset_message".localized()
     }
 
     // MARK: - 工具

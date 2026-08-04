@@ -173,3 +173,9 @@
 "cloud_provider_aliyun" = "阿里云";
 "cloud_provider_tencent_desc" = "腾讯云 ASR + COS + 混元大模型";
 "cloud_provider_aliyun_desc" = "阿里云 fun-asr + 腾讯混元翻译";
+
+/* Video player process */
+"video_player_process_in_progress" = "处理中...";
+"video_player_process_start" = "开始处理";
+"video_player_process_youtube_start_message" = "开始处理 YouTube 视频…";
+"video_player_process_reset_message" = "已重置旧结果，准备开始处理…";

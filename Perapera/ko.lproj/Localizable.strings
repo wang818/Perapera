@@ -145,3 +145,9 @@
 "cloud_provider_aliyun" = "Alibaba Cloud";
 "cloud_provider_tencent_desc" = "Tencent Cloud ASR + COS + Hunyuan";
 "cloud_provider_aliyun_desc" = "Alibaba fun-asr + Tencent Hunyuan 번역";
+
+/* Video player process */
+"video_player_process_in_progress" = "처리 중...";
+"video_player_process_start" = "처리 시작";
+"video_player_process_youtube_start_message" = "YouTube 동영상 처리를 시작하는 중…";
+"video_player_process_reset_message" = "이전 결과를 초기화했습니다. 처리를 시작할 준비 중입니다…";
