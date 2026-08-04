@@ -100,7 +100,7 @@ struct SettingsView: View {
                                 if !userInfo.currentMonthRemainingDescription.isEmpty {
                                     Text(userInfo.currentMonthRemainingDescription)
                                         .font(.subheadline)
-                                        .foregroundColor(.Ex.text2)
+                                        .foregroundColor(.Ex.text1)
                                 }
                             } else {
                                 Text("settings_pro_title".localized())
