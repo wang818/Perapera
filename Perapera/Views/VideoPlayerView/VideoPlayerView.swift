@@ -102,6 +102,7 @@ struct VideoPlayerView: View {
             bottomControlBar
         }
         .background(Color.ex.bg1)
+        .ignoresSafeArea(.container, edges: .bottom)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
         .modifier(TabBarHiderModifier())
