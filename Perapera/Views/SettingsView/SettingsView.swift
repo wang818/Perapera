@@ -92,13 +92,16 @@ struct SettingsView: View {
                         showPurchaseView = true
                     }) {
                         VStack(alignment: .center, spacing: 8) {
-                            if let userInfo = userManager.currentUserInfo, userInfo.hasActivePro {
+                            if let userInfo = userManager.currentUserInfo,
+                               userInfo.hasActivePro || userInfo.hasRemainingCardMinutes {
                                 Text("Perapera Pro".localized())
                                     .font(.headline)
                                     .foregroundColor(.Ex.text1)
-                                Text(userInfo.currentMonthRemainingDescription)
-                                    .font(.subheadline)
-                                    .foregroundColor(.Ex.text2)
+                                if !userInfo.currentMonthRemainingDescription.isEmpty {
+                                    Text(userInfo.currentMonthRemainingDescription)
+                                        .font(.subheadline)
+                                        .foregroundColor(.Ex.text2)
+                                }
                             } else {
                                 Text("settings_pro_title".localized())
                                     .font(.headline)

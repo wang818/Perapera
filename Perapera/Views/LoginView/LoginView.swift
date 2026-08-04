@@ -90,19 +90,17 @@ class LoginViewModel: ObservableObject {
             .asObservable()
             .mapObject(LoginModel.self) // 将 response.data 转换为 LoginModel
             .subscribe(onNext: { [weak self] model in
-                // 登录成功，获取到可视化数据 model
-                
-                print("Login success: AccessToken=\(model.access_token), TokenType=\(model.token_type)")
-                PUserDefault.setValueForKey(model.access_token, key: "access_token")
-                // 这里可以保存用户信息，例如:
-                if let email = self?.email {
-                    UserManager.shared.save(model: model, email: email)
-                }
-                
                 if model.statusCode == 200 {
                     DispatchQueue.main.async {
                         self?.toastMessage = "login_success".localized()
                         self?.showToast = true
+                        
+                        print("Login success: AccessToken=\(model.access_token), TokenType=\(model.token_type)")
+                        PUserDefault.setValueForKey(model.access_token, key: "access_token")
+                        // 这里可以保存用户信息，例如:
+                        if let email = self?.email {
+                            UserManager.shared.save(model: model, email: email)
+                        }
                         
                         // 延迟调用 completion 以便显示 Toast
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -111,7 +109,11 @@ class LoginViewModel: ObservableObject {
                     }
                 } else {
                     DispatchQueue.main.async {
-                        completion()
+                        let serverMessage = !model.message.isEmpty
+                            ? model.message
+                            : (!model.detail.isEmpty ? model.detail : "Request failed with status code \(model.statusCode ?? 0).")
+                        self?.toastMessage = serverMessage
+                        self?.showToast = true
                     }
                 }
             }, onError: { [weak self] error in

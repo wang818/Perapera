@@ -11,6 +11,8 @@ import HandyJSON
 class LoginModel: HandyJSON, ResponseStatusable {
     var access_token: String = ""
     var token_type: String = ""
+    var message: String = ""
+    var detail: String = ""
     var statusCode: Int?
     
     required init() {}
@@ -46,6 +48,10 @@ class UserInfoModel: HandyJSON {
     var hasActivePro: Bool {
         guard let expiration = resolvedProExpirationDate else { return false }
         return expiration > Date()
+    }
+
+    var hasRemainingCardMinutes: Bool {
+        monthly_card_minutes > 0 || point_card_minutes > 0
     }
 
     /// Returns the currently active Pro plan type: "Yearly" (年卡) or "Monthly" (月卡).
@@ -101,6 +107,7 @@ class UserInfoModel: HandyJSON {
     }
 
     var currentMonthRemainingDescription: String {
+        guard hasRemainingCardMinutes else { return "" }
         if monthly_card_minutes > 0 {
             return "Current month remaining".localized() + " " + formattedRemainingMinutes(monthly_card_minutes)
         }
