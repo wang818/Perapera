@@ -345,7 +345,9 @@ struct VideoPlayerView: View {
             Text(formatTime(viewModel.currentTime))
                 .font(.system(size: 13, weight: .medium, design: .monospaced))
                 .foregroundColor(Color.ex.text2)
-                .frame(width: 40, alignment: .leading)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .frame(width: 48, alignment: .leading)
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
@@ -375,7 +377,9 @@ struct VideoPlayerView: View {
             Text(formatTime(viewModel.duration))
                 .font(.system(size: 13, weight: .medium, design: .monospaced))
                 .foregroundColor(Color.ex.text2)
-                .frame(width: 40, alignment: .trailing)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .frame(width: 48, alignment: .trailing)
         }
         .padding(.horizontal, 16)
     }
