@@ -283,7 +283,7 @@ final class PurchaseManager: ObservableObject {
     private let cachedCurrentProductKey = "purchase.cached.current_product_id"
     private let cachedTierKey = "purchase.cached.tier"
 
-    private var transactionUpdatesTask: Swift.Task<Void, Never>?
+    private var transactionUpdatesTask: _Concurrency.Task<Void, Never>?
     private lazy var iso8601Formatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -358,7 +358,7 @@ final class PurchaseManager: ObservableObject {
             self.lastError = nil
         }
 
-        Swift.Task { [weak self] in
+        _Concurrency.Task { [weak self] in
             await self?.loadProductsAvailable()
         }
     }
@@ -375,7 +375,7 @@ final class PurchaseManager: ObservableObject {
             self.lastMessage = nil
         }
 
-        Swift.Task { [weak self] in
+        _Concurrency.Task { [weak self] in
             await self?.purchaseAvailable(productID: productID)
         }
     }
@@ -392,14 +392,14 @@ final class PurchaseManager: ObservableObject {
             self.lastMessage = nil
         }
 
-        Swift.Task { [weak self] in
+        _Concurrency.Task { [weak self] in
             await self?.restorePurchasesAvailable()
         }
     }
 
     func refreshEntitlements() {
         guard #available(iOS 15.0, *) else { return }
-        Swift.Task { [weak self] in
+        _Concurrency.Task { [weak self] in
             await self?.refreshEntitlementsAvailable()
         }
     }
@@ -554,7 +554,7 @@ final class PurchaseManager: ObservableObject {
 
     @available(iOS 15.0, *)
     private func startTransactionListenerAvailable() {
-        transactionUpdatesTask = Swift.Task { [weak self] in
+        transactionUpdatesTask = _Concurrency.Task { [weak self] in
             guard let self = self else { return }
             for await result in Transaction.updates {
                 do {
