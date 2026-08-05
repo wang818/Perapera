@@ -88,6 +88,9 @@
 		ECDFE844300DB9EE0091E22C /* AliyunASRBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = ECDFE824300DB9EE0091E22C /* AliyunASRBridge.h */; };
 		F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */; };
 		F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70809101111 /* IAPModel.swift */; };
+		C3D5DCE56ED54A03848BBEC5 /* TencentMTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B51E9FC60F2453AB32BED9D /* TencentMTConfig.swift */; };
+		1AC5182C93BD46EABFAF6324 /* TencentMTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278C4A7CD82C4AA8A51A65E5 /* TencentMTManager.swift */; };
+		683E2A7F6CFB499E9B94877E /* JapaneseTextConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -207,6 +210,9 @@
 		ECDFE833300DB9EE0091E22C /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70809101111 /* IAPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPModel.swift; sourceTree = "<group>"; };
+		9B51E9FC60F2453AB32BED9D /* TencentMTConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentMTConfig.swift; sourceTree = "<group>"; };
+		278C4A7CD82C4AA8A51A65E5 /* TencentMTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentMTManager.swift; sourceTree = "<group>"; };
+		8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaneseTextConverter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +387,7 @@
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
 				ECACBE852EFA58BB0090F990 /* Extensions */,
+				8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -500,6 +507,8 @@
 				ECDFE831300DB9EE0091E22C /* HunyuanConfig.local.swift */,
 				ECDFE832300DB9EE0091E22C /* HunyuanManager.swift */,
 				ECDFE833300DB9EE0091E22C /* PurchaseManager.swift */,
+				9B51E9FC60F2453AB32BED9D /* TencentMTConfig.swift */,
+				278C4A7CD82C4AA8A51A65E5 /* TencentMTManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -766,6 +775,9 @@
 				18CA30772F47DE00CA9B64 /* YouTubePlayerView.swift in Sources */,
 				18CA30782F47DE00CA9B65 /* URL+YouTube.swift in Sources */,
 				AA340D6122CC9990D2E80BEF /* CloudProvider.swift in Sources */,
+				C3D5DCE56ED54A03848BBEC5 /* TencentMTConfig.swift in Sources */,
+				1AC5182C93BD46EABFAF6324 /* TencentMTManager.swift in Sources */,
+				683E2A7F6CFB499E9B94877E /* JapaneseTextConverter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

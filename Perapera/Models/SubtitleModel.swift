@@ -27,6 +27,7 @@ struct ASRResultDetail: Codable {
     let Words: [ASRWord]?
     let SpeechSpeed: Double?
     let WordsNum: Int?
+    var TranslatedText: String?  // 整句翻译结果（Tencent MT）
 }
 
 struct ASRWord: Codable {
@@ -216,7 +217,7 @@ class SubtitleManager {
                     startTime: startTime,
                     endTime: endTime,
                     originalText: detail.FinalSentence,
-                    translatedText: "",
+                    translatedText: detail.TranslatedText ?? "",
                     words: wordTimings
                 )
                 

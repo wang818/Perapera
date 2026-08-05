@@ -645,7 +645,7 @@ class VideoPlayerViewModel: ObservableObject {
             return
         }
 
-        HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData, progress: { _, _, _ in
+        TencentMTManager.shared.translateASRJSON(jsonData: jsonData, progress: { _, _, _ in
         }) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {

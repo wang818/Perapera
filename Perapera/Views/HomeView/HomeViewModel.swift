@@ -34,7 +34,7 @@ class HomeViewModel: ObservableObject {
 
         isTranslating = true
 
-        HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData) { [weak self] result in
+        TencentMTManager.shared.translateASRJSON(jsonData: jsonData) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isTranslating = false
 

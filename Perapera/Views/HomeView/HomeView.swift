@@ -1122,8 +1122,8 @@ struct HomeView: View {
             return
         }
         
-        // 调用新的逐句翻译 API（会为每个 Word 添加 Translation 和 Reading）
-        HunyuanManager.shared.translateWordsToJapanese(jsonData: jsonData, progress: { current, total, wordCount in
+        // 调用腾讯云机器翻译 API（整句翻译 + 机械生成假名/罗马音）
+        TencentMTManager.shared.translateASRJSON(jsonData: jsonData, progress: { current, total, wordCount in
             DispatchQueue.main.async {
                 translatingCurrent = current
                 translatingTotal = total

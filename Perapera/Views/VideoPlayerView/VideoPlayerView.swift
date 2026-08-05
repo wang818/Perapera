@@ -457,8 +457,8 @@ struct SentenceCardView: View {
                 // 词级别显示：假名 + 原文 + romaji
                 WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
                 
-                // 整句中文翻译 - 单独一行，圆角背景
-                let sentenceTranslation = words.compactMap { $0.translation }.joined()
+                // 整句翻译 - 优先使用 subtitle.translatedText（Tencent MT 整句翻译），fallback 到逐词翻译拼接
+                let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
                 if !sentenceTranslation.isEmpty {
                     Text(sentenceTranslation)
                         .font(.system(size: 14))
