@@ -11,6 +11,7 @@ struct ContentView: View {
     @AppStorage("AppLanguage") private var appLanguage = "en"
     @AppStorage("AppTheme") private var appTheme: AppTheme = .system
     @State private var selectedTab = 0
+    @State private var showAuthAlert = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -29,6 +30,17 @@ struct ContentView: View {
         .tint(Color.Ex.main)
         .id(appLanguage)
         .preferredColorScheme(appTheme.colorScheme)
+        .onReceive(NotificationCenter.default.publisher(for: .peraperaAPIUnauthorized)) { _ in
+            showAuthAlert = true
+        }
+        .alert("home_auth_error_title".localized(), isPresented: $showAuthAlert) {
+            Button("common_cancel".localized(), role: .cancel) { }
+            Button("home_go_settings".localized()) {
+                selectedTab = 1
+            }
+        } message: {
+            Text("home_auth_error_message".localized())
+        }
         .onAppear {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()

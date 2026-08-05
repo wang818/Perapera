@@ -51,6 +51,11 @@ struct TMTTranslateResponse: Codable {
 class TencentMTManager {
     static let shared = TencentMTManager()
 
+    /// 错误域
+    static let errorDomain = "TencentMTManager"
+    /// 鉴权失败错误码（对应 API 返回 AuthFailure.* 或 HTTP 401）
+    static let authErrorCode = 401
+
     private init() {}
 
     /// 共享的 URLSession
@@ -117,29 +122,45 @@ class TencentMTManager {
             return
         }
 
-        // 3. 分批并发翻译
-        let maxConcurrency = 5
-        let batchSize = 10  // TextTranslateBatch 每次最多 10 条
-        let semaphore = DispatchSemaphore(value: maxConcurrency)
-        let group = DispatchGroup()
+        // 3. 分批翻译（串行 + 200ms 间隔，避免超过 TMT 5 req/s 频率限制）
+        let batchSize = 10
         let writeQueue = DispatchQueue(label: "com.perapera.mt.write")
-        let progressLock = NSLock()
         var completedCount = 0
         var hadErrors = false
 
+        var batches: [[SentenceItem]] = []
         for batchStart in stride(from: 0, to: items.count, by: batchSize) {
             let batchEnd = min(batchStart + batchSize, items.count)
-            let batch = Array(items[batchStart..<batchEnd])
+            batches.append(Array(items[batchStart..<batchEnd]))
+        }
 
-            group.enter()
-            semaphore.wait()
+        func processBatch(at index: Int) {
+            guard index < batches.count else {
+                // 所有批次完成，组装最终 JSON
+                if hadErrors {
+                    print("⚠️ 部分句子翻译失败，继续保存已翻译的内容")
+                }
+
+                data["ResultDetail"] = resultDetail
+                response["Data"] = data
+                jsonObject["Response"] = response
+
+                if let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) {
+                    print("✅ Tencent MT 翻译完成: \(totalSentences) 句")
+                    completion(.success(finalData))
+                } else {
+                    completion(.failure(NSError(domain: "TencentMTManager", code: -3,
+                                                userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+                }
+                return
+            }
+
+            let batch = batches[index]
+            let batchStart = index * batchSize
+            let batchEnd = min(batchStart + batchSize, items.count)
 
             translateSentenceBatch(batch, source: sourceLang, target: targetLang) { [weak self] result in
-                guard let self = self else {
-                    semaphore.signal()
-                    group.leave()
-                    return
-                }
+                guard let self = self else { return }
 
                 switch result {
                 case .success(let translatedTexts):
@@ -150,17 +171,19 @@ class TencentMTManager {
 
                             // 存储整句翻译
                             detail["TranslatedText"] = translatedTexts[i]
+                            let sentenceTranslation = translatedTexts[i]
 
-                            // 为每个词生成 Reading（罗马音）和 Furigana（平假名）
+                            // 为每个词生成 Translation（整句译文）、Reading（罗马音）和 Furigana（平假名）
                             let updatedWords = item.words.map { word -> [String: Any] in
                                 var updatedWord = word
                                 if let wordText = word["Word"] as? String {
                                     let trimmed = wordText.trimmingCharacters(in: .whitespacesAndNewlines)
                                     if !trimmed.isEmpty && !self.isPunctuationOrSymbol(trimmed) {
+                                        updatedWord["Translation"] = sentenceTranslation
                                         updatedWord["Reading"] = JapaneseTextConverter.shared.toRomaji(wordText)
                                         updatedWord["Furigana"] = JapaneseTextConverter.shared.toHiragana(wordText)
                                     } else {
-                                        // 标点符号保持原样
+                                        updatedWord["Translation"] = wordText
                                         updatedWord["Reading"] = wordText
                                         updatedWord["Furigana"] = wordText
                                     }
@@ -178,36 +201,17 @@ class TencentMTManager {
                     hadErrors = true
                 }
 
-                progressLock.lock()
                 completedCount += batch.count
-                let cnt = min(completedCount, totalSentences)
-                progressLock.unlock()
-                progress?(cnt, totalSentences, 0)
+                progress?(min(completedCount, totalSentences), totalSentences, 0)
 
-                semaphore.signal()
-                group.leave()
+                // 200ms 间隔后处理下一批（TMT 限制 5 req/s）
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.22) {
+                    processBatch(at: index + 1)
+                }
             }
         }
 
-        // 4. 所有翻译完成后组装最终 JSON
-        group.notify(queue: .global()) {
-            if hadErrors {
-                print("⚠️ 部分句子翻译失败，继续保存已翻译的内容")
-            }
-
-            data["ResultDetail"] = resultDetail
-            response["Data"] = data
-            jsonObject["Response"] = response
-
-            guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-                completion(.failure(NSError(domain: "TencentMTManager", code: -3,
-                                            userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
-                return
-            }
-
-            print("✅ Tencent MT 翻译完成: \(totalSentences) 句")
-            completion(.success(finalData))
-        }
+        processBatch(at: 0)
     }
 
     // MARK: - Private: API Calls
@@ -276,7 +280,10 @@ class TencentMTManager {
                 let result = try decoder.decode(TMTBatchTranslateResponse.self, from: data)
 
                 if let apiError = result.Response.Error {
-                    completion(.failure(NSError(domain: "TencentMTManager", code: -12,
+                    let isAuthError = apiError.Code.hasPrefix("AuthFailure")
+                    let errCode = isAuthError ? TencentMTManager.authErrorCode : -12
+                    let errDomain = isAuthError ? TencentMTManager.errorDomain : "TencentMTManager"
+                    completion(.failure(NSError(domain: errDomain, code: errCode,
                                                 userInfo: [NSLocalizedDescriptionKey: "\(apiError.Code): \(apiError.Message)"])))
                     return
                 }
@@ -338,7 +345,10 @@ class TencentMTManager {
                 let result = try decoder.decode(TMTTranslateResponse.self, from: data)
 
                 if let apiError = result.Response.Error {
-                    completion(.failure(NSError(domain: "TencentMTManager", code: -12,
+                    let isAuthError = apiError.Code.hasPrefix("AuthFailure")
+                    let errCode = isAuthError ? TencentMTManager.authErrorCode : -12
+                    let errDomain = isAuthError ? TencentMTManager.errorDomain : "TencentMTManager"
+                    completion(.failure(NSError(domain: errDomain, code: errCode,
                                                 userInfo: [NSLocalizedDescriptionKey: "\(apiError.Code): \(apiError.Message)"])))
                     return
                 }
@@ -378,6 +388,7 @@ class TencentMTManager {
         request.setValue(TencentMTConfig.apiVersion, forHTTPHeaderField: "X-TC-Version")
         request.setValue(action, forHTTPHeaderField: "X-TC-Action")
         request.setValue("\(timestamp)", forHTTPHeaderField: "X-TC-Timestamp")
+        request.setValue(TencentMTConfig.region, forHTTPHeaderField: "X-TC-Region")
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: params)

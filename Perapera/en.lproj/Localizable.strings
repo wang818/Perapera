@@ -179,3 +179,12 @@
 "video_player_process_start" = "Start Processing";
 "video_player_process_youtube_start_message" = "Starting YouTube video processing…";
 "video_player_process_reset_message" = "Previous results reset. Preparing to process…";
+
+/* Common */
+"common_ok" = "OK";
+"common_cancel" = "Cancel";
+
+/* Auth Error */
+"home_auth_error_title" = "Authentication Failed";
+"home_auth_error_message" = "Please configure your Tencent Cloud API credentials in Settings.";
+"home_go_settings" = "Go to Settings";

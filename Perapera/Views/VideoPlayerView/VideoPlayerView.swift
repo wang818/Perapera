@@ -112,6 +112,19 @@ struct VideoPlayerView: View {
         .onDisappear {
             viewModel.cleanup()
         }
+        .alert("home_auth_error_title".localized(), isPresented: $viewModel.showAuthAlert) {
+            Button("common_cancel".localized(), role: .cancel) { }
+            Button("home_go_settings".localized()) {
+                viewModel.showSettings = true
+            }
+        } message: {
+            Text(viewModel.authErrorMessage)
+        }
+        .sheet(isPresented: $viewModel.showSettings) {
+            NavigationView {
+                SettingsView()
+            }
+        }
     }
 
     private static func preferredYouTubeID(from url: String) -> String? {

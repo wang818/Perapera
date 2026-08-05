@@ -11,13 +11,16 @@ struct TencentMTConfig {
     // MARK: - TMT Configuration
 
     /// 腾讯云机器翻译 API 域名
-    static let apiHost = "tmt.tencentcloudapi.com"
+    static let apiHost = "tmt.ap-singapore.tencentcloudapi.com"
 
     /// API 版本
     static let apiVersion = "2018-03-21"
 
     /// 服务名称
     static let service = "tmt"
+
+    /// 地域（与 COS 保持一致）
+    static let region = "ap-singapore"
 
     // MARK: - Language Code Mapping
 

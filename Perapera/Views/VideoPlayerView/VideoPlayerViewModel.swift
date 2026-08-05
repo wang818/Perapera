@@ -33,6 +33,11 @@ class VideoPlayerViewModel: ObservableObject {
     @Published var hasCompletedYouTubeTranslation: Bool = false
     @Published private var hasResolvedTranslationState: Bool = false
 
+    // 鉴权错误提示
+    @Published var showAuthAlert: Bool = false
+    @Published var authErrorMessage: String = ""
+    @Published var showSettings: Bool = false
+
     private let disposeBag = DisposeBag()
 
     var playbackSpeedText: String {
@@ -666,8 +671,15 @@ class VideoPlayerViewModel: ObservableObject {
 
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
-                    self?.pipelineStatusMessage = "翻译失败：\(error.localizedDescription)"
-                    self?.isProcessingYouTubePipeline = false
+                    let nsError = error as NSError
+                    if nsError.domain == TencentMTManager.errorDomain && nsError.code == TencentMTManager.authErrorCode {
+                        self?.authErrorMessage = nsError.localizedDescription
+                        self?.showAuthAlert = true
+                        self?.isProcessingYouTubePipeline = false
+                    } else {
+                        self?.pipelineStatusMessage = "翻译失败：\(error.localizedDescription)"
+                        self?.isProcessingYouTubePipeline = false
+                    }
                 }
             }
         }

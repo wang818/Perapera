@@ -15,6 +15,10 @@ class HomeViewModel: ObservableObject {
     @Published var youtubeAudioError: String?
     @Published var youtubeErrorLog: String?
 
+    // 鉴权错误提示
+    @Published var showAuthAlert: Bool = false
+    @Published var authErrorMessage: String = ""
+
     // 输入 URL 后解析出的预览（首页直接显示）
     @Published var youtubePreview: YTBasicInfoModel?
 
@@ -58,6 +62,13 @@ class HomeViewModel: ObservableObject {
                     print("错误信息: \(error.localizedDescription)")
                     print(String(repeating: "=", count: 80) + "\n")
 
+                    let nsError = error as NSError
+                    if nsError.domain == TencentMTManager.errorDomain && nsError.code == TencentMTManager.authErrorCode {
+                        DispatchQueue.main.async {
+                            self?.authErrorMessage = nsError.localizedDescription
+                            self?.showAuthAlert = true
+                        }
+                    }
                 }
             }
         }

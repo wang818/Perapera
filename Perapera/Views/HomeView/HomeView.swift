@@ -29,6 +29,9 @@ struct HomeView: View {
     @State private var showYoutubeToast: Bool = false
     @State private var showYoutubeErrorLog: Bool = false
     @State private var pendingYoutubeURL: String?
+    @State private var showSettings = false
+    @State private var showAuthAlert = false
+    @State private var authErrorMessage = ""
 
     // 根据当前状态动态返回提示文字
     private var processingMessage: String {
@@ -224,6 +227,27 @@ struct HomeView: View {
                         processPickedVideo(sourceURL)
                     }
                 }
+                .sheet(isPresented: $showSettings) {
+                    NavigationView {
+                        SettingsView()
+                    }
+                }
+                .alert("home_auth_error_title".localized(), isPresented: $showAuthAlert) {
+                    Button("common_cancel".localized(), role: .cancel) { }
+                    Button("home_go_settings".localized()) {
+                        showSettings = true
+                    }
+                } message: {
+                    Text(authErrorMessage)
+                }
+                .alert("home_auth_error_title".localized(), isPresented: $viewModel.showAuthAlert) {
+                    Button("common_cancel".localized(), role: .cancel) { }
+                    Button("home_go_settings".localized()) {
+                        showSettings = true
+                    }
+                } message: {
+                    Text(viewModel.authErrorMessage)
+                }
             }
             
             if isUploading {
@@ -393,6 +417,7 @@ struct HomeView: View {
             VStack(spacing: 10) {
                 Button(action: {
                     print("Item 1 tapped")
+                    youtubeUrl = ""
                     showingSheet = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                         showingYoutubeAlert = true
@@ -1162,10 +1187,17 @@ struct HomeView: View {
 
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
-                    processCompleteSuccess = false
-                    showProcessComplete = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        showProcessComplete = false
+                    let nsError = error as NSError
+                    if nsError.domain == TencentMTManager.errorDomain && nsError.code == TencentMTManager.authErrorCode {
+                        // 鉴权失败 → 提示用户登录/配置密钥，跳转设置页
+                        authErrorMessage = nsError.localizedDescription
+                        showAuthAlert = true
+                    } else {
+                        processCompleteSuccess = false
+                        showProcessComplete = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            showProcessComplete = false
+                        }
                     }
                 }
             }

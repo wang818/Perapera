@@ -10,6 +10,11 @@ import RxSwift
 import Alamofire
 import Foundation
 
+extension Notification.Name {
+    /// 后端 API 返回 401 时广播的通知
+    static let peraperaAPIUnauthorized = Notification.Name("PeraperaAPIUnauthorized")
+}
+
 class NetWorkService<Target> : MoyaProvider<Target> where Target : TargetType {
     
     var plugin: MoyaLoadingPlugin?
@@ -30,6 +35,12 @@ class NetWorkService<Target> : MoyaProvider<Target> where Target : TargetType {
             EXTracking.shared.track(event: .httpTrack, info: parameters)
             if duration > 400 {
                 EXTracking.shared.track(event: .httpTrackLow, info: parameters)
+            }
+            // 全局 401 处理：后端 API 返回 401 时通知 UI 层
+            if statusCode == "401" {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .peraperaAPIUnauthorized, object: nil)
+                }
             }
         }
         return monitor
