@@ -38,7 +38,7 @@ class HomeViewModel: ObservableObject {
 
         isTranslating = true
 
-        TencentMTManager.shared.translateASRJSON(jsonData: jsonData) { [weak self] result in
+        AliyunMTManager.shared.translateASRJSON(jsonData: jsonData) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isTranslating = false
 
@@ -63,7 +63,7 @@ class HomeViewModel: ObservableObject {
                     print(String(repeating: "=", count: 80) + "\n")
 
                     let nsError = error as NSError
-                    if nsError.domain == TencentMTManager.errorDomain && nsError.code == TencentMTManager.authErrorCode {
+                    if nsError.domain == AliyunMTManager.errorDomain && nsError.code == AliyunMTManager.authErrorCode {
                         DispatchQueue.main.async {
                             self?.authErrorMessage = nsError.localizedDescription
                             self?.showAuthAlert = true

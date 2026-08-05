@@ -13,6 +13,8 @@ struct AliyunConfig {
 
     // 本地开发配置（在 AliyunConfig.local.swift 中设置）
     internal static var _localApiKey: String = ""
+    internal static var _localAccessKeyId: String = ""
+    internal static var _localAccessKeySecret: String = ""
 
     /// 阿里云 DashScope API Key
     /// 优先使用本地配置，其次使用环境变量
@@ -52,6 +54,36 @@ struct AliyunConfig {
 
     /// 语音噪声阈值
     static let speechNoiseThreshold: Double = 0.0
+
+    // MARK: - 机器翻译（阿里云 MT）
+
+    /// 阿里云 AccessKey ID（机器翻译 RAM 用户）
+    static var accessKeyId: String {
+        _ = _ensureLocalConfigLoaded
+        #if DEBUG
+        return _localAccessKeyId.isEmpty ? (ProcessInfo.processInfo.environment["ALIYUN_ACCESS_KEY_ID"] ?? "") : _localAccessKeyId
+        #else
+        return ProcessInfo.processInfo.environment["ALIYUN_ACCESS_KEY_ID"] ?? ""
+        #endif
+    }
+
+    /// 阿里云 AccessKey Secret（机器翻译 RAM 用户）
+    static var accessKeySecret: String {
+        _ = _ensureLocalConfigLoaded
+        #if DEBUG
+        return _localAccessKeySecret.isEmpty ? (ProcessInfo.processInfo.environment["ALIYUN_ACCESS_KEY_SECRET"] ?? "") : _localAccessKeySecret
+        #else
+        return ProcessInfo.processInfo.environment["ALIYUN_ACCESS_KEY_SECRET"] ?? ""
+        #endif
+    }
+
+    private static let _ensureLocalConfigLoaded: Void = {
+        setupLocalCredentials()
+        return ()
+    }()
+
+    /// 机器翻译 API 端点（新加坡）
+    static let mtEndpoint = "mt.ap-southeast-1.aliyuncs.com"
 
     // MARK: - Helper Methods
 

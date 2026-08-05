@@ -91,6 +91,7 @@
 		C3D5DCE56ED54A03848BBEC5 /* TencentMTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B51E9FC60F2453AB32BED9D /* TencentMTConfig.swift */; };
 		1AC5182C93BD46EABFAF6324 /* TencentMTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278C4A7CD82C4AA8A51A65E5 /* TencentMTManager.swift */; };
 		683E2A7F6CFB499E9B94877E /* JapaneseTextConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */; };
+		A6F636749CD44C1CACBE9E92 /* AliyunMTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65CE144802B441DB3B9F770 /* AliyunMTManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -213,6 +214,7 @@
 		9B51E9FC60F2453AB32BED9D /* TencentMTConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentMTConfig.swift; sourceTree = "<group>"; };
 		278C4A7CD82C4AA8A51A65E5 /* TencentMTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentMTManager.swift; sourceTree = "<group>"; };
 		8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaneseTextConverter.swift; sourceTree = "<group>"; };
+		E65CE144802B441DB3B9F770 /* AliyunMTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliyunMTManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -495,6 +497,7 @@
 				ECDFE825300DB9EE0091E22C /* AliyunASRBridge.m */,
 				ECDFE826300DB9EE0091E22C /* AliyunASRManager.swift */,
 				ECDFE827300DB9EE0091E22C /* AliyunConfig.swift */,
+					E65CE144802B441DB3B9F770 /* AliyunMTManager.swift */,
 				ECDFE828300DB9EE0091E22C /* AliyunConfig.local.swift */,
 				ECDFE829300DB9EE0091E22C /* ASRConfig.swift */,
 				ECDFE82A300DB9EE0091E22C /* ASRManager.swift */,
@@ -761,6 +764,7 @@
 				ECDFE83F300DB9EE0091E22C /* AliyunASRBridge.m in Sources */,
 				ECDFE840300DB9EE0091E22C /* HunyuanConfig.swift in Sources */,
 				ECDFE841300DB9EE0091E22C /* AliyunASRManager.swift in Sources */,
+				A6F636749CD44C1CACBE9E92 /* AliyunMTManager.swift in Sources */,
 				ECDFE842300DB9EE0091E22C /* COSConfig.local.swift in Sources */,
 				ECDFE843300DB9EE0091E22C /* COSConfig.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,

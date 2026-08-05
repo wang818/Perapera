@@ -1148,7 +1148,7 @@ struct HomeView: View {
         }
         
         // 调用腾讯云机器翻译 API（整句翻译 + 机械生成假名/罗马音）
-        TencentMTManager.shared.translateASRJSON(jsonData: jsonData, progress: { current, total, wordCount in
+        AliyunMTManager.shared.translateASRJSON(jsonData: jsonData, progress: { current, total, wordCount in
             DispatchQueue.main.async {
                 translatingCurrent = current
                 translatingTotal = total
@@ -1188,7 +1188,7 @@ struct HomeView: View {
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
                     let nsError = error as NSError
-                    if nsError.domain == TencentMTManager.errorDomain && nsError.code == TencentMTManager.authErrorCode {
+                    if nsError.domain == AliyunMTManager.errorDomain && nsError.code == AliyunMTManager.authErrorCode {
                         // 鉴权失败 → 提示用户登录/配置密钥，跳转设置页
                         authErrorMessage = nsError.localizedDescription
                         showAuthAlert = true

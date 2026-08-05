@@ -61,7 +61,7 @@ class VideoPlayerViewModel: ObservableObject {
     }
 
     var shouldShowYouTubeProcessButton: Bool {
-        youtubeSourceURL != nil && hasResolvedTranslationState && !hasCompletedYouTubeTranslation
+        youtubeSourceURL != nil && hasResolvedTranslationState
     }
 
     var youtubeProcessButtonTitle: String {
@@ -650,7 +650,7 @@ class VideoPlayerViewModel: ObservableObject {
             return
         }
 
-        TencentMTManager.shared.translateASRJSON(jsonData: jsonData, progress: { _, _, _ in
+        AliyunMTManager.shared.translateASRJSON(jsonData: jsonData, progress: { _, _, _ in
         }) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -672,7 +672,7 @@ class VideoPlayerViewModel: ObservableObject {
                 case .failure(let error):
                     print("❌ 翻译失败: \(error.localizedDescription)")
                     let nsError = error as NSError
-                    if nsError.domain == TencentMTManager.errorDomain && nsError.code == TencentMTManager.authErrorCode {
+                    if nsError.domain == AliyunMTManager.errorDomain && nsError.code == AliyunMTManager.authErrorCode {
                         self?.authErrorMessage = nsError.localizedDescription
                         self?.showAuthAlert = true
                         self?.isProcessingYouTubePipeline = false
