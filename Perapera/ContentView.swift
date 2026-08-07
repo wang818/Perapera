@@ -11,7 +11,7 @@ struct ContentView: View {
     @AppStorage("AppLanguage") private var appLanguage = "en"
     @AppStorage("AppTheme") private var appTheme: AppTheme = .system
     @State private var selectedTab = 0
-    @State private var showAuthAlert = false
+    @State private var showReauthLogin = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -31,15 +31,12 @@ struct ContentView: View {
         .id(appLanguage)
         .preferredColorScheme(appTheme.colorScheme)
         .onReceive(NotificationCenter.default.publisher(for: .peraperaAPIUnauthorized)) { _ in
-            showAuthAlert = true
+            // refresh 失败 / token 彻底过期：清掉旧登录态 + 全屏拉起登录页
+            UserManager.shared.logout()
+            showReauthLogin = true
         }
-        .alert("home_auth_error_title".localized(), isPresented: $showAuthAlert) {
-            Button("common_cancel".localized(), role: .cancel) { }
-            Button("home_go_settings".localized()) {
-                selectedTab = 1
-            }
-        } message: {
-            Text("home_auth_error_message".localized())
+        .fullScreenCover(isPresented: $showReauthLogin) {
+            LoginView()
         }
         .onAppear {
             let appearance = UITabBarAppearance()

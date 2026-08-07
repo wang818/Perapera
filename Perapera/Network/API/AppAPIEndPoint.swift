@@ -25,6 +25,7 @@ enum AppAPIEndPoint {
     case iapProductEntitlement(productID: String)
     case deleteAccount
     case currentUser
+    case refreshAccessToken
 }
 
 extension AppAPIEndPoint: TargetType {
@@ -50,6 +51,7 @@ extension AppAPIEndPoint: TargetType {
         case .iapProductEntitlement(let productID): return "iap/products/\(productID)/entitlement"
         case .deleteAccount: return "users/delete_account"
         case .currentUser: return "users/me"
+        case .refreshAccessToken: return "auth/refresh"
 
         }
     }
@@ -66,6 +68,7 @@ extension AppAPIEndPoint: TargetType {
         case .iapProductEntitlement: return .get
         case .currentUser: return .get
         case .deleteAccount: return .delete
+        case .refreshAccessToken: return .post
         default: return .post
         }
     }
@@ -112,6 +115,10 @@ extension AppAPIEndPoint: TargetType {
         }
         if requiresAuthorization, let authorizationValue = authorizationHeaderValue {
             headParam["Authorization"] = authorizationValue
+        }
+        // refresh 始终带当前 token（包括已过期的），让后端从 sub 解码用户身份
+        if case .refreshAccessToken = self, let token = rawAccessToken {
+            headParam["Authorization"] = "Bearer \(token)"
         }
         return headParam
     }

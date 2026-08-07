@@ -64,6 +64,7 @@
 		ECACBEA02F0A5EC80090F990 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */; };
 		ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF052F0B59880090F990 /* AppAPIEndPoint.swift */; };
 		ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0B2F0B59880090F990 /* NetWorkService.swift */; };
+		AAAA11122F0B59880090F991 /* AuthRefreshService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA11112F0B59880090F991 /* AuthRefreshService.swift */; };
 		ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */; };
 		ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */; };
 		ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECACBF0D2F0B59880090F990 /* XHUDManager.swift */; };
@@ -189,6 +190,7 @@
 		ECACBF092F0B59880090F990 /* EXTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTracking.swift; sourceTree = "<group>"; };
 		ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaLoadingPlugin.swift; sourceTree = "<group>"; };
 		ECACBF0B2F0B59880090F990 /* NetWorkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWorkService.swift; sourceTree = "<group>"; };
+		AAAA11112F0B59880090F991 /* AuthRefreshService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshService.swift; sourceTree = "<group>"; };
 		ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+HandyJSON.swift"; sourceTree = "<group>"; };
 		ECACBF0D2F0B59880090F990 /* XHUDManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XHUDManager.swift; sourceTree = "<group>"; };
 		ECACBF162F0B5CE70090F990 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 				ECACBF092F0B59880090F990 /* EXTracking.swift */,
 				ECACBF0A2F0B59880090F990 /* MoyaLoadingPlugin.swift */,
 				ECACBF0B2F0B59880090F990 /* NetWorkService.swift */,
+				AAAA11112F0B59880090F991 /* AuthRefreshService.swift */,
 				ECACBF0C2F0B59880090F990 /* Observable+HandyJSON.swift */,
 				ECACBF0D2F0B59880090F990 /* XHUDManager.swift */,
 			);
@@ -767,6 +770,7 @@
 				18CA306E2F2787DE00CA9B62 /* VideoPlayerView.swift in Sources */,
 				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,
 				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
+				AAAA11122F0B59880090F991 /* AuthRefreshService.swift in Sources */,
 				ECACBF112F0B59880090F990 /* MoyaLoadingPlugin.swift in Sources */,
 				EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
