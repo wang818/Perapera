@@ -162,3 +162,6 @@
 "local_video_uploading_audio" = "Téléversement de l'audio…";
 "local_video_audio_uploaded" = "Audio téléversé, démarrage de la reconnaissance…";
 "local_video_audio_upload_failed" = "Échec du téléversement de l'audio : %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Se connecter";

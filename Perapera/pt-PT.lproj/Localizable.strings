@@ -162,3 +162,6 @@
 "local_video_uploading_audio" = "A carregar áudio…";
 "local_video_audio_uploaded" = "Áudio carregado, a iniciar reconhecimento…";
 "local_video_audio_upload_failed" = "Falha no carregamento de áudio: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Iniciar sessão";

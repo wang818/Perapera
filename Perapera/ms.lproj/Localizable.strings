@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "Memuat naik audio…";
 "local_video_audio_uploaded" = "Audio dimuat naik, memulakan pengecaman…";
 "local_video_audio_upload_failed" = "Muat naik audio gagal: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Log masuk";

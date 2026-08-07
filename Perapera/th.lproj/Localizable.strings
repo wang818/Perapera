@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "กำลังอัปโหลดเสียง…";
 "local_video_audio_uploaded" = "อัปโหลดเสียงเสร็จแล้ว กำลังเริ่มรู้จำ…";
 "local_video_audio_upload_failed" = "อัปโหลดเสียงล้มเหลว: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "เข้าสู่ระบบ";

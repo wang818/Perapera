@@ -187,7 +187,7 @@
 /* Auth Error */
 "home_auth_error_title" = "Authentication Failed";
 "home_auth_error_message" = "Please configure your Tencent Cloud API credentials in Settings.";
-"home_go_settings" = "Go to Settings";
+"home_go_settings" = "Log In";
 
 /* Common alert buttons */
 "common_notice" = "Notice";

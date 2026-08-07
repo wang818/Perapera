@@ -162,3 +162,6 @@
 "local_video_uploading_audio" = "Загрузка аудио…";
 "local_video_audio_uploaded" = "Аудио загружено, запуск распознавания…";
 "local_video_audio_upload_failed" = "Не удалось загрузить аудио: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Войти";

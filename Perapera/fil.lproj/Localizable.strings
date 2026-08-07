@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "Ika-upload ang audio…";
 "local_video_audio_uploaded" = "Na-upload na ang audio, sisimulan na ang pagkilala…";
 "local_video_audio_upload_failed" = "Humarap sa error ang pag-upload ng audio: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Mag-log in";

@@ -169,3 +169,6 @@
 "local_video_uploading_audio" = "正在上傳音訊…";
 "local_video_audio_uploaded" = "音訊上傳完成，開始辨識…";
 "local_video_audio_upload_failed" = "音訊上傳失敗：%@";
+
+/* Auth alert buttons */
+"home_go_settings" = "登入";

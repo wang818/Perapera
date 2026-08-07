@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "Mengunggah audio…";
 "local_video_audio_uploaded" = "Audio diunggah, memulai pengenalan…";
 "local_video_audio_upload_failed" = "Pengunggahan audio gagal: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Masuk";

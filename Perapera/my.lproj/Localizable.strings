@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "အသံကို တင်ပို့နေသည်…";
 "local_video_audio_uploaded" = "အသံ တင်ပို့ပြီးပါပြီ၊ မှတ်မိခြင်း စတင်နေသည်…";
 "local_video_audio_upload_failed" = "အသံ တင်ပို့ခြင်း မအောင်မြင်ပါ: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "လော့ဂ်အင်ဝင်ရန်";

@@ -35,6 +35,10 @@ struct ContentView: View {
             UserManager.shared.logout()
             showReauthLogin = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: .peraperaRequestShowLogin)) { _ in
+            // 业务层（播放页等）请求弹出 LoginView
+            showReauthLogin = true
+        }
         .fullScreenCover(isPresented: $showReauthLogin) {
             LoginView()
         }

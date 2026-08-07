@@ -169,3 +169,6 @@
 "local_video_uploading_audio" = "音声をアップロードしています…";
 "local_video_audio_uploaded" = "音声のアップロードが完了しました。認識を開始します…";
 "local_video_audio_upload_failed" = "音声のアップロードに失敗しました：%@";
+
+/* Auth alert buttons */
+"home_go_settings" = "ログイン";

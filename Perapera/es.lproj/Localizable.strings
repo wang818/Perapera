@@ -162,3 +162,6 @@
 "local_video_uploading_audio" = "Subiendo audio…";
 "local_video_audio_uploaded" = "Audio subido, iniciando reconocimiento…";
 "local_video_audio_upload_failed" = "Error al subir el audio: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Iniciar sesión";

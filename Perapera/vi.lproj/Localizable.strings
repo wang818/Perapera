@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "Đang tải âm thanh lên…";
 "local_video_audio_uploaded" = "Đã tải âm thanh lên, bắt đầu nhận dạng…";
 "local_video_audio_upload_failed" = "Tải âm thanh lên thất bại: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Đăng nhập";

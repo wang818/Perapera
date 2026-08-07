@@ -162,3 +162,6 @@
 "local_video_uploading_audio" = "Audio wird hochgeladen…";
 "local_video_audio_uploaded" = "Audio-Upload abgeschlossen, Erkennung startet…";
 "local_video_audio_upload_failed" = "Audio-Upload fehlgeschlagen: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Anmelden";

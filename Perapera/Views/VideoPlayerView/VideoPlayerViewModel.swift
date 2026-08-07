@@ -457,6 +457,7 @@ class VideoPlayerViewModel: ObservableObject {
         // 1) 必须登录
         guard UserManager.shared.isLoggedIn else {
             localProcessBlockedMessage = "local_video_blocked_login_required".localized()
+            NotificationCenter.default.post(name: .peraperaRequestShowLogin, object: nil)
             return
         }
 

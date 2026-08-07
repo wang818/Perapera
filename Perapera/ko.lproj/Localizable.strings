@@ -169,3 +169,6 @@
 "local_video_uploading_audio" = "오디오를 업로드하는 중…";
 "local_video_audio_uploaded" = "오디오 업로드 완료, 인식 시작…";
 "local_video_audio_upload_failed" = "오디오 업로드 실패: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "로그인";

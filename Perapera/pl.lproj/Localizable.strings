@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "Przesyłanie audio…";
 "local_video_audio_uploaded" = "Przesłano audio, rozpoczynanie rozpoznawania…";
 "local_video_audio_upload_failed" = "Przesyłanie audio nie powiodło się: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Zaloguj się";

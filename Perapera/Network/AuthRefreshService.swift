@@ -13,6 +13,8 @@ import Moya
 extension Notification.Name {
     /// refresh token 失败后由 NetWorkService 广播，UI 层弹登录页
     static let peraperaAuthRefreshFailed = Notification.Name("PeraperaAuthRefreshFailed")
+    /// 业务层（播放页等）请求弹出 LoginView
+    static let peraperaRequestShowLogin = Notification.Name("PeraperaRequestShowLogin")
 }
 
 final class AuthRefreshService {

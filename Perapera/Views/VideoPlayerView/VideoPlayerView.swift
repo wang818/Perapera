@@ -61,6 +61,14 @@ struct VideoPlayerView: View {
     @StateObject private var viewModel: VideoPlayerViewModel
     @Environment(\.dismiss) private var dismiss
 
+    /// 播放页本身是 fullScreenCover，再 fullScreenCover 在 iOS 上会被吞掉。
+    /// 所以"去登录"行为：dismiss 自己 + 发通知给 ContentView，由它弹 LoginView。
+    private func requestShowLogin() {
+        NotificationCenter.default.post(name: .peraperaRequestShowLogin, object: nil)
+        // YouTube 路径下是 fullScreenCover 进来的，可以直接 dismiss
+        dismiss()
+    }
+
     init(video: VideoItem) {
         self.video = video
         self.pendingYouTubeURL = nil
@@ -118,7 +126,9 @@ struct VideoPlayerView: View {
         .alert("home_auth_error_title".localized(), isPresented: $viewModel.showAuthAlert) {
             Button("common_cancel".localized(), role: .cancel) { }
             Button("home_go_settings".localized()) {
-                viewModel.showSettings = true
+                UserManager.shared.logout()
+                viewModel.showAuthAlert = false
+                requestShowLogin()
             }
         } message: {
             Text(viewModel.authErrorMessage)
@@ -130,11 +140,16 @@ struct VideoPlayerView: View {
             Button("common_cancel".localized(), role: .cancel) { }
             if !UserManager.shared.isLoggedIn {
                 Button("home_go_settings".localized()) {
-                    viewModel.showSettings = true
+                    viewModel.localProcessBlockedMessage = nil
+                    requestShowLogin()
                 }
             }
         } message: {
             Text(viewModel.localProcessBlockedMessage ?? "")
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .peraperaRequestShowLogin)) { _ in
+            // 通知到了，说明是 viewModel 拦截触发的，本页已经全屏 cover，直接 dismiss 回首页
+            dismiss()
         }
         .sheet(isPresented: $viewModel.showSettings) {
             NavigationView {

@@ -160,3 +160,6 @@
 "local_video_uploading_audio" = "Ses yükleniyor…";
 "local_video_audio_uploaded" = "Ses yüklendi, tanıma başlatılıyor…";
 "local_video_audio_upload_failed" = "Ses yükleme başarısız: %@";
+
+/* Auth alert buttons */
+"home_go_settings" = "Giriş yap";
