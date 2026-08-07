@@ -142,3 +142,9 @@
 "video_player_process_start" = "စတင်လုပ်ဆောင်မည်";
 "video_player_process_youtube_start_message" = "YouTube ဗီဒီယိုကို စတင်လုပ်ဆောင်နေသည်…";
 "video_player_process_reset_message" = "ယခင်ရလဒ်များကို ပြန်လည်သတ်မှတ်ပြီး လုပ်ဆောင်ရန် ပြင်ဆင်နေသည်…";
+
+/* Common alert buttons */
+"common_notice" = "အသိပေးချက်";
+"common_ok" = "အိုကေ";
+"common_show_log" = "လော့ဂ်ကြည့်မည်";
+"common_cancel" = "မလုပ်တော့ပါ";

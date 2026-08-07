@@ -144,3 +144,9 @@
 "video_player_process_start" = "Начать обработку";
 "video_player_process_youtube_start_message" = "Запуск обработки видео YouTube…";
 "video_player_process_reset_message" = "Предыдущие результаты сброшены. Подготовка к обработке…";
+
+/* Common alert buttons */
+"common_notice" = "Уведомление";
+"common_ok" = "ОК";
+"common_show_log" = "Показать журнал";
+"common_cancel" = "Отмена";

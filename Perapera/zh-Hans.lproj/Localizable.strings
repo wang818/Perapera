@@ -188,3 +188,9 @@
 "home_auth_error_title" = "鉴权失败";
 "home_auth_error_message" = "请在设置中配置腾讯云 API 密钥。";
 "home_go_settings" = "前往设置";
+
+/* Common alert buttons */
+"common_notice" = "提示";
+"common_ok" = "确定";
+"common_show_log" = "显示日志";
+"common_cancel" = "取消";

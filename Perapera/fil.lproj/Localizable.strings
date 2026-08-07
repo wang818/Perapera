@@ -142,3 +142,9 @@
 "video_player_process_start" = "Simulan ang pagproseso";
 "video_player_process_youtube_start_message" = "Sinisimulan ang pagproseso ng YouTube video…";
 "video_player_process_reset_message" = "Na-reset na ang mga dating resulta. Inihahanda ang pagproseso…";
+
+/* Common alert buttons */
+"common_notice" = "Paunawa";
+"common_ok" = "OK";
+"common_show_log" = "Ipakita ang log";
+"common_cancel" = "Kanselahin";

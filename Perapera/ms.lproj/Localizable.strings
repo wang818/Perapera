@@ -142,3 +142,9 @@
 "video_player_process_start" = "Mula memproses";
 "video_player_process_youtube_start_message" = "Memulakan pemprosesan video YouTube…";
 "video_player_process_reset_message" = "Hasil sebelumnya telah ditetapkan semula. Sedang bersedia untuk memproses…";
+
+/* Common alert buttons */
+"common_notice" = "Pemberitahuan";
+"common_ok" = "OK";
+"common_show_log" = "Tunjukkan log";
+"common_cancel" = "Batal";

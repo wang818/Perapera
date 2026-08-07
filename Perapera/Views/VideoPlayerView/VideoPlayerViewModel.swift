@@ -38,6 +38,9 @@ class VideoPlayerViewModel: ObservableObject {
     @Published var authErrorMessage: String = ""
     @Published var showSettings: Bool = false
 
+    // 处理前置条件提示（用于未登录 / 时长不足）
+    @Published var localProcessBlockedMessage: String?
+
     private let disposeBag = DisposeBag()
 
     var playbackSpeedText: String {
@@ -450,6 +453,31 @@ class VideoPlayerViewModel: ObservableObject {
     /// 启动本地视频流水线（独立于 YouTube 流水线）
     func startLocalAudioPipelineFromButton() {
         guard !isProcessingYouTubePipeline else { return }
+
+        // 1) 必须登录
+        guard UserManager.shared.isLoggedIn else {
+            localProcessBlockedMessage = "请先登录后再处理本地视频"
+            return
+        }
+
+        // 2) 视频时长（分钟）必须 ≤ 用户剩余分钟数（monthly + point）
+        let videoMinutes = Int((video.duration ?? 0) / 60.0 + 0.5)
+        let userInfo = UserManager.shared.currentUserInfo
+        let availableMinutes = (userInfo?.monthly_card_minutes ?? 0) + (userInfo?.point_card_minutes ?? 0)
+
+        if videoMinutes <= 0 {
+            localProcessBlockedMessage = "无法获取视频时长，无法处理"
+            return
+        }
+        if availableMinutes <= 0 {
+            localProcessBlockedMessage = "剩余可处理时长为 0，无法处理本地视频"
+            return
+        }
+        if videoMinutes > availableMinutes {
+            localProcessBlockedMessage = "视频时长（\(videoMinutes) 分钟）超过剩余可处理时长（\(availableMinutes) 分钟），无法处理"
+            return
+        }
+
         runLocalAudioPipeline()
     }
 

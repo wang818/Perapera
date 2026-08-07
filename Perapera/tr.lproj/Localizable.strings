@@ -142,3 +142,9 @@
 "video_player_process_start" = "İşlemeyi başlat";
 "video_player_process_youtube_start_message" = "YouTube videosu işlenmeye başlanıyor…";
 "video_player_process_reset_message" = "Önceki sonuçlar sıfırlandı. İşleme hazırlanıyor…";
+
+/* Common alert buttons */
+"common_notice" = "Bildirim";
+"common_ok" = "Tamam";
+"common_show_log" = "Günlüğü göster";
+"common_cancel" = "İptal";

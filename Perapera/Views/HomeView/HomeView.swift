@@ -211,11 +211,9 @@ struct HomeView: View {
                             posterImage: UIImage(systemName: "video.fill"),
                             sourceURL: url
                         ) {
+                            // 仅入列，不在首页跑流水线
                             loadVideos()
-                            currentConvertingVideoId = newVideo.id
-                            
-                            // 开始转换视频为音频
-                            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
+                            _ = newVideo
                         }
                         
                     case .failure(let error):
@@ -884,9 +882,9 @@ struct HomeView: View {
             posterImage: thumbnail,
             sourceURL: sourceURL
         ) {
+            // 仅入列，不在首页跑流水线
             loadVideos()
-            currentConvertingVideoId = newVideo.id
-            convertVideoToAudio(videoURL: newVideo.localVideoURL, videoId: newVideo.id)
+            _ = newVideo
         }
     }
     

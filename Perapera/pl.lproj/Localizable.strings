@@ -142,3 +142,9 @@
 "video_player_process_start" = "Rozpocznij przetwarzanie";
 "video_player_process_youtube_start_message" = "Rozpoczynanie przetwarzania filmu z YouTube…";
 "video_player_process_reset_message" = "Poprzednie wyniki zostały zresetowane. Przygotowywanie przetwarzania…";
+
+/* Common alert buttons */
+"common_notice" = "Uwaga";
+"common_ok" = "OK";
+"common_show_log" = "Pokaż log";
+"common_cancel" = "Anuluj";

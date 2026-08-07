@@ -142,3 +142,9 @@
 "video_player_process_start" = "Bắt đầu xử lý";
 "video_player_process_youtube_start_message" = "Đang bắt đầu xử lý video YouTube…";
 "video_player_process_reset_message" = "Đã đặt lại kết quả trước đó. Đang chuẩn bị xử lý…";
+
+/* Common alert buttons */
+"common_notice" = "Thông báo";
+"common_ok" = "OK";
+"common_show_log" = "Hiển thị nhật ký";
+"common_cancel" = "Hủy";

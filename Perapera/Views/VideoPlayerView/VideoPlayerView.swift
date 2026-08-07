@@ -123,6 +123,19 @@ struct VideoPlayerView: View {
         } message: {
             Text(viewModel.authErrorMessage)
         }
+        .alert("common_notice".localized(), isPresented: Binding<Bool>(
+            get: { viewModel.localProcessBlockedMessage != nil },
+            set: { if !$0 { viewModel.localProcessBlockedMessage = nil } }
+        )) {
+            Button("common_cancel".localized(), role: .cancel) { }
+            if !UserManager.shared.isLoggedIn {
+                Button("home_go_settings".localized()) {
+                    viewModel.showSettings = true
+                }
+            }
+        } message: {
+            Text(viewModel.localProcessBlockedMessage ?? "")
+        }
         .sheet(isPresented: $viewModel.showSettings) {
             NavigationView {
                 SettingsView()

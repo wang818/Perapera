@@ -142,3 +142,9 @@
 "video_player_process_start" = "เริ่มประมวลผล";
 "video_player_process_youtube_start_message" = "กำลังเริ่มประมวลผลวิดีโอ YouTube…";
 "video_player_process_reset_message" = "รีเซ็ตผลลัพธ์เดิมแล้ว กำลังเตรียมเริ่มประมวลผล…";
+
+/* Common alert buttons */
+"common_notice" = "แจ้งเตือน";
+"common_ok" = "ตกลง";
+"common_show_log" = "แสดงล็อก";
+"common_cancel" = "ยกเลิก";

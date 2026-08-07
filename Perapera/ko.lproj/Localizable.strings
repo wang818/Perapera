@@ -151,3 +151,9 @@
 "video_player_process_start" = "처리 시작";
 "video_player_process_youtube_start_message" = "YouTube 동영상 처리를 시작하는 중…";
 "video_player_process_reset_message" = "이전 결과를 초기화했습니다. 처리를 시작할 준비 중입니다…";
+
+/* Common alert buttons */
+"common_notice" = "알림";
+"common_ok" = "확인";
+"common_show_log" = "로그 보기";
+"common_cancel" = "취소";

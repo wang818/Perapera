@@ -142,3 +142,9 @@
 "video_player_process_start" = "بدء المعالجة";
 "video_player_process_youtube_start_message" = "جارٍ بدء معالجة فيديو YouTube…";
 "video_player_process_reset_message" = "تمت إعادة تعيين النتائج السابقة. جارٍ التحضير للمعالجة…";
+
+/* Common alert buttons */
+"common_notice" = "تنبيه";
+"common_ok" = "موافق";
+"common_show_log" = "عرض السجل";
+"common_cancel" = "إلغاء";

@@ -151,3 +151,9 @@
 "video_player_process_start" = "開始處理";
 "video_player_process_youtube_start_message" = "開始處理 YouTube 影片…";
 "video_player_process_reset_message" = "已重設舊結果，準備開始處理…";
+
+/* Common alert buttons */
+"common_notice" = "提示";
+"common_ok" = "確定";
+"common_show_log" = "顯示日誌";
+"common_cancel" = "取消";
