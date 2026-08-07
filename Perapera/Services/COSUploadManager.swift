@@ -56,31 +56,43 @@ class COSUploadManager: NSObject {
         progress: ((Double) -> Void)? = nil,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-        guard fileURL.startAccessingSecurityScopedResource() else {
+        // 兼容两类 URL：
+        // 1. 文件选择器/相册返回的外部 URL（需要 start/stop 安全作用域）
+        // 2. App 自身 Documents 目录下的 URL（没有安全作用域，直接读即可）
+        let isScoped = fileURL.startAccessingSecurityScopedResource()
+        let shouldReleaseScope = isScoped
+
+        guard FileManager.default.isReadableFile(atPath: fileURL.path) else {
+            if shouldReleaseScope {
+                fileURL.stopAccessingSecurityScopedResource()
+            }
             completion(.failure(NSError(domain: "COSUploadManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法访问文件"])))
             return
         }
-        
-        defer {
-            fileURL.stopAccessingSecurityScopedResource()
-        }
-        
+
         let fileName = fileURL.lastPathComponent
         let objectKey = COSConfig.generateObjectKey(fileName: fileName)
-        
+
         let uploadRequest = QCloudCOSXMLUploadObjectRequest<AnyObject>()
         uploadRequest.bucket = COSConfig.bucket
         uploadRequest.object = objectKey
         uploadRequest.body = fileURL as NSURL
-        
+
         uploadRequest.sendProcessBlock = { bytesSent, totalBytesSent, totalBytesExpectedToSend in
             let progressValue = Double(totalBytesSent) / Double(totalBytesExpectedToSend)
             DispatchQueue.main.async {
                 progress?(progressValue)
             }
         }
-        
-        uploadRequest.setFinish { [weak self] outputObject, error in
+
+        let releaseScope: () -> Void = { [shouldReleaseScope] in
+            if shouldReleaseScope {
+                fileURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        uploadRequest.setFinish { _, error in
+            releaseScope()
             DispatchQueue.main.async {
                 if let error = error {
                     print("❌ COS上传失败: \(error.localizedDescription)")
@@ -92,7 +104,7 @@ class COSUploadManager: NSObject {
                 }
             }
         }
-        
+
         self.cosTransferManager?.uploadObject(uploadRequest)
     }
     

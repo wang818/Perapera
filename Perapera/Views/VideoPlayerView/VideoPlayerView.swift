@@ -90,6 +90,9 @@ struct VideoPlayerView: View {
             if viewModel.shouldShowYouTubeProcessButton {
                 youtubeProcessSection
             }
+            if viewModel.shouldShowLocalAudioProcessButton {
+                localAudioProcessSection
+            }
             subtitleScrollSection
             if !viewModel.pipelineStatusMessage.isEmpty {
                 Text(viewModel.pipelineStatusMessage)
@@ -240,6 +243,33 @@ struct VideoPlayerView: View {
         VStack(spacing: 10) {
             Button(action: {
                 viewModel.startYouTubePipelineFromButton()
+            }) {
+                HStack(spacing: 8) {
+                    if viewModel.isProcessingYouTubePipeline {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .tint(.white)
+                    }
+                    Text(viewModel.youtubeProcessButtonTitle)
+                        .font(.system(size: 15, weight: .semibold))
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 44)
+                .background(viewModel.isProcessingYouTubePipeline ? Color.gray : Color.Ex.main)
+                .cornerRadius(12)
+            }
+            .disabled(viewModel.isProcessingYouTubePipeline)
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+    }
+
+    private var localAudioProcessSection: some View {
+        VStack(spacing: 10) {
+            Button(action: {
+                viewModel.startLocalAudioPipelineFromButton()
             }) {
                 HStack(spacing: 8) {
                     if viewModel.isProcessingYouTubePipeline {

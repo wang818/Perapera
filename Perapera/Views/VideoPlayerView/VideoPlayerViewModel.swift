@@ -60,8 +60,22 @@ class VideoPlayerViewModel: ObservableObject {
         return video.videoURL
     }
 
+    /// 是否存在可用于处理的 YouTube 源（YouTube 路径专用）
+    var canStartYouTubePipeline: Bool {
+        youtubeSourceURL != nil
+    }
+
+    /// 是否存在可用于处理的本地视频文件（本地视频路径专用）
+    var canStartLocalAudioPipeline: Bool {
+        !video.isYouTube && FileManager.default.fileExists(atPath: video.actualVideoURL.path)
+    }
+
     var shouldShowYouTubeProcessButton: Bool {
-        youtubeSourceURL != nil && hasResolvedTranslationState
+        canStartYouTubePipeline && !hasCompletedYouTubeTranslation
+    }
+
+    var shouldShowLocalAudioProcessButton: Bool {
+        canStartLocalAudioPipeline && !hasCompletedYouTubeTranslation
     }
 
     var youtubeProcessButtonTitle: String {
@@ -428,6 +442,70 @@ class VideoPlayerViewModel: ObservableObject {
         guard !isProcessingYouTubePipeline, let url = youtubeSourceURL else { return }
         resetYouTubePipelineState()
         startYouTubePipeline(url: url)
+    }
+
+    // MARK: - 本地视频流水线：转音频 → 上传 COS → ASR → 翻译
+    // 仅在播放页的本地视频路径触发，不影响 YouTube 流水线
+
+    /// 启动本地视频流水线（独立于 YouTube 流水线）
+    func startLocalAudioPipelineFromButton() {
+        guard !isProcessingYouTubePipeline else { return }
+        runLocalAudioPipeline()
+    }
+
+    private func runLocalAudioPipeline() {
+        let videoURL = video.actualVideoURL
+        guard FileManager.default.fileExists(atPath: videoURL.path) else {
+            pipelineStatusMessage = "本地视频文件不存在"
+            return
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            self?.isProcessingYouTubePipeline = true
+            self?.pipelineStatusMessage = "正在提取音频…"
+        }
+
+        AudioConverter.shared.convertVideoToOpusWithProgress(
+            inputURL: videoURL,
+            videoId: video.id,
+            bitrate: "64k",
+            sampleRate: 48000,
+            progress: { _ in },
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let audioURL):
+                        self.uploadLocalAudioAndRecognize(audioURL: audioURL)
+                    case .failure(let error):
+                        self.isProcessingYouTubePipeline = false
+                        self.pipelineStatusMessage = "音频转换失败：\(error.localizedDescription)"
+                    }
+                }
+            }
+        )
+    }
+
+    private func uploadLocalAudioAndRecognize(audioURL: URL) {
+        pipelineStatusMessage = "正在上传音频…"
+
+        COSUploadManager.shared.uploadFile(
+            fileURL: audioURL,
+            progress: { _ in },
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let cosURL):
+                        self.pipelineStatusMessage = "音频上传完成，开始识别…"
+                        self.startASRRecognition(cosAudioURL: cosURL, videoId: self.video.id)
+                    case .failure(let error):
+                        self.isProcessingYouTubePipeline = false
+                        self.pipelineStatusMessage = "音频上传失败：\(error.localizedDescription)"
+                    }
+                }
+            }
+        )
     }
 
     private func startYouTubePipeline(url: String) {
