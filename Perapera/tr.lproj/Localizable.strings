@@ -148,3 +148,15 @@
 "common_ok" = "Tamam";
 "common_show_log" = "Günlüğü göster";
 "common_cancel" = "İptal";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Lütfen yerel videoları işlemeden önce giriş yapın";
+"local_video_blocked_no_duration" = "Video süresi alınamadı, işlenemiyor";
+"local_video_blocked_no_minutes" = "Kalan işleme süresi 0, yerel videolar işlenemiyor";
+"local_video_blocked_over_minutes" = "Video süresi (%d dk) kalan işleme süresini (%d dk) aşıyor, işlenemiyor";
+"local_video_file_missing" = "Yerel video dosyası mevcut değil";
+"local_video_extracting_audio" = "Ses çıkarılıyor…";
+"local_video_audio_convert_failed" = "Ses dönüştürme başarısız: %@";
+"local_video_uploading_audio" = "Ses yükleniyor…";
+"local_video_audio_uploaded" = "Ses yüklendi, tanıma başlatılıyor…";
+"local_video_audio_upload_failed" = "Ses yükleme başarısız: %@";

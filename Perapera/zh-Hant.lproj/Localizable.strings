@@ -157,3 +157,15 @@
 "common_ok" = "確定";
 "common_show_log" = "顯示日誌";
 "common_cancel" = "取消";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "請先登入後再處理本機影片";
+"local_video_blocked_no_duration" = "無法取得影片時長，無法處理";
+"local_video_blocked_no_minutes" = "剩餘可處理時長為 0，無法處理本機影片";
+"local_video_blocked_over_minutes" = "影片時長（%d 分鐘）超過剩餘可處理時長（%d 分鐘），無法處理";
+"local_video_file_missing" = "本機影片檔案不存在";
+"local_video_extracting_audio" = "正在擷取音訊…";
+"local_video_audio_convert_failed" = "音訊轉換失敗：%@";
+"local_video_uploading_audio" = "正在上傳音訊…";
+"local_video_audio_uploaded" = "音訊上傳完成，開始辨識…";
+"local_video_audio_upload_failed" = "音訊上傳失敗：%@";

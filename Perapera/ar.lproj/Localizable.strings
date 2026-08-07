@@ -148,3 +148,15 @@
 "common_ok" = "موافق";
 "common_show_log" = "عرض السجل";
 "common_cancel" = "إلغاء";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "يرجى تسجيل الدخول قبل معالجة الفيديوهات المحلية";
+"local_video_blocked_no_duration" = "تعذّر الحصول على مدة الفيديو، لا يمكن المعالجة";
+"local_video_blocked_no_minutes" = "الوقت المتاح للمعالجة هو 0 دقيقة، لا يمكن معالجة الفيديوهات المحلية";
+"local_video_blocked_over_minutes" = "مدة الفيديو (%d دقيقة) تتجاوز الوقت المتاح للمعالجة (%d دقيقة)، لا يمكن المعالجة";
+"local_video_file_missing" = "ملف الفيديو المحلي غير موجود";
+"local_video_extracting_audio" = "جارٍ استخراج الصوت…";
+"local_video_audio_convert_failed" = "فشل تحويل الصوت: %@";
+"local_video_uploading_audio" = "جارٍ رفع الصوت…";
+"local_video_audio_uploaded" = "اكتمل رفع الصوت، بدء التعرّف…";
+"local_video_audio_upload_failed" = "فشل رفع الصوت: %@";

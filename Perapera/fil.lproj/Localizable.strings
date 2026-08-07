@@ -148,3 +148,15 @@
 "common_ok" = "OK";
 "common_show_log" = "Ipakita ang log";
 "common_cancel" = "Kanselahin";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Mag-login muna bago magproseso ng mga lokal na video";
+"local_video_blocked_no_duration" = "Hindi makuha ang tagal ng video, hindi mapoproseso";
+"local_video_blocked_no_minutes" = "Walang natitirang oras sa pagproseso, hindi mapoproseso ang mga lokal na video";
+"local_video_blocked_over_minutes" = "Tagal ng video (%d min) mas mataas kaysa natitirang oras sa pagproseso (%d min), hindi mapoproseso";
+"local_video_file_missing" = "Walang lokal na video file";
+"local_video_extracting_audio" = "Kumuha ng audio…";
+"local_video_audio_convert_failed" = "Humarap sa error ang pag-convert ng audio: %@";
+"local_video_uploading_audio" = "Ika-upload ang audio…";
+"local_video_audio_uploaded" = "Na-upload na ang audio, sisimulan na ang pagkilala…";
+"local_video_audio_upload_failed" = "Humarap sa error ang pag-upload ng audio: %@";

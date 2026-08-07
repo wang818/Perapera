@@ -148,3 +148,15 @@
 "common_ok" = "OK";
 "common_show_log" = "Hiển thị nhật ký";
 "common_cancel" = "Hủy";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Vui lòng đăng nhập trước khi xử lý video cục bộ";
+"local_video_blocked_no_duration" = "Không thể lấy thời lượng video, không thể xử lý";
+"local_video_blocked_no_minutes" = "Thời gian xử lý còn lại là 0, không thể xử lý video cục bộ";
+"local_video_blocked_over_minutes" = "Thời lượng video (%d phút) vượt quá thời gian xử lý còn lại (%d phút), không thể xử lý";
+"local_video_file_missing" = "Tệp video cục bộ không tồn tại";
+"local_video_extracting_audio" = "Đang trích xuất âm thanh…";
+"local_video_audio_convert_failed" = "Chuyển đổi âm thanh thất bại: %@";
+"local_video_uploading_audio" = "Đang tải âm thanh lên…";
+"local_video_audio_uploaded" = "Đã tải âm thanh lên, bắt đầu nhận dạng…";
+"local_video_audio_upload_failed" = "Tải âm thanh lên thất bại: %@";

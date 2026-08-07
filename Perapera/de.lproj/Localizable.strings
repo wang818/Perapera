@@ -150,3 +150,15 @@
 "common_ok" = "OK";
 "common_show_log" = "Log anzeigen";
 "common_cancel" = "Abbrechen";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Bitte melde dich an, bevor du lokale Videos verarbeitest";
+"local_video_blocked_no_duration" = "Videolänge konnte nicht ermittelt werden, Verarbeitung nicht möglich";
+"local_video_blocked_no_minutes" = "Keine verbleibende Verarbeitungszeit, lokale Videos können nicht verarbeitet werden";
+"local_video_blocked_over_minutes" = "Videolänge (%d Min.) übersteigt die verbleibende Verarbeitungszeit (%d Min.), Verarbeitung nicht möglich";
+"local_video_file_missing" = "Lokale Videodatei nicht vorhanden";
+"local_video_extracting_audio" = "Audio wird extrahiert…";
+"local_video_audio_convert_failed" = "Audioumwandlung fehlgeschlagen: %@";
+"local_video_uploading_audio" = "Audio wird hochgeladen…";
+"local_video_audio_uploaded" = "Audio-Upload abgeschlossen, Erkennung startet…";
+"local_video_audio_upload_failed" = "Audio-Upload fehlgeschlagen: %@";

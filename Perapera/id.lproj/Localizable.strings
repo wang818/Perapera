@@ -148,3 +148,15 @@
 "common_ok" = "OK";
 "common_show_log" = "Tampilkan log";
 "common_cancel" = "Batal";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Silakan masuk terlebih dahulu sebelum memproses video lokal";
+"local_video_blocked_no_duration" = "Tidak dapat memperoleh durasi video, tidak dapat memproses";
+"local_video_blocked_no_minutes" = "Sisa waktu pemrosesan 0, video lokal tidak dapat diproses";
+"local_video_blocked_over_minutes" = "Durasi video (%d mnt) melebihi sisa waktu pemrosesan (%d mnt), tidak dapat memproses";
+"local_video_file_missing" = "File video lokal tidak ada";
+"local_video_extracting_audio" = "Mengekstrak audio…";
+"local_video_audio_convert_failed" = "Konversi audio gagal: %@";
+"local_video_uploading_audio" = "Mengunggah audio…";
+"local_video_audio_uploaded" = "Audio diunggah, memulai pengenalan…";
+"local_video_audio_upload_failed" = "Pengunggahan audio gagal: %@";

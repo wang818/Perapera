@@ -150,3 +150,15 @@
 "common_ok" = "Aceptar";
 "common_show_log" = "Mostrar registro";
 "common_cancel" = "Cancelar";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Inicia sesión antes de procesar videos locales";
+"local_video_blocked_no_duration" = "No se pudo obtener la duración del video, no se puede procesar";
+"local_video_blocked_no_minutes" = "No queda tiempo de procesamiento, no se pueden procesar videos locales";
+"local_video_blocked_over_minutes" = "La duración del video (%d min) supera el tiempo de procesamiento restante (%d min), no se puede procesar";
+"local_video_file_missing" = "El archivo de video local no existe";
+"local_video_extracting_audio" = "Extrayendo audio…";
+"local_video_audio_convert_failed" = "Error al convertir el audio: %@";
+"local_video_uploading_audio" = "Subiendo audio…";
+"local_video_audio_uploaded" = "Audio subido, iniciando reconocimiento…";
+"local_video_audio_upload_failed" = "Error al subir el audio: %@";

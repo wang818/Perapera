@@ -148,3 +148,15 @@
 "common_ok" = "အိုကေ";
 "common_show_log" = "လော့ဂ်ကြည့်မည်";
 "common_cancel" = "မလုပ်တော့ပါ";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "ကျေးဇူးပြု၍ ဒေသတွင်းဗီဒီယိုများကို စတင်မလုပ်ဆောင်မီ အကောင့်ဝင်ပါ";
+"local_video_blocked_no_duration" = "ဗီဒီယို၏ ကြာချိန်ကို ရယူ၍မရပါ၊ လုပ်ဆောင်၍မရပါ";
+"local_video_blocked_no_minutes" = "ကျန်ရှိသော လုပ်ဆောင်ချိန် 0 ဖြစ်သောကြောင့် ဒေသတွင်းဗီဒီယိုများကို လုပ်ဆောင်၍မရပါ";
+"local_video_blocked_over_minutes" = "ဗီဒီယိုကြာချိန် (%d မိနစ်) သည် ကျန်ရှိသော လုပ်ဆောင်ချိန် (%d မိနစ်) ထက် ကျော်လွန်နေပါသည်၊ လုပ်ဆောင်၍မရပါ";
+"local_video_file_missing" = "ဒေသတွင်းဗီဒီယိုဖိုင် မရှိပါ";
+"local_video_extracting_audio" = "အသံကို ထုတ်ယူနေသည်…";
+"local_video_audio_convert_failed" = "အသံပြောင်းလဲခြင်း မအောင်မြင်ပါ: %@";
+"local_video_uploading_audio" = "အသံကို တင်ပို့နေသည်…";
+"local_video_audio_uploaded" = "အသံ တင်ပို့ပြီးပါပြီ၊ မှတ်မိခြင်း စတင်နေသည်…";
+"local_video_audio_upload_failed" = "အသံ တင်ပို့ခြင်း မအောင်မြင်ပါ: %@";

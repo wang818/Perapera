@@ -157,3 +157,15 @@
 "common_ok" = "OK";
 "common_show_log" = "ログを表示";
 "common_cancel" = "キャンセル";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "ローカル動画を処理する前にログインしてください";
+"local_video_blocked_no_duration" = "動画の長さを取得できないため、処理できません";
+"local_video_blocked_no_minutes" = "残りの処理時間が 0 のため、ローカル動画は処理できません";
+"local_video_blocked_over_minutes" = "動画長（%d 分）が残り処理時間（%d 分）を超えているため、処理できません";
+"local_video_file_missing" = "ローカル動画ファイルが存在しません";
+"local_video_extracting_audio" = "音声を抽出しています…";
+"local_video_audio_convert_failed" = "音声変換に失敗しました：%@";
+"local_video_uploading_audio" = "音声をアップロードしています…";
+"local_video_audio_uploaded" = "音声のアップロードが完了しました。認識を開始します…";
+"local_video_audio_upload_failed" = "音声のアップロードに失敗しました：%@";

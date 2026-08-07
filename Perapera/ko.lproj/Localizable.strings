@@ -157,3 +157,15 @@
 "common_ok" = "확인";
 "common_show_log" = "로그 보기";
 "common_cancel" = "취소";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "로컬 영상을 처리하기 전에 먼저 로그인해 주세요";
+"local_video_blocked_no_duration" = "영상 길이를 가져올 수 없어 처리할 수 없습니다";
+"local_video_blocked_no_minutes" = "남은 처리 시간이 0분이라 로컬 영상을 처리할 수 없습니다";
+"local_video_blocked_over_minutes" = "영상 길이(%d분)가 남은 처리 시간(%d분)을 초과하여 처리할 수 없습니다";
+"local_video_file_missing" = "로컬 영상 파일이 없습니다";
+"local_video_extracting_audio" = "오디오를 추출하는 중…";
+"local_video_audio_convert_failed" = "오디오 변환 실패: %@";
+"local_video_uploading_audio" = "오디오를 업로드하는 중…";
+"local_video_audio_uploaded" = "오디오 업로드 완료, 인식 시작…";
+"local_video_audio_upload_failed" = "오디오 업로드 실패: %@";

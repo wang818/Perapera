@@ -194,3 +194,15 @@
 "common_ok" = "确定";
 "common_show_log" = "显示日志";
 "common_cancel" = "取消";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "请先登录后再处理本地视频";
+"local_video_blocked_no_duration" = "无法获取视频时长，无法处理";
+"local_video_blocked_no_minutes" = "剩余可处理时长为 0，无法处理本地视频";
+"local_video_blocked_over_minutes" = "视频时长（%d 分钟）超过剩余可处理时长（%d 分钟），无法处理";
+"local_video_file_missing" = "本地视频文件不存在";
+"local_video_extracting_audio" = "正在提取音频…";
+"local_video_audio_convert_failed" = "音频转换失败：%@";
+"local_video_uploading_audio" = "正在上传音频…";
+"local_video_audio_uploaded" = "音频上传完成，开始识别…";
+"local_video_audio_upload_failed" = "音频上传失败：%@";

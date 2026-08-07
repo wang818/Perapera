@@ -456,7 +456,7 @@ class VideoPlayerViewModel: ObservableObject {
 
         // 1) 必须登录
         guard UserManager.shared.isLoggedIn else {
-            localProcessBlockedMessage = "请先登录后再处理本地视频"
+            localProcessBlockedMessage = "local_video_blocked_login_required".localized()
             return
         }
 
@@ -466,15 +466,15 @@ class VideoPlayerViewModel: ObservableObject {
         let availableMinutes = (userInfo?.monthly_card_minutes ?? 0) + (userInfo?.point_card_minutes ?? 0)
 
         if videoMinutes <= 0 {
-            localProcessBlockedMessage = "无法获取视频时长，无法处理"
+            localProcessBlockedMessage = "local_video_blocked_no_duration".localized()
             return
         }
         if availableMinutes <= 0 {
-            localProcessBlockedMessage = "剩余可处理时长为 0，无法处理本地视频"
+            localProcessBlockedMessage = "local_video_blocked_no_minutes".localized()
             return
         }
         if videoMinutes > availableMinutes {
-            localProcessBlockedMessage = "视频时长（\(videoMinutes) 分钟）超过剩余可处理时长（\(availableMinutes) 分钟），无法处理"
+            localProcessBlockedMessage = String(format: "local_video_blocked_over_minutes".localized(), videoMinutes, availableMinutes)
             return
         }
 
@@ -484,13 +484,13 @@ class VideoPlayerViewModel: ObservableObject {
     private func runLocalAudioPipeline() {
         let videoURL = video.actualVideoURL
         guard FileManager.default.fileExists(atPath: videoURL.path) else {
-            pipelineStatusMessage = "本地视频文件不存在"
+            pipelineStatusMessage = "local_video_file_missing".localized()
             return
         }
 
         DispatchQueue.main.async { [weak self] in
             self?.isProcessingYouTubePipeline = true
-            self?.pipelineStatusMessage = "正在提取音频…"
+            self?.pipelineStatusMessage = "local_video_extracting_audio".localized()
         }
 
         AudioConverter.shared.convertVideoToOpusWithProgress(
@@ -507,7 +507,7 @@ class VideoPlayerViewModel: ObservableObject {
                         self.uploadLocalAudioAndRecognize(audioURL: audioURL)
                     case .failure(let error):
                         self.isProcessingYouTubePipeline = false
-                        self.pipelineStatusMessage = "音频转换失败：\(error.localizedDescription)"
+                        self.pipelineStatusMessage = String(format: "local_video_audio_convert_failed".localized(), error.localizedDescription)
                     }
                 }
             }
@@ -515,7 +515,7 @@ class VideoPlayerViewModel: ObservableObject {
     }
 
     private func uploadLocalAudioAndRecognize(audioURL: URL) {
-        pipelineStatusMessage = "正在上传音频…"
+        pipelineStatusMessage = "local_video_uploading_audio".localized()
 
         COSUploadManager.shared.uploadFile(
             fileURL: audioURL,
@@ -525,11 +525,11 @@ class VideoPlayerViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let cosURL):
-                        self.pipelineStatusMessage = "音频上传完成，开始识别…"
+                        self.pipelineStatusMessage = "local_video_audio_uploaded".localized()
                         self.startASRRecognition(cosAudioURL: cosURL, videoId: self.video.id)
                     case .failure(let error):
                         self.isProcessingYouTubePipeline = false
-                        self.pipelineStatusMessage = "音频上传失败：\(error.localizedDescription)"
+                        self.pipelineStatusMessage = String(format: "local_video_audio_upload_failed".localized(), error.localizedDescription)
                     }
                 }
             }

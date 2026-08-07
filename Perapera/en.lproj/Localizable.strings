@@ -194,3 +194,15 @@
 "common_ok" = "OK";
 "common_show_log" = "Show Log";
 "common_cancel" = "Cancel";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Please log in before processing local videos";
+"local_video_blocked_no_duration" = "Unable to get video duration, cannot process";
+"local_video_blocked_no_minutes" = "No remaining processing time, cannot process local videos";
+"local_video_blocked_over_minutes" = "Video duration (%d min) exceeds remaining processing time (%d min), cannot process";
+"local_video_file_missing" = "Local video file does not exist";
+"local_video_extracting_audio" = "Extracting audio…";
+"local_video_audio_convert_failed" = "Audio conversion failed: %@";
+"local_video_uploading_audio" = "Uploading audio…";
+"local_video_audio_uploaded" = "Audio uploaded, starting recognition…";
+"local_video_audio_upload_failed" = "Audio upload failed: %@";

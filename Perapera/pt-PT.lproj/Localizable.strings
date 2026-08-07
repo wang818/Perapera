@@ -150,3 +150,15 @@
 "common_ok" = "OK";
 "common_show_log" = "Mostrar log";
 "common_cancel" = "Cancelar";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Inicie sessão antes de processar vídeos locais";
+"local_video_blocked_no_duration" = "Não foi possível obter a duração do vídeo, não é possível processar";
+"local_video_blocked_no_minutes" = "Sem tempo de processamento restante, vídeos locais não podem ser processados";
+"local_video_blocked_over_minutes" = "A duração do vídeo (%d min) excede o tempo de processamento restante (%d min), não é possível processar";
+"local_video_file_missing" = "Ficheiro de vídeo local inexistente";
+"local_video_extracting_audio" = "A extrair áudio…";
+"local_video_audio_convert_failed" = "Falha na conversão de áudio: %@";
+"local_video_uploading_audio" = "A carregar áudio…";
+"local_video_audio_uploaded" = "Áudio carregado, a iniciar reconhecimento…";
+"local_video_audio_upload_failed" = "Falha no carregamento de áudio: %@";

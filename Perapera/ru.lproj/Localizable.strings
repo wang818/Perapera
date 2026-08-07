@@ -150,3 +150,15 @@
 "common_ok" = "ОК";
 "common_show_log" = "Показать журнал";
 "common_cancel" = "Отмена";
+
+/* Local video pipeline messages */
+"local_video_blocked_login_required" = "Войдите в аккаунт, прежде чем обрабатывать локальные видео";
+"local_video_blocked_no_duration" = "Не удалось получить длительность видео, обработка невозможна";
+"local_video_blocked_no_minutes" = "Оставшееся время обработки — 0, локальные видео не могут быть обработаны";
+"local_video_blocked_over_minutes" = "Длительность видео (%d мин) превышает оставшееся время обработки (%d мин), обработка невозможна";
+"local_video_file_missing" = "Локальный видеофайл не найден";
+"local_video_extracting_audio" = "Извлечение аудио…";
+"local_video_audio_convert_failed" = "Не удалось преобразовать аудио: %@";
+"local_video_uploading_audio" = "Загрузка аудио…";
+"local_video_audio_uploaded" = "Аудио загружено, запуск распознавания…";
+"local_video_audio_upload_failed" = "Не удалось загрузить аудио: %@";
