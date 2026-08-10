@@ -27,7 +27,7 @@ struct SettingsView: View {
     @State private var showLanguageSettings = false
     @State private var showThemeSettings = false
     @State private var showSubtitleSettings = false
-    @State private var showCloudProviderSettings = false
+    // @State private var showCloudProviderSettings = false
     @State private var showPurchaseView = false
     @State private var showDeleteAccountConfirm = false
 
@@ -131,9 +131,9 @@ struct SettingsView: View {
                     SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
                         showThemeSettings = true
                     }
-                    SettingsRowView(imageName: "cloud.fill", title: "cloud_provider_title".localized(), subtitle: "cloud_provider_subtitle".localized()) {
-                        showCloudProviderSettings = true
-                    }
+                    // SettingsRowView(imageName: "cloud.fill", title: "cloud_provider_title".localized(), subtitle: "cloud_provider_subtitle".localized()) {
+                    //     showCloudProviderSettings = true
+                    // }
                 }
                 
                 
@@ -208,10 +208,10 @@ struct SettingsView: View {
                         isActive: $showSubtitleSettings
                     ) { EmptyView() }
 
-                    NavigationLink(
-                        destination: CloudProviderSettingsView(),
-                        isActive: $showCloudProviderSettings
-                    ) { EmptyView() }
+                    // NavigationLink(
+                    //     destination: CloudProviderSettingsView(),
+                    //     isActive: $showCloudProviderSettings
+                    // ) { EmptyView() }
                 }
             )
             .onAppear {
