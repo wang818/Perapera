@@ -9,5 +9,9 @@
 	</dict>
 	<key>UILaunchScreen</key>
 	<false/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
 </dict>
 </plist>

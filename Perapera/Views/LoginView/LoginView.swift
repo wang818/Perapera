@@ -200,7 +200,7 @@ struct LoginView: View {
                             .foregroundColor(Color.Ex.main)
                     }
 
-                    Link(destination: "https://www.perapera.cc/terms.html") {
+                    Link(destination: AppConstants.termsOfUseURL) {
                         Text("purchase_terms_of_use".localized())
                             .font(.caption)
                             .underline()
