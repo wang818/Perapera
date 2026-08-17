@@ -192,12 +192,23 @@ struct LoginView: View {
                 }
                 .disabled(viewModel.isButtonDisabled)
 
-                Text("login_spam_hint".localized())
-                    .font(.caption)
-                    .foregroundColor(.Ex.text2)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                
+                HStack(spacing: 20) {
+                    Link(destination: AppConstants.privacyPolicyURL) {
+                        Text("purchase_privacy_policy".localized())
+                            .font(.caption)
+                            .underline()
+                            .foregroundColor(Color.Ex.main)
+                    }
+
+                    Link(destination: "https://www.perapera.cc/terms.html") {
+                        Text("purchase_terms_of_use".localized())
+                            .font(.caption)
+                            .underline()
+                            .foregroundColor(Color.Ex.main)
+                    }
+                }
+                .padding(.top, 8)
+
                 Spacer()
             }
             .padding(24)

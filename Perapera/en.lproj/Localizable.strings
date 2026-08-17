@@ -206,3 +206,9 @@
 "local_video_uploading_audio" = "Uploading audio…";
 "local_video_audio_uploaded" = "Audio uploaded, starting recognition…";
 "local_video_audio_upload_failed" = "Audio upload failed: %@";
+
+/* Home video delete actions */
+"home_video_delete" = "Delete";
+"home_video_delete_confirm_title" = "Confirm Delete";
+"home_video_delete_confirm_message" = "Are you sure you want to delete this video?";
+"common_delete" = "Delete";

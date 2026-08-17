@@ -163,3 +163,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "Đăng nhập";
+
+/* Home video delete actions */
+"home_video_delete" = "Xóa";
+"home_video_delete_confirm_title" = "Xác nhận xóa";
+"home_video_delete_confirm_message" = "Bạn có chắc chắn muốn xóa video này không?";
+"common_delete" = "Xóa";

@@ -22,6 +22,7 @@
 		63E8236487D966A6BECCFB09 /* Pods_Perapera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92228B25C99537B2CD47D806 /* Pods_Perapera.framework */; };
 		683E2A7F6CFB499E9B94877E /* JapaneseTextConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */; };
 		A6DC24D2993C40DC9982B676 /* nuisdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B950CB5B3444447904A02CD3 /* nuisdk.framework */; };
+		AA00AA022F0B9A340090F990 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00AA012F0B9A340090F990 /* AppConstants.swift */; };
 		AA340D6122CC9990D2E80BEF /* CloudProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501E4672BB8A5D4FE58D520 /* CloudProvider.swift */; };
 		AAAA11122F0B59880090F991 /* AuthRefreshService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA11112F0B59880090F991 /* AuthRefreshService.swift */; };
 		EC2D827430234B99003977CA /* AliyunConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2D826330234B99003977CA /* AliyunConfig.swift */; };
@@ -125,6 +126,7 @@
 		491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.release.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.release.xcconfig"; sourceTree = "<group>"; };
 		8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaneseTextConverter.swift; sourceTree = "<group>"; };
 		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA00AA012F0B9A340090F990 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		AAAA11112F0B59880090F991 /* AuthRefreshService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshService.swift; sourceTree = "<group>"; };
 		B501E4672BB8A5D4FE58D520 /* CloudProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CloudProvider.swift; path = Models/CloudProvider.swift; sourceTree = "<group>"; };
 		B950CB5B3444447904A02CD3 /* nuisdk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = nuisdk.framework; sourceTree = "<group>"; };
@@ -414,6 +416,7 @@
 				EC7FEF1C2F4D57C90007BCA6 /* AudioConverter.swift */,
 				EC7FEF1D2F4D57C90007BCA6 /* VideoStorageManager.swift */,
 				ECACBF1D2F0B9A340090F990 /* AppKeys.swift */,
+				AA00AA012F0B9A340090F990 /* AppConstants.swift */,
 				ECACBE9F2F0A5EC80090F990 /* LanguageManager.swift */,
 				ECACBE972F0A38490090F990 /* Theme */,
 				ECACBE852EFA58BB0090F990 /* Extensions */,
@@ -745,6 +748,7 @@
 				ECACBE712EF937930090F990 /* HomeView.swift in Sources */,
 				ECACBE862EFA58BB0090F990 /* String+Extension.swift in Sources */,
 				ECACBF1E2F0B9A340090F990 /* AppKeys.swift in Sources */,
+				AA00AA022F0B9A340090F990 /* AppConstants.swift in Sources */,
 				EC2D827430234B99003977CA /* AliyunConfig.swift in Sources */,
 				EC2D827530234B99003977CA /* AliyunConfig.local.swift in Sources */,
 				EC2D827630234B99003977CA /* ASRServiceProtocol.swift in Sources */,
@@ -953,7 +957,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2026.08.07;
+				CURRENT_PROJECT_VERSION = 2026.08.13;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;
@@ -999,7 +1003,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2026.08.07;
+				CURRENT_PROJECT_VERSION = 2026.08.13;
 				DEVELOPMENT_ASSET_PATHS = "\"Perapera/Preview Content\"";
 				DEVELOPMENT_TEAM = N97GW23N53;
 				ENABLE_PREVIEWS = YES;

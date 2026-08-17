@@ -163,3 +163,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "Giriş yap";
+
+/* Home video delete actions */
+"home_video_delete" = "Sil";
+"home_video_delete_confirm_title" = "Silmeyi onayla";
+"home_video_delete_confirm_message" = "Bu videoyu silmek istediğinden emin misin?";
+"common_delete" = "Sil";

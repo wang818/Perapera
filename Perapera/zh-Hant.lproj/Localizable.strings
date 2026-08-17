@@ -172,3 +172,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "登入";
+
+/* Home video delete actions */
+"home_video_delete" = "刪除";
+"home_video_delete_confirm_title" = "確認刪除";
+"home_video_delete_confirm_message" = "確定要刪除此影片嗎？";
+"common_delete" = "刪除";

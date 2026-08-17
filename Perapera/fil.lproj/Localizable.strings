@@ -163,3 +163,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "Mag-log in";
+
+/* Home video delete actions */
+"home_video_delete" = "Tanggalin";
+"home_video_delete_confirm_title" = "Kumpirmahin ang pagtanggal";
+"home_video_delete_confirm_message" = "Sigurado ka bang gusto mong tanggalin ang video na ito?";
+"common_delete" = "Tanggalin";

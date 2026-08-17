@@ -165,3 +165,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "Se connecter";
+
+/* Home video delete actions */
+"home_video_delete" = "Supprimer";
+"home_video_delete_confirm_title" = "Confirmer la suppression";
+"home_video_delete_confirm_message" = "Voulez-vous vraiment supprimer cette vidéo ?";
+"common_delete" = "Supprimer";

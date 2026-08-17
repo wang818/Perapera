@@ -172,3 +172,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "ログイン";
+
+/* Home video delete actions */
+"home_video_delete" = "削除";
+"home_video_delete_confirm_title" = "削除の確認";
+"home_video_delete_confirm_message" = "この動画を削除してもよろしいですか？";
+"common_delete" = "削除";

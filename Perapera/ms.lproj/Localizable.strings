@@ -163,3 +163,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "Log masuk";
+
+/* Home video delete actions */
+"home_video_delete" = "Padam";
+"home_video_delete_confirm_title" = "Sahihkan pemadaman";
+"home_video_delete_confirm_message" = "Adakah anda pasti ingin memadam video ini?";
+"common_delete" = "Padam";

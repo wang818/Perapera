@@ -3,7 +3,7 @@ import UIKit
 import AVFoundation
 
 // MARK: - Video Model
-struct VideoItem: Codable, Identifiable {
+struct VideoItem: Codable, Hashable, Identifiable {
     let id: String
     let name: String
     let posterImageData: Data? // 海报图片的 Data

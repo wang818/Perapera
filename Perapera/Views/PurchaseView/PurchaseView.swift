@@ -160,20 +160,18 @@ struct PurchaseView: View {
                     }
 
                     HStack(spacing: 20) {
-                        Button(action: {
-                            openURL("https://www.perapera.cc/privacy")
-                        }) {
+                        Link(destination: AppConstants.privacyPolicyURL) {
                             Text("purchase_privacy_policy".localized())
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .underline()
+                                .foregroundColor(Color.Ex.main)
                         }
 
-                        Button(action: {
-                            openURL("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
-                        }) {
+                        Link(destination: AppConstants.termsOfUseURL) {
                             Text("purchase_terms_of_use".localized())
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .underline()
+                                .foregroundColor(Color.Ex.main)
                         }
                     }
                     .padding(.bottom, 20)

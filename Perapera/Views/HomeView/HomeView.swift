@@ -9,6 +9,10 @@ struct HomeView: View {
     @State private var videos: [VideoItem] = []
     @State private var showingSheet = false
     @State private var showingYoutubeAlert = false
+    /// 待删除视频（用于弹确认框）
+    @State private var pendingDeleteVideo: VideoItem?
+    /// 显式 push 目标
+    @State private var navigationDestination: VideoItem?
     @State private var showingFileImporter = false
     @State private var showingPhotoPicker = false
     @State private var youtubeUrl = ""
@@ -131,17 +135,49 @@ struct HomeView: View {
                                     .padding(.bottom, 8)
 
                                 ForEach(items) { video in
-                                    NavigationLink(destination: destinationView(for: video)) {
-                                        VideoRowView(
-                                            video: video,
-                                            onDelete: { deleteVideo(video) },
-                                            onConvertAudio: { convertAudioForVideo(video) },
-                                            onStartRecognition: { startRecognitionForVideo(video) },
-                                            onStartTranslation: { startTranslationForVideo(video) }
-                                        )
-                                        .contentShape(Rectangle())
+                                    VideoRowView(
+                                        video: video,
+                                        onDelete: { requestDeleteVideo(video) },
+                                        onConvertAudio: { convertAudioForVideo(video) },
+                                        onStartRecognition: { startRecognitionForVideo(video) },
+                                        onStartTranslation: { startTranslationForVideo(video) }
+                                    )
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        navigateToVideo(video)
                                     }
-                                    .buttonStyle(.plain)
+                                    // 用传统 NavigationLink(isActive:) 兜底跳转，
+                                    // 避免 navigationDestination(item:) 受 deployment target 影响
+                                    .background {
+                                        NavigationLink(
+                                            destination: destinationView(for: video),
+                                            isActive: Binding(
+                                                get: { navigationDestination?.id == video.id },
+                                                set: { isActive in
+                                                    if !isActive && navigationDestination?.id == video.id {
+                                                        navigationDestination = nil
+                                                    }
+                                                }
+                                            )
+                                        ) { EmptyView() }
+                                        .hidden()
+                                    }
+                                    // 左滑删除
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            requestDeleteVideo(video)
+                                        } label: {
+                                            Label("home_video_delete".localized(), systemImage: "trash")
+                                        }
+                                    }
+                                    // 长按菜单
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            requestDeleteVideo(video)
+                                        } label: {
+                                            Label("home_video_delete".localized(), systemImage: "trash")
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -151,6 +187,24 @@ struct HomeView: View {
                 }
                 .background(Color.Ex.homepagebg)
                 .navigationBarHidden(true)
+                .alert(
+                    "home_video_delete_confirm_title".localized(),
+                    isPresented: Binding<Bool>(
+                        get: { pendingDeleteVideo != nil },
+                        set: { if !$0 { pendingDeleteVideo = nil } }
+                    ),
+                    presenting: pendingDeleteVideo
+                ) { video in
+                    Button("common_delete".localized(), role: .destructive) {
+                        deleteVideo(video)
+                        pendingDeleteVideo = nil
+                    }
+                    Button("common_cancel".localized(), role: .cancel) {
+                        pendingDeleteVideo = nil
+                    }
+                } message: { video in
+                    Text("home_video_delete_confirm_message".localized())
+                }
                 .onAppear {
                     loadVideos()
                     DispatchQueue.global(qos: .background).async {
@@ -563,6 +617,16 @@ struct HomeView: View {
     private func deleteVideo(_ video: VideoItem) {
         VideoStorageManager.shared.deleteVideo(id: video.id)
         loadVideos()
+    }
+
+    /// 删除前弹确认框
+    private func requestDeleteVideo(_ video: VideoItem) {
+        pendingDeleteVideo = video
+    }
+
+    /// 跳转到播放页
+    private func navigateToVideo(_ video: VideoItem) {
+        navigationDestination = video
     }
 
     /// 根据视频类型选择进入播放页的方式

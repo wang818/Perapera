@@ -172,3 +172,9 @@
 
 /* Auth alert buttons */
 "home_go_settings" = "로그인";
+
+/* Home video delete actions */
+"home_video_delete" = "삭제";
+"home_video_delete_confirm_title" = "삭제 확인";
+"home_video_delete_confirm_message" = "이 영상을 삭제하시겠습니까?";
+"common_delete" = "삭제";
