@@ -379,7 +379,7 @@ public extension UIColor.Ex {
     static var special3: UIColor { global.special3 }
     var special3: UIColor { named(.special3) }
     
-    /// 类别:特殊色Special
+    /// 类别:特殊色SpecialO
     static var special4: UIColor { global.special4 }
     var special4: UIColor { named(.special4) }
     

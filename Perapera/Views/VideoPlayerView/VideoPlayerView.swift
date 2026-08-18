@@ -112,7 +112,7 @@ struct VideoPlayerView: View {
             Spacer(minLength: 0)
             bottomControlBar
         }
-        .background(Color.ex.bg1)
+        .background(Color.ex.main.opacity(0.1))
         .ignoresSafeArea(.container, edges: .bottom)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
@@ -535,12 +535,9 @@ struct SentenceCardView: View {
                         .font(.system(size: 14))
                         .foregroundColor(Color.ex.text1)
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
+                        .padding(.top, 0)
+                        .padding(.bottom, 4)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.ex.text3.opacity(0.08))
-                        )
                 }
             } else {
                 // 没有词级别信息，显示整句
@@ -553,12 +550,9 @@ struct SentenceCardView: View {
                         .font(.system(size: 14))
                         .foregroundColor(Color.ex.text1)
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
+                        .padding(.top, 0)
+                        .padding(.bottom, 4)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.ex.text3.opacity(0.08))
-                        )
                 }
             }
         }
