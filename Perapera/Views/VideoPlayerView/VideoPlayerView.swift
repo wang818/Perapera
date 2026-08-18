@@ -520,10 +520,9 @@ struct SentenceCardView: View {
     let onTap: () -> Void
     
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
-    private let greenLight = Color(red: 0.78, green: 0.92, blue: 0.58)
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 2) {
             if let words = subtitle.words {
                 // 词级别显示：假名 + 原文 + romaji
                 WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
@@ -560,8 +559,8 @@ struct SentenceCardView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(isActive ? greenLight.opacity(0.08) : Color.clear)
+            RoundedRectangle(cornerRadius: 10)
+                .fill(isActive ? Color.ex.main.opacity(0.13) : Color.clear)
         )
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
