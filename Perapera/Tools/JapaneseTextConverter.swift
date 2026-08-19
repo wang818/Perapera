@@ -63,6 +63,25 @@ class JapaneseTextConverter {
         return romajiToHiragana(romaji)
     }
 
+    /// 将日文文本转换为片假名（katakana）
+    /// 流程：日文 → romaji → katakana（不转平假名）
+    /// - Parameter text: 日文文本
+    /// - Returns: 片假名字符串
+    func toKatakana(_ text: String) -> String {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return "" }
+
+        if isPunctuationOrSymbol(trimmed) {
+            return trimmed
+        }
+
+        let romaji = toRomaji(trimmed)
+        let mutable = NSMutableString(string: romaji.lowercased())
+        // 罗马音 → 片假名（不做平假名转换）
+        CFStringTransform(mutable, nil, kCFStringTransformLatinKatakana, false)
+        return mutable as String
+    }
+
     // MARK: - Private Methods
 
     /// 将罗马音转换为平假名

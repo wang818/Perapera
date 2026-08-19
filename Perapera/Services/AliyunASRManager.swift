@@ -452,6 +452,11 @@ class AliyunASRManager: NSObject, ASRServiceProtocol {
             [
                 "FinalSentence": sentence.FinalSentence,
                 "SliceSentence": sentence.SliceSentence,
+                "furigana": [
+                    "hiragana": JapaneseTextConverter.shared.toHiragana(sentence.SliceSentence),
+                    "katakana": JapaneseTextConverter.shared.toKatakana(sentence.SliceSentence),
+                    "romaji": JapaneseTextConverter.shared.toRomaji(sentence.SliceSentence)
+                ],
                 "StartMs": sentence.StartMs,
                 "EndMs": sentence.EndMs,
                 "WordsNum": sentence.WordsNum,
