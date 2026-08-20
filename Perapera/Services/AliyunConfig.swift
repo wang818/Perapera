@@ -47,7 +47,7 @@ struct AliyunConfig {
     static let serviceMode = "1"
 
     /// 使用的模型
-    static let model = "fun-asr"
+    static let model = "qwen-audio-3.0-asr-flash-filetrans"
 
     /// 是否启用说话人分离
     static let diarizationEnabled = false

@@ -286,7 +286,7 @@ struct PlanRow: View {
                     Image(systemName: isSelected ? "circle.inset.filled" : "circle")
                         .foregroundColor(isSelected ? .black : .gray)
                     
-                    Text(productInfo?.displayName ?? plan.fallbackTitle)
+                    Text(plan.fallbackTitle)
                         .font(.headline)
                     
                     if let tag = plan.tag {

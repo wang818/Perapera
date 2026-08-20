@@ -604,13 +604,14 @@ final class PurchaseManager: ObservableObject {
     }
 
     private func fallbackPlanName(for productID: String) -> String {
+        // 统一使用本地化文案作为套餐名称（避免 StoreKit/远程名称大小写不一致）
         switch productID {
         case Self.proMonthlyProductID:
-            return "Pro Monthly"
+            return "purchase_plan_monthly_pro_title".localized()
         case Self.proYearlyProductID:
-            return "Pro Yearly"
+            return "purchase_plan_yearly_pro_title".localized()
         case Self.basicMonthlyProductID:
-            return "Basic Monthly"
+            return "purchase_plan_monthly_basic_title".localized()
         default:
             return productID
         }

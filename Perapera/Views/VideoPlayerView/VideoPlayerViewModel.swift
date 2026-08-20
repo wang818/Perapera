@@ -526,6 +526,7 @@ class VideoPlayerViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let cosURL):
+                        print("✅ 音频上传成功! COS访问地址: \(cosURL)")
                         self.pipelineStatusMessage = "local_video_audio_uploaded".localized()
                         self.startASRRecognition(cosAudioURL: cosURL, videoId: self.video.id)
                     case .failure(let error):
