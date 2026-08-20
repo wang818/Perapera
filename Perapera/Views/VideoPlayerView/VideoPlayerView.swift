@@ -528,6 +528,17 @@ struct SentenceCardView: View {
                 // 词级别显示：假名 + 原文 + romaji
                 WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
                 
+                // 整句平假名（译文上方）
+                if let hiragana = subtitle.hiragana, !hiragana.isEmpty {
+                    Text(hiragana)
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.ex.text2)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 2)
+                        .padding(.bottom, 0)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
                 // 整句翻译 - 优先使用 subtitle.translatedText（Tencent MT 整句翻译），fallback 到逐词翻译拼接
                 let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
                 if !sentenceTranslation.isEmpty {
@@ -539,16 +550,49 @@ struct SentenceCardView: View {
                         .padding(.bottom, 4)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                
+                // 整句罗马音（译文下方）
+                if let romaji = subtitle.romaji, !romaji.isEmpty {
+                    Text(romaji)
+                        .font(.system(size: 12))
+                        .foregroundColor(Color.ex.text3)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 0)
+                        .padding(.bottom, 4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             } else {
                 // 没有词级别信息，显示整句
                 Text(subtitle.originalText)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(isActive ? greenDark : Color.ex.text1)
                 
+                // 整句平假名（译文上方）
+                if let hiragana = subtitle.hiragana, !hiragana.isEmpty {
+                    Text(hiragana)
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.ex.text2)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 2)
+                        .padding(.bottom, 0)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
                 if !subtitle.translatedText.isEmpty {
                     Text(subtitle.translatedText)
                         .font(.system(size: 14))
                         .foregroundColor(Color.ex.text1)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 0)
+                        .padding(.bottom, 4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                // 整句罗马音（译文下方）
+                if let romaji = subtitle.romaji, !romaji.isEmpty {
+                    Text(romaji)
+                        .font(.system(size: 12))
+                        .foregroundColor(Color.ex.text3)
                         .padding(.horizontal, 12)
                         .padding(.top, 0)
                         .padding(.bottom, 4)

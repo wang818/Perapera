@@ -443,32 +443,90 @@ class AliyunASRManager: NSObject, ASRServiceProtocol {
     }
 
     /// 包装为腾讯云 ASR 兼容 JSON
+    /// 整句 furigana 优先用 /reading 服务的词级读音拼接（katakana→hiragana），失败兜底本地转换；
+    /// 词级 Furigana/Reading 在 ASR 阶段就用 /reading 对齐写好，MT 阶段不再覆盖。
     private func wrapAsTencentCompatibleJSON(
         fullText: String,
         sentences: [ASRSentenceItem],
         taskId: Int
     ) -> Data {
-        let sentenceItems: [[String: Any]] = sentences.map { sentence in
-            [
+        var sentenceItems: [[String: Any]] = []
+        sentenceItems.reserveCapacity(sentences.count)
+
+        // /reading 服务连续失败后快速降级为本地转换，避免多句逐句超时
+        var readingAvailable = true
+
+        for sentence in sentences {
+            let sliceText = sentence.SliceSentence.isEmpty ? sentence.FinalSentence : sentence.SliceSentence
+
+            // 1) 调用 /reading 获取整句与词级读音（同步，失败返回 nil）
+            let readingResult = readingAvailable
+                ? ReadingAPIClient.shared.fetchReadingSync(text: sliceText)
+                : nil
+            if readingResult == nil {
+                readingAvailable = false
+            }
+
+            // 2) 整句 furigana：/reading 优先，失败本地兜底
+            var furigana: [String: Any]
+            if let reading = readingResult {
+                furigana = [
+                    "hiragana": reading.hiragana,
+                    "katakana": reading.katakana,
+                    "romaji": reading.romaji
+                ]
+            } else {
+                furigana = [
+                    "hiragana": JapaneseTextConverter.shared.toHiragana(sliceText),
+                    "katakana": JapaneseTextConverter.shared.toKatakana(sliceText),
+                    "romaji": JapaneseTextConverter.shared.toRomaji(sliceText)
+                ]
+            }
+
+            // 3) 词级：/reading 词级读音对齐到阿里云分词（时间轴仍以阿里云为准）
+            var wordsJSON: [[String: Any]] = []
+            if let words = sentence.Words, !words.isEmpty {
+                if let reading = readingResult, !reading.words.isEmpty {
+                    let aligned = ReadingAPIClient.alignToAliyunWords(
+                        readingWords: reading.words,
+                        aliyunWords: words
+                    )
+                    for (idx, word) in words.enumerated() {
+                        var w: [String: Any] = [
+                            "Word": word.Word,
+                            "OffsetStartMs": word.OffsetStartMs,
+                            "OffsetEndMs": word.OffsetEndMs
+                        ]
+                        if idx < aligned.count,
+                           let hiragana = aligned[idx].hiragana,
+                           let romaji = aligned[idx].romaji {
+                            w["Furigana"] = hiragana
+                            w["Reading"] = romaji
+                        }
+                        wordsJSON.append(w)
+                    }
+                } else {
+                    // /reading 无词级结果 → 词级保持时间轴信息（读音由 MT 阶段本地兜底填充）
+                    wordsJSON = words.map { word in
+                        [
+                            "Word": word.Word,
+                            "OffsetStartMs": word.OffsetStartMs,
+                            "OffsetEndMs": word.OffsetEndMs
+                        ]
+                    }
+                }
+            }
+
+            sentenceItems.append([
                 "FinalSentence": sentence.FinalSentence,
                 "SliceSentence": sentence.SliceSentence,
-                "furigana": [
-                    "hiragana": JapaneseTextConverter.shared.toHiragana(sentence.SliceSentence),
-                    "katakana": JapaneseTextConverter.shared.toKatakana(sentence.SliceSentence),
-                    "romaji": JapaneseTextConverter.shared.toRomaji(sentence.SliceSentence)
-                ],
+                "furigana": furigana,
                 "StartMs": sentence.StartMs,
                 "EndMs": sentence.EndMs,
                 "WordsNum": sentence.WordsNum,
                 "SpeechSpeed": sentence.SpeechSpeed,
-                "Words": (sentence.Words ?? []).map { word in
-                    [
-                        "Word": word.Word,
-                        "OffsetStartMs": word.OffsetStartMs,
-                        "OffsetEndMs": word.OffsetEndMs
-                    ]
-                }
-            ] as [String: Any]
+                "Words": wordsJSON
+            ] as [String: Any])
         }
 
         let wrapper: [String: Any] = [

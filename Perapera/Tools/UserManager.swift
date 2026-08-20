@@ -75,11 +75,12 @@ class UserManager: ObservableObject {
             .asObservable()
             .mapObject(UserInfoModel.self)
             .subscribe(onNext: { [weak self] model in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     self?.currentUserInfo = model
                     // 每次接口返回都更新本地为最新数据
-                    if let json = model.toJSONString() {
-                        PUserDefault.setValueForKey(json, key: userInfoKey)
+                    if let json = model.toJSONString(),
+                       let key = self?.userInfoKey {
+                        PUserDefault.setValueForKey(json, key: key)
                     }
                     completion?(model)
                 }

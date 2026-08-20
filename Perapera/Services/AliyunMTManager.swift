@@ -145,8 +145,15 @@ class AliyunMTManager {
                                 let trimmed = wordText.trimmingCharacters(in: .whitespacesAndNewlines)
                                 if !trimmed.isEmpty && !self.isPunctuationOrSymbol(trimmed) {
                                     updatedWord["Translation"] = translatedText
-                                    updatedWord["Reading"] = JapaneseTextConverter.shared.toRomaji(wordText)
-                                    updatedWord["Furigana"] = JapaneseTextConverter.shared.toHiragana(wordText)
+                                    // 词级读音优先保留 ASR 阶段 /reading 已写入的值，缺失才本地兜底
+                                    let existingReading = updatedWord["Reading"] as? String
+                                    if existingReading == nil || existingReading!.isEmpty {
+                                        updatedWord["Reading"] = JapaneseTextConverter.shared.toRomaji(wordText)
+                                    }
+                                    let existingFurigana = updatedWord["Furigana"] as? String
+                                    if existingFurigana == nil || existingFurigana!.isEmpty {
+                                        updatedWord["Furigana"] = JapaneseTextConverter.shared.toHiragana(wordText)
+                                    }
                                 } else {
                                     updatedWord["Translation"] = wordText
                                     updatedWord["Reading"] = wordText

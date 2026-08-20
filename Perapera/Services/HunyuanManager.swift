@@ -654,7 +654,148 @@ class HunyuanManager {
             }
         }
     }
-    
+
+    // MARK: - 读音兜底：在整句平假名中查找词的对应片段
+
+    /// 大模型兜底：在一句的整句平假名注音串中，为若干「未能精确匹配」的日语词查找对应的平假名片段。
+    ///
+    /// 适用场景：词级读音对齐失败（如阿里云把「美味しそう」错切成「美味」「しそ」「う」），
+    /// 离线空隙切分无法可靠给出该词的读音时，由大模型借助整句语义在注音串中定位。
+    ///
+    /// - Parameters:
+    ///   - sentenceHiragana: 整句平假名注音串（权威来源，返回的片段必须是它的连续子串）
+    ///   - words: 需要查找的词，附带词在句内的原始下标 [(index, word)]
+    ///   - completion: 通过校验的结果 [index: furigana]（仅包含在整句注音串中真实出现的片段；找不到的词不会出现）
+    func lookupFuriganaInHiragana(
+        sentenceHiragana: String,
+        words: [(index: Int, word: String)],
+        completion: @escaping (Result<[Int: String], Error>) -> Void
+    ) {
+        guard !words.isEmpty else {
+            completion(.success([:]))
+            return
+        }
+        guard let url = HunyuanConfig.generateRequestURL() else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -20, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
+            return
+        }
+        let apiKey = HunyuanConfig.apiKey
+        guard !apiKey.isEmpty else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -21, userInfo: [NSLocalizedDescriptionKey: "TokenHub API Key 未配置，请在 HunyuanConfig.local.swift 中设置 _localApiKey"])))
+            return
+        }
+
+        let itemsJSON = words.map { "{\"i\": \($0.index), \"w\": \"\($0.word)\"}" }.joined(separator: ", ")
+        let prompt = """
+        你是一名日语读音标注助手。任务：在一句日语的整句平假名注音串中，为若干日语词找出它们对应的平假名片段。
+
+        要求：
+        1. 每个词对应的片段必须是整句平假名注音串中连续出现的一段（子串），不能创造注音串里不存在的假名。
+        2. 片段要精确对应这个词在句中的读音。示例：整句注音是「はあ、もうきょうのはおいしそう。」，词「美味」应返回「おいし」（不要包含「そう」）；词「しそ」应返回空字符串（它在注音串中找不到对应片段）。
+        3. 若某词在注音串中找不到对应片段（如标点、无法对应的错切片段），返回空字符串。
+        4. 只输出 JSON，不要任何解释、不要 markdown 代码块。
+
+        整句平假名注音串：\(sentenceHiragana)
+        待标注词：[\(itemsJSON)]
+
+        输出格式：{"results":[{"i":0,"f":"おいし"},{"i":1,"f":""}]}
+        - results 数量必须与待标注词数量一致；
+        - i 为输入序号（与输入一一对应）；
+        - f 为找到的平假名片段，找不到则为空字符串。
+        """
+
+        let requestBody: [String: Any] = [
+            "model": HunyuanConfig.defaultModel,
+            "messages": [["role": "user", "content": prompt]],
+            "temperature": 0.2,
+            "top_p": 1.0
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -22, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.timeoutInterval = 60
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.httpBody = jsonData
+
+        print("🚀 TokenHub 读音查找请求: \(words.count) 个词, 整句=\(sentenceHiragana.prefix(20))")
+
+        let task = translationSession.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+            guard let data = data else {
+                completion(.failure(NSError(domain: "HunyuanManager", code: -23, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
+                return
+            }
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📥 TokenHub 读音查找响应 HTTP \(statusCode): \(responseString.prefix(400))")
+            }
+
+            do {
+                let chatResponse = try JSONDecoder().decode(OpenAIChatResponse.self, from: data)
+                if let apiError = chatResponse.error {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -24, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.message)"])))
+                    return
+                }
+                guard let content = chatResponse.choices?.first?.message?.content else {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -25, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
+                    return
+                }
+
+                let raw = Self.extractFuriganaLookupResults(from: content)
+
+                // 强校验：返回的平假名必须是整句注音串中真实出现的连续子串，防止模型编造
+                var validated: [Int: String] = [:]
+                for (idx, f) in raw {
+                    let trimmed = f.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty, sentenceHiragana.contains(trimmed) {
+                        validated[idx] = trimmed
+                    }
+                }
+                print("✅ TokenHub 读音查找完成: 有效 \(validated.count)/\(words.count) 个词")
+                completion(.success(validated))
+            } catch {
+                print("❌ JSON 解析失败: \(error)")
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+    }
+
+    /// 从大模型响应中提取读音查找结果 [index: furigana]（未校验，仅结构化）
+    private static func extractFuriganaLookupResults(from content: String) -> [Int: String] {
+        var jsonObject: [String: Any]?
+        if let data = content.data(using: .utf8),
+           let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            jsonObject = obj
+        } else if let startIdx = content.firstIndex(of: "{"),
+                  let endIdx = content.lastIndex(of: "}"),
+                  startIdx <= endIdx,
+                  let data = String(content[startIdx...endIdx]).data(using: .utf8),
+                  let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            jsonObject = obj
+        }
+        guard let obj = jsonObject,
+              let results = obj["results"] as? [[String: Any]] else {
+            print("⚠️ 读音查找响应中无 results")
+            return [:]
+        }
+        var dict: [Int: String] = [:]
+        for item in results {
+            guard let i = item["i"] as? Int, let f = item["f"] as? String else { continue }
+            dict[i] = f
+        }
+        return dict
+    }
+
     // MARK: - Tencent Cloud API V3 Signature
     
     /// 生成腾讯云 API 签名 (V3)
