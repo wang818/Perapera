@@ -119,6 +119,7 @@ struct VideoPlayerView: View {
         .modifier(TabBarHiderModifier())
         .onAppear {
             viewModel.setupPlayer()
+            viewModel.refreshUserInfoOnAppear()
         }
         .onDisappear {
             viewModel.cleanup()

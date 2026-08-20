@@ -450,7 +450,13 @@ class VideoPlayerViewModel: ObservableObject {
     // MARK: - 本地视频流水线：转音频 → 上传 COS → ASR → 翻译
     // 仅在播放页的本地视频路径触发，不影响 YouTube 流水线
 
+    /// 进入播放页时预拉一次最新 userInfo，让剩余时间判断与界面展示都基于最新数据
+    func refreshUserInfoOnAppear() {
+        UserManager.shared.fetchCurrentUser()
+    }
+
     /// 启动本地视频流水线（独立于 YouTube 流水线）
+    /// 点击按钮时先拉取最新 userInfo，再判断剩余时间是否足够，避免用陈旧/空快照误判弹窗
     func startLocalAudioPipelineFromButton() {
         guard !isProcessingYouTubePipeline else { return }
 
@@ -461,7 +467,16 @@ class VideoPlayerViewModel: ObservableObject {
             return
         }
 
-        // 2) 视频时长（分钟）必须 ≤ 用户剩余分钟数（monthly + point）
+        // 2) 先拉取最新 userInfo，拿到最新剩余分钟数后再做判断
+        UserManager.shared.fetchCurrentUser { [weak self] _ in
+            guard let self = self else { return }
+            self.checkLocalVideoQuotaAndRun()
+        }
+    }
+
+    /// 用最新 userInfo 判断本地视频时长是否超出剩余可处理时长
+    private func checkLocalVideoQuotaAndRun() {
+        // 视频时长（分钟）必须 ≤ 用户剩余分钟数（monthly + point）
         let videoMinutes = Int((video.duration ?? 0) / 60.0 + 0.5)
         let userInfo = UserManager.shared.currentUserInfo
         let availableMinutes = (userInfo?.monthly_card_minutes ?? 0) + (userInfo?.point_card_minutes ?? 0)

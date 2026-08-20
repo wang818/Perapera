@@ -20,6 +20,7 @@ class UserManager: ObservableObject {
     @Published var userEmail: String?
 
     private let userKey = "kCurrentUser"
+    private let userInfoKey = "kCurrentUserInfo"
     private let emailKey = "kUserEmail"
     private let disposeBag = DisposeBag()
 
@@ -50,6 +51,12 @@ class UserManager: ObservableObject {
         if let email = PUserDefault.getVauleForKey(key: emailKey) as? String {
             userEmail = email
         }
+
+        // 恢复上次持久化的用户资料（含会员剩余时间/到期时间），避免启动后接口返回前界面空白
+        if let json = PUserDefault.getVauleForKey(key: userInfoKey) as? String,
+           let model = UserInfoModel.deserialize(from: json) {
+            currentUserInfo = model
+        }
     }
 
     func logout() {
@@ -59,17 +66,26 @@ class UserManager: ObservableObject {
     /// Fetches the current user profile from `GET /users/me` and stores it.
     /// The profile carries Pro membership info (annual/monthly expire dates),
     /// surfaced via `UserInfoModel.hasActivePro` and `remainingProTimeDescription()`.
-    func fetchCurrentUser() {
-        guard isLoggedIn else { return }
+    func fetchCurrentUser(completion: ((UserInfoModel?) -> Void)? = nil) {
+        guard isLoggedIn else {
+            completion?(nil)
+            return
+        }
         appApi.rx.request(.currentUser)
             .asObservable()
             .mapObject(UserInfoModel.self)
             .subscribe(onNext: { [weak self] model in
                 DispatchQueue.main.async {
                     self?.currentUserInfo = model
+                    // 每次接口返回都更新本地为最新数据
+                    if let json = model.toJSONString() {
+                        PUserDefault.setValueForKey(json, key: userInfoKey)
+                    }
+                    completion?(model)
                 }
             }, onError: { error in
                 print("fetchCurrentUser failed: \(error.localizedDescription)")
+                DispatchQueue.main.async { completion?(nil) }
             })
             .disposed(by: disposeBag)
     }
@@ -81,6 +97,7 @@ class UserManager: ObservableObject {
         PUserDefault.removeKey(key: userKey)
         PUserDefault.removeKey(key: emailKey)
         PUserDefault.removeKey(key: "access_token")
+        PUserDefault.removeKey(key: userInfoKey)
     }
 
     func deleteAccount(completion: @escaping (Bool, String?) -> Void) {
