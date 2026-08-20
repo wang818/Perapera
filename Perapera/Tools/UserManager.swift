@@ -71,6 +71,7 @@ class UserManager: ObservableObject {
             completion?(nil)
             return
         }
+        let infoKey = userInfoKey
         appApi.rx.request(.currentUser)
             .asObservable()
             .mapObject(UserInfoModel.self)
@@ -80,7 +81,7 @@ class UserManager: ObservableObject {
                     // 每次接口返回都更新本地为最新数据
                     if let json = model.toJSONString(),
                        let key = self?.userInfoKey {
-                        PUserDefault.setValueForKey(json, key: key)
+                        PUserDefault.setValueForKey(json, key: infoKey)
                     }
                     completion?(model)
                 }
