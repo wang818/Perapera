@@ -645,9 +645,15 @@ struct WordWrapView: View {
     private func wordView(for word: WordTiming) -> some View {
         let isWordActive = isSentenceActive && isWordCurrent(word)
 
+        // 空词（ASR 词间空格占位符，Word 为空格/空白）：不渲染任何注音（上方平假名 + 下方罗马音），仅保留原文占位
+        let isBlankWord = word.word.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+
         // 整句字幕已是平假名 → 全部词的上方注音都隐藏；
         // 否则仅当单个词本身是平假名（允许混入标点等）时隐藏该词的上方注音
-        let furiganaText = (sentenceAllHiragana || isHiraganaWord(word.word)) ? " " : (word.furigana ?? " ")
+        let furiganaText = isBlankWord
+            ? " "
+            : ((sentenceAllHiragana || isHiraganaWord(word.word)) ? " " : (word.furigana ?? " "))
+        let readingText = isBlankWord ? " " : (word.reading ?? " ")
 
         return VStack(spacing: 1) {
             Text(furiganaText)
@@ -665,7 +671,7 @@ struct WordWrapView: View {
                         .stroke(isWordActive ? greenDark : Color.clear, lineWidth: 2)
                 )
 
-            Text(word.reading ?? " ")
+            Text(readingText)
                 .font(.system(size: 10))
                 .foregroundColor(Color.ex.text2)
                 .lineLimit(1)

@@ -268,7 +268,8 @@ final class ReadingAPIClient {
         for (i, aliyunWord) in aliyunWords.enumerated() {
             let target = aliyunWord.Word.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !target.isEmpty else {
-                results[i] = (target, target)
+                // 空词（阿里云 ASR 的词间空格占位符）：不匹配任何读音，保持 nil（不写入 Furigana/Reading）
+                results[i] = (nil, nil)
                 continue
             }
 

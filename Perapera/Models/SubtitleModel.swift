@@ -753,8 +753,12 @@ class SubtitleManager {
 
             if cnt == 1 {
                 // 唯一未匹配词：整段空隙归属
+                let surface = words[i]["Word"] as? String ?? ""
+                let isBlankWord = surface.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 let oldF = words[i]["Furigana"] as? String
-                if let f = oldF, isHiraganaOnly(f) || isKatakanaOnly(f) {
+                if isBlankWord {
+                    // 空词（ASR 词间空格占位符）不是真正的词，空隙读音不应归属给它
+                } else if let f = oldF, isHiraganaOnly(f) || isKatakanaOnly(f) {
                     // 旧值已是纯假名：大概率正确，保持不动（如句尾「の」不应被句号空隙污染）
                 } else if !gapHRaw.isEmpty {
                     fNew[i] = gapHRaw
@@ -765,9 +769,14 @@ class SubtitleManager {
             } else {
                 // 多个未匹配词：
                 // - 旧 Furigana 为纯假名的词（本地兜底输出已是假名，大概率正确，如送假名残留「し」）→ 保持不动；
+                // - 空词（ASR 词间空格占位符）→ 不参与空隙分配；
                 // - 旧 Furigana 为空或含汉字的词（真正错误）→ 参与空隙分配。
                 var needFix = [Int]()
                 for t in i..<j {
+                    let surface = words[t]["Word"] as? String ?? ""
+                    if surface.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        continue // 空词不参与分配
+                    }
                     let oldF = words[t]["Furigana"] as? String
                     if let f = oldF, isHiraganaOnly(f) || isKatakanaOnly(f) {
                         continue // 纯假名旧值保持
@@ -793,6 +802,20 @@ class SubtitleManager {
         var changed = false
         for i in 0..<n {
             var w = words[i]
+            let surface = w["Word"] as? String ?? ""
+            if surface.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                // 空词（ASR 词间空格占位符）：清理历史遗留的脏读音（Furigana/Reading 不应有值）
+                if w["Furigana"] != nil {
+                    w.removeValue(forKey: "Furigana")
+                    changed = true
+                }
+                if w["Reading"] != nil {
+                    w.removeValue(forKey: "Reading")
+                    changed = true
+                }
+                words[i] = w
+                continue
+            }
             if let f = fNew[i], f != (w["Furigana"] as? String) {
                 w["Furigana"] = f
                 changed = true
