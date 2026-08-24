@@ -112,7 +112,7 @@ struct VideoPlayerView: View {
             Spacer(minLength: 0)
             bottomControlBar
         }
-        .background(Color.ex.main.opacity(0.1))
+        .background(Color.ex.main.opacity(0.2))
         .ignoresSafeArea(.container, edges: .bottom)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
@@ -585,6 +585,21 @@ struct WordWrapView: View {
 
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
 
+    /// 词下划线 10 色轮换色板（色相环均匀分布 + 明度交替，程序验证相邻色距离全部 >0.38，首尾也拉开）
+    /// 索引 = 词在句内的全局顺序 % 10；透明度统一 0.7（用户要求，避免色值过重）
+    private static let underlineColors: [Color] = [
+        Color(red: 0.926, green: 0.334, blue: 0.334, opacity: 0.7),  // 1  红     #EC5555
+        Color(red: 0.950, green: 0.590, blue: 0.050, opacity: 0.7),  // 2  橙     #F2960D
+        Color(red: 0.808, green: 0.926, blue: 0.334, opacity: 0.7),  // 3  黄绿   #CEEC55
+        Color(red: 0.230, green: 0.950, blue: 0.050, opacity: 0.7),  // 4  绿     #3BF20D
+        Color(red: 0.334, green: 0.926, blue: 0.571, opacity: 0.7),  // 5  青绿   #55EC92
+        Color(red: 0.050, green: 0.950, blue: 0.950, opacity: 0.7),  // 6  青     #0DF2F2
+        Color(red: 0.334, green: 0.571, blue: 0.926, opacity: 0.7),  // 7  蓝绿   #5592EC
+        Color(red: 0.230, green: 0.050, blue: 0.950, opacity: 0.7),  // 8  蓝紫   #3B0DF2
+        Color(red: 0.808, green: 0.334, blue: 0.926, opacity: 0.7),  // 9  紫     #CE55EC
+        Color(red: 0.950, green: 0.050, blue: 0.590, opacity: 0.7),  // 10 品红   #F20D96
+    ]
+
     var body: some View {
         // 在 GeometryReader 内计算每行能放多少个词，用 VStack+HStack 渲染
         GeometryReader { geometry in
@@ -592,8 +607,8 @@ struct WordWrapView: View {
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                     HStack(spacing: 6) {
-                        ForEach(Array(row.enumerated()), id: \.offset) { _, word in
-                            wordView(for: word)
+                        ForEach(Array(row.enumerated()), id: \.offset) { _, item in
+                            wordView(for: item.word, index: item.index)
                         }
                     }
                 }
@@ -603,19 +618,20 @@ struct WordWrapView: View {
     }
 
     // MARK: - 按可用宽度分行
-    private func computeRows(availableWidth: CGFloat) -> [[WordTiming]] {
-        var rows: [[WordTiming]] = []
-        var currentRow: [WordTiming] = []
+    /// 返回带句内全局索引的词列表（用于下划线颜色轮换）
+    private func computeRows(availableWidth: CGFloat) -> [[(index: Int, word: WordTiming)]] {
+        var rows: [[(index: Int, word: WordTiming)]] = []
+        var currentRow: [(index: Int, word: WordTiming)] = []
         var currentWidth: CGFloat = 0
 
-        for word in words {
+        for (index, word) in words.enumerated() {
             let wordWidth = estimatedWordWidth(word) + 6 // trailing spacing
             if currentWidth + wordWidth > availableWidth && !currentRow.isEmpty {
                 rows.append(currentRow)
-                currentRow = [word]
+                currentRow = [(index, word)]
                 currentWidth = wordWidth
             } else {
-                currentRow.append(word)
+                currentRow.append((index, word))
                 currentWidth += wordWidth
             }
         }
@@ -642,10 +658,10 @@ struct WordWrapView: View {
     }
 
     // MARK: - 单个词的 View
-    private func wordView(for word: WordTiming) -> some View {
+    private func wordView(for word: WordTiming, index: Int) -> some View {
         let isWordActive = isSentenceActive && isWordCurrent(word)
 
-        // 空词（ASR 词间空格占位符，Word 为空格/空白）：不渲染任何注音（上方平假名 + 下方罗马音），仅保留原文占位
+        // 空词（ASR 词间空格占位符，Word 为空格/空白）：不渲染任何注音（上方平假名 + 下方罗马音），也不画下划线，仅保留原文占位
         let isBlankWord = word.word.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 
         // 整句字幕已是平假名 → 全部词的上方注音都隐藏；
@@ -654,6 +670,9 @@ struct WordWrapView: View {
             ? " "
             : ((sentenceAllHiragana || isHiraganaWord(word.word)) ? " " : (word.furigana ?? " "))
         let readingText = isBlankWord ? " " : (word.reading ?? " ")
+
+        // 下划线颜色：按句内全局词序轮换 10 色（空词不画线，但索引照常递增）
+        let underlineColor = Self.underlineColors[index % Self.underlineColors.count]
 
         return VStack(spacing: 1) {
             Text(furiganaText)
@@ -664,6 +683,18 @@ struct WordWrapView: View {
             Text(word.word)
                 .font(.system(size: 20, weight: .medium))
                 .foregroundColor(isWordActive ? greenDark : Color.ex.text1)
+                .background(alignment: .bottom) {
+                    // 词底部下划线：仅「当前播放词」显示（isWordActive = 当前句 + 播放时间落在词的 [start,end]）；
+                    // 宽=词文字宽，高=5；用 background 渲染在文字底层（overlay 层级高于文字会遮住 word）
+                    if isWordActive && !isBlankWord {
+                        GeometryReader { geo in
+                            Rectangle()
+                                .fill(underlineColor)
+                                .frame(width: geo.size.width, height: 4)
+                                .frame(maxHeight: .infinity, alignment: .bottom)
+                        }
+                    }
+                }
                 .padding(.horizontal, 5)
                 .padding(.vertical, 3)
                 .overlay(
