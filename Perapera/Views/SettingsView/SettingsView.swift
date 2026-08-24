@@ -125,9 +125,12 @@ struct SettingsView: View {
                     SettingsRowView(imageName: "globe", title: "settings_language_title".localized(), subtitle: "settings_language_subtitle".localized()) {
                         showLanguageSettings = true
                     }
+                    // TODO: 暂时屏蔽「字幕首选项」入口（不删除代码，恢复时去掉下方注释即可）
+                    /*
                     SettingsRowView(imageName: "textformat", title: "settings_alphabet_title".localized(), subtitle: "settings_alphabet_subtitle".localized()) {
                         showSubtitleSettings = true
                     }
+                    */
                     SettingsRowView(imageName: "paintbrush.fill", title: "settings_theme_title".localized(), subtitle: "settings_theme_subtitle".localized()) {
                         showThemeSettings = true
                     }
