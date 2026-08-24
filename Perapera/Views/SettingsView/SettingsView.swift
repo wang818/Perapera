@@ -215,7 +215,9 @@ struct SettingsView: View {
                 }
             )
             .onAppear {
-                viewModel.fetchSupportLanguages()
+                // TODO: 用户界面（设置语言相关界面）数据源固定为 LanguageManager.nativeLanguageNames，
+                // 不再拉取 support_lang 接口（该接口数据只供目标语言选择界面使用，恢复时去掉注释即可）
+                // viewModel.fetchSupportLanguages()
                 purchaseManager.loadProducts()
                 purchaseManager.refreshEntitlements()
                 userManager.fetchCurrentUser()

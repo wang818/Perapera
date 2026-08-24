@@ -117,6 +117,17 @@ class LanguageManager {
         return nativeLanguageName(for: code)
     }
 
+    /// 指定设置项（aiLanguage / sourceLanguage / learningLanguage）当前语言的**原文名**。
+    /// 数据源固定为 nativeLanguageNames，不受 support_lang 接口数据影响；
+    /// 未设置过时回退当前 App 语言原文名。
+    /// 设置界面各行的显示统一走这里（与目标语言选择界面的接口数据完全独立）。
+    static func nativeName(forSettingKey settingKey: String) -> String {
+        if let stored = PUserDefault.getVauleForKey(key: settingKey) as? String, !stored.isEmpty {
+            return nativeLanguageName(for: stored)
+        }
+        return getCurrentAppLanguageNative()
+    }
+
     /// 语言代码 → 语言原文名（母语写法）。
     /// 优先 nativeLanguageNames；表外代码用语言名原样兜底（本地化兜底仅作最后手段）。
     static func nativeLanguageName(for code: String) -> String {

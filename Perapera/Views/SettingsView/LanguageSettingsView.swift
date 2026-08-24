@@ -1,16 +1,47 @@
 import SwiftUI
 import Combine
+import RxSwift
+import Moya
+
+/// 目标语言选择界面的接口数据源：
+/// GET https://www.perapera.cc/api/v1/common/support_lang，返回 [{"name": "日本語", "lang": "ja"}]
+/// 接口数据只存在本 VM 内、只供目标语言列表使用，绝不回写 LanguageManager；
+/// 设置界面各行的显示固定读 LanguageManager.nativeLanguageNames，两套数据不共享。
+final class LearningLanguageAPIViewModel: ObservableObject {
+    /// 接口返回的语言列表（仅本界面使用）
+    @Published var supportLangs: [SupportLanguageModel] = []
+    private let disposeBag = DisposeBag()
+    private var hasFetched = false
+
+    /// 请求接口；成功后只刷新本界面列表，失败静默保持本地兜底
+    func fetchIfNeeded() {
+        guard !hasFetched, supportLangs.isEmpty else {
+            hasFetched = true
+            return
+        }
+        hasFetched = true
+        appApi.rx.request(.supportLang)
+            .asObservable()
+            .mapArray(SupportLanguageModel.self)
+            .subscribe(onNext: { [weak self] models in
+                guard let self = self, !models.isEmpty else { return }
+                self.supportLangs = models
+            }, onError: { _ in
+            })
+            .disposed(by: disposeBag)
+    }
+}
 
 struct LanguageSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
-    // Placeholder states for current languages
-    // In a real app, these would come from UserDefaults or a view model
+    // 各行右侧的显示数据源统一为 LanguageManager.nativeLanguageNames（本地固定表），
+    // 与目标语言选择界面的 support_lang 接口数据完全独立、不共享。
     // App Language 行右侧显示语言原文（不做多语言适配，选择什么就显示什么）
     @State private var appLanguage = LanguageManager.getCurrentAppLanguageNative()
-    @State private var aiLanguage = LanguageManager.getAILanguage()
-    @State private var sourceLanguage = LanguageManager.getSourceLanguage()
-    @State private var learningLanguage = LanguageManager.getLearningLanguage()
+    @State private var aiLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.aiLanguage)
+    @State private var sourceLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.sourceLanguage)
+    @State private var learningLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.learningLanguage)
     
     @State private var showAppLanguageSelection = false
     @State private var showAILanguageSelection = false
@@ -64,9 +95,9 @@ struct LanguageSettingsView: View {
         .listStyle(InsetGroupedListStyle())
         .onAppear {
             appLanguage = LanguageManager.getCurrentAppLanguageNative()
-            aiLanguage = LanguageManager.getAILanguage()
-            sourceLanguage = LanguageManager.getSourceLanguage()
-            learningLanguage = LanguageManager.getLearningLanguage()
+            aiLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.aiLanguage)
+            sourceLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.sourceLanguage)
+            learningLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.learningLanguage)
         }
         .sheet(isPresented: $showAppLanguageSelection) {
             LanguageSelectionSheet(
@@ -141,12 +172,20 @@ struct LanguageSelectionSheet: View {
     @Binding var isPresented: Bool
     @Binding var currentLanguage: String
     var type: LanguageSelectionType = .app
-    
+
+    // 目标语言（.learning）专用接口数据源，与本地数据不共享
+    @StateObject private var learningVM = LearningLanguageAPIViewModel()
+
     private var languages: [(key: String, value: String)] {
-        if !LanguageManager.supportLanguages.isEmpty {
-            return LanguageManager.supportLanguages.map { ($0.lang, $0.name) }
+        // 目标语言：数据只来自 support_lang 接口，不读本地任何数据。
+        // 接口未返回前列表为空（无本地兜底），返回后直接渲染接口数据。
+        if type == .learning {
+            return learningVM.supportLangs.map { ($0.lang, $0.name) }
         }
-        return LanguageManager.languageNames.sorted(by: { $0.key < $1.key })
+        // 其余类型：数据一律来自本地 nativeLanguageNames。
+        // 注意：不读 LanguageManager.supportLanguages / languageNames ——
+        // 这两份数据会被 support_lang 接口回写污染，用户界面不能用。
+        return LanguageManager.nativeLanguageNames.sorted(by: { $0.key < $1.key })
     }
     
     var body: some View {
@@ -168,9 +207,10 @@ struct LanguageSelectionSheet: View {
                     ForEach(languages, id: \.key) { key, value in
                         Button(action: {
                             updateLanguage(key: key, type: type)
-                            // App Language 行右侧固定显示语言原文（不做多语言适配）；
+                            // App Language / 目标语言：行右侧显示数据源为 nativeLanguageNames（语言原文），
+                            // 与列表来源（本地表或接口）无关，保证用户界面数据始终来自本地；
                             // 其余类型保持列表展示名（本地化名）。
-                            currentLanguage = (type == .app)
+                            currentLanguage = (type == .app || type == .learning)
                                 ? LanguageManager.nativeLanguageName(for: key)
                                 : value
                             isPresented = false
@@ -180,10 +220,14 @@ struct LanguageSelectionSheet: View {
                                     .font(.headline)
                                     .foregroundColor(.ex.text1)
                                 Spacer()
-                                // App Language：勾选判断用语言代码比对（行右侧是原文名，列表是本地化名，不能直接比字符串）
+                                // 勾选判断用语言代码比对：
+                                // App Language → 当前 App 语言代码；目标语言 → 已存语言代码；
+                                // 其余类型保持显示名比对
                                 let isSelected = (type == .app)
                                     ? (LanguageManager.currentLanguageCode() == key)
-                                    : (currentLanguage == value)
+                                    : (type == .learning)
+                                        ? ((PUserDefault.getVauleForKey(key: AppKeys.learningLanguage) as? String) == key)
+                                        : (currentLanguage == value)
                                 if isSelected {
                                     Image(systemName: "checkmark")
                                         .foregroundColor(.blue)
@@ -197,6 +241,12 @@ struct LanguageSelectionSheet: View {
                     }
                 }
                 .padding(.bottom, 30)
+            }
+        }
+        .onAppear {
+            // 只有目标语言界面调用 support_lang 接口（数据不共享、不回写）
+            if type == .learning {
+                learningVM.fetchIfNeeded()
             }
         }
     }
