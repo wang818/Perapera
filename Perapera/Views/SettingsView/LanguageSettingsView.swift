@@ -6,7 +6,8 @@ struct LanguageSettingsView: View {
     
     // Placeholder states for current languages
     // In a real app, these would come from UserDefaults or a view model
-    @State private var appLanguage = LanguageManager.getCurrentAppLanguage()
+    // App Language 行右侧显示语言原文（不做多语言适配，选择什么就显示什么）
+    @State private var appLanguage = LanguageManager.getCurrentAppLanguageNative()
     @State private var aiLanguage = LanguageManager.getAILanguage()
     @State private var sourceLanguage = LanguageManager.getSourceLanguage()
     @State private var learningLanguage = LanguageManager.getLearningLanguage()
@@ -28,6 +29,8 @@ struct LanguageSettingsView: View {
                     showAppLanguageSelection = true
                 }
                 
+                // TODO: 暂时屏蔽「AI 讲解」与「第二字幕」两个选项（不删除代码，恢复时去掉下方注释即可）
+                /*
                 languageRow(
                     title: "settings_lang_ai_title".localized(),
                     subtitle: "settings_lang_ai_subtitle".localized(),
@@ -45,6 +48,7 @@ struct LanguageSettingsView: View {
                     // Action for Second Subtitle (Source Language)
                     showSourceLanguageSelection = true
                 }
+                */
                 
                 languageRow(
                     title: "settings_lang_learn_title".localized(),
@@ -59,7 +63,7 @@ struct LanguageSettingsView: View {
         .navigationTitle("settings_language_title".localized())
         .listStyle(InsetGroupedListStyle())
         .onAppear {
-            appLanguage = LanguageManager.getCurrentAppLanguage()
+            appLanguage = LanguageManager.getCurrentAppLanguageNative()
             aiLanguage = LanguageManager.getAILanguage()
             sourceLanguage = LanguageManager.getSourceLanguage()
             learningLanguage = LanguageManager.getLearningLanguage()
@@ -164,7 +168,11 @@ struct LanguageSelectionSheet: View {
                     ForEach(languages, id: \.key) { key, value in
                         Button(action: {
                             updateLanguage(key: key, type: type)
-                            currentLanguage = value
+                            // App Language 行右侧固定显示语言原文（不做多语言适配）；
+                            // 其余类型保持列表展示名（本地化名）。
+                            currentLanguage = (type == .app)
+                                ? LanguageManager.nativeLanguageName(for: key)
+                                : value
                             isPresented = false
                         }) {
                             HStack {
@@ -172,7 +180,11 @@ struct LanguageSelectionSheet: View {
                                     .font(.headline)
                                     .foregroundColor(.ex.text1)
                                 Spacer()
-                                if currentLanguage == value {
+                                // App Language：勾选判断用语言代码比对（行右侧是原文名，列表是本地化名，不能直接比字符串）
+                                let isSelected = (type == .app)
+                                    ? (LanguageManager.currentLanguageCode() == key)
+                                    : (currentLanguage == value)
+                                if isSelected {
                                     Image(systemName: "checkmark")
                                         .foregroundColor(.blue)
                                 }

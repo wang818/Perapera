@@ -3,31 +3,36 @@ import Foundation
 class LanguageManager {
     static let shared = LanguageManager()
     
+    /// 语言代码 → 语言原文名（每种语言的母语写法）。
+    /// 这份表是固定的，不受服务端 supportLang 返回的本地化名影响，
+    /// 供「App Language」行右侧展示使用（选择什么语言就显示该语言的原文，不做多语言适配）。
+    static let nativeLanguageNames: [String: String] = [
+        "en": "English",
+        "zh-Hans": "简体中文",
+        "zh-Hant": "繁體中文",
+        "ja": "日本語",
+        "ko": "한국어",
+        "vi": "Tiếng Việt",
+        "ar": "العربية",
+        "de": "Deutsch",
+        "es": "Español",
+        "fr": "Français",
+        "pt-PT": "Português (Portugal)",
+        "pl": "Polski",
+        "tr": "Türkçe",
+        "th": "ไทย",
+        "fil": "Filipino",
+        "my": "မြန်မာဘာသာ",
+        "ms": "Bahasa Melayu",
+        "id": "Bahasa Indonesia",
+        "ru": "Русский"
+    ]
+
     static var languageNames: [String: String] = {
         if let saved = UserDefaults.standard.dictionary(forKey: AppKeys.appLanguage) as? [String: String], !saved.isEmpty {
             return saved
         }
-        return [
-            "en": "English",
-            "zh-Hans": "简体中文",
-            "zh-Hant": "繁體中文",
-            "ja": "日本語",
-            "ko": "한국어",
-            "vi": "Tiếng Việt",
-            "ar": "العربية",
-            "de": "Deutsch",
-            "es": "Español",
-            "fr": "Français",
-            "pt-PT": "Português (Portugal)",
-            "pl": "Polski",
-            "tr": "Türkçe",
-            "th": "ไทย",
-            "fil": "Filipino",
-            "my": "မြန်မာဘာသာ",
-            "ms": "Bahasa Melayu",
-            "id": "Bahasa Indonesia",
-            "ru": "Русский"
-        ]
+        return nativeLanguageNames
     }()
     
     static var supportLanguages: [SupportLanguageModel] = []
@@ -103,6 +108,26 @@ class LanguageManager {
     static func getCurrentAppLanguage() -> String {
         let code = currentLanguageCode()
         return languageNames[code] ?? localizedLanguageName(code)
+    }
+
+    /// 当前 App 语言的**原文名**（母语写法，不做多语言适配）。
+    /// 固定用 nativeLanguageNames，不受服务端本地化名覆盖影响。
+    static func getCurrentAppLanguageNative() -> String {
+        let code = currentLanguageCode()
+        return nativeLanguageName(for: code)
+    }
+
+    /// 语言代码 → 语言原文名（母语写法）。
+    /// 优先 nativeLanguageNames；表外代码用语言名原样兜底（本地化兜底仅作最后手段）。
+    static func nativeLanguageName(for code: String) -> String {
+        let normalized = normalizeCode(code)
+        if let native = nativeLanguageNames[normalized] {
+            return native
+        }
+        if let name = languageNames[normalized], !name.isEmpty {
+            return name
+        }
+        return localizedLanguageName(normalized)
     }
     
     static func currentBundle() -> Bundle {
