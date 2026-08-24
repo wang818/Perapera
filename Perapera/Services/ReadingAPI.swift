@@ -48,6 +48,10 @@ final class ReadingAPIClient {
 
     private static let endpoint = URL(string: "https://whisper.perapera.cc/reading")!
 
+    /// 服务端已下线（/reading 接口停止），全局禁用该接口的网络请求。
+    /// 置为 true 可恢复；本地纯函数（alignToAliyunWords / katakanaToHiragana / cleanQuotes）不受影响。
+    static let isEnabled = false
+
     private let session: URLSession = {
         let config = URLSessionConfiguration.ephemeral
         config.timeoutIntervalForRequest = 20
@@ -123,6 +127,8 @@ final class ReadingAPIClient {
     func fetchReadingSync(text: String) -> ReadingResult? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
+        // 接口已停止：不再发起任何请求，直接按失败处理（上游走本地兜底）
+        guard Self.isEnabled else { return nil }
         // 熔断冷却中：不发请求，直接按失败处理
         guard canRequest() else { return nil }
 
@@ -179,6 +185,11 @@ final class ReadingAPIClient {
     func fetchReading(text: String, completion: @escaping (ReadingResult?) -> Void) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
+            DispatchQueue.main.async { completion(nil) }
+            return
+        }
+        // 接口已停止：不再发起任何请求，直接按失败处理（上游走本地兜底）
+        guard Self.isEnabled else {
             DispatchQueue.main.async { completion(nil) }
             return
         }

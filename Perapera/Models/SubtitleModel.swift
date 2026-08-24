@@ -310,6 +310,12 @@ class SubtitleManager {
         jsonFilePath: URL,
         completion: @escaping (Bool) -> Void
     ) {
+        // /reading 接口已停止（ReadingAPIClient.isEnabled = false）：刷新流程无意义，
+        // 直接跳过（词级读音由后续 fix 阶段本地/大模型兜底），避免空转解析与失败日志。
+        guard ReadingAPIClient.isEnabled else {
+            DispatchQueue.main.async { completion(false) }
+            return
+        }
         guard let jsonData = try? Data(contentsOf: jsonFilePath),
               var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               var response = jsonObject["Response"] as? [String: Any],
