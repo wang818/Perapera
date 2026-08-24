@@ -95,6 +95,69 @@ class HunyuanManager {
         return URLSession(configuration: config)
     }()
 
+    // MARK: - 读音对齐熔断（Circuit Breaker）
+    // lookupWordReadings（播放/加载时的整句读音对齐）是辅助功能：TokenHub 故障时走本地兜底。
+    // 为避免 TokenHub 超时/故障期间形成「N 句 × 双端点 × 每次超时 30s」的慢速请求风暴，
+    // 这里做进程级熔断：连续 3 次服务级失败（连接错误/超时/429/5xx，解析失败不计入——
+    // 服务健康时个别句子的解析失败属正常）→ 熔断打开（冷却 60s 起、指数退避、上限 10min），
+    // 期间所有对齐请求直接失败（首次跳过打印一行提示，后续静默）；冷却结束后首次调用作为
+    // 试探，成功则复位。只作用于读音对齐路径，不影响翻译主功能。
+    private let alignBreakerLock = NSLock()
+    private var alignBreakerOpen = false
+    private var alignBreakerFailures = 0
+    private var alignBreakerOpenUntil: Date?
+    private var alignBreakerSkipLogged = false
+    private var alignBreakerCooldownExp = 0
+    private let alignBreakerMaxFailures = 3
+    private let alignBreakerBaseCooldown: TimeInterval = 60
+    private let alignBreakerMaxCooldown: TimeInterval = 600
+
+    /// 读音对齐熔断：请求前检查。false = 冷却中，调用方应直接按失败处理（不发请求）
+    private func alignBreakerCanRequest() -> Bool {
+        alignBreakerLock.lock()
+        defer { alignBreakerLock.unlock() }
+        if alignBreakerOpen {
+            if let until = alignBreakerOpenUntil, Date() >= until {
+                // 冷却结束：关闭熔断，放行一次试探请求
+                alignBreakerOpen = false
+                alignBreakerSkipLogged = false
+                return true
+            }
+            if !alignBreakerSkipLogged {
+                alignBreakerSkipLogged = true
+                let remain = max(0, Int((alignBreakerOpenUntil ?? Date()).timeIntervalSinceNow))
+                print("⏸ TokenHub: 读音对齐熔断冷却中（约剩余 \(remain)s），期间对齐请求直接跳过")
+            }
+            return false
+        }
+        return true
+    }
+
+    /// 服务级失败（连接错误/超时/429/5xx）计入熔断
+    private func alignBreakerRecordFailure() {
+        alignBreakerLock.lock()
+        defer { alignBreakerLock.unlock() }
+        alignBreakerFailures += 1
+        if alignBreakerFailures >= alignBreakerMaxFailures, !alignBreakerOpen {
+            alignBreakerOpen = true
+            let cooldown = min(alignBreakerBaseCooldown * pow(2.0, Double(alignBreakerCooldownExp)), alignBreakerMaxCooldown)
+            alignBreakerCooldownExp += 1
+            alignBreakerOpenUntil = Date().addingTimeInterval(cooldown)
+            print("⚠️ TokenHub: 读音对齐连续失败 \(alignBreakerFailures) 次，熔断打开，冷却 \(Int(cooldown))s（期间不再请求对齐）")
+        }
+    }
+
+    /// 任一次成功即复位熔断
+    private func alignBreakerRecordSuccess() {
+        alignBreakerLock.lock()
+        defer { alignBreakerLock.unlock() }
+        alignBreakerFailures = 0
+        alignBreakerCooldownExp = 0
+        alignBreakerOpen = false
+        alignBreakerOpenUntil = nil
+        alignBreakerSkipLogged = false
+    }
+
     // MARK: - Translation Methods
     
     /// 翻译单词数组（公开方法）
@@ -795,6 +858,11 @@ class HunyuanManager {
             completion(.success([:]))
             return
         }
+        // 读音对齐熔断冷却中：不发请求，直接按失败处理（调用方走本地兜底）
+        guard alignBreakerCanRequest() else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -38, userInfo: [NSLocalizedDescriptionKey: "TokenHub 读音对齐熔断冷却中，本次跳过"])))
+            return
+        }
         // 校验默认（国际站）key 已配置——intl 是首选端点
         let apiKey = HunyuanConfig.apiKey
         guard !apiKey.isEmpty else {
@@ -838,10 +906,15 @@ class HunyuanManager {
         ) { [weak self] result in
             switch result {
             case .success(let dict):
+                self?.alignBreakerRecordSuccess()
                 completion(.success(dict))
             case .failure(let error):
                 let status = Self.httpStatus(of: error)
                 let conn = Self.isConnectionError(error)
+                // 服务级失败（连接错误/超时/429/5xx）计入熔断；解析失败等不计入
+                if conn || status.map(Self.isRetryableServerError) ?? false {
+                    self?.alignBreakerRecordFailure()
+                }
                 if let delay = Self.retryPolicy(httpStatus: status, isConnection: conn, attempt: attempt, maxAttempts: 3) {
                     print("🔁 端点 \(baseURL) 请求失败（\(error.localizedDescription)），\(delay)s 后同端点重试第 \(attempt + 1)/3 次")
                     DispatchQueue.global().asyncAfter(deadline: .now() + delay) {

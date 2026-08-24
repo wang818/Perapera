@@ -528,17 +528,6 @@ struct SentenceCardView: View {
                 // 词级别显示：假名 + 原文 + romaji
                 WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
                 
-                // 整句平假名（译文上方）
-                if let hiragana = subtitle.hiragana, !hiragana.isEmpty {
-                    Text(hiragana)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color.ex.text2)
-                        .padding(.horizontal, 12)
-                        .padding(.top, 2)
-                        .padding(.bottom, 0)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                
                 // 整句翻译 - 优先使用 subtitle.translatedText（Tencent MT 整句翻译），fallback 到逐词翻译拼接
                 let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
                 if !sentenceTranslation.isEmpty {
@@ -550,49 +539,16 @@ struct SentenceCardView: View {
                         .padding(.bottom, 4)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                
-                // 整句罗马音（译文下方）
-                if let romaji = subtitle.romaji, !romaji.isEmpty {
-                    Text(romaji)
-                        .font(.system(size: 12))
-                        .foregroundColor(Color.ex.text3)
-                        .padding(.horizontal, 12)
-                        .padding(.top, 0)
-                        .padding(.bottom, 4)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
             } else {
                 // 没有词级别信息，显示整句
                 Text(subtitle.originalText)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(isActive ? greenDark : Color.ex.text1)
                 
-                // 整句平假名（译文上方）
-                if let hiragana = subtitle.hiragana, !hiragana.isEmpty {
-                    Text(hiragana)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color.ex.text2)
-                        .padding(.horizontal, 12)
-                        .padding(.top, 2)
-                        .padding(.bottom, 0)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                
                 if !subtitle.translatedText.isEmpty {
                     Text(subtitle.translatedText)
                         .font(.system(size: 14))
                         .foregroundColor(Color.ex.text1)
-                        .padding(.horizontal, 12)
-                        .padding(.top, 0)
-                        .padding(.bottom, 4)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                
-                // 整句罗马音（译文下方）
-                if let romaji = subtitle.romaji, !romaji.isEmpty {
-                    Text(romaji)
-                        .font(.system(size: 12))
-                        .foregroundColor(Color.ex.text3)
                         .padding(.horizontal, 12)
                         .padding(.top, 0)
                         .padding(.bottom, 4)
@@ -689,8 +645,12 @@ struct WordWrapView: View {
     private func wordView(for word: WordTiming) -> some View {
         let isWordActive = isSentenceActive && isWordCurrent(word)
 
+        // 整句字幕已是平假名 → 全部词的上方注音都隐藏；
+        // 否则仅当单个词本身是平假名（允许混入标点等）时隐藏该词的上方注音
+        let furiganaText = (sentenceAllHiragana || isHiraganaWord(word.word)) ? " " : (word.furigana ?? " ")
+
         return VStack(spacing: 1) {
-            Text(word.furigana ?? " ")
+            Text(furiganaText)
                 .font(.system(size: 10))
                 .foregroundColor(Color.ex.text3)
                 .lineLimit(1)
@@ -711,6 +671,33 @@ struct WordWrapView: View {
                 .lineLimit(1)
         }
         .fixedSize() // 防止单词被截断
+    }
+
+    /// 句内所有词文本拼接后是否整句平假名（可混入标点/长音符）
+    private var sentenceAllHiragana: Bool {
+        Self.isHiraganaText(words.map(\.word).joined())
+    }
+
+    /// 判断文本是否已是平假名（可混入 CJK 标点、长音符；含汉字/片假名/其他则返回 false；
+    /// 至少含一个平假名字符，纯标点/空串返回 false）
+    private static func isHiraganaText(_ text: String) -> Bool {
+        var hasHiragana = false
+        for scalar in text.unicodeScalars {
+            switch scalar.value {
+            case 0x3040...0x309F:          // 平假名
+                hasHiragana = true
+            case 0x3000...0x303F,          // CJK 标点（。、「」等）
+                 0x30FC, 0xFF70:           // 长音符（ー、半角ー）
+                continue
+            default:
+                return false               // 汉字/片假名/其他字符 → 需要注音
+            }
+        }
+        return hasHiragana
+    }
+
+    private func isHiraganaWord(_ text: String) -> Bool {
+        Self.isHiraganaText(text)
     }
 
     private func isWordCurrent(_ word: WordTiming) -> Bool {
