@@ -30,7 +30,7 @@ class LoginViewModel: ObservableObject {
     
     func sendCode() {
         guard isValidEmail(email) else { return }
-        
+
         appApi.rx.request(.sendCaptcha(email: email))
             .asObservable()
             .subscribe(onNext: { [weak self] response in
@@ -43,18 +43,28 @@ class LoginViewModel: ObservableObject {
                         self?.startTimer()
                     }
                 } else {
-                    self?.isCodeSent = true
+                    // 非成功：不推进流程，显示错误让用户知道验证码未发出
                     print("Send captcha failed: \(response.statusCode)")
-                    // 尝试解析错误信息
-                    if let json = try? response.mapJSON() as? [String: Any],
-                       let detail = json["detail"] as? String {
+                    var detail = "login_send_code_failed".localized()
+                    if let json = try? response.mapJSON() as? [String: Any] {
+                        if let msg = json["detail"] as? String, !msg.isEmpty {
+                            detail = msg
+                        } else if let msg = json["message"] as? String, !msg.isEmpty {
+                            detail = msg
+                        }
+                    }
+                    DispatchQueue.main.async {
                         self?.toastMessage = detail
-                        self!.showToast = true
-                        print("Error detail: \(detail)")
+                        self?.showToast = true
                     }
                 }
-            }, onError: { error in
+            }, onError: { [weak self] error in
+                // 网络错误：必须给用户 UI 反馈，否则用户以为发出去了却收不到
                 print("Send captcha error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self?.toastMessage = "login_send_code_network_error".localized()
+                    self?.showToast = true
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -153,7 +163,12 @@ struct LoginView: View {
                             .padding()
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(8)
-                        
+
+                        // Spam folder hint — helps users & Apple reviewers find the code
+                        Text("login_spam_hint".localized())
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
                         // Resend Button
                         HStack {
                             Spacer()

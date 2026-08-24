@@ -94,6 +94,17 @@
 "settings_help" = "ช่วยเหลือ";
 "login_send_code_success" = "ส่งรหัสยืนยันสำเร็จ";
 "login_spam_hint" = "อีเมลอาจไปอยู่ในโฟลเดอร์สแปม";
+"login_send_code_failed" = "ส่งรหัสยืนยันไม่สำเร็จ โปรดลองอีกครั้ง";
+"login_send_code_network_error" = "เกิดข้อผิดพลาดเครือข่าย โปรดตรวจสอบการเชื่อมต่อและลองอีกครั้ง";
+"ai_consent_title" = "\u0e01\u0e32\u0e23\u0e41\u0e1a\u0e48\u0e07\u0e1b\u0e31\u0e19\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e41\u0e25\u0e30\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e21\u0e27\u0e25\u0e1c\u0e25 AI";
+"ai_consent_intro" = "\u0e40\u0e21\u0e37\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e27\u0e34\u0e14\u0e35\u0e42\u0e2d \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e08\u0e30\u0e16\u0e39\u0e01\u0e2a\u0e48\u0e07\u0e44\u0e1b\u0e22\u0e31\u0e07\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23\u0e40\u0e2b\u0e25\u0e48\u0e32\u0e19\u0e35\u0e49:";
+"ai_consent_data_title" = "\u0e2a\u0e48\u0e07\u0e2d\u0e30\u0e44\u0e23 \u2192 \u0e43\u0e2b\u0e49\u0e43\u0e04\u0e23";
+"ai_consent_data_body" = "\u2022 \u0e25\u0e34\u0e07\u0e01\u0e4c\u0e27\u0e34\u0e14\u0e35\u0e42\u0e2d \u2192 RapidAPI / Tencent Cloud: \u0e14\u0e32\u0e27\u0e19\u0e4c\u0e42\u0e2b\u0e25\u0e14\u0e41\u0e25\u0e30\u0e40\u0e01\u0e47\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\n\u2022 \u0e40\u0e2a\u0e35\u0e22\u0e07 \u2192 Alibaba Cloud: \u0e08\u0e31\u0e14\u0e23\u0e39\u0e1b\u0e40\u0e2a\u0e35\u0e22\u0e07\u0e1e\u0e39\u0e01\n\u2022 \u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e0b\u0e39\u0e1a\u0e44\u0e15\u0e40\u0e15\u0e34\u0e25 \u2192 Tencent Hunyuan / \u0e40\u0e0b\u0e34\u0e23\u0e4c\u0e1f\u0e40\u0e27\u0e2d\u0e23\u0e4c\u0e02\u0e2d\u0e07\u0e40\u0e23\u0e32: \u0e41\u0e1b\u0e25\u0e41\u0e25\u0e30\u0e2d\u0e48\u0e32\u0e19\n\u2022 \u0e2d\u0e35\u0e40\u0e21\u0e25 \u2192 Google: \u0e23\u0e2b\u0e31\u0e2a\u0e22\u0e37\u0e19\u0e22\u0e31\u0e19\n\u2022 \u0e01\u0e32\u0e23\u0e0b\u0e37\u0e49\u0e2d \u2192 Apple: \u0e22\u0e37\u0e19\u0e22\u0e31\u0e19\u0e01\u0e32\u0e23\u0e0b\u0e37\u0e49\u0e2d\n\n\u0e40\u0e23\u0e32\u0e44\u0e21\u0e48\u0e02\u0e32\u0e22\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 \u0e41\u0e25\u0e30\u0e44\u0e21\u0e48\u0e43\u0e0a\u0e49\u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a\u0e1d\u0e36\u0e01\u0e2d\u0e1a\u0e23\u0e23\u0e30 AI.";
+"ai_consent_recipients_title" = "ผู้รับและวัตถุประสงค์";
+"ai_consent_recipients_body" = "• Tencent Hunyuan และ Alibaba Cloud: แปลคำบรรยาย จดจำเสียง ป้ายกำกับการอ่าน\n• เซิร์ฟเวอร์ของเรา: สร้างการอ่านภาษาญี่ปุ่น (คะนะ/โรมะจิ)\n• RapidAPI และ Tencent Cloud: ดาวน์โหลดและจัดเก็บวิดีโอ\n• Google: ส่งอีเมลรหัสยืนยัน\n• Apple: ตรวจสอบการซื้อ\nเราไม่ขายข้อมูลของคุณหรือนำไปฝึก AI";
+"ai_consent_privacy_link" = "อ่านนโยบายความเป็นส่วนตัวฉบับเต็ม";
+"ai_consent_agree" = "ฉันยอมรับ";
+"ai_consent_disagree" = "ไม่ใช่ตอนนี้";
 "login_success" = "เข้าสู่ระบบสำเร็จ";
 "logout" = "ออกจากระบบ";
 "settings_delete_account_title" = "ลบบัญชี";

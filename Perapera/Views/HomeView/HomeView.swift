@@ -87,7 +87,18 @@ struct HomeView: View {
 //                            }
 //                            .padding(.trailing, 12)
                             // + 按钮
-                            Button(action: { showingSheet = true }) {
+                            Button(action: {
+                                if !UserManager.shared.isLoggedIn {
+                                    // 未登录 → 跳转到登录界面
+                                    NotificationCenter.default.post(name: .peraperaRequestShowLogin, object: nil)
+                                } else if !UserManager.shared.hasAIDataSharingConsent {
+                                    // 已登录但未同意 → 弹出授权弹窗，拦截添加流程
+                                    NotificationCenter.default.post(name: .peraperaRequestAIConsent, object: nil)
+                                } else {
+                                    // 已登录且已同意 → 正常进入添加流程
+                                    showingSheet = true
+                                }
+                            }) {
                                 ZStack {
                                     Circle()
                                         .fill(Color.Ex.main)

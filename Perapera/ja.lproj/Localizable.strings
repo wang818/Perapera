@@ -103,8 +103,21 @@
 "login_resend_code" = "再送信";
 "login_resend_code_timer" = "%d秒後に再送信";
 "login_spam_hint" = "メールが迷惑メールフォルダに届く場合があります。";
+"login_send_code_failed" = "認証コードの送信に失敗しました。もう一度お試しください。";
+"login_send_code_network_error" = "ネットワークエラーが発生しました。接続を確認して再度お試しください。";
 "login_success" = "ログイン成功";
 "logout" = "ログアウト";
+
+// AI データ共有同意（Guideline 5.1.1(i) / 5.1.2(i)）
+"ai_consent_title" = "\u30c7\u30fc\u30bf\u5171\u6709\u3068 AI \u51e6\u7406";
+"ai_consent_intro" = "\u52d5\u753b\u3092\u8ffd\u52a0\u3059\u308b\u3068\u3001\u30c7\u30fc\u30bf\u306f\u4ee5\u4e0b\u306e\u30b5\u30fc\u30d3\u30b9\u306b\u9001\u4fe1\u3055\u308c\u307e\u3059\uff1a";
+"ai_consent_data_title" = "\u9001\u4fe1\u5185\u5bb9 \u2192 \u9001\u4fe1\u5148";
+"ai_consent_data_body" = "\u2022 \u52d5\u753b\u30ea\u30f3\u30af \u2192 RapidAPI / \u30c8\u30a5\u30bb\u30f3\u30c8\u30af\u30e9\u30a6\u30c9\uff1a\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u30fb\u4fdd\u5b58\n\u2022 \u97f3\u58f0 \u2192 \u30a2\u30ea\u30af\u30e9\u30a6\u30c9\uff1a\u97f3\u58f0\u8a8d\u8b58\n\u2022 \u5b57\u5e55\u30c6\u30ad\u30b9\u30c8 \u2192 \u30c8\u30a5\u30bb\u30f3\u30c8\u6df7\u5143 / \u81ea\u5bb6\u30b5\u30fc\u30d0\u30fc\uff1a\u7ffb\u8a33\u30fb\u8aad\u307f\n\u2022 \u30e1\u30fc\u30eb \u2192 Google\uff1a\u8a8d\u8a3c\u30b3\u30fc\u30c9\n\u2022 \u8cfc\u5165 \u2192 Apple\uff1a\u8cfc\u5165\u78ba\u8a8d\n\n\u30c7\u30fc\u30bf\u3092\u8ca9\u58f2\u3057\u305f\u308a\u3001AI\u306e\u8a93\u7df4\u306b\u4f7f\u7528\u3057\u307e\u305b\u3093\u3002";
+"ai_consent_recipients_title" = "送信先と目的";
+"ai_consent_recipients_body" = "• Tencent Hunyuan / Alibaba Cloud：字幕の翻訳、音声認識、読みがな付与\n• 自社サーバー：日本語の読み（仮名・ローマ字）生成\n• RapidAPI / Tencent Cloud：動画のダウンロードと保存\n• Google：認証コードメールの送信\n• Apple：アプリ内購入の検証\nお客様のデータを販売したり、AI学習に使用したりすることはありません。";
+"ai_consent_privacy_link" = "プライバシーポリシー全文を読む";
+"ai_consent_agree" = "同意する";
+"ai_consent_disagree" = "後で";
 "settings_delete_account_title" = "アカウントを削除";
 "settings_delete_account_message" = "アカウントを削除すると復元できません。続行しますか？";
 "settings_delete_account_confirm" = "アカウントを削除";

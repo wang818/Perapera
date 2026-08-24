@@ -94,6 +94,17 @@
 "settings_help" = "Yardım";
 "login_send_code_success" = "Doğrulama kodu başarıyla gönderildi";
 "login_spam_hint" = "E-posta spam klasörünüze düşebilir.";
+"login_send_code_failed" = "Doğrulama kodu gönderilemedi. Lütfen tekrar deneyin.";
+"login_send_code_network_error" = "Ağ hatası. Lütfen bağlantınızı kontrol edip tekrar deneyin.";
+"ai_consent_title" = "Veri Payla\u015f\u0131m\u0131 ve AI \u0130\u015flemesi";
+"ai_consent_intro" = "Video ekledi\u011finizde, veriler \u015fu hizmetlere g\u00f6nderilir:";
+"ai_consent_data_title" = "Ne g\u00f6nderiyoruz \u2192 Kime";
+"ai_consent_data_body" = "\u2022 Video ba\u011flant\u0131s\u0131 \u2192 RapidAPI & Tencent Cloud: indirme ve depolama\n\u2022 Ses \u2192 Alibaba Cloud: konu\u015fma tan\u0131ma\n\u2022 Altyaz\u0131 metni \u2192 Tencent Hunyuan ve sunucumuz: \u00e7eviri ve okuma\n\u2022 E-posta \u2192 Google: do\u011frulama kodlar\u0131\n\u2022 Sat\u0131n alma \u2192 Apple: sat\u0131n almay\u0131 do\u011frula\n\nVerileri satm\u0131yoruz veya AI e\u011fitimi i\u00e7in kullanm\u0131yoruz.";
+"ai_consent_recipients_title" = "Kime ve Neden";
+"ai_consent_recipients_body" = "• Tencent Hunyuan ve Alibaba Cloud: altyazı çevirisi, ses tanıma, okuma açıklamaları\n• Sunucumuz: Japonca okunuş (kana/romaji) üretimi\n• RapidAPI ve Tencent Cloud: video indirme ve depolama\n• Google: doğrulama e-postaları gönderme\n• Apple: uygulama içi satın almaları doğrulama\nVerilerinizi satmayız ve yapay zeka eğitimi için kullanmayız.";
+"ai_consent_privacy_link" = "Tam Gizlilik Politikasını Oku";
+"ai_consent_agree" = "Kabul Ediyorum";
+"ai_consent_disagree" = "Şimdi Değil";
 "login_success" = "Giriş başarılı";
 "logout" = "Çıkış Yap";
 "settings_delete_account_title" = "Hesabı Sil";

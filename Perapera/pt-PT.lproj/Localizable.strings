@@ -96,6 +96,17 @@
 "login_resend_code" = "Reenviar código";
 "login_resend_code_timer" = "Reenviar em %ds";
 "login_spam_hint" = "O e-mail pode chegar à sua pasta de spam.";
+"login_send_code_failed" = "Falha ao enviar o código de verificação. Tente novamente.";
+"login_send_code_network_error" = "Erro de rede. Verifique a sua ligação e tente novamente.";
+"ai_consent_title" = "Partilha de dados e processamento de IA";
+"ai_consent_intro" = "Ao adicionar um v\u00eddeo, os dados s\u00e3o enviados para estes servi\u00e7os:";
+"ai_consent_data_title" = "O que enviamos \u2192 Para quem";
+"ai_consent_data_body" = "\u2022 Link do v\u00eddeo \u2192 RapidAPI & Tencent Cloud: descarregar e armazenar\n\u2022 \u00c1udio \u2192 Alibaba Cloud: reconhecimento de voz\n\u2022 Texto das legendas \u2192 Tencent Hunyuan e o nosso servidor: tradu\u00e7\u00e3o e leitura\n\u2022 E-mail \u2192 Google: c\u00f3digos de verifica\u00e7\u00e3o\n\u2022 Compra \u2192 Apple: verificar compra\n\nN\u00e3o vendemos dados nem os usamos para treinar IA.";
+"ai_consent_recipients_title" = "Destinatários e Finalidade";
+"ai_consent_recipients_body" = "• Tencent Hunyuan e Alibaba Cloud: tradução de legendas, reconhecimento de voz, anotações de leitura\n• O nosso servidor: geração de leitura japonesa (kana/romaji)\n• RapidAPI e Tencent Cloud: descarregar e armazenar vídeos\n• Google: enviar e-mails de verificação\n• Apple: verificar compras\nNão vendemos os seus dados nem os usamos para treinar IA.";
+"ai_consent_privacy_link" = "Ler a Política de Privacidade completa";
+"ai_consent_agree" = "Concordo";
+"ai_consent_disagree" = "Agora Não";
 "login_success" = "Login efetuado com sucesso";
 "logout" = "Sair";
 "settings_delete_account_title" = "Eliminar conta";

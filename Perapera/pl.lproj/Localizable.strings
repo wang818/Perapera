@@ -94,6 +94,17 @@
 "settings_help" = "Pomoc";
 "login_send_code_success" = "Kod weryfikacyjny został wysłany pomyślnie";
 "login_spam_hint" = "E-mail może trafić do folderu spam.";
+"login_send_code_failed" = "Nie udało się wysłać kodu weryfikacyjnego. Spróbuj ponownie.";
+"login_send_code_network_error" = "Błąd sieci. Sprawdź połączenie i spróbuj ponownie.";
+"ai_consent_title" = "Udost\u0119pnianie danych i przetwarzanie AI";
+"ai_consent_intro" = "Po dodaniu wideo dane s\u0105 wysy\u0142ane do tych us\u0142ug:";
+"ai_consent_data_title" = "Co wysy\u0142amy \u2192 Do kogo";
+"ai_consent_data_body" = "\u2022 Link wideo \u2192 RapidAPI i Tencent Cloud: pobieranie i przechowywanie\n\u2022 Audio \u2192 Alibaba Cloud: rozpoznawanie mowy\n\u2022 Tekst napis\u00f3w \u2192 Tencent Hunyuan i nasz serwer: t\u0142umaczenie i czytanie\n\u2022 E-mail \u2192 Google: kody weryfikacyjne\n\u2022 Zakup \u2192 Apple: weryfikacja zakupu\n\nNie sprzedajemy danych ani nie u\u017cywamy ich do treningu AI.";
+"ai_consent_recipients_title" = "Odbiorcy i cel";
+"ai_consent_recipients_body" = "• Tencent Hunyuan i Alibaba Cloud: tłumaczenie napisów, rozpoznawanie mowy, adnotacje czytania\n• Nasz serwer: generowanie japońskiej wymowy (kana/romaji)\n• RapidAPI i Tencent Cloud: pobieranie i przechowywanie wideo\n• Google: wysyłanie e-maili z kodami\n• Apple: weryfikacja zakupów\nNie sprzedajemy Twoich danych ani nie używamy ich do trenowania AI.";
+"ai_consent_privacy_link" = "Przeczytaj pełną Politykę Prywatności";
+"ai_consent_agree" = "Akceptuję";
+"ai_consent_disagree" = "Teraz nie";
 "login_success" = "Logowanie udane";
 "logout" = "Wyloguj się";
 "settings_delete_account_title" = "Usuń konto";

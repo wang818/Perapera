@@ -440,31 +440,122 @@ class HunyuanManager {
         }
     }
 
+    // MARK: - TokenHub 双端点容错辅助
+
+    /// 判断是否为连接级错误（设备连不上端点，应切换端点而非重试同一端点）。
+    /// 覆盖：超时(-1001)、找不到主机(-1003)、无法连接(-1004)、连接断开(-1005)、
+    /// DNS 解析失败(-1006)、无网络连接(-1009)、漫游关闭(-1018)、数据流量受限(-1020)、
+    /// 安全连接失败(-1200) 等。典型场景：设备侧连不上国际端点报 -1001/_kCFStreamErrorCodeKey=-2102。
+    private static func isConnectionError(_ error: Error) -> Bool {
+        let nsError = error as NSError
+        switch nsError.code {
+        case NSURLErrorTimedOut,                  // -1001
+             NSURLErrorCannotFindHost,            // -1003
+             NSURLErrorCannotConnectToHost,       // -1004
+             NSURLErrorNetworkConnectionLost,     // -1005
+             NSURLErrorDNSLookupFailed,           // -1006
+             NSURLErrorNotConnectedToInternet,    // -1009
+             NSURLErrorInternationalRoamingOff,   // -1018
+             NSURLErrorCallIsActive,              // -1019
+             NSURLErrorDataNotAllowed,            // -1020
+             NSURLErrorSecureConnectionFailed:    // -1200
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// 判断是否为鉴权/权限错误（TokenHub key 与端点版本不匹配时出现，应切换端点）
+    private static func shouldSwitchEndpoint(statusCode: Int) -> Bool {
+        return statusCode == 401 || statusCode == 403
+    }
+
+    /// 判断是否为可重试的服务端错误（429 限流、5xx 服务端故障）
+    private static func isRetryableServerError(statusCode: Int) -> Bool {
+        return statusCode == 429 || (statusCode >= 500 && statusCode <= 599)
+    }
+
+    /// 从错误中读取 HTTP 状态码（由请求层写入 userInfo["HTTPStatus"]），无则 nil
+    private static func httpStatus(of error: Error) -> Int? {
+        return (error as NSError).userInfo["HTTPStatus"] as? Int
+    }
+
+    /// 按「端点 + 尝试次数」推进策略：返回 nil 表示该错误应切换端点，
+    /// 否则返回下一次重试的延迟秒数（nil 时也应切换）。
+    /// 连接级错误/401/403 → 切换端点；429/5xx/其他 → 同端点退避重试，耗尽后切换。
+    private static func retryPolicy(httpStatus: Int?, isConnection: Bool, attempt: Int, maxAttempts: Int) -> Double? {
+        if isConnection || (httpStatus.map(shouldSwitchEndpoint) ?? false) {
+            return nil
+        }
+        guard attempt < maxAttempts else { return nil }
+        return Double(attempt)
+    }
+
     private func translateSentenceWordsWithRetry(
         _ words: [String],
         maxAttempts: Int = 3,
         attempt: Int = 1,
         completion: @escaping (Result<[WordTranslationResult], Error>) -> Void
     ) {
-        translateSentenceWords(words) { [weak self] result in
+        translateSentenceWordsWithRetry(
+            words,
+            endpointIndex: 0,
+            attempt: attempt,
+            maxAttempts: maxAttempts,
+            lastError: nil,
+            completion: completion
+        )
+    }
+
+    /// 双端点 + 智能重试（内部递归实现）：
+    /// 连接级错误/401/403 → 立即切换下一端点（不重试同端点）；
+    /// 429/5xx/解析失败 → 同端点退避重试（maxAttempts 次），耗尽再切端点；
+    /// 所有端点耗尽 → 返回最后一个错误。
+    private func translateSentenceWordsWithRetry(
+        _ words: [String],
+        endpointIndex: Int,
+        attempt: Int,
+        maxAttempts: Int,
+        lastError: Error?,
+        completion: @escaping (Result<[WordTranslationResult], Error>) -> Void
+    ) {
+        let endpoints = HunyuanConfig.tokenHubEndpoints
+        guard endpointIndex < endpoints.count else {
+            let err = lastError ?? NSError(domain: "HunyuanManager", code: -12, userInfo: [NSLocalizedDescriptionKey: "TokenHub 所有端点均不可用"])
+            print("❌ TokenHub 翻译所有端点均失败: \(err.localizedDescription)")
+            completion(.failure(err))
+            return
+        }
+        let baseURL = endpoints[endpointIndex]
+        translateSentenceWordsOnce(words, baseURL: baseURL) { [weak self] result in
             switch result {
             case .success(let wordResults):
                 completion(.success(wordResults))
             case .failure(let error):
-                guard attempt < maxAttempts else {
-                    completion(.failure(error))
-                    return
-                }
-
-                let nextAttempt = attempt + 1
-                let retryDelay = Double(attempt)
-                print("🔁 单句翻译失败，\(retryDelay)s 后重试第 \(nextAttempt)/\(maxAttempts) 次: \(error.localizedDescription)")
-
-                DispatchQueue.global().asyncAfter(deadline: .now() + retryDelay) {
+                let status = Self.httpStatus(of: error)
+                let conn = Self.isConnectionError(error)
+                if let delay = Self.retryPolicy(httpStatus: status, isConnection: conn, attempt: attempt, maxAttempts: maxAttempts) {
+                    // 同端点退避重试
+                    print("🔁 端点 \(baseURL) 请求失败（\(error.localizedDescription)），\(delay)s 后同端点重试第 \(attempt + 1)/\(maxAttempts) 次")
+                    DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
+                        self?.translateSentenceWordsWithRetry(
+                            words,
+                            endpointIndex: endpointIndex,
+                            attempt: attempt + 1,
+                            maxAttempts: maxAttempts,
+                            lastError: error,
+                            completion: completion
+                        )
+                    }
+                } else {
+                    // 切换下一端点
+                    print("🔁 端点 \(baseURL) 不可用（\(error.localizedDescription)），切换到下一个端点")
                     self?.translateSentenceWordsWithRetry(
                         words,
+                        endpointIndex: endpointIndex + 1,
+                        attempt: 1,
                         maxAttempts: maxAttempts,
-                        attempt: nextAttempt,
+                        lastError: error,
                         completion: completion
                     )
                 }
@@ -480,13 +571,21 @@ class HunyuanManager {
         let furigana: String
     }
     
+    /// 翻译单句的所有词（入口）：自动携带双端点容错 + 智能重试（连接失败切国内端点）。
+    /// 返回翻译 + 读音。
     private func translateSentenceWords(_ words: [String], completion: @escaping (Result<[WordTranslationResult], Error>) -> Void) {
-        guard let url = HunyuanConfig.generateRequestURL() else {
+        translateSentenceWordsWithRetry(words, completion: completion)
+    }
+
+    /// 翻译单句的所有词（单端点单次请求，由 translateSentenceWordsWithRetry 驱动双端点容错）。
+    /// key 按端点取配套 key（国内端点用国内站 key，避免 401002）。
+    private func translateSentenceWordsOnce(_ words: [String], baseURL: String, completion: @escaping (Result<[WordTranslationResult], Error>) -> Void) {
+        guard let url = HunyuanConfig.generateRequestURL(baseURL: baseURL) else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
             return
         }
 
-        let apiKey = HunyuanConfig.apiKey
+        let apiKey = HunyuanConfig.apiKey(for: baseURL)
         guard !apiKey.isEmpty else {
             completion(.failure(NSError(domain: "HunyuanManager", code: -9, userInfo: [NSLocalizedDescriptionKey: "TokenHub API Key 未配置，请在 HunyuanConfig.local.swift 中设置 _localApiKey"])))
             return
@@ -539,6 +638,15 @@ class HunyuanManager {
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
             guard let data = data else {
                 completion(.failure(NSError(domain: "HunyuanManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
+                return
+            }
+
+            // 非 2xx 统一为带 HTTPStatus 的错误，由容错层决定重试或切换端点（401/403 切端点、429/5xx 重试）
+            guard statusCode >= 200 && statusCode < 300 else {
+                completion(.failure(NSError(domain: "HunyuanManager", code: -13, userInfo: [
+                    NSLocalizedDescriptionKey: "TokenHub HTTP \(statusCode)",
+                    "HTTPStatus": statusCode
+                ])))
                 return
             }
 
@@ -655,75 +763,173 @@ class HunyuanManager {
         }
     }
 
-    // MARK: - 读音兜底：在整句平假名中查找词的对应片段
+    // MARK: - 读音对齐：大模型整句匹配（词级平假名 + 罗马音）
 
-    /// 大模型兜底：在一句的整句平假名注音串中，为若干「未能精确匹配」的日语词查找对应的平假名片段。
+    /// 单个待对齐词的输入项
+    struct WordReadingLookupItem {
+        let index: Int
+        let text: String
+    }
+
+    /// 大模型整句对齐（入口）：把一句话的日文原文、全部词、整句平假名、整句罗马音一起交给大模型，
+    /// 让模型在整句注音串中为每个词匹配对应的平假名片段与罗马音片段。
     ///
-    /// 适用场景：词级读音对齐失败（如阿里云把「美味しそう」错切成「美味」「しそ」「う」），
-    /// 离线空隙切分无法可靠给出该词的读音时，由大模型借助整句语义在注音串中定位。
+    /// 提示词要求：所有词的片段按顺序直接拼接后，必须与整句 hiragana/romaji 完全一致（不能多字、不能少字）。
+    /// 方法内仅做结构解析与数量校验；「拼接一致性」强校验由调用方在拿到结果后完成（通过才写回）。
+    /// 自动携带双端点容错：国际端点连接失败/鉴权失败时切换国内端点。
     ///
     /// - Parameters:
-    ///   - sentenceHiragana: 整句平假名注音串（权威来源，返回的片段必须是它的连续子串）
-    ///   - words: 需要查找的词，附带词在句内的原始下标 [(index, word)]
-    ///   - completion: 通过校验的结果 [index: furigana]（仅包含在整句注音串中真实出现的片段；找不到的词不会出现）
-    func lookupFuriganaInHiragana(
-        sentenceHiragana: String,
-        words: [(index: Int, word: String)],
-        completion: @escaping (Result<[Int: String], Error>) -> Void
+    ///   - slice: 整句原文（日文）
+    ///   - hiragana: 整句平假名注音（权威）
+    ///   - romaji: 整句罗马音注音（权威）
+    ///   - words: 该句全部词（按顺序），附词在句内的下标
+    ///   - completion: 结果 [index: (furigana, romaji)]
+    func lookupWordReadings(
+        slice: String,
+        hiragana: String,
+        romaji: String,
+        words: [WordReadingLookupItem],
+        completion: @escaping (Result<[Int: (furigana: String, romaji: String)], Error>) -> Void
     ) {
         guard !words.isEmpty else {
             completion(.success([:]))
             return
         }
-        guard let url = HunyuanConfig.generateRequestURL() else {
-            completion(.failure(NSError(domain: "HunyuanManager", code: -20, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
-            return
-        }
+        // 校验默认（国际站）key 已配置——intl 是首选端点
         let apiKey = HunyuanConfig.apiKey
         guard !apiKey.isEmpty else {
-            completion(.failure(NSError(domain: "HunyuanManager", code: -21, userInfo: [NSLocalizedDescriptionKey: "TokenHub API Key 未配置，请在 HunyuanConfig.local.swift 中设置 _localApiKey"])))
+            completion(.failure(NSError(domain: "HunyuanManager", code: -31, userInfo: [NSLocalizedDescriptionKey: "TokenHub API Key 未配置，请在 HunyuanConfig.local.swift 中设置 _localApiKey"])))
             return
         }
+        lookupWordReadingsWithRetry(
+            slice: slice,
+            hiragana: hiragana,
+            romaji: romaji,
+            words: words,
+            endpointIndex: 0,
+            attempt: 1,
+            lastError: nil,
+            completion: completion
+        )
+    }
 
-        let itemsJSON = words.map { "{\"i\": \($0.index), \"w\": \"\($0.word)\"}" }.joined(separator: ", ")
+    /// 双端点 + 智能重试（内部递归实现，规则同 translateSentenceWordsWithRetry）：
+    /// 连接级错误/401/403 → 立即切换下一端点；429/5xx/解析失败 → 同端点退避重试（最多 3 次），耗尽再切端点。
+    private func lookupWordReadingsWithRetry(
+        slice: String,
+        hiragana: String,
+        romaji: String,
+        words: [WordReadingLookupItem],
+        endpointIndex: Int,
+        attempt: Int,
+        lastError: Error?,
+        completion: @escaping (Result<[Int: (furigana: String, romaji: String)], Error>) -> Void
+    ) {
+        let endpoints = HunyuanConfig.tokenHubEndpoints
+        guard endpointIndex < endpoints.count else {
+            let err = lastError ?? NSError(domain: "HunyuanManager", code: -37, userInfo: [NSLocalizedDescriptionKey: "TokenHub 所有端点均不可用"])
+            print("❌ TokenHub 整句对齐所有端点均失败: \(err.localizedDescription)")
+            completion(.failure(err))
+            return
+        }
+        let baseURL = endpoints[endpointIndex]
+        lookupWordReadingsOnce(
+            slice: slice, hiragana: hiragana, romaji: romaji, words: words, baseURL: baseURL
+        ) { [weak self] result in
+            switch result {
+            case .success(let dict):
+                completion(.success(dict))
+            case .failure(let error):
+                let status = Self.httpStatus(of: error)
+                let conn = Self.isConnectionError(error)
+                if let delay = Self.retryPolicy(httpStatus: status, isConnection: conn, attempt: attempt, maxAttempts: 3) {
+                    print("🔁 端点 \(baseURL) 请求失败（\(error.localizedDescription)），\(delay)s 后同端点重试第 \(attempt + 1)/3 次")
+                    DispatchQueue.global().asyncAfter(deadline: .now() + delay) {
+                        self?.lookupWordReadingsWithRetry(
+                            slice: slice, hiragana: hiragana, romaji: romaji, words: words,
+                            endpointIndex: endpointIndex, attempt: attempt + 1, lastError: error, completion: completion
+                        )
+                    }
+                } else {
+                    print("🔁 端点 \(baseURL) 不可用（\(error.localizedDescription)），切换到下一个端点")
+                    self?.lookupWordReadingsWithRetry(
+                        slice: slice, hiragana: hiragana, romaji: romaji, words: words,
+                        endpointIndex: endpointIndex + 1, attempt: 1, lastError: error, completion: completion
+                    )
+                }
+            }
+        }
+    }
+
+    /// 大模型整句对齐（单端点单次请求，由 lookupWordReadingsWithRetry 驱动双端点容错）。
+    /// key 按端点取配套 key（国内端点用国内站 key，避免 401002）。
+    private func lookupWordReadingsOnce(
+        slice: String,
+        hiragana: String,
+        romaji: String,
+        words: [WordReadingLookupItem],
+        baseURL: String,
+        completion: @escaping (Result<[Int: (furigana: String, romaji: String)], Error>) -> Void
+    ) {
+        guard let url = HunyuanConfig.generateRequestURL(baseURL: baseURL) else {
+            completion(.failure(NSError(domain: "HunyuanManager", code: -30, userInfo: [NSLocalizedDescriptionKey: "无效的 API URL"])))
+            return
+        }
+        let apiKey = HunyuanConfig.apiKey(for: baseURL)
+
+        let itemsJSON = words.map { "{\"i\": \($0.index), \"w\": \"\($0.text)\"}" }.joined(separator: ", ")
         let prompt = """
-        你是一名日语读音标注助手。任务：在一句日语的整句平假名注音串中，为若干日语词找出它们对应的平假名片段。
+        你是一名日语读音对齐专家。我会给你一句话的日文原文、按顺序切分的词列表、整句平假名注音和整句罗马音注音。请你为每个词标注它在这句话的注音中对应的平假名片段和罗马音片段。
 
-        要求：
-        1. 每个词对应的片段必须是整句平假名注音串中连续出现的一段（子串），不能创造注音串里不存在的假名。
-        2. 片段要精确对应这个词在句中的读音。示例：整句注音是「はあ、もうきょうのはおいしそう。」，词「美味」应返回「おいし」（不要包含「そう」）；词「しそ」应返回空字符串（它在注音串中找不到对应片段）。
-        3. 若某词在注音串中找不到对应片段（如标点、无法对应的错切片段），返回空字符串。
-        4. 只输出 JSON，不要任何解释、不要 markdown 代码块。
+        说明：
+        - 原文（SliceSentence）全部是日文。
+        - 词列表是原文按顺序切分的连续片段，所有词拼接起来正好等于原文。
+        - 整句平假名（hiragana）和整句罗马音（romaji）是该句的权威注音，包含标点（如「、」「。」）；罗马音中每个读音单元之间用空格分隔。
 
-        整句平假名注音串：\(sentenceHiragana)
-        待标注词：[\(itemsJSON)]
+        对齐规则（必须严格遵守）：
+        1. 每个词的平假名片段 f 必须是整句平假名中连续的一段字符；罗马音片段 r 的字符必须来自整句罗马音（不含空格）。
+        2. 所有词的 f 按顺序直接拼接，必须与整句平假名完全一致——不能多一个字，也不能少一个字。
+        3. 所有词的 r 按顺序直接拼接（不含空格），必须与整句罗马音去掉空格后完全一致——不能多一个字符，也不能少一个字符。标点（如「、」「。」）必须包含在相邻词的 f/r 片段中，确保拼接后完整。
+        4. 如果某个词在注音串中没有对应内容（如无法对应的错切片段），f 和 r 都返回空字符串。
+        5. 输出前请自查：所有 f 拼接 == 整句平假名；所有 r 拼接去掉空格 == 整句罗马音去掉空格。不满足就修正后再输出。
 
-        输出格式：{"results":[{"i":0,"f":"おいし"},{"i":1,"f":""}]}
-        - results 数量必须与待标注词数量一致；
-        - i 为输入序号（与输入一一对应）；
-        - f 为找到的平假名片段，找不到则为空字符串。
+        示例：
+        原文：はあ、もう今日のは美味しそう。
+        词列表：[{"i":0,"w":"は"},{"i":1,"w":"あ"},{"i":2,"w":"もう"},{"i":3,"w":"今日"},{"i":4,"w":"のは"},{"i":5,"w":"美味"},{"i":6,"w":"しそ"},{"i":7,"w":"う"}]
+        整句平假名：はあ、もうきょうのはおいしそう。
+        整句罗马音：haa 、 mou kyou no ha oishi sou 。
+        正确输出：{"results":[{"i":0,"f":"は","r":"ha"},{"i":1,"f":"あ、","r":"a、"},{"i":2,"f":"もう","r":"mou"},{"i":3,"f":"きょう","r":"kyou"},{"i":4,"f":"のは","r":"noha"},{"i":5,"f":"おいし","r":"oishi"},{"i":6,"f":"そ","r":"so"},{"i":7,"f":"う。","r":"u。"}]}
+
+        现在处理下面的句子：
+        原文：\(slice)
+        词列表：[\(itemsJSON)]
+        整句平假名：\(hiragana)
+        整句罗马音：\(romaji)
+
+        输出格式：{"results":[{"i":0,"f":"...","r":"..."},...]}
+        要求：i 必须与词列表一一对应；results 数量必须与词数量一致；只输出 JSON，不要任何解释，不要 markdown 代码块。
         """
 
         let requestBody: [String: Any] = [
             "model": HunyuanConfig.defaultModel,
             "messages": [["role": "user", "content": prompt]],
-            "temperature": 0.2,
+            "temperature": 0.1,
             "top_p": 1.0
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
-            completion(.failure(NSError(domain: "HunyuanManager", code: -22, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
+            completion(.failure(NSError(domain: "HunyuanManager", code: -32, userInfo: [NSLocalizedDescriptionKey: "无法序列化请求体"])))
             return
         }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.timeoutInterval = 60
+        request.timeoutInterval = 30
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
 
-        print("🚀 TokenHub 读音查找请求: \(words.count) 个词, 整句=\(sentenceHiragana.prefix(20))")
+        print("🚀 TokenHub 整句读音对齐请求: \(words.count) 个词, 原文=\(slice.prefix(20))")
 
         let task = translationSession.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -732,36 +938,39 @@ class HunyuanManager {
             }
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
             guard let data = data else {
-                completion(.failure(NSError(domain: "HunyuanManager", code: -23, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
+                completion(.failure(NSError(domain: "HunyuanManager", code: -33, userInfo: [NSLocalizedDescriptionKey: "未收到响应数据"])))
+                return
+            }
+            // 非 2xx 统一为带 HTTPStatus 的错误，由容错层决定重试或切换端点（401/403 切端点、429/5xx 重试）
+            guard statusCode >= 200 && statusCode < 300 else {
+                completion(.failure(NSError(domain: "HunyuanManager", code: -38, userInfo: [
+                    NSLocalizedDescriptionKey: "TokenHub HTTP \(statusCode)",
+                    "HTTPStatus": statusCode
+                ])))
                 return
             }
             if let responseString = String(data: data, encoding: .utf8) {
-                print("📥 TokenHub 读音查找响应 HTTP \(statusCode): \(responseString.prefix(400))")
+                print("📥 TokenHub 整句读音对齐响应 HTTP \(statusCode): \(responseString.prefix(400))")
             }
 
             do {
                 let chatResponse = try JSONDecoder().decode(OpenAIChatResponse.self, from: data)
                 if let apiError = chatResponse.error {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -24, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.message)"])))
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -34, userInfo: [NSLocalizedDescriptionKey: "API 错误: \(apiError.message)"])))
                     return
                 }
                 guard let content = chatResponse.choices?.first?.message?.content else {
-                    completion(.failure(NSError(domain: "HunyuanManager", code: -25, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -35, userInfo: [NSLocalizedDescriptionKey: "响应中没有内容"])))
                     return
                 }
 
-                let raw = Self.extractFuriganaLookupResults(from: content)
-
-                // 强校验：返回的平假名必须是整句注音串中真实出现的连续子串，防止模型编造
-                var validated: [Int: String] = [:]
-                for (idx, f) in raw {
-                    let trimmed = f.trimmingCharacters(in: .whitespacesAndNewlines)
-                    if !trimmed.isEmpty, sentenceHiragana.contains(trimmed) {
-                        validated[idx] = trimmed
-                    }
+                let raw = Self.extractWordReadingLookupResults(from: content)
+                guard raw.count == words.count else {
+                    completion(.failure(NSError(domain: "HunyuanManager", code: -36, userInfo: [NSLocalizedDescriptionKey: "对齐结果数量不匹配，期望 \(words.count) 个，实际 \(raw.count) 个"])))
+                    return
                 }
-                print("✅ TokenHub 读音查找完成: 有效 \(validated.count)/\(words.count) 个词")
-                completion(.success(validated))
+                print("✅ TokenHub 整句读音对齐完成: \(raw.count) 个词")
+                completion(.success(raw))
             } catch {
                 print("❌ JSON 解析失败: \(error)")
                 completion(.failure(error))
@@ -770,8 +979,8 @@ class HunyuanManager {
         task.resume()
     }
 
-    /// 从大模型响应中提取读音查找结果 [index: furigana]（未校验，仅结构化）
-    private static func extractFuriganaLookupResults(from content: String) -> [Int: String] {
+    /// 从大模型响应中提取整句对齐结果 [index: (furigana, romaji)]（未校验，仅结构化）
+    private static func extractWordReadingLookupResults(from content: String) -> [Int: (furigana: String, romaji: String)] {
         var jsonObject: [String: Any]?
         if let data = content.data(using: .utf8),
            let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
@@ -785,13 +994,15 @@ class HunyuanManager {
         }
         guard let obj = jsonObject,
               let results = obj["results"] as? [[String: Any]] else {
-            print("⚠️ 读音查找响应中无 results")
+            print("⚠️ 读音对齐响应中无 results")
             return [:]
         }
-        var dict: [Int: String] = [:]
+        var dict: [Int: (furigana: String, romaji: String)] = [:]
         for item in results {
-            guard let i = item["i"] as? Int, let f = item["f"] as? String else { continue }
-            dict[i] = f
+            guard let i = item["i"] as? Int else { continue }
+            let f = item["f"] as? String ?? ""
+            let r = item["r"] as? String ?? ""
+            dict[i] = (f, r)
         }
         return dict
     }

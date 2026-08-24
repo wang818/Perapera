@@ -170,52 +170,79 @@ class SubtitleManager {
     }
     
     // MARK: - 从 ASR JSON 文件加载字幕
-    func loadSubtitlesFromASRFile(videoId: String) -> [SubtitleItem]? {
+    /// 从 ASR JSON 文件加载字幕（两阶段，字幕先显示、读音后台补）。
+    /// 阶段一：立即本地解析并回调（无任何网络请求，字幕秒开）；
+    /// 阶段二：后台依次 /reading 刷新读音 → 词级读音修正（大模型整句对齐）→ 重新解析并再次回调，
+    /// 调用方据第二次回调更新界面注音。completion 可能被调用两次。
+    /// 所有网络请求均在后台线程进行，主线程不会被阻塞。
+    /// - Parameters:
+    ///   - videoId: 视频 ID（对应 documents/<videoId>.json）
+    ///   - completion: 主线程回调（可能两次），成功返回字幕数组，失败/无文件返回 nil
+    func loadSubtitlesFromASRFileAsync(videoId: String, completion: @escaping ([SubtitleItem]?) -> Void) {
         // 构建 JSON 文件路径
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let jsonFilePath = documentsPath.appendingPathComponent("\(videoId).json")
-        
-        print("🔍 尝试加载 ASR 文件: \(jsonFilePath.path)")
-        
+
+        print("🔍 尝试异步加载 ASR 文件: \(jsonFilePath.path)")
+
         // 检查文件是否存在
         guard FileManager.default.fileExists(atPath: jsonFilePath.path) else {
             print("❌ ASR 文件不存在: \(jsonFilePath.path)")
-            return nil
+            DispatchQueue.main.async { completion(nil) }
+            return
         }
-        
-        do {
-            // 读取 JSON 文件
-            var jsonData = try Data(contentsOf: jsonFilePath)
 
-            // 本次启动内用 /reading 刷新一次该视频 JSON 的读音（整句 furigana + 词级 Furigana/Reading），并写回文件
-            refreshedLock.lock()
-            let needsRefresh = !refreshedVideoIDs.contains(videoId)
-            if needsRefresh { refreshedVideoIDs.insert(videoId) }
-            refreshedLock.unlock()
-            if needsRefresh {
-                if refreshReadingsInASRFile(jsonFilePath: jsonFilePath) {
-                    jsonData = try Data(contentsOf: jsonFilePath) // 读取刷新后的最新数据
+        // 阶段一：先本地解析并立即回调，字幕不等任何网络请求
+        parseSubtitlesFromASRFile(jsonFilePath: jsonFilePath) { firstPass in
+            completion(firstPass)
+        }
+
+        // 本次启动内用 /reading 刷新一次该视频 JSON 的读音（整句 furigana + 词级 Furigana/Reading），并写回文件
+        refreshedLock.lock()
+        let needsRefresh = !refreshedVideoIDs.contains(videoId)
+        if needsRefresh { refreshedVideoIDs.insert(videoId) }
+        refreshedLock.unlock()
+
+        // 阶段二：后台刷新读音 + 词级修正（LLM 对齐的 semaphore 等待也在此后台线程，不阻塞主线程）
+        let proceedToFix: () -> Void = {
+            // 词级读音修正：用整句（正确）读音替换词级（可能错误的）读音。
+            // 离线锚点+空隙切分后，词级拼接与整句 hiragana/romaji 不一致的句子，
+            // 把整句原文 + 全部词 + 整句注音交给腾讯云大模型做整句对齐（拼接必须完全一致，不多字不少字）。
+            // 每次加载都执行（幂等，已正确的词不会被改动），修正后写回文件。
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.fixWordReadingsInASRFile(jsonFilePath: jsonFilePath) { _ in
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self.parseSubtitlesFromASRFile(jsonFilePath: jsonFilePath, completion: completion)
+                    }
                 }
             }
+        }
 
-            // 词级读音修正：用整句（正确）读音替换词级（可能错误的）读音。
-            // 离线锚点+空隙切分后仍未匹配的汉字词，交给腾讯云大模型在整句 hiragana 中兜底定位。
-            // 每次加载都执行（幂等，已正确的词不会被改动），修正后写回文件。
-            if fixWordReadingsInASRFile(jsonFilePath: jsonFilePath) {
-                jsonData = try Data(contentsOf: jsonFilePath)
+        if needsRefresh {
+            refreshReadingsInASRFile(jsonFilePath: jsonFilePath) { _ in
+                proceedToFix()
             }
+        } else {
+            proceedToFix()
+        }
+    }
 
+    /// 读取并解析 ASR JSON 文件为字幕数组（同步、纯本地计算，无网络请求）。
+    private func parseSubtitlesFromASRFile(jsonFilePath: URL, completion: @escaping ([SubtitleItem]?) -> Void) {
+        do {
+            let jsonData = try Data(contentsOf: jsonFilePath)
             let decoder = JSONDecoder()
             let asrResponse = try decoder.decode(ASRResponse.self, from: jsonData)
-            
+
             // 解析字幕
             guard let resultDetails = asrResponse.Response.Data?.ResultDetail else {
                 print("❌ ASR 结果为空")
-                return nil
+                DispatchQueue.main.async { completion(nil) }
+                return
             }
-            
+
             var allSubtitles: [SubtitleItem] = []
-            
+
             // 遍历每个大段，为每个大段创建一个字幕项
             for detail in resultDetails {
                 guard let words = detail.Words, !words.isEmpty else {
@@ -233,7 +260,7 @@ class SubtitleManager {
                     allSubtitles.append(subtitle)
                     continue
                 }
-                
+
                 // 创建词时间信息数组
                 let wordTimings = words.map { word in
                     WordTiming(
@@ -245,11 +272,11 @@ class SubtitleManager {
                         furigana: word.Furigana
                     )
                 }
-                
+
                 // 为整个大段创建一个字幕项
                 let startTime = Double(detail.StartMs) / 1000.0
                 let endTime = Double(detail.EndMs) / 1000.0
-                
+
                 let subtitle = SubtitleItem(
                     startTime: startTime,
                     endTime: endTime,
@@ -259,166 +286,245 @@ class SubtitleManager {
                     hiragana: detail.furigana?.hiragana,
                     romaji: detail.furigana?.romaji
                 )
-                
+
                 allSubtitles.append(subtitle)
             }
-            
+
             print("✅ 从 ASR 文件加载字幕成功，共 \(allSubtitles.count) 条")
-            return allSubtitles
-            
+            DispatchQueue.main.async { completion(allSubtitles) }
+
         } catch {
             print("❌ 解析 ASR 文件失败: \(error.localizedDescription)")
-            return nil
+            DispatchQueue.main.async { completion(nil) }
         }
     }
     
     // MARK: - 用 /reading 刷新 ASR JSON 读音
 
-    /// 用 /reading 服务刷新 ASR JSON 文件中的读音并写回文件：
-    /// 1. 整句：用返回的 hiragana/katakana/romaji 替换该句 `furigana` 下的三个字段；
-    /// 2. 词级：按当前句子 `words` 下的 `Word` 匹配 /reading 词级读音，写入该词的 Furigana/Reading。
-    /// 连续 3 次失败会快速降级停止（避免每句都等待超时）。
-    /// - Parameter jsonFilePath: `documents/<videoId>.json`
-    /// - Returns: 是否成功刷新并写回
-    @discardableResult
-    func refreshReadingsInASRFile(jsonFilePath: URL) -> Bool {
+    /// 刷新读音（异步、不阻塞调用线程）：逐句调用 /reading 获取整句与词级读音并写回文件。
+    /// 任一句子 /reading 失败则保持原值（连续失败达上限快速降级）。
+    /// - Parameters:
+    ///   - jsonFilePath: ASR JSON 文件路径
+    ///   - completion: 主线程回调，参数表示是否有任何句被刷新
+    func refreshReadingsInASRFile(
+        jsonFilePath: URL,
+        completion: @escaping (Bool) -> Void
+    ) {
         guard let jsonData = try? Data(contentsOf: jsonFilePath),
               var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               var response = jsonObject["Response"] as? [String: Any],
               var data = response["Data"] as? [String: Any],
               var resultDetail = data["ResultDetail"] as? [[String: Any]] else {
             print("❌ 刷新读音：无法解析 ASR JSON")
-            return false
+            DispatchQueue.main.async { completion(false) }
+            return
         }
 
+        let total = resultDetail.count
+        let lock = NSLock()
         var changedAny = false
         var consecutiveFailures = 0
         let maxConsecutiveFailures = 3
+        // 串行派发：nextIndex 记录下一个待请求句子；stopped 表示已降级停止，不再发起/处理后续请求
+        var nextIndex = 0
+        var stopped = false
 
-        for (sIdx, var detail) in resultDetail.enumerated() {
+        // 没有句子需要刷新
+        guard total > 0 else {
+            DispatchQueue.main.async { completion(false) }
+            return
+        }
+
+        let finish: (Bool) -> Void = { changed in
+            guard changed else {
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+            data["ResultDetail"] = resultDetail
+            response["Data"] = data
+            jsonObject["Response"] = response
+            guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+                print("❌ 刷新读音：序列化失败")
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+            do {
+                try finalData.write(to: jsonFilePath)
+                print("✅ 刷新读音完成，已写回 \(jsonFilePath.lastPathComponent)，共 \(total) 句")
+                DispatchQueue.main.async { completion(true) }
+            } catch {
+                print("❌ 刷新读音：写回文件失败 \(error.localizedDescription)")
+                DispatchQueue.main.async { completion(false) }
+            }
+        }
+
+        // 串行派发：逐句请求，任一句成功才继续下一句；连续失败达上限立即停止，
+        // 不再发起剩余句子的请求（避免刷屏，也避免并发请求打满后端引发 502）
+        func requestNext() {
+            // 所有句子处理完毕（含降级停止时已处理的部分）→ 结束
+            if nextIndex >= total {
+                finish(changedAny)
+                return
+            }
+            let sIdx = nextIndex
+            nextIndex += 1
+
+            let detail = resultDetail[sIdx]
             let sliceText = (detail["SliceSentence"] as? String).flatMap { $0.isEmpty ? nil : $0 }
                 ?? (detail["FinalSentence"] as? String) ?? ""
-            guard !sliceText.isEmpty else { continue }
-
-            // 调 /reading 获取整句与词级读音（同步）
-            guard let reading = ReadingAPIClient.shared.fetchReadingSync(text: sliceText) else {
-                consecutiveFailures += 1
-                print("  ⚠️ 刷新读音：第 \(sIdx) 句 /reading 失败（连续 \(consecutiveFailures) 次），保持原值")
-                if consecutiveFailures >= maxConsecutiveFailures {
-                    print("  ⛔ 刷新读音：连续失败 \(maxConsecutiveFailures) 次，快速降级停止")
-                    break
-                }
-                continue
+            guard !sliceText.isEmpty else {
+                // 空句：跳过，继续下一句
+                requestNext()
+                return
             }
-            consecutiveFailures = 0
 
-            // 1) 整句 furigana 替换（hiragana/katakana/romaji 均来自 /reading）
-            detail["furigana"] = [
-                "hiragana": reading.hiragana,
-                "katakana": reading.katakana,
-                "romaji": reading.romaji
-            ]
+            ReadingAPIClient.shared.fetchReading(text: sliceText) { reading in
+                guard !stopped else { return }  // 防御：降级停止后不再处理
 
-            // 2) 词级：按 words 下的 Word 匹配 /reading 词级读音（时间轴仍以原文件为准）
-            if var words = detail["Words"] as? [[String: Any]], !words.isEmpty {
-                let wordItems = words.map { w -> ASRWordItem in
-                    ASRWordItem(
-                        Word: w["Word"] as? String ?? "",
-                        OffsetStartMs: w["OffsetStartMs"] as? Int ?? 0,
-                        OffsetEndMs: w["OffsetEndMs"] as? Int ?? 0
-                    )
-                }
-                let aligned = ReadingAPIClient.alignToAliyunWords(
-                    readingWords: reading.words,
-                    aliyunWords: wordItems
-                )
-                for (wIdx, var w) in words.enumerated() {
-                    if wIdx < aligned.count,
-                       let hiragana = aligned[wIdx].hiragana,
-                       let romaji = aligned[wIdx].romaji {
-                        w["Furigana"] = hiragana
-                        w["Reading"] = romaji
+                guard let reading = reading else {
+                    lock.lock(); consecutiveFailures += 1; let cf = consecutiveFailures
+                    if cf >= maxConsecutiveFailures { stopped = true }
+                    lock.unlock()
+                    if cf < maxConsecutiveFailures {
+                        print("  ⚠️ 刷新读音：第 \(sIdx) 句 /reading 失败（连续 \(cf) 次），保持原值")
+                        requestNext()
+                    } else {
+                        print("  ⛔ 刷新读音：连续失败 \(maxConsecutiveFailures) 次，快速降级停止，不再请求后续句子")
+                        finish(changedAny)
                     }
-                    words[wIdx] = w
+                    return
                 }
-                detail["Words"] = words
+                lock.lock(); consecutiveFailures = 0; lock.unlock()
+
+                var detail = resultDetail[sIdx]
+                // 1) 整句 furigana 替换（hiragana/katakana/romaji 均来自 /reading）
+                detail["furigana"] = [
+                    "hiragana": reading.hiragana,
+                    "katakana": reading.katakana,
+                    "romaji": reading.romaji
+                ]
+
+                // 2) 词级：按 words 下的 Word 匹配 /reading 词级读音（时间轴仍以原文件为准）
+                if var words = detail["Words"] as? [[String: Any]], !words.isEmpty {
+                    let wordItems = words.map { w -> ASRWordItem in
+                        ASRWordItem(
+                            Word: w["Word"] as? String ?? "",
+                            OffsetStartMs: w["OffsetStartMs"] as? Int ?? 0,
+                            OffsetEndMs: w["OffsetEndMs"] as? Int ?? 0
+                        )
+                    }
+                    let aligned = ReadingAPIClient.alignToAliyunWords(
+                        readingWords: reading.words,
+                        aliyunWords: wordItems
+                    )
+                    for (wIdx, var w) in words.enumerated() {
+                        if wIdx < aligned.count,
+                           let hiragana = aligned[wIdx].hiragana,
+                           let romaji = aligned[wIdx].romaji {
+                            w["Furigana"] = hiragana
+                            w["Reading"] = romaji
+                        }
+                        words[wIdx] = w
+                    }
+                    detail["Words"] = words
+                }
+
+                lock.lock()
+                resultDetail[sIdx] = detail
+                changedAny = true
+                lock.unlock()
+
+                // 成功：继续下一句
+                requestNext()
             }
-
-            resultDetail[sIdx] = detail
-            changedAny = true
         }
 
-        guard changedAny else {
-            print("❌ 刷新读音：没有句子被成功刷新")
-            return false
-        }
-
-        data["ResultDetail"] = resultDetail
-        response["Data"] = data
-        jsonObject["Response"] = response
-        guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-            print("❌ 刷新读音：序列化失败")
-            return false
-        }
-
-        do {
-            try finalData.write(to: jsonFilePath)
-            print("✅ 刷新读音完成，已写回 \(jsonFilePath.lastPathComponent)，共 \(resultDetail.count) 句")
-            return true
-        } catch {
-            print("❌ 刷新读音：写回文件失败 \(error.localizedDescription)")
-            return false
-        }
+        requestNext()
     }
 
     // MARK: - 词级读音修正（用整句正确读音替换错误词级读音）
 
-    /// 用整句（正确）的 hiragana/romaji 修正 ASR JSON 文件中的词级 Furigana/Reading 并写回。
-    /// 词级读音错误常见于汉字词（旧值来自本地机械转换，如把汉字原样当作假名）。
-    /// 修正以整句读音为权威：
-    /// 1) 把可信词（纯假名 ≥2 字符的 surface 或旧 Furigana）在整句平假名串中按序定位为锚点；
-    /// 2) 锚点之间的空隙切分给未定位词：唯一未匹配词时整段归属；多个时让纯假名词先占位，
-    ///    剩余段归最后一个未分配词；
-    /// 3) 罗马音优先取整句罗马音空隙，不可用时对空隙平假名做本地转换（假名→罗马音基本无歧义）。
-    /// 幂等：已正确的词不会被改动。
-    @discardableResult
-    /// 词级读音修正（文件级）：锚点定位 + 空隙切分 + 腾讯云大模型兜底。
-    /// 离线修正（整句读音权威）完成后，仍无法可靠定位的词（汉字词等）按句批量交给大模型，
-    /// 在整句 hiragana 中查找对应的平假名片段（强校验子串），罗马音用本地假名转换。
-    /// - Parameter jsonFilePath: ASR JSON 文件路径
-    /// - Returns: 是否有任何词被修正
-    func fixWordReadingsInASRFile(jsonFilePath: URL, useLLMFallback: Bool = true) -> Bool {
+    /// 词级读音修正（文件级，异步）：锚点定位 + 空隙切分 + 腾讯云大模型整句对齐。
+    /// 离线修正（整句读音权威）完成后，若某句词级 Furigana/Reading 按序拼接与整句 hiragana/romaji 不一致
+    /// （说明仍有词级读音错误，如汉字词的错误音读、错切片段），则把该句整句原文 + 全部词 + 整句注音
+    /// 交给大模型做整句对齐：模型为每个词匹配平假名与罗马音片段，且所有片段拼接后必须与整句注音
+    /// 完全一致（不能多字、不能少字），经代码二次校验通过后才写回。
+    /// 大模型请求全部异步进行，**不阻塞调用线程**；处理完毕（或超时）后通过 completion 回调。
+    /// - Parameters:
+    ///   - jsonFilePath: ASR JSON 文件路径
+    ///   - completion: 主线程回调，参数表示是否有任何词被修正
+    func fixWordReadingsInASRFile(
+        jsonFilePath: URL,
+        useLLMFallback: Bool = true,
+        completion: @escaping (Bool) -> Void
+    ) {
         guard let jsonData = try? Data(contentsOf: jsonFilePath),
               var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               var response = jsonObject["Response"] as? [String: Any],
               var data = response["Data"] as? [String: Any],
               var resultDetail = data["ResultDetail"] as? [[String: Any]] else {
             print("❌ 词级读音修正：无法解析 ASR JSON")
-            return false
+            DispatchQueue.main.async { completion(false) }
+            return
         }
 
         var changedAny = false
-        // 大模型兜底任务：每句一个（该句内所有未匹配的汉字词批量一次请求）
-        var llmTasks: [(sentenceIdx: Int, hiragana: String, pending: [(index: Int, word: String)])] = []
+        // 大模型整句对齐任务：离线修正后，词级读音拼接与整句注音不一致的句子（该句全部词一次请求）
+        var llmTasks: [(sentenceIdx: Int, slice: String, hiragana: String, romaji: String, words: [(index: Int, text: String)])] = []
 
         for (sIdx, var detail) in resultDetail.enumerated() {
-            var pending: [(index: Int, word: String)] = []
-            if SubtitleManager.fixWordReadingsInDetail(&detail, llmPending: &pending) {
+            if SubtitleManager.fixWordReadingsInDetail(&detail) {
                 changedAny = true
             }
-            resultDetail[sIdx] = detail
-            if useLLMFallback, !pending.isEmpty {
-                let h = (detail["furigana"] as? [String: Any])?["hiragana"] as? String ?? ""
-                if !h.isEmpty {
-                    llmTasks.append((sentenceIdx: sIdx, hiragana: h, pending: pending))
+            // 拼接一致性检查：词级 Furigana/Reading 按序拼接，必须与整句 hiragana/romaji 完全一致（不多字、不少字）。
+            // 不一致说明该句仍有词级读音错误（如汉字词的错误音读、错切片段），交给大模型做整句对齐。
+            if useLLMFallback,
+               let furiganaDict = detail["furigana"] as? [String: Any],
+               let h = furiganaDict["hiragana"] as? String, !h.isEmpty,
+               let r = furiganaDict["romaji"] as? String, !r.isEmpty,
+               let words = detail["Words"] as? [[String: Any]], !words.isEmpty,
+               SubtitleManager.needsWholeSentenceAlignment(words: words, hiragana: h, romaji: r) {
+                let slice = (detail["SliceSentence"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+                    ?? (detail["FinalSentence"] as? String) ?? ""
+                guard !slice.isEmpty else {
+                    resultDetail[sIdx] = detail
+                    continue
                 }
+                let allWords = words.enumerated().map { (index: $0.offset, text: $0.element["Word"] as? String ?? "") }
+                llmTasks.append((sentenceIdx: sIdx, slice: slice, hiragana: h, romaji: r, words: allWords))
+            }
+            resultDetail[sIdx] = detail
+        }
+
+        // 大模型整句对齐：把整句原文 + 全部词 + 整句 hiragana/romaji 交给大模型，为每个词匹配平假名与罗马音片段。
+        // 结果必须通过拼接一致性校验（词级拼接 == 整句注音，不多字、不少字）才会写回；不通过则保持离线修正结果。
+        // 异步执行，不阻塞调用线程。
+        let writeBackAndComplete: (Bool) -> Void = { success in
+            guard success else {
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+            data["ResultDetail"] = resultDetail
+            response["Data"] = data
+            jsonObject["Response"] = response
+            guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+                print("❌ 词级读音修正：序列化失败")
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+            do {
+                try finalData.write(to: jsonFilePath)
+                print("✅ 词级读音修正完成（含大模型兜底），已写回 \(jsonFilePath.lastPathComponent)")
+                DispatchQueue.main.async { completion(true) }
+            } catch {
+                print("❌ 词级读音修正：写回失败 \(error.localizedDescription)")
+                DispatchQueue.main.async { completion(false) }
             }
         }
 
-        // 大模型兜底：在整句 hiragana 中查找未匹配词的平假名（同步等待，带总超时）
         if !llmTasks.isEmpty {
-            let fixes = runLLMFuriganaFallback(tasks: llmTasks)
-            if !fixes.isEmpty {
+            runLLMWordAlignment(tasks: llmTasks) { fixes in
+                var changedByLLM = false
                 for fix in fixes {
                     guard fix.sentenceIdx < resultDetail.count,
                           var words = resultDetail[fix.sentenceIdx]["Words"] as? [[String: Any]],
@@ -426,94 +532,142 @@ class SubtitleManager {
                     var w = words[fix.wordIdx]
                     if (w["Furigana"] as? String) != fix.furigana {
                         w["Furigana"] = fix.furigana
-                        changedAny = true
+                        changedByLLM = true
                     }
-                    let romaji = JapaneseTextConverter.shared.toRomaji(fix.furigana)
-                    if !romaji.isEmpty, (w["Reading"] as? String) != romaji {
-                        w["Reading"] = romaji
-                        changedAny = true
+                    if (w["Reading"] as? String) != fix.romaji {
+                        w["Reading"] = fix.romaji
+                        changedByLLM = true
                     }
                     words[fix.wordIdx] = w
                     resultDetail[fix.sentenceIdx]["Words"] = words
                 }
+                writeBackAndComplete(changedAny || changedByLLM)
             }
-        }
-
-        guard changedAny else { return false }
-
-        data["ResultDetail"] = resultDetail
-        response["Data"] = data
-        jsonObject["Response"] = response
-        guard let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-            print("❌ 词级读音修正：序列化失败")
-            return false
-        }
-        do {
-            try finalData.write(to: jsonFilePath)
-            print("✅ 词级读音修正完成（含大模型兜底），已写回 \(jsonFilePath.lastPathComponent)")
-            return true
-        } catch {
-            print("❌ 词级读音修正：写回失败 \(error.localizedDescription)")
-            return false
+        } else {
+            writeBackAndComplete(changedAny)
         }
     }
 
-    /// 大模型兜底（同步等待）：对每句一次调用，让模型在整句 hiragana 中为未匹配词定位平假名片段。
-    /// 并发上限 4，总等待上限 60s（超时部分放弃，保持旧值）。
-    private func runLLMFuriganaFallback(
-        tasks: [(sentenceIdx: Int, hiragana: String, pending: [(index: Int, word: String)])]
-    ) -> [(sentenceIdx: Int, wordIdx: Int, furigana: String)] {
-        guard !tasks.isEmpty else { return [] }
+    /// 拼接一致性检查：该句所有词 Furigana/Reading 按顺序直接拼接，是否与整句 hiragana/romaji 一致（不多字、不少字）。
+    /// 平假名严格相等（整句 hiragana 无空格）；罗马音按「去掉所有空格后相等」判定
+    /// （整句 romaji 的空格只是读音单元分隔符，词级 r 用紧凑形式即可，字符不增不减）。
+    /// 不一致说明词级读音仍有错误（或整句注音包含词列表之外的标点等），需要交给大模型做整句对齐。
+    private static func needsWholeSentenceAlignment(words: [[String: Any]], hiragana: String, romaji: String) -> Bool {
+        var fConcat = ""
+        var rConcat = ""
+        for w in words {
+            fConcat += (w["Furigana"] as? String) ?? ""
+            rConcat += (w["Reading"] as? String) ?? ""
+        }
+        return fConcat != hiragana || stripped(rConcat) != stripped(romaji)
+    }
+
+    /// 去掉字符串中所有空白字符
+    private static func stripped(_ s: String) -> String {
+        return s.filter { !$0.isWhitespace }
+    }
+
+    /// 大模型整句对齐（异步、不阻塞调用线程）：对每句调用一次，让模型为全部词在整句 hiragana/romaji 中匹配平假名与罗马音片段。
+    /// 返回前强制拼接校验：词级 f 拼接 == 整句 hiragana 且词级 r 拼接 == 整句 romaji（不能多字、不能少字），
+    /// 校验通过才采纳；不通过则丢弃该句（保持离线修正结果）。
+    /// 并发上限 4，单请求 30s、总等待上限 45s（超时部分放弃，保持旧值，避免拖慢播放加载）。
+    /// 所有句子处理完毕（或超时）后通过 completion 回调结果，全程不阻塞调用线程。
+    private func runLLMWordAlignment(
+        tasks: [(sentenceIdx: Int, slice: String, hiragana: String, romaji: String, words: [(index: Int, text: String)])],
+        completion: @escaping ([(sentenceIdx: Int, wordIdx: Int, furigana: String, romaji: String)]) -> Void
+    ) {
+        guard !tasks.isEmpty else { completion([]); return }
 
         let maxConcurrent = 4
         let semaphore = DispatchSemaphore(value: maxConcurrent)
         let lock = NSLock()
-        var collected: [(sentenceIdx: Int, wordIdx: Int, furigana: String)] = []
+        var collected: [(sentenceIdx: Int, wordIdx: Int, furigana: String, romaji: String)] = []
         var completed = 0
         let total = tasks.count
-        let done = DispatchSemaphore(value: 0)
+        var finished = false
+
+        // 总等待上限 45s：超时后强制结束（已收集的结果仍回调，未完成的放弃）
+        let timeoutWork = DispatchWorkItem {
+            lock.lock()
+            if !finished {
+                finished = true
+                let result = collected
+                lock.unlock()
+                print("⚠️ 大模型整句对齐总超时(45s)，部分句子放弃，返回已收集结果")
+                completion(result)
+                return
+            }
+            lock.unlock()
+        }
+        DispatchQueue.global().asyncAfter(deadline: .now() + 45, execute: timeoutWork)
 
         for task in tasks {
             semaphore.wait()
-            HunyuanManager.shared.lookupFuriganaInHiragana(
-                sentenceHiragana: task.hiragana,
-                words: task.pending
+            let items = task.words.map { HunyuanManager.WordReadingLookupItem(index: $0.index, text: $0.text) }
+            HunyuanManager.shared.lookupWordReadings(
+                slice: task.slice,
+                hiragana: task.hiragana,
+                romaji: task.romaji,
+                words: items
             ) { result in
+                defer {
+                    semaphore.signal()
+                    lock.lock()
+                    completed += 1
+                    let allDone = completed == total
+                    let alreadyFinished = finished
+                    lock.unlock()
+                    if allDone, !alreadyFinished {
+                        lock.lock()
+                        if !finished {
+                            finished = true
+                            let result = collected
+                            lock.unlock()
+                            timeoutWork.cancel()
+                            completion(result)
+                        } else {
+                            lock.unlock()
+                        }
+                    }
+                }
                 switch result {
                 case .success(let dict):
+                    // 拼接校验：全部词的 f/r 按顺序拼接，必须与整句注音一致（不多字、不少字）。
+                    // f 严格相等；r 去空格后相等（空格只是罗马音分隔符）。
+                    var fConcat = ""
+                    var rConcat = ""
+                    var ordered: [(wordIdx: Int, f: String, r: String)] = []
+                    for item in task.words {
+                        let m = dict[item.index]
+                        let f = m?.furigana ?? ""
+                        let r = m?.romaji ?? ""
+                        fConcat += f
+                        rConcat += r
+                        ordered.append((item.index, f, r))
+                    }
+                    guard fConcat == task.hiragana, SubtitleManager.stripped(rConcat) == SubtitleManager.stripped(task.romaji) else {
+                        print("⚠️ 大模型整句对齐校验失败（词级拼接与整句注音不一致），该句保持离线修正结果")
+                        return
+                    }
                     lock.lock()
-                    for (wordIdx, f) in dict {
-                        collected.append((task.sentenceIdx, wordIdx, f))
+                    for o in ordered {
+                        collected.append((task.sentenceIdx, o.wordIdx, o.f, o.r))
                     }
                     lock.unlock()
                 case .failure(let error):
-                    print("⚠️ 大模型读音兜底失败: \(error.localizedDescription)")
+                    print("⚠️ 大模型整句对齐失败: \(error.localizedDescription)")
                 }
-                semaphore.signal()
-                lock.lock()
-                completed += 1
-                let allDone = completed == total
-                lock.unlock()
-                if allDone { done.signal() }
             }
         }
-
-        _ = done.wait(timeout: .now() + 60)
-        lock.lock()
-        let result = collected
-        lock.unlock()
-        return result
     }
 
     /// 单句修正：用整句 hiragana/romaji 修正 Words[] 的 Furigana/Reading。
-    /// 离线（锚点定位 + 空隙切分）无法可靠处理的词会收集到 llmPending，由调用方交给大模型在整句 hiragana 中兜底查找。
-    /// - Parameters:
-    ///   - detail: 单个 ResultDetail 字典（含 furigana 与 Words）
-    ///   - llmPending: 输出参数，收集「未定位且旧读音为空或含汉字」的词（index 为词在句内下标）
+    /// 离线（锚点定位 + 空隙切分）尽可能修正；仍无法可靠处理的句子由调用方通过
+    /// 「词级拼接 == 整句注音」的一致性检查识别，再交给大模型做整句对齐。
+    /// - Parameter detail: 单个 ResultDetail 字典（含 furigana 与 Words）
     /// - Returns: 是否修正了任何词
     @discardableResult
-    static func fixWordReadingsInDetail(_ detail: inout [String: Any],
-                                        llmPending: inout [(index: Int, word: String)]) -> Bool {
+    static func fixWordReadingsInDetail(_ detail: inout [String: Any]) -> Bool {
         guard let furiganaDict = detail["furigana"] as? [String: Any],
               let h = furiganaDict["hiragana"] as? String, !h.isEmpty,
               var words = detail["Words"] as? [[String: Any]], !words.isEmpty else {
@@ -573,21 +727,6 @@ class SubtitleManager {
             var j = i
             while j < n && !located[j] { j += 1 }
             let cnt = j - i
-
-            // 收集大模型兜底候选：未定位 且 旧读音可疑的词（离线无法可靠处理）。
-            // 判定：旧值为空/含汉字 → 错误；旧值为纯假名但整句 hiragana 中不存在（如「びみ」）→ 错误音读，也需兜底。
-            for t in i..<j {
-                let oldF = words[t]["Furigana"] as? String
-                if let f = oldF, !f.isEmpty {
-                    if (isHiraganaOnly(f) || isKatakanaOnly(f)) && h.contains(f) {
-                        continue // 纯假名且在整句中真实存在：大概率正确（如送假名残留「し」、句尾「の」），不兜底
-                    }
-                }
-                let wText = words[t]["Word"] as? String ?? ""
-                if !wText.isEmpty {
-                    llmPending.append((index: t, word: wText))
-                }
-            }
 
             // 空隙的 H 边界（前后最近锚点）
             var leftH = 0

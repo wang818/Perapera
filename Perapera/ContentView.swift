@@ -12,6 +12,7 @@ struct ContentView: View {
     @AppStorage("AppTheme") private var appTheme: AppTheme = .system
     @State private var selectedTab = 0
     @State private var showReauthLogin = false
+    @State private var showAIConsent = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -42,7 +43,21 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showReauthLogin) {
             LoginView()
         }
+        .fullScreenCover(isPresented: $showAIConsent) {
+            AIConsentView()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .peraperaRequestAIConsent)) { _ in
+            // + 按钮等业务入口请求弹授权弹窗时，仅在已登录且当前账户未同意时弹出
+            ensureAIConsentIfNeeded()
+        }
+        .onReceive(UserManager.shared.$currentUser) { _ in
+            // 切换账户（含登录 / 登出后重新登录）后，按新账户重新判定是否需要授权
+            ensureAIConsentIfNeeded()
+        }
         .onAppear {
+            // 首次启动 / 当前账户未授权时弹出 AI 数据共享授权弹窗
+            ensureAIConsentIfNeeded()
+
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = UIColor.Ex.homepagebg
@@ -63,6 +78,17 @@ struct ContentView: View {
 
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+    }
+
+    /// 已登录且当前账户尚未同意 AI / 第三方数据共享时，弹出授权弹窗。
+    /// 切换账户后由 onReceive(currentUser) 重新触发；+ 按钮等业务入口也可通过通知触发。
+    /// 未登录时不弹（由 + 按钮等入口引导用户先去登录）。
+    private func ensureAIConsentIfNeeded() {
+        guard UserManager.shared.isLoggedIn,
+              !UserManager.shared.hasAIDataSharingConsent else { return }
+        DispatchQueue.main.async {
+            self.showAIConsent = true
         }
     }
 }

@@ -94,6 +94,17 @@
 "settings_help" = "Trợ giúp";
 "login_send_code_success" = "Gửi mã xác minh thành công";
 "login_spam_hint" = "Email có thể xuất hiện trong thư mục spam.";
+"login_send_code_failed" = "Gửi mã xác minh thất bại. Vui lòng thử lại.";
+"login_send_code_network_error" = "Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.";
+"ai_consent_title" = "Chia s\u1ebb d\u1eef li\u1ec7u & x\u1eed l\u00fd AI";
+"ai_consent_intro" = "Khi b\u1ea1n th\u00eam video, d\u1eef li\u1ec7u \u0111\u01b0\u1ee3c g\u1eedi \u0111\u1ebfn c\u00e1c d\u1ecbch v\u1ee5 n\u00e0y:";
+"ai_consent_data_title" = "G\u1eedi g\u00ec \u2192 Cho ai";
+"ai_consent_data_body" = "\u2022 Li\u00ean k\u1ebft video \u2192 RapidAPI & Tencent Cloud: t\u1ea3i v\u00e0 l\u01b0u\n\u2022 \u00c2m thanh \u2192 Alibaba Cloud: nh\u1eadn d\u1ea1ng gi\u1ecdng n\u00f3i\n\u2022 V\u0103n b\u1ea3n ph\u1ee5 \u0111\u1ec1 \u2192 Tencent Hunyuan & m\u00e1y ch\u1ee7 c\u1ee7a ch\u00fang t\u00f4i: d\u1ecbch & \u0111\u1ecdc\n\u2022 Email \u2192 Google: m\u00e3 x\u00e1c minh\n\u2022 Mua h\u00e0ng \u2192 Apple: x\u00e1c minh mua h\u00e0ng\n\nCh\u00fang t\u00f4i kh\u00f4ng b\u00e1n d\u1eef li\u1ec7u hay d\u00f9ng cho AI hu\u1ea5n luy\u1ec7n.";
+"ai_consent_recipients_title" = "Người nhận & Mục đích";
+"ai_consent_recipients_body" = "• Tencent Hunyuan và Alibaba Cloud: dịch phụ đề, nhận dạng giọng nói, chú thích đọc\n• Máy chủ của chúng tôi: tạo cách đọc tiếng Nhật (kana/romaji)\n• RapidAPI và Tencent Cloud: tải xuống & lưu video\n• Google: gửi email xác minh\n• Apple: xác minh mua hàng\nChúng tôi không bán dữ liệu của bạn hay dùng nó để huấn luyện AI.";
+"ai_consent_privacy_link" = "Đọc toàn bộ Chính sách Bảo mật";
+"ai_consent_agree" = "Tôi Đồng ý";
+"ai_consent_disagree" = "Không phải bây giờ";
 "login_success" = "Đăng nhập thành công";
 "logout" = "Đăng xuất";
 "settings_delete_account_title" = "Xóa tài khoản";

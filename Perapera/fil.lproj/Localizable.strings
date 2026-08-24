@@ -94,6 +94,17 @@
 "settings_help" = "Tulong";
 "login_send_code_success" = "Matagumpay na naipadala ang verification code";
 "login_spam_hint" = "Maaaring mapunta ang email sa iyong spam folder.";
+"login_send_code_failed" = "Hindi naipadala ang verification code. Subukan muli.";
+"login_send_code_network_error" = "Error sa network. Pakisuri ang iyong koneksyon at subukan muli.";
+"ai_consent_title" = "Pagbabahagi ng Data at Paggamit ng AI";
+"ai_consent_intro" = "Kapag nagdagdag ng video, ipapadala ang data sa mga serbisyong ito:";
+"ai_consent_data_title" = "Anong ipinadala \u2192 Kanino";
+"ai_consent_data_body" = "\u2022 Link ng video \u2192 RapidAPI & Tencent Cloud: download at storage\n\u2022 Audio \u2192 Alibaba Cloud: speech recognition\n\u2022 Text ng subtitle \u2192 Tencent Hunyuan at aming server: pagsasalin at pagbasa\n\u2022 Email \u2192 Google: verification codes\n\u2022 Purchase \u2192 Apple: i-verify ang purchase\n\nHindi namin ibenta ang data o ginagamit para sa AI training.";
+"ai_consent_recipients_title" = "Kukuha at Gamit";
+"ai_consent_recipients_body" = "• Tencent Hunyuan at Alibaba Cloud: pagsasalin ng subtitle, pagkilala sa boses, anotasyon sa pagbasa\n• Aming server: paggawa ng pagbasa ng Japanese (kana/romaji)\n• RapidAPI at Tencent Cloud: download at imbak ng video\n• Google: pagpadala ng verification email\n• Apple: pag-verify ng in-app purchase\nHindi namin ibinebenta ang iyong data o ginagamit ito sa pag-train ng AI.";
+"ai_consent_privacy_link" = "Basahin ang Buong Privacy Policy";
+"ai_consent_agree" = "Sumasang-ayon Ako";
+"ai_consent_disagree" = "Sa Susunod na Lang";
 "login_success" = "Matagumpay ang pag-login";
 "logout" = "Mag-log out";
 "settings_delete_account_title" = "Tanggalin ang Account";

@@ -15,6 +15,8 @@ extension Notification.Name {
     static let peraperaAuthRefreshFailed = Notification.Name("PeraperaAuthRefreshFailed")
     /// 业务层（播放页等）请求弹出 LoginView
     static let peraperaRequestShowLogin = Notification.Name("PeraperaRequestShowLogin")
+    /// 业务层（+ 按钮等）请求弹出 AI / 第三方数据共享授权弹窗
+    static let peraperaRequestAIConsent = Notification.Name("PeraperaRequestAIConsent")
 }
 
 final class AuthRefreshService {

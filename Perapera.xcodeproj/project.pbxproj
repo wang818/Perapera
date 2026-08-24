@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		031F7CBBB1AC48B0836E5530 /* ReadingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700EC4C510D041ED8ED4F489 /* ReadingAPI.swift */; };
 		184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06C92FB815DD001114A3 /* YTAudioModel.swift */; };
 		184C06CC2FB815F1001114A5 /* YTBasicInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
@@ -92,9 +93,9 @@
 		ECACBF432F0BC8170090F990 /* AppIcon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF312F0BC8170090F990 /* AppIcon-76.png */; };
 		ECACBF442F0BC8170090F990 /* AppIcon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */; };
 		ECACBF452F0BC8170090F990 /* AppIcon-29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = ECACBF272F0BC8170090F990 /* AppIcon-29@3x.png */; };
+		ECB33501303BD05F0011076B /* AIConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB33500303BD05F0011076B /* AIConsentView.swift */; };
 		F0A1B2C3D4E5F60718293A41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */; };
 		F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70809101111 /* IAPModel.swift */; };
-		031F7CBBB1AC48B0836E5530 /* ReadingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700EC4C510D041ED8ED4F489 /* ReadingAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -125,6 +126,7 @@
 		18CA30752F47DE00CA9B62 /* YouTubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = YouTubePlayerView.swift; path = VideoPlayerView/YouTubePlayerView.swift; sourceTree = "<group>"; };
 		18CA30762F47DE00CA9B63 /* URL+YouTube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+YouTube.swift"; sourceTree = "<group>"; };
 		491A0925D6AF62417AAC3DA0 /* Pods-Perapera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Perapera.release.xcconfig"; path = "Target Support Files/Pods-Perapera/Pods-Perapera.release.xcconfig"; sourceTree = "<group>"; };
+		700EC4C510D041ED8ED4F489 /* ReadingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingAPI.swift; sourceTree = "<group>"; };
 		8D1961DBF9F94BF7923DD82F /* JapaneseTextConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaneseTextConverter.swift; sourceTree = "<group>"; };
 		92228B25C99537B2CD47D806 /* Pods_Perapera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Perapera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA00AA012F0B9A340090F990 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
@@ -218,9 +220,9 @@
 		ECACBF322F0BC8170090F990 /* AppIcon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-76@2x.png"; sourceTree = "<group>"; };
 		ECACBF332F0BC8170090F990 /* AppIcon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-83.5@2x.png"; sourceTree = "<group>"; };
 		ECACBF342F0BC8170090F990 /* AppIcon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-1024.png"; sourceTree = "<group>"; };
+		ECB33500303BD05F0011076B /* AIConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConsentView.swift; sourceTree = "<group>"; };
 		F0A1B2C3D4E5F60718293A40 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70809101111 /* IAPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPModel.swift; sourceTree = "<group>"; };
-		700EC4C510D041ED8ED4F489 /* ReadingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -378,6 +380,7 @@
 				EC7FEF042F284EE50007BCA6 /* PurchaseView */,
 				ECACBF222F0BB8B20090F990 /* Components */,
 				ECACBE892F0A15DF0090F990 /* LoginView */,
+				ECACFF012F0A15DF0090FB01 /* Onboarding */,
 				ECACBE762EF938410090F990 /* SettingsView */,
 				ECACBE752EF938340090F990 /* PodcastView */,
 				ECACBE742EF9380B0090F990 /* HomeView */,
@@ -523,6 +526,14 @@
 				ECACBF212F0BB8B20090F990 /* ToastView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		ECACFF012F0A15DF0090FB01 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				ECB33500303BD05F0011076B /* AIConsentView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -776,6 +787,7 @@
 				F1A2B3C4D5E6F70809101112 /* IAPModel.swift in Sources */,
 				ECACBF0F2F0B59880090F990 /* AppAPIEndPoint.swift in Sources */,
 				18CA306E2F2787DE00CA9B62 /* VideoPlayerView.swift in Sources */,
+				ECB33501303BD05F0011076B /* AIConsentView.swift in Sources */,
 				ECACBF1C2F0B8D5F0090F990 /* SupportLanguageModel.swift in Sources */,
 				ECACBF102F0B59880090F990 /* NetWorkService.swift in Sources */,
 				AAAA11122F0B59880090F991 /* AuthRefreshService.swift in Sources */,

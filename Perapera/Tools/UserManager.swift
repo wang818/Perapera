@@ -57,6 +57,37 @@ class UserManager: ObservableObject {
            let model = UserInfoModel.deserialize(from: json) {
             currentUserInfo = model
         }
+
+        // 旧版用单一全局 key 记录授权，升级后改为按账户(email)隔离；迁移一次即可
+        migrateLegacyAIConsentIfNeeded()
+    }
+
+    // MARK: - AI / 第三方数据共享授权
+
+    /// 已登录账户：按邮箱隔离的授权标记前缀
+    private let aiConsentKeyPrefix = "hasConsentedAIDataSharing_"
+    private let legacyAIConsentKey = "hasConsentedAIDataSharing"
+
+    /// 是否已同意 AI / 第三方数据共享。未登录时返回 false（需先登录，登录后按账户判定）。
+    var hasAIDataSharingConsent: Bool {
+        guard let email = userEmail, !email.isEmpty else { return false }
+        return UserDefaults.standard.bool(forKey: aiConsentKeyPrefix + email)
+    }
+
+    /// 记录当前登录账户的同意状态。仅在已登录（有邮箱）时生效。
+    func setAIDataSharingConsent(_ value: Bool) {
+        guard let email = userEmail, !email.isEmpty else { return }
+        UserDefaults.standard.set(value, forKey: aiConsentKeyPrefix + email)
+    }
+
+    /// 旧版本用单一全局 key 记录授权，升级后改为按账户隔离；迁移一次即可。
+    private func migrateLegacyAIConsentIfNeeded() {
+        guard UserDefaults.standard.object(forKey: legacyAIConsentKey) != nil else { return }
+        if let email = userEmail, !email.isEmpty,
+           !UserDefaults.standard.bool(forKey: aiConsentKeyPrefix + email) {
+            UserDefaults.standard.set(true, forKey: aiConsentKeyPrefix + email)
+        }
+        UserDefaults.standard.removeObject(forKey: legacyAIConsentKey)
     }
 
     func logout() {

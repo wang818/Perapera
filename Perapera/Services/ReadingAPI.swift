@@ -56,6 +56,65 @@ final class ReadingAPIClient {
         return URLSession(configuration: config)
     }()
 
+    // MARK: - 全局熔断（Circuit Breaker）
+    // /reading 是辅助服务（失败走本地兜底）。后端故障（如 502）时，若多个解析/刷新实例
+    // 各自独立降级，仍会并发打大量请求并刷屏日志。这里做进程级熔断：
+    // 连续失败 2 次 → 熔断打开（冷却 60s 起、指数退避、上限 10min），期间所有调用直接
+    // 返回 nil（首次跳过打印一行提示，后续静默）；冷却结束后首次调用作为试探，成功则复位。
+    private let breakerLock = NSLock()
+    private var breakerOpen = false
+    private var breakerFailures = 0
+    private var breakerOpenUntil: Date?
+    private var breakerSkipLogged = false
+    private var breakerCooldownExp = 0
+    private let breakerMaxFailures = 2
+    private let breakerBaseCooldown: TimeInterval = 60
+    private let breakerMaxCooldown: TimeInterval = 600
+
+    /// 请求前检查：false 表示熔断冷却中，调用方应直接按失败处理（不发请求）
+    private func canRequest() -> Bool {
+        breakerLock.lock()
+        defer { breakerLock.unlock() }
+        if breakerOpen {
+            if let until = breakerOpenUntil, Date() >= until {
+                // 冷却结束：关闭熔断，放行一次试探请求
+                breakerOpen = false
+                breakerSkipLogged = false
+                return true
+            }
+            if !breakerSkipLogged {
+                breakerSkipLogged = true
+                let remain = max(0, Int((breakerOpenUntil ?? Date()).timeIntervalSinceNow))
+                print("⏸ ReadingAPI: /reading 熔断冷却中（约剩余 \(remain)s），期间请求直接跳过")
+            }
+            return false
+        }
+        return true
+    }
+
+    private func recordFailure() {
+        breakerLock.lock()
+        defer { breakerLock.unlock() }
+        breakerFailures += 1
+        if breakerFailures >= breakerMaxFailures, !breakerOpen {
+            breakerOpen = true
+            let cooldown = min(breakerBaseCooldown * pow(2.0, Double(breakerCooldownExp)), breakerMaxCooldown)
+            breakerCooldownExp += 1
+            breakerOpenUntil = Date().addingTimeInterval(cooldown)
+            print("⚠️ ReadingAPI: 连续失败 \(breakerFailures) 次，熔断打开，冷却 \(Int(cooldown))s（期间不再请求 /reading）")
+        }
+    }
+
+    private func recordSuccess() {
+        breakerLock.lock()
+        defer { breakerLock.unlock() }
+        breakerFailures = 0
+        breakerCooldownExp = 0
+        breakerOpen = false
+        breakerOpenUntil = nil
+        breakerSkipLogged = false
+    }
+
     // MARK: - Public
 
     /// 同步调用 /reading（阻塞调用线程，带超时）。失败/超时/解析失败返回 nil
@@ -64,6 +123,8 @@ final class ReadingAPIClient {
     func fetchReadingSync(text: String) -> ReadingResult? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
+        // 熔断冷却中：不发请求，直接按失败处理
+        guard canRequest() else { return nil }
 
         var request = URLRequest(url: Self.endpoint)
         request.httpMethod = "POST"
@@ -76,30 +137,93 @@ final class ReadingAPIClient {
         session.dataTask(with: request) { data, response, error in
             defer { semaphore.signal() }
             if let error = error {
-                print("❌ ReadingAPI: 请求失败 \(error.localizedDescription)")
+                print("❌ ReadingAPI[Sync]: 请求失败 \(error.localizedDescription)")
+                self.recordFailure()
                 return
             }
             guard let data = data,
                   let http = response as? HTTPURLResponse,
                   (200..<300).contains(http.statusCode) else {
                 let code = (response as? HTTPURLResponse)?.statusCode ?? 0
-                print("❌ ReadingAPI: 非 2xx 响应, HTTP \(code)")
+                print("❌ ReadingAPI[Sync]: 非 2xx 响应, HTTP \(code)")
+                self.recordFailure()
                 return
             }
             guard let resp = try? JSONDecoder().decode(ReadingResponse.self, from: data) else {
                 let preview = String(data: data, encoding: .utf8)?.prefix(300) ?? ""
-                print("❌ ReadingAPI: JSON 解析失败: \(preview)")
+                print("❌ ReadingAPI[Sync]: JSON 解析失败: \(preview)")
+                self.recordFailure()
                 return
             }
             result = Self.buildResult(resp)
+            if result == nil {
+                self.recordFailure()
+            } else {
+                self.recordSuccess()
+            }
         }.resume()
 
         let wait = semaphore.wait(timeout: .now() + 35)
         if wait == .timedOut {
-            print("⚠️ ReadingAPI: 请求超时(35s), text=\(trimmed.prefix(30))")
+            print("⚠️ ReadingAPI[Sync]: 请求超时(35s), text=\(trimmed.prefix(30))")
+            recordFailure()
             return nil
         }
         return result
+    }
+
+    /// 异步调用 /reading（不阻塞调用线程）。失败/超时/解析失败在 completion 中返回 nil。
+    /// - Parameters:
+    ///   - text: 日文整句
+    ///   - completion: 主线程回调，成功返回 ReadingResult，失败返回 nil
+    func fetchReading(text: String, completion: @escaping (ReadingResult?) -> Void) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            DispatchQueue.main.async { completion(nil) }
+            return
+        }
+        // 熔断冷却中：不发请求，直接按失败处理
+        guard canRequest() else {
+            DispatchQueue.main.async { completion(nil) }
+            return
+        }
+
+        var request = URLRequest(url: Self.endpoint)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["text": trimmed])
+
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("❌ ReadingAPI[Async]: 请求失败 \(error.localizedDescription)")
+                self.recordFailure()
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            guard let data = data,
+                  let http = response as? HTTPURLResponse,
+                  (200..<300).contains(http.statusCode) else {
+                let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+                print("❌ ReadingAPI[Async]: 非 2xx 响应, HTTP \(code)")
+                self.recordFailure()
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            guard let resp = try? JSONDecoder().decode(ReadingResponse.self, from: data) else {
+                let preview = String(data: data, encoding: .utf8)?.prefix(300) ?? ""
+                print("❌ ReadingAPI[Async]: JSON 解析失败: \(preview)")
+                self.recordFailure()
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            let result = Self.buildResult(resp)
+            if result == nil {
+                self.recordFailure()
+            } else {
+                self.recordSuccess()
+            }
+            DispatchQueue.main.async { completion(result) }
+        }.resume()
     }
 
     // MARK: - 对齐

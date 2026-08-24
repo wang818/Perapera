@@ -223,13 +223,16 @@ class VideoPlayerViewModel: ObservableObject {
         hasResolvedTranslationState = false
 
         let videoId = video.id
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
+
+        // 优先从 ASR JSON 文件异步加载字幕（内部含 /reading 刷新 + 大模型整句对齐，全部异步网络请求，不阻塞线程）。
+        // 若 ASR 文件不存在，则回退到 UserDefaults 中已存储的字幕。
+        SubtitleManager.shared.loadSubtitlesFromASRFileAsync(videoId: videoId) { [weak self] asrSubtitles in
+            guard let self = self, self.video.id == videoId else { return }
 
             let loadedSubtitles: [SubtitleItem]
-            if let asrSubtitles = SubtitleManager.shared.loadSubtitlesFromASRFile(videoId: videoId) {
+            if let asrSubtitles = asrSubtitles, !asrSubtitles.isEmpty {
                 loadedSubtitles = asrSubtitles
-                print("✅ 从 ASR 文件加载字幕成功，共 \(loadedSubtitles.count) 条")
+                print("✅ 从 ASR 文件异步加载字幕成功，共 \(loadedSubtitles.count) 条")
             } else if let subtitleData = SubtitleManager.shared.loadSubtitles(for: videoId) {
                 loadedSubtitles = subtitleData.subtitles
                 print("✅ 从 UserDefaults 加载字幕成功，共 \(loadedSubtitles.count) 条")
@@ -239,15 +242,13 @@ class VideoPlayerViewModel: ObservableObject {
             }
 
             let hasCompletedTranslation = self.areSubtitlesFullyTranslated(loadedSubtitles)
-
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self, self.video.id == videoId else { return }
-                self.applyLoadedSubtitles(loadedSubtitles, hasCompletedTranslation: hasCompletedTranslation)
-            }
+            self.applyLoadedSubtitles(loadedSubtitles, hasCompletedTranslation: hasCompletedTranslation)
         }
     }
 
     private func applyLoadedSubtitles(_ loadedSubtitles: [SubtitleItem], hasCompletedTranslation: Bool) {
+        // 首次加载 vs 二次应用（读音刷新完成后的重复回调）：二次应用保持当前播放位置
+        let isReapply = !subtitles.isEmpty
         subtitles = loadedSubtitles
         hasCompletedYouTubeTranslation = hasCompletedTranslation
         hasResolvedTranslationState = true
@@ -257,8 +258,18 @@ class VideoPlayerViewModel: ObservableObject {
         }
 
         if !subtitles.isEmpty {
-            currentSubtitle = subtitles[0]
-            currentSubtitleIndex = 0
+            if isReapply {
+                // 读音刷新后重新应用：保持当前播放位置对应的字幕，不跳回第一句
+                let idx = currentSubtitleIndex
+                if idx >= 0 && idx < subtitles.count {
+                    currentSubtitle = subtitles[idx]
+                } else {
+                    updateCurrentSubtitle(at: currentTime)
+                }
+            } else {
+                currentSubtitle = subtitles[0]
+                currentSubtitleIndex = 0
+            }
         } else {
             generateDefaultSubtitles()
         }
