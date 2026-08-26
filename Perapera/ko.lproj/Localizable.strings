@@ -105,10 +105,10 @@
 "login_spam_hint" = "이메일이 스팸함으로 들어갈 수 있습니다.";
 "login_send_code_failed" = "인증 코드 전송에 실패했습니다. 다시 시도해 주세요.";
 "login_send_code_network_error" = "네트워크 오류가 발생했습니다. 연결을 확인하고 다시 시도해 주세요.";
-"ai_consent_title" = "\ub370\uc774\ud130 \uacf5\uc720 \ubc0f AI \ucc98\ub9ac";
-"ai_consent_intro" = "\ube44\ub514\uc624\ub97c \ucd94\uac00\ud558\uba74 \ub370\uc774\ud130\uac00 \ub2e4\uc74c \uc11c\ube44\uc2a4\ub85c \uc804\uc1a1\ub429\ub2c8\ub2e4:";
-"ai_consent_data_title" = "\uc804\uc1a1 \ub0b4\uc6a9 \u2192 \uc218\uc2e0\ucc98";
-"ai_consent_data_body" = "\u2022 \ube44\ub514\uc624 \ub9c1\ud06c \u2192 RapidAPI / Tencent Cloud: \ub2e4\uc6b4\ub85c\ub4dc \ubc0f \uc800\uc7a5\n\u2022 \uc624\ub514\uc624 \u2192 Alibaba Cloud: \uc74c\uc131 \uc778\uc2dd\n\u2022 \uc790\ub9c9 \ud14d\uc2a4\ud2b8 \u2192 Tencent Hunyuan / \uc790\uccb4 \uc11c\ubc84: \ubc88\uc5ed \ubc0f \uc77d\uae30\n\u2022 \uc774\uba54\uc77c \u2192 Google: \uc778\uc99d \ucf54\ub4dc\n\u2022 \uad6c\ub9e4 \u2192 Apple: \uad6c\ub9e4 \ud655\uc778\n\n\ub370\uc774\ud130\ub97c \ud310\ub9e4\ud558\uc9c0 \uc54a\uc73c\uba70 AI \ud6c8\ub828\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
+"ai_consent_title" = "데이터 공유 및 AI 처리";
+"ai_consent_intro" = "비디오를 추가하면 데이터가 다음 서비스로 전송됩니다:";
+"ai_consent_data_title" = "전송 내용 → 수신처";
+"ai_consent_data_body" = "• 비디오 링크 → RapidAPI / Tencent Cloud: 다운로드 및 저장\n• 오디오 → Alibaba Cloud: 음성 인식\n• 자막 텍스트 → Tencent Hunyuan / 자체 서버: 번역 및 읽기\n• 구매 → Apple: 구매 확인\n\n데이터를 판매하지 않으며 AI 훈련에 사용하지 않습니다.";
 "ai_consent_recipients_title" = "수신자 및 목적";
 "ai_consent_recipients_body" = "• Tencent Hunyuan 및 Alibaba Cloud: 자막 번역, 음성 인식, 읽기 표기\n• 자체 서버: 일본어 읽기(가나/로마자) 생성\n• RapidAPI 및 Tencent Cloud: 동영상 다운로드 및 저장\n• Google: 인증 코드 이메일 전송\n• Apple: 앱 내 구매 확인\n당사는 귀하의 데이터를 판매하거나 AI 학습에 사용하지 않습니다.";
 "ai_consent_privacy_link" = "전체 개인정보 처리방침 보기";

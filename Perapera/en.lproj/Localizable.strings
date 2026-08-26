@@ -112,7 +112,7 @@
 "ai_consent_title" = "Data Sharing & AI Processing";
 "ai_consent_intro" = "When you add a video for study, your data is sent to these services:";
 "ai_consent_data_title" = "What We Send & To Whom";
-"ai_consent_data_body" = "\u2022 Video link \u2192 RapidAPI & Tencent Cloud: download & store\n\u2022 Audio \u2192 Alibaba Cloud: speech recognition\n\u2022 Subtitle text \u2192 Tencent Hunyuan & our server: translation & reading\n\u2022 Email \u2192 Google: verification codes\n\u2022 Purchase \u2192 Apple: verify IAP\n\nWe don\u2019t sell data or use it for AI training.";
+"ai_consent_data_body" = "• Video link → RapidAPI & Tencent Cloud: download & store\n• Audio → Alibaba Cloud: speech recognition\n• Subtitle text → Tencent Hunyuan & our server: translation & reading\n• Purchase → Apple: verify IAP\n\nWe don’t sell data or use it for AI training.";
 "ai_consent_recipients_title" = "Who Receives It & Why";
 "ai_consent_recipients_body" = "• Tencent Hunyuan & Alibaba Cloud: subtitle translation, speech recognition, reading annotations\n• Our server: Japanese kana/romaji generation\n• RapidAPI & Tencent Cloud: download & store videos\n• Google: send verification emails\n• Apple: verify in-app purchases\nWe do not sell your data or use it to train AI.";
 "ai_consent_privacy_link" = "Read our full Privacy Policy";

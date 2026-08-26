@@ -98,8 +98,8 @@
 "login_send_code_network_error" = "Ralat rangkaian. Sila semak sambungan anda dan cuba lagi.";
 "ai_consent_title" = "Perkongsian Data & Pemprosesan AI";
 "ai_consent_intro" = "Apabila anda menambah video, data dihantar kepada perkhidmatan ini:";
-"ai_consent_data_title" = "Apa dihantar \u2192 Kepada siapa";
-"ai_consent_data_body" = "\u2022 Pautan video \u2192 RapidAPI & Tencent Cloud: muat turun & simpan\n\u2022 Audio \u2192 Alibaba Cloud: pengecaman pertuturan\n\u2022 Teks sari kata \u2192 Tencent Hunyuan & pelayan kami: terjemahan & bacaan\n\u2022 E-mel \u2192 Google: kod pengesahan\n\u2022 Pembelian \u2192 Apple: sahkan pembelian\n\nKami tidak menjual data atau menggunakannya untuk latihan AI.";
+"ai_consent_data_title" = "Apa dihantar → Kepada siapa";
+"ai_consent_data_body" = "• Pautan video → RapidAPI & Tencent Cloud: muat turun & simpan\n• Audio → Alibaba Cloud: pengecaman pertuturan\n• Teks sari kata → Tencent Hunyuan & pelayan kami: terjemahan & bacaan\n• Pembelian → Apple: sahkan pembelian\n\nKami tidak menjual data atau menggunakannya untuk latihan AI.";
 "ai_consent_recipients_title" = "Penerima & Tujuannya";
 "ai_consent_recipients_body" = "• Tencent Hunyuan & Alibaba Cloud: terjemahan sari kata, pengecaman suara, anotasi bacaan\n• Pelayan kami: menjana bacaan Jepun (kana/romaji)\n• RapidAPI & Tencent Cloud: muat turun & simpan video\n• Google: hantar e-mel pengesahan\n• Apple: sahkan pembelian\nKami tidak menjual data anda atau menggunakannya untuk melatih AI.";
 "ai_consent_privacy_link" = "Baca Polisi Privasi penuh kami";

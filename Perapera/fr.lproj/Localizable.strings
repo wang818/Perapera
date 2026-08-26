@@ -98,10 +98,10 @@
 "login_spam_hint" = "L'e-mail peut arriver dans votre dossier spam.";
 "login_send_code_failed" = "Échec de l'envoi du code de vérification. Veuillez réessayer.";
 "login_send_code_network_error" = "Erreur réseau. Veuillez vérifier votre connexion et réessayer.";
-"ai_consent_title" = "Partage de donn\u00e9es et traitement IA";
-"ai_consent_intro" = "Lorsque vous ajoutez une vid\u00e9o, vos donn\u00e9es sont envoy\u00e9es \u00e0 ces services\u00a0:";
-"ai_consent_data_title" = "Ce que nous envoyons \u2192 \u00c0 qui";
-"ai_consent_data_body" = "\u2022 Lien vid\u00e9o \u2192 RapidAPI & Tencent Cloud\u00a0: t\u00e9l\u00e9chargement et stockage\n\u2022 Audio \u2192 Alibaba Cloud\u00a0: reconnaissance vocale\n\u2022 Texte des sous-titres \u2192 Tencent Hunyuan & notre serveur\u00a0: traduction et lecture\n\u2022 E-mail \u2192 Google\u00a0: codes de v\u00e9rification\n\u2022 Achat \u2192 Apple\u00a0: v\u00e9rifier l\u2019achat\n\nNous ne vendons pas les donn\u00e9es ni ne les utilisons pour l\u2019entra\u00eenement de l\u2019IA.";
+"ai_consent_title" = "Partage de données et traitement IA";
+"ai_consent_intro" = "Lorsque vous ajoutez une vidéo, vos données sont envoyées à ces services :";
+"ai_consent_data_title" = "Ce que nous envoyons → À qui";
+"ai_consent_data_body" = "• Lien vidéo → RapidAPI & Tencent Cloud : téléchargement et stockage\n• Audio → Alibaba Cloud : reconnaissance vocale\n• Texte des sous-titres → Tencent Hunyuan & notre serveur : traduction et lecture\n• Achat → Apple : vérifier l’achat\n\nNous ne vendons pas les données ni ne les utilisons pour l’entraînement de l’IA.";
 "ai_consent_recipients_title" = "Destinataires et finalité";
 "ai_consent_recipients_body" = "• Tencent Hunyuan et Alibaba Cloud : traduction des sous-titres, reconnaissance vocale, annotations de lecture\n• Notre serveur : génération de la lecture japonaise (kana/romaji)\n• RapidAPI et Tencent Cloud : télécharger et stocker les vidéos\n• Google : envoi des e-mails de vérification\n• Apple : vérification des achats\nNous ne vendons pas vos données ni ne les utilisons pour entraîner l'IA.";
 "ai_consent_privacy_link" = "Lire la politique de confidentialité complète";

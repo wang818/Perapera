@@ -99,9 +99,9 @@
 "login_send_code_failed" = "Bestätigungscode konnte nicht gesendet werden. Bitte erneut versuchen.";
 "login_send_code_network_error" = "Netzwerkfehler. Bitte Verbindung prüfen und erneut versuchen.";
 "ai_consent_title" = "Datenweitergabe & KI-Verarbeitung";
-"ai_consent_intro" = "Wenn Sie ein Video hinzuf\u00fcgen, werden Daten an diese Dienste gesendet:";
-"ai_consent_data_title" = "Was wir senden \u2192 An wen";
-"ai_consent_data_body" = "\u2022 Videolink \u2192 RapidAPI & Tencent Cloud: Download & Speicher\n\u2022 Audio \u2192 Alibaba Cloud: Spracherkennung\n\u2022 Untertiteltext \u2192 Tencent Hunyuan & unser Server: \u00dcbersetzung & Lesung\n\u2022 E-Mail \u2192 Google: Best\u00e4tigungscodes\n\u2022 Kauf \u2192 Apple: Kaufpr\u00fcfung\n\nWir verkaufen keine Daten und nutzen sie nicht f\u00fcr KI-Training.";
+"ai_consent_intro" = "Wenn Sie ein Video hinzufügen, werden Daten an diese Dienste gesendet:";
+"ai_consent_data_title" = "Was wir senden → An wen";
+"ai_consent_data_body" = "• Videolink → RapidAPI & Tencent Cloud: Download & Speicher\n• Audio → Alibaba Cloud: Spracherkennung\n• Untertiteltext → Tencent Hunyuan & unser Server: Übersetzung & Lesung\n• Kauf → Apple: Kaufprüfung\n\nWir verkaufen keine Daten und nutzen sie nicht für KI-Training.";
 "ai_consent_recipients_title" = "Empfänger & Zweck";
 "ai_consent_recipients_body" = "• Tencent Hunyuan & Alibaba Cloud: Untertitelübersetzung, Spracherkennung, Lesehilfen\n• Unser Server: Japanische Lesung (Kana/Romaji)\n• RapidAPI & Tencent Cloud: Videos herunterladen & speichern\n• Google: Bestätigungs-E-Mails senden\n• Apple: In-App-Käufe prüfen\nWir verkaufen Ihre Daten nicht und nutzen sie nicht zum Trainieren von KI.";
 "ai_consent_privacy_link" = "Vollständige Datenschutzerklärung lesen";

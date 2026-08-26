@@ -99,9 +99,9 @@
 "login_send_code_failed" = "No se pudo enviar el código de verificación. Inténtalo de nuevo.";
 "login_send_code_network_error" = "Error de red. Comprueba tu conexión e inténtalo de nuevo.";
 "ai_consent_title" = "Compartir datos y procesamiento de IA";
-"ai_consent_intro" = "Al agregar un video, sus datos se env\u00edan a estos servicios:";
-"ai_consent_data_title" = "Qu\u00e9 enviamos \u2192 A qui\u00e9n";
-"ai_consent_data_body" = "\u2022 Enlace de video \u2192 RapidAPI y Tencent Cloud: descargar y almacenar\n\u2022 Audio \u2192 Alibaba Cloud: reconocimiento de voz\n\u2022 Texto de subt\u00edtulos \u2192 Tencent Hunyuan y nuestro servidor: traducci\u00f3n y lectura\n\u2022 Correo \u2192 Google: c\u00f3digos de verificaci\u00f3n\n\u2022 Compra \u2192 Apple: verificar compra\n\nNo vendemos datos ni los usamos para entrenar IA.";
+"ai_consent_intro" = "Al agregar un video, sus datos se envían a estos servicios:";
+"ai_consent_data_title" = "Qué enviamos → A quién";
+"ai_consent_data_body" = "• Enlace de video → RapidAPI y Tencent Cloud: descargar y almacenar\n• Audio → Alibaba Cloud: reconocimiento de voz\n• Texto de subtítulos → Tencent Hunyuan y nuestro servidor: traducción y lectura\n• Compra → Apple: verificar compra\n\nNo vendemos datos ni los usamos para entrenar IA.";
 "ai_consent_recipients_title" = "Destinatarios y finalidad";
 "ai_consent_recipients_body" = "• Tencent Hunyuan y Alibaba Cloud: traducción de subtítulos, reconocimiento de voz, anotaciones de lectura\n• Nuestro servidor: generación de lectura japonesa (kana/romaji)\n• RapidAPI y Tencent Cloud: descargar y guardar vídeos\n• Google: enviar correos de verificación\n• Apple: verificar compras\nNo vendemos tus datos ni los usamos para entrenar IA.";
 "ai_consent_privacy_link" = "Leer la Política de Privacidad completa";

@@ -105,10 +105,10 @@
 "login_spam_hint" = "郵件可能會出現在垃圾郵件匣裡。";
 "login_send_code_failed" = "驗證碼發送失敗，請重試。";
 "login_send_code_network_error" = "網絡錯誤，請檢查網絡後重試。";
-"ai_consent_title" = "\u8cc7\u6599\u5171\u7528\u8207 AI \u8655\u7406";
-"ai_consent_intro" = "\u65b0\u589e\u5f71\u7247\u5f8c\uff0c\u8cc7\u6599\u6703\u50b3\u9001\u7d66\u4ee5\u4e0b\u670d\u52d9\uff1a";
-"ai_consent_data_title" = "\u50b3\u9001\u4ec0\u9ebc \u2192 \u50b3\u7d66\u8ab0";
-"ai_consent_data_body" = "\u2022 \u5f71\u7247\u9023\u7d50 \u2192 RapidAPI / \u9a30\u8a0a\u96f2\uff1a\u4e0b\u8f09\u8207\u5132\u5b58\n\u2022 \u97f3\u8a0a \u2192 \u963f\u91cc\u96f2\uff1a\u8a9e\u97f3\u8b58\u5225\n\u2022 \u5b57\u5e55\u6587\u5b57 \u2192 \u9a30\u8a0a\u6df7\u5143 / \u81ea\u5efa\u670d\u52d9\uff1a\u7ffb\u8b6f\u8207\u8b80\u97f3\n\u2022 \u96fb\u5b50\u90f5\u4ef6 \u2192 Google\uff1a\u9a8c\u8b49\u78bc\n\u2022 \u8cfc\u8cb7 \u2192 Apple\uff1a\u9a57\u8b49\u8cfc\u8cb7\n\n\u4e0d\u51fa\u552e\u8cc7\u6599\uff0c\u4e0d\u7528\u65bc\u8a13\u7df4 AI\u3002";
+"ai_consent_title" = "資料共用與 AI 處理";
+"ai_consent_intro" = "新增影片後，資料會傳送給以下服務：";
+"ai_consent_data_title" = "傳送什麼 → 傳給誰";
+"ai_consent_data_body" = "• 影片連結 → RapidAPI / 騰訊雲：下載與儲存\n• 音訊 → 阿里雲：語音識別\n• 字幕文字 → 騰訊混元 / 自建服務：翻譯與讀音\n• 購買 → Apple：驗證購買\n\n不出售資料，不用於訓練 AI。";
 "ai_consent_recipients_title" = "接收方與用途";
 "ai_consent_recipients_body" = "• 騰訊混元 / 阿里雲：字幕翻譯、語音辨識、讀音標註\n• 自建服務：日文讀音生成\n• RapidAPI / 騰訊雲：下載與儲存影片\n• Google：發送驗證碼郵件\n• Apple：校驗內購\n我們不出售資料，也不用於訓練 AI。";
 "ai_consent_privacy_link" = "查看完整隱私政策";

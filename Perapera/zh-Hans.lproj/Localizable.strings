@@ -109,10 +109,10 @@
 "logout" = "退出登录";
 
 // AI 数据共享授权（Guideline 5.1.1(i) / 5.1.2(i)）
-"ai_consent_title" = "\u6570\u636e\u5171\u4eab\u4e0e AI \u5904\u7406";
-"ai_consent_intro" = "\u6dfb\u52a0\u89c6\u9891\u540e\uff0c\u6570\u636e\u4f1a\u53d1\u9001\u7ed9\u4ee5\u4e0b\u670d\u52a1\uff1a";
-"ai_consent_data_title" = "\u53d1\u9001\u4ec0\u4e48 \u2192 \u53d1\u7ed9\u8c01";
-"ai_consent_data_body" = "\u2022 \u89c6\u9891\u94fe\u63a5 \u2192 RapidAPI / \u817e\u8baf\u4e91\uff1a\u4e0b\u8f7d\u4e0e\u5b58\u50a8\n\u2022 \u97f3\u9891 \u2192 \u963f\u91cc\u4e91\uff1a\u8bed\u97f3\u8bc6\u522b\n\u2022 \u5b57\u5e55\u6587\u672c \u2192 \u817e\u8baf\u6df7\u5143 / \u81ea\u5efa\u670d\u52a1\uff1a\u7ffb\u8bd1\u4e0e\u8bfb\u97f3\n\u2022 \u90ae\u7bb1 \u2192 Google\uff1a\u53d1\u9a8c\u8bc1\u7801\n\u2022 \u5185\u8d2d \u2192 Apple\uff1a\u6821\u9a8c\u8d2d\u4e70\n\n\u4e0d\u51fa\u552e\u6570\u636e\uff0c\u4e0d\u7528\u4e8e\u8bad\u7ec3 AI\u3002";
+"ai_consent_title" = "数据共享与 AI 处理";
+"ai_consent_intro" = "添加视频后，数据会发送给以下服务：";
+"ai_consent_data_title" = "发送什么 → 发给谁";
+"ai_consent_data_body" = "• 视频链接 → RapidAPI / 腾讯云：下载与存储\n• 音频 → 阿里云：语音识别\n• 字幕文本 → 腾讯混元 / 自建服务：翻译与读音\n• 内购 → Apple：校验购买\n\n不出售数据，不用于训练 AI。";
 "ai_consent_recipients_title" = "接收方与用途";
 "ai_consent_recipients_body" = "• 腾讯混元 / 阿里云：字幕翻译、语音识别、读音标注\n• 自建服务：日文读音生成\n• RapidAPI / 腾讯云：下载与存储视频\n• Google：发送验证码邮件\n• Apple：校验内购\n我们不出售数据，也不用于训练 AI。";
 "ai_consent_privacy_link" = "查看完整隐私政策";
