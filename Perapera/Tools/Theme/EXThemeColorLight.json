@@ -45,7 +45,7 @@
   },
   {
       "color" : "#FFFFFF",
-      "name" : "tabbar_bg",
+      "name" : "tabbar_bg"
   },
 
   {
@@ -838,7 +838,7 @@
       "desc" : "骨架渐变色",
       "colors" : [
           "#57E598",
-          "#C1F848",
+          "#C1F848"
       ],
       "name" : "gradient.marketAi2",
       "version" : "6.0"
@@ -848,6 +848,38 @@
     "color" : "#000000",
     "name" : "ai_bg"
   },
+  {
+    "category" : "播放界面",
+    "desc" : "背景渐变（上）浅蓝灰",
+    "color" : "#F0F4F8",
+    "name" : "playerBgTop",
+    "version" : "6.0"
+  },
+  {
+    "category" : "播放界面",
+    "desc" : "背景渐变（中）极浅灰",
+    "color" : "#F8FAFC",
+    "name" : "playerBgMid",
+    "version" : "6.0"
+  },
+  {
+    "category" : "播放界面",
+    "desc" : "背景渐变（下）纯白",
+    "color" : "#FFFFFF",
+    "name" : "playerBgBottom",
+    "version" : "6.0"
+  },
+  {
+    "category" : "渐变色",
+    "desc" : "播放界面背景渐变",
+    "colors" : [
+      "#F0F4F8",
+      "#F8FAFC",
+      "#FFFFFF"
+    ],
+    "name" : "gradient.playerBg",
+    "version" : "6.0"
+  }
 
 
 ]

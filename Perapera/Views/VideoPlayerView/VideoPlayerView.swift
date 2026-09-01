@@ -112,7 +112,17 @@ struct VideoPlayerView: View {
             Spacer(minLength: 0)
             bottomControlBar
         }
-        .background(Color.ex.main.opacity(0.2))
+        .background(
+            LinearGradient(
+                colors: [
+                    Color.Ex.playerBgTop,
+                    Color.Ex.playerBgMid,
+                    Color.Ex.playerBgBottom
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
         .ignoresSafeArea(.container, edges: .bottom)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)

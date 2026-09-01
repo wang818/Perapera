@@ -536,6 +536,13 @@ public extension UIColor.Ex {
     
     static var morebuttonborderColor : UIColor { global.morebuttonborderColor }
     var morebuttonborderColor : UIColor { named(.morebuttonborderColor) }
+
+    static var playerBgTop : UIColor { global.playerBgTop }
+    var playerBgTop : UIColor { named(.playerBgTop) }
+    static var playerBgMid : UIColor { global.playerBgMid }
+    var playerBgMid : UIColor { named(.playerBgMid) }
+    static var playerBgBottom : UIColor { global.playerBgBottom }
+    var playerBgBottom : UIColor { named(.playerBgBottom) }
 }
 
 public extension UIColor.Ex {
@@ -681,6 +688,9 @@ extension UIColor.Ex {
             case ai_bg
             case toast_shadow
             case toast_bg
+            case playerBgTop
+            case playerBgMid
+            case playerBgBottom
 
         }
         ///
@@ -790,7 +800,11 @@ public extension Color {
         public static var masksegmentbg: Color { Color.ex("masksegmentbg") }
         public static var secondaryWhite: Color { Color.ex("secondaryWhite") }
         public static var morebuttonborderColor: Color { Color.ex("morebuttonborderColor") }
-        
+
+        public static var playerBgTop: Color { Color.ex("playerBgTop") }
+        public static var playerBgMid: Color { Color.ex("playerBgMid") }
+        public static var playerBgBottom: Color { Color.ex("playerBgBottom") }
+
         public static var text1: Color { Color.ex("text1") }
         public static var text2: Color { Color.ex("text2") }
         public static var text3: Color { Color.ex("text3") }
@@ -801,6 +815,7 @@ public extension Color {
         public static func skeleton(scheme: ColorScheme) -> [Color] { Color.exGradient("gradient.skeleton", scheme: scheme) }
         public static func marketAi(scheme: ColorScheme) -> [Color] { Color.exGradient("gradient.marketAi", scheme: scheme) }
         public static func marketAi2(scheme: ColorScheme) -> [Color] { Color.exGradient("gradient.marketAi2", scheme: scheme) }
+        public static func playerBg(scheme: ColorScheme) -> [Color] { Color.exGradient("gradient.playerBg", scheme: scheme) }
     }
     
     // Allow Color.ex.bg1 syntax (lowercase ex property returning Ex.Type)

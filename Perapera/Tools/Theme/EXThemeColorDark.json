@@ -836,6 +836,45 @@
   {
     "color" : "#FFFFFF",
     "name" : "ai_bg"
+  },
+  {
+    "category" : "播放界面",
+    "desc" : "背景渐变（上）深紫蓝",
+    "color" : "#1A1A2E",
+    "name" : "playerBgTop",
+    "version" : "6.0"
+  },
+  {
+    "category" : "播放界面",
+    "desc" : "背景渐变（中）深蓝",
+    "color" : "#16213E",
+    "name" : "playerBgMid",
+    "version" : "6.0"
+  },
+  {
+    "category" : "播放界面",
+    "desc" : "背景渐变（下）近黑",
+    "color" : "#0F0F1A",
+    "name" : "playerBgBottom",
+    "version" : "6.0"
+  },
+  {
+    "category" : "渐变色",
+    "desc" : "播放界面背景渐变",
+    "colors" : [
+      "#1A1A2E",
+      "#16213E",
+      "#0F0F1A"
+    ],
+    "name" : "gradient.playerBg",
+    "version" : "6.0"
+  },
+  {
+    "alpha" : "0.05",
+    "category" : "特殊色Special",
+    "color" : "#FFFFFF",
+    "desc" : "当前播放句子背景-暗色半透明白",
+    "name" : "playerSentenceActiveBg"
   }
 
 ]
