@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "Potwierdź usunięcie";
 "home_video_delete_confirm_message" = "Czy na pewno chcesz usunąć ten film?";
 "common_delete" = "Usuń";
+
+"settings_subtitle_font_size_small" = "Mały";
+"settings_subtitle_font_size_medium" = "Średni";
+"settings_subtitle_font_size_normal" = "Normalny";
+"settings_subtitle_font_size_large" = "Duży";
+
+"settings_subtitle_font_size_subtitle" = "Wybierz rozmiar czcionki napisów";

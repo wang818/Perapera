@@ -536,6 +536,18 @@ struct SentenceCardView: View {
 
     /// 「同时显示两种字幕」开关：开启显示译文（第二种字幕），关闭则只显示原文、隐藏译文
     @AppStorage("subtitle_show_two") private var showTwoSubtitles = true
+    /// 字幕字体大小（small/medium/normal/large）：与字幕设置界面的「字体大小」同步，默认正常。
+    @AppStorage("subtitle_font_size") private var fontSize: String = "normal"
+
+    /// 将存储的字体大小 key 映射为缩放系数（正常=1.0）
+    private var fontScale: CGFloat {
+        switch fontSize {
+        case "small":  return 0.80
+        case "medium": return 0.90
+        case "large":  return 1.15
+        default:       return 1.0   // "normal" 或未知值回落正常
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -547,7 +559,7 @@ struct SentenceCardView: View {
                 let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
                 if showTwoSubtitles, !sentenceTranslation.isEmpty {
                     Text(sentenceTranslation)
-                        .font(.system(size: isActive ? 13.5 : 13))
+                        .font(.system(size: CGFloat(isActive ? 13.5 : 13) * fontScale))
                         .foregroundColor(Color.ex.text1)
                         .padding(.horizontal, 12)
                         .padding(.top, 0)
@@ -557,12 +569,12 @@ struct SentenceCardView: View {
             } else {
                 // 没有词级别信息，显示整句
                 Text(subtitle.originalText)
-                    .font(.system(size: isActive ? 22 : 20, weight: .bold))
+                    .font(.system(size: CGFloat(isActive ? 22 : 20) * fontScale, weight: .bold))
                     .foregroundColor(isActive ? greenDark : Color.ex.text1)
                 
                 if showTwoSubtitles, !subtitle.translatedText.isEmpty {
                     Text(subtitle.translatedText)
-                        .font(.system(size: isActive ? 13.5 : 13))
+                        .font(.system(size: CGFloat(isActive ? 13.5 : 13) * fontScale))
                         .foregroundColor(Color.ex.text1)
                         .padding(.horizontal, 12)
                         .padding(.top, 0)
@@ -609,6 +621,18 @@ struct WordWrapView: View {
     @AppStorage("subtitle_show_romaji") private var showRomaji: Bool = true
     /// 词性（日语主字幕辅助）：与字幕设置 `subtitle_show_pos` 同步（默认开启）；控制当前词底部下划线是否显示。
     @AppStorage("subtitle_show_pos") private var showPOS: Bool = true
+    /// 字幕字体大小（small/medium/normal/large）：与字幕设置界面的「字体大小」同步，默认正常。
+    @AppStorage("subtitle_font_size") private var fontSize: String = "normal"
+
+    /// 将存储的字体大小 key 映射为缩放系数（正常=1.0）
+    private var fontScale: CGFloat {
+        switch fontSize {
+        case "small":  return 0.80
+        case "medium": return 0.90
+        case "large":  return 1.15
+        default:       return 1.0   // "normal" 或未知值回落正常
+        }
+    }
 
     /// 词下划线 10 色轮换色板（色相环均匀分布 + 明度交替，程序验证相邻色距离全部 >0.38，首尾也拉开）
     /// 索引 = 词在句内的全局顺序 % 10；透明度统一 0.7（用户要求，避免色值过重）
@@ -704,12 +728,12 @@ struct WordWrapView: View {
 
         return VStack(spacing: 1) {
             Text(furiganaText)
-                .font(.system(size: 10))
+                .font(.system(size: CGFloat(10) * fontScale))
                 .foregroundColor(Color.ex.text3)
                 .lineLimit(1)
 
             Text(word.word)
-                .font(.system(size: 20, weight: .bold))
+                .font(.system(size: CGFloat(20) * fontScale, weight: .bold))
                 .foregroundColor(isWordActive ? Color.Ex.main : Color.ex.text1)
                 .background(alignment: .bottom) {
                     // 词底部下划线：仅「当前播放词」显示（isWordActive = 当前句 + 播放时间落在词的 [start,end]）；
@@ -732,7 +756,7 @@ struct WordWrapView: View {
                 )
 
             Text(readingText)
-                .font(.system(size: 9))
+                .font(.system(size: CGFloat(9) * fontScale))
                 .foregroundColor(Color.ex.text2)
                 .lineLimit(1)
         }

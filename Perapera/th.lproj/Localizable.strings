@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "ยืนยันการลบ";
 "home_video_delete_confirm_message" = "คุณแน่ใจหรือไม่ว่าต้องการลบวิดีโอนี้?";
 "common_delete" = "ลบ";
+
+"settings_subtitle_font_size_small" = "เล็ก";
+"settings_subtitle_font_size_medium" = "ปานกลาง";
+"settings_subtitle_font_size_normal" = "ปกติ";
+"settings_subtitle_font_size_large" = "ใหญ่";
+
+"settings_subtitle_font_size_subtitle" = "เลือกขนาดตัวอักษรคำบรรยาย";

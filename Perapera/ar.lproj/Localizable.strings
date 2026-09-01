@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "تأكيد الحذف";
 "home_video_delete_confirm_message" = "هل تريد بالتأكيد حذف هذا الفيديو؟";
 "common_delete" = "حذف";
+
+"settings_subtitle_font_size_small" = "صغير";
+"settings_subtitle_font_size_medium" = "متوسط";
+"settings_subtitle_font_size_normal" = "عادي";
+"settings_subtitle_font_size_large" = "كبير";
+
+"settings_subtitle_font_size_subtitle" = "اختر حجم خط الترجمة";

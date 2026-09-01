@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "Xác nhận xóa";
 "home_video_delete_confirm_message" = "Bạn có chắc chắn muốn xóa video này không?";
 "common_delete" = "Xóa";
+
+"settings_subtitle_font_size_small" = "Nhỏ";
+"settings_subtitle_font_size_medium" = "Trung bình";
+"settings_subtitle_font_size_normal" = "Bình thường";
+"settings_subtitle_font_size_large" = "Lớn";
+
+"settings_subtitle_font_size_subtitle" = "Chọn kích thước phông chữ phụ đề";

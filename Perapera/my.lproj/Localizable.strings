@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "ဖျက်ခြင်းကို အတည်ပြုမည်";
 "home_video_delete_confirm_message" = "ဤဗီဒီယိုကို ဖျက်ရန် သေချာပါသလား?";
 "common_delete" = "ဖျက်မည်";
+
+"settings_subtitle_font_size_small" = "သေး";
+"settings_subtitle_font_size_medium" = "အလယ်";
+"settings_subtitle_font_size_normal" = "ပုံမှန်";
+"settings_subtitle_font_size_large" = "ကြီး";
+
+"settings_subtitle_font_size_subtitle" = "စာတန်းထိုးဖောင့်ဆိုဒ်ကို ရွေးချယ်ပါ";

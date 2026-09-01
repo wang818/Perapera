@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "Kumpirmahin ang pagtanggal";
 "home_video_delete_confirm_message" = "Sigurado ka bang gusto mong tanggalin ang video na ito?";
 "common_delete" = "Tanggalin";
+
+"settings_subtitle_font_size_small" = "Maliit";
+"settings_subtitle_font_size_medium" = "Katamtaman";
+"settings_subtitle_font_size_normal" = "Karaniwan";
+"settings_subtitle_font_size_large" = "Malaki";
+
+"settings_subtitle_font_size_subtitle" = "Piliin ang laki ng font ng subtitle";

@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "Konfirmasi Hapus";
 "home_video_delete_confirm_message" = "Yakin ingin menghapus video ini?";
 "common_delete" = "Hapus";
+
+"settings_subtitle_font_size_small" = "Kecil";
+"settings_subtitle_font_size_medium" = "Sedang";
+"settings_subtitle_font_size_normal" = "Normal";
+"settings_subtitle_font_size_large" = "Besar";
+
+"settings_subtitle_font_size_subtitle" = "Pilih ukuran font subtitle";

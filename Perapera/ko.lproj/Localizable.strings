@@ -189,3 +189,10 @@
 "home_video_delete_confirm_title" = "삭제 확인";
 "home_video_delete_confirm_message" = "이 영상을 삭제하시겠습니까?";
 "common_delete" = "삭제";
+
+"settings_subtitle_font_size_small" = "작게";
+"settings_subtitle_font_size_medium" = "중간";
+"settings_subtitle_font_size_normal" = "보통";
+"settings_subtitle_font_size_large" = "크게";
+
+"settings_subtitle_font_size_subtitle" = "자막 글꼴 크기 선택";

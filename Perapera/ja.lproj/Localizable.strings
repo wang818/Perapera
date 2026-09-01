@@ -191,3 +191,10 @@
 "home_video_delete_confirm_title" = "削除の確認";
 "home_video_delete_confirm_message" = "この動画を削除してもよろしいですか？";
 "common_delete" = "削除";
+
+"settings_subtitle_font_size_small" = "小";
+"settings_subtitle_font_size_medium" = "中";
+"settings_subtitle_font_size_normal" = "標準";
+"settings_subtitle_font_size_large" = "大";
+
+"settings_subtitle_font_size_subtitle" = "字幕のフォントサイズを選択";

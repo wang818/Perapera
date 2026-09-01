@@ -189,3 +189,10 @@
 "home_video_delete_confirm_title" = "確認刪除";
 "home_video_delete_confirm_message" = "確定要刪除此影片嗎？";
 "common_delete" = "刪除";
+
+"settings_subtitle_font_size_small" = "小";
+"settings_subtitle_font_size_medium" = "中";
+"settings_subtitle_font_size_normal" = "正常";
+"settings_subtitle_font_size_large" = "大";
+
+"settings_subtitle_font_size_subtitle" = "選擇字幕的字體大小";

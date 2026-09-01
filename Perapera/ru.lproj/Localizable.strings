@@ -182,3 +182,10 @@
 "home_video_delete_confirm_title" = "Подтвердить удаление";
 "home_video_delete_confirm_message" = "Удалить это видео?";
 "common_delete" = "Удалить";
+
+"settings_subtitle_font_size_small" = "Маленький";
+"settings_subtitle_font_size_medium" = "Средний";
+"settings_subtitle_font_size_normal" = "Обычный";
+"settings_subtitle_font_size_large" = "Большой";
+
+"settings_subtitle_font_size_subtitle" = "Выберите размер шрифта субтитров";

@@ -182,3 +182,10 @@
 "home_video_delete_confirm_title" = "Confirmer la suppression";
 "home_video_delete_confirm_message" = "Voulez-vous vraiment supprimer cette vidéo ?";
 "common_delete" = "Supprimer";
+
+"settings_subtitle_font_size_small" = "Petit";
+"settings_subtitle_font_size_medium" = "Moyen";
+"settings_subtitle_font_size_normal" = "Normal";
+"settings_subtitle_font_size_large" = "Grand";
+
+"settings_subtitle_font_size_subtitle" = "Choisissez la taille des sous-titres";

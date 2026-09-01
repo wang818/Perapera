@@ -180,3 +180,10 @@
 "home_video_delete_confirm_title" = "Silmeyi onayla";
 "home_video_delete_confirm_message" = "Bu videoyu silmek istediğinden emin misin?";
 "common_delete" = "Sil";
+
+"settings_subtitle_font_size_small" = "Küçük";
+"settings_subtitle_font_size_medium" = "Orta";
+"settings_subtitle_font_size_normal" = "Normal";
+"settings_subtitle_font_size_large" = "Büyük";
+
+"settings_subtitle_font_size_subtitle" = "Altyazı yazı boyutunu seçin";
