@@ -11,9 +11,7 @@ struct SubtitleSettingsView: View {
     @AppStorage("subtitle_show_romaji") private var showRomaji: Bool = true
     @AppStorage("subtitle_show_furigana") private var showFurigana: Bool = true
     @AppStorage("subtitle_show_pos") private var showPOS: Bool = true
-    @AppStorage("subtitle_show_semantics") private var showSemantics: Bool = true
-    @AppStorage("subtitle_enable_gaya") private var enableGaya: Bool = false
-    
+
     @AppStorage("subtitle_show_pinyin") private var showPinyin: Bool = false
     @AppStorage("subtitle_chinese_char_type") private var chineseCharType: String = "简体字"
     
@@ -145,28 +143,6 @@ struct SubtitleSettingsView: View {
                         Text("settings_subtitle_pos_title".localized())
                             .font(.headline)
                         Text("settings_subtitle_pos_subtitle".localized())
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                }
-                .tint(.green)
-                
-                Toggle(isOn: $showSemantics) {
-                    VStack(alignment: .leading) {
-                        Text("settings_subtitle_semantics_title".localized())
-                            .font(.headline)
-                        Text("settings_subtitle_semantics_subtitle".localized())
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                }
-                .tint(.green)
-                
-                Toggle(isOn: $enableGaya) {
-                    VStack(alignment: .leading) {
-                        Text("settings_subtitle_gaya_title".localized())
-                            .font(.headline)
-                        Text("settings_subtitle_gaya_subtitle".localized())
                             .font(.caption)
                             .foregroundColor(.gray)
                     }

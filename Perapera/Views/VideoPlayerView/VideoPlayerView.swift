@@ -603,6 +603,10 @@ struct WordWrapView: View {
     /// 聚焦模式（辅助功能）：与字幕设置界面的 `subtitle_focus_mode` 开关同步（默认开启）。
     /// 仅控制「当前读到的词外部的光圈」是否显示；字幕高亮与逐词跟读为默认常驻效果，不受开关影响。
     @AppStorage("subtitle_focus_mode") private var focusMode: Bool = true
+    /// 振假名（日语主字幕辅助注音）：与字幕设置 `subtitle_show_furigana` 同步（默认开启）。
+    @AppStorage("subtitle_show_furigana") private var showFurigana: Bool = true
+    /// 罗马音（日语主字幕辅助注音）：与字幕设置 `subtitle_show_romaji` 同步（默认开启）。
+    @AppStorage("subtitle_show_romaji") private var showRomaji: Bool = true
 
     /// 词下划线 10 色轮换色板（色相环均匀分布 + 明度交替，程序验证相邻色距离全部 >0.38，首尾也拉开）
     /// 索引 = 词在句内的全局顺序 % 10；透明度统一 0.7（用户要求，避免色值过重）
@@ -688,10 +692,10 @@ struct WordWrapView: View {
 
         // 整句字幕已是平假名 → 全部词的上方注音都隐藏；
         // 否则仅当单个词本身是平假名（允许混入标点等）时隐藏该词的上方注音
-        let furiganaText = isBlankWord
+        let furiganaText = (!showFurigana || isBlankWord)
             ? " "
             : ((sentenceAllHiragana || isHiraganaWord(word.word)) ? " " : (word.furigana ?? " "))
-        let readingText = isBlankWord ? " " : (word.reading ?? " ")
+        let readingText = (!showRomaji || isBlankWord) ? " " : (word.reading ?? " ")
 
         // 下划线颜色：按句内全局词序轮换 10 色（空词不画线，但索引照常递增）
         let underlineColor = Self.underlineColors[index % Self.underlineColors.count]
