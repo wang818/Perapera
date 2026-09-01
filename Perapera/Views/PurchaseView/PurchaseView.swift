@@ -265,7 +265,7 @@ struct FeatureRow: View {
                     .font(.headline)
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color.ex.text3)
             }
             Spacer()
         }
@@ -284,7 +284,7 @@ struct PlanRow: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .top) {
                     Image(systemName: isSelected ? "circle.inset.filled" : "circle")
-                        .foregroundColor(isSelected ? .black : .gray)
+                        .foregroundColor(isSelected ? Color.ex.main : Color.ex.text3)
                     
                     Text(plan.fallbackTitle)
                         .font(.headline)
@@ -319,11 +319,11 @@ struct PlanRow: View {
                         if let period = productInfo?.subscriptionPeriodText {
                             Text(period)
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color.ex.text3)
                         } else if let sub = plan.subTitle {
                             Text(sub)
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color.ex.text3)
                         }
                     }
                 }
@@ -332,17 +332,17 @@ struct PlanRow: View {
                     ForEach(plan.features, id: \.self) { feature in
                         Text(feature)
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color.ex.text3)
                     }
                 }
                 .padding(.leading, 24)
             }
             .padding()
-            .background(Color.white)
+            .background(Color.ex.fill2)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.black : Color.gray.opacity(0.3), lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.ex.main : Color.ex.text3.opacity(0.3), lineWidth: isSelected ? 2 : 1)
             )
         }
         .padding(.horizontal)

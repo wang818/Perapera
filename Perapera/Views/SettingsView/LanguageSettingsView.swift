@@ -60,7 +60,7 @@ struct LanguageSettingsView: View {
                     showAppLanguageSelection = true
                 }
                 
-                // TODO: 暂时屏蔽「AI 讲解」与「第二字幕」两个选项（不删除代码，恢复时去掉下方注释即可）
+                // TODO: 暂时屏蔽「AI 讲解」选项（不删除代码，恢复时去掉下方注释即可）
                 /*
                 languageRow(
                     title: "settings_lang_ai_title".localized(),
@@ -70,6 +70,7 @@ struct LanguageSettingsView: View {
                     // Action for AI Explanation Language
                     showAILanguageSelection = true
                 }
+                */
                 
                 languageRow(
                     title: "settings_lang_source_title".localized(),
@@ -79,7 +80,6 @@ struct LanguageSettingsView: View {
                     // Action for Second Subtitle (Source Language)
                     showSourceLanguageSelection = true
                 }
-                */
                 
                 languageRow(
                     title: "settings_lang_learn_title".localized(),
