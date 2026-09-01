@@ -600,6 +600,10 @@ struct WordWrapView: View {
 
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
 
+    /// 聚焦模式（辅助功能）：与字幕设置界面的 `subtitle_focus_mode` 开关同步（默认开启）。
+    /// 仅控制「当前读到的词外部的光圈」是否显示；字幕高亮与逐词跟读为默认常驻效果，不受开关影响。
+    @AppStorage("subtitle_focus_mode") private var focusMode: Bool = true
+
     /// 词下划线 10 色轮换色板（色相环均匀分布 + 明度交替，程序验证相邻色距离全部 >0.38，首尾也拉开）
     /// 索引 = 词在句内的全局顺序 % 10；透明度统一 0.7（用户要求，避免色值过重）
     private static let underlineColors: [Color] = [
@@ -674,7 +678,10 @@ struct WordWrapView: View {
 
     // MARK: - 单个词的 View
     private func wordView(for word: WordTiming, index: Int) -> some View {
+        // 字幕高亮与逐词跟读为默认常驻效果（不受开关影响）。
         let isWordActive = isSentenceActive && isWordCurrent(word)
+        // 聚焦模式（辅助功能）：仅控制当前词外部的「光圈」是否显示，与字幕设置 `subtitle_focus_mode` 同步。
+        let showAperture = focusMode && isWordActive
 
         // 空词（ASR 词间空格占位符，Word 为空格/空白）：不渲染任何注音（上方平假名 + 下方罗马音），也不画下划线，仅保留原文占位
         let isBlankWord = word.word.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -714,7 +721,7 @@ struct WordWrapView: View {
                 .padding(.vertical, 3)
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .stroke(isWordActive ? Color.Ex.main : Color.clear, lineWidth: 2)
+                        .stroke(showAperture ? Color.Ex.main : Color.clear, lineWidth: 2)
                 )
 
             Text(readingText)
