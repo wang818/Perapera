@@ -607,6 +607,8 @@ struct WordWrapView: View {
     @AppStorage("subtitle_show_furigana") private var showFurigana: Bool = true
     /// 罗马音（日语主字幕辅助注音）：与字幕设置 `subtitle_show_romaji` 同步（默认开启）。
     @AppStorage("subtitle_show_romaji") private var showRomaji: Bool = true
+    /// 词性（日语主字幕辅助）：与字幕设置 `subtitle_show_pos` 同步（默认开启）；控制当前词底部下划线是否显示。
+    @AppStorage("subtitle_show_pos") private var showPOS: Bool = true
 
     /// 词下划线 10 色轮换色板（色相环均匀分布 + 明度交替，程序验证相邻色距离全部 >0.38，首尾也拉开）
     /// 索引 = 词在句内的全局顺序 % 10；透明度统一 0.7（用户要求，避免色值过重）
@@ -711,8 +713,9 @@ struct WordWrapView: View {
                 .foregroundColor(isWordActive ? Color.Ex.main : Color.ex.text1)
                 .background(alignment: .bottom) {
                     // 词底部下划线：仅「当前播放词」显示（isWordActive = 当前句 + 播放时间落在词的 [start,end]）；
+                    // 受「词性」开关 `subtitle_show_pos` 控制：开=显示，关=不显示。
                     // 宽=词文字宽，高=5；用 background 渲染在文字底层（overlay 层级高于文字会遮住 word）
-                    if isWordActive && !isBlankWord {
+                    if showPOS && isWordActive && !isBlankWord {
                         GeometryReader { geo in
                             Rectangle()
                                 .fill(underlineColor)
