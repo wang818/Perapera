@@ -376,8 +376,8 @@ struct VideoPlayerView: View {
         ScrollViewReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 16) {
-                    // 上方留白，让第一句可以滚动到中间
-                    Color.clear.frame(height: 60)
+                    // 上方留白置 0，确保第一句也能滚到最顶部
+                    Color.clear.frame(height: 0)
                     
                     ForEach(Array(viewModel.subtitles.enumerated()), id: \.offset) { index, subtitle in
                         SentenceCardView(
@@ -397,18 +397,18 @@ struct VideoPlayerView: View {
                 .padding(.horizontal, 16)
             }
             .onAppear {
-                // 初始滚动到第一条字幕
+                // 初始滚动到第一条字幕（顶部对齐）
                 let initialIndex = viewModel.currentSubtitleIndex
                 if initialIndex >= 0 {
-                    proxy.scrollTo(initialIndex, anchor: .center)
+                    proxy.scrollTo(initialIndex, anchor: .top)
                 }
             }
             .onChange(of: viewModel.currentSubtitleIndex) { newIndex in
                 guard newIndex >= 0 else { return }
                 if !viewModel.isSubtitlePinned {
-                    withAnimation(.easeInOut(duration: 0.4)) {
-                        proxy.scrollTo(newIndex, anchor: .center)
-                    }
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    proxy.scrollTo(newIndex, anchor: .top)
+                }
                 }
             }
         }
