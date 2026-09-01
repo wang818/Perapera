@@ -276,6 +276,8 @@ struct VideoPlayerView: View {
         }
         .aspectRatio(16/9, contentMode: .fit)
         .clipped()
+        .cornerRadius(10)
+        .padding(15)
     }
 
     private var youtubeProcessSection: some View {
@@ -542,7 +544,7 @@ struct SentenceCardView: View {
                 let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
                 if !sentenceTranslation.isEmpty {
                     Text(sentenceTranslation)
-                        .font(.system(size: 14))
+                        .font(.system(size: isActive ? 13.5 : 13))
                         .foregroundColor(Color.ex.text1)
                         .padding(.horizontal, 12)
                         .padding(.top, 0)
@@ -552,12 +554,12 @@ struct SentenceCardView: View {
             } else {
                 // 没有词级别信息，显示整句
                 Text(subtitle.originalText)
-                    .font(.system(size: 20, weight: .medium))
+                    .font(.system(size: isActive ? 22 : 20, weight: .bold))
                     .foregroundColor(isActive ? greenDark : Color.ex.text1)
                 
                 if !subtitle.translatedText.isEmpty {
                     Text(subtitle.translatedText)
-                        .font(.system(size: 14))
+                        .font(.system(size: isActive ? 13.5 : 13))
                         .foregroundColor(Color.ex.text1)
                         .padding(.horizontal, 12)
                         .padding(.top, 0)
@@ -655,15 +657,15 @@ struct WordWrapView: View {
         let reading = (word.reading ?? " ") as NSString
 
         let fSize = furigana.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
-        let oSize = original.size(withAttributes: [.font: UIFont.systemFont(ofSize: 20, weight: .medium)])
-        let rSize = reading.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
+        let oSize = original.size(withAttributes: [.font: UIFont.systemFont(ofSize: 22, weight: .bold)])
+        let rSize = reading.size(withAttributes: [.font: UIFont.systemFont(ofSize: 9)])
 
         return ceil(max(fSize.width, oSize.width + 10, rSize.width))
     }
 
     private func estimatedTotalHeight(maxWidth: CGFloat) -> CGFloat {
         let rows = computeRows(availableWidth: maxWidth)
-        let lineHeight: CGFloat = 64 // furigana(12) + word(28) + reading(12) + spacing
+        let lineHeight: CGFloat = 64 // furigana(10) + word(22) + reading(9) + spacing
         return CGFloat(rows.count) * lineHeight + CGFloat(max(0, rows.count - 1)) * 4
     }
 
@@ -691,8 +693,8 @@ struct WordWrapView: View {
                 .lineLimit(1)
 
             Text(word.word)
-                .font(.system(size: 20, weight: .medium))
-                .foregroundColor(isWordActive ? greenDark : Color.ex.text1)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(isWordActive ? Color.Ex.main : Color.ex.text1)
                 .background(alignment: .bottom) {
                     // 词底部下划线：仅「当前播放词」显示（isWordActive = 当前句 + 播放时间落在词的 [start,end]）；
                     // 宽=词文字宽，高=5；用 background 渲染在文字底层（overlay 层级高于文字会遮住 word）
@@ -709,11 +711,11 @@ struct WordWrapView: View {
                 .padding(.vertical, 3)
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .stroke(isWordActive ? greenDark : Color.clear, lineWidth: 2)
+                        .stroke(isWordActive ? Color.Ex.main : Color.clear, lineWidth: 2)
                 )
 
             Text(readingText)
-                .font(.system(size: 10))
+                .font(.system(size: 9))
                 .foregroundColor(Color.ex.text2)
                 .lineLimit(1)
         }

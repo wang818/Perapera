@@ -357,7 +357,18 @@ class VideoPlayerViewModel: ObservableObject {
                 player.pause()
                 isPlaying = false
             } else {
+                // 已播放到结尾时再次点击播放：先回到开头，否则 player.play() 在结尾的 item 上不会重启
+                if let currentItem = player.currentItem {
+                    let duration = currentItem.duration.seconds
+                    let currentTime = currentItem.currentTime().seconds
+                    if duration.isFinite, duration > 0, currentTime >= duration - 0.3 {
+                        player.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
+                    }
+                }
                 player.play()
+                if playbackSpeed != 1.0 {
+                    player.rate = playbackSpeed
+                }
                 isPlaying = true
             }
         }

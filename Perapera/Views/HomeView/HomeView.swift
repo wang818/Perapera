@@ -11,8 +11,8 @@ struct HomeView: View {
     @State private var showingYoutubeAlert = false
     /// 待删除视频（用于弹确认框）
     @State private var pendingDeleteVideo: VideoItem?
-    /// 显式 push 目标
-    @State private var navigationDestination: VideoItem?
+    /// 全屏播放页（本地视频）呈现目标
+    @State private var fullScreenPlayerVideo: VideoItem?
     @State private var showingFileImporter = false
     @State private var showingPhotoPicker = false
     @State private var youtubeUrl = ""
@@ -157,22 +157,6 @@ struct HomeView: View {
                                     .onTapGesture {
                                         navigateToVideo(video)
                                     }
-                                    // 用传统 NavigationLink(isActive:) 兜底跳转，
-                                    // 避免 navigationDestination(item:) 受 deployment target 影响
-                                    .background {
-                                        NavigationLink(
-                                            destination: destinationView(for: video),
-                                            isActive: Binding(
-                                                get: { navigationDestination?.id == video.id },
-                                                set: { isActive in
-                                                    if !isActive && navigationDestination?.id == video.id {
-                                                        navigationDestination = nil
-                                                    }
-                                                }
-                                            )
-                                        ) { EmptyView() }
-                                        .hidden()
-                                    }
                                     // 左滑删除
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button(role: .destructive) {
@@ -248,6 +232,9 @@ struct HomeView: View {
                     if let url = pendingYoutubeURL {
                         VideoPlayerView(pendingYouTubeURL: url)
                     }
+                }
+                .fullScreenCover(item: $fullScreenPlayerVideo) { video in
+                    VideoPlayerView(video: video)
                 }
                 .fileImporter(
                     isPresented: $showingFileImporter,
@@ -635,19 +622,11 @@ struct HomeView: View {
         pendingDeleteVideo = video
     }
 
-    /// 跳转到播放页
+    /// 跳转到播放页（本地视频以全屏方式呈现，确保状态栏正常显示）
     private func navigateToVideo(_ video: VideoItem) {
-        navigationDestination = video
+        fullScreenPlayerVideo = video
     }
 
-    /// 根据视频类型选择进入播放页的方式
-    /// - YouTube：直接传当前视频对象，播放页点击按钮后再执行完整流水线
-    /// - 本地：直接传 video，播放页只负责播放
-    @ViewBuilder
-    private func destinationView(for video: VideoItem) -> some View {
-        VideoPlayerView(video: video)
-    }
-    
     /// 批量删除视频
     private func deleteVideos(at offsets: IndexSet) {
         for index in offsets {
