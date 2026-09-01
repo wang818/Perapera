@@ -19,6 +19,9 @@ struct PeraperaApp: App {
         // 提前初始化内购状态，保证设置页和购买页打开时可以直接拿到本地权益。
         _ = PurchaseManager.shared
 
+        // 首次启动按「本机系统语言」写入第二字幕默认语言并持久化（已存过则跳过，不覆盖用户选择）
+        LanguageManager.ensureSecondSubtitleDefault()
+
         // 启动时主动刷新 token：3 天有效期内每次启动都续期
         if UserManager.shared.isLoggedIn {
             _ = AuthRefreshService.shared.refreshIfNeeded()

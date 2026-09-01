@@ -40,7 +40,7 @@ struct LanguageSettingsView: View {
     // App Language 行右侧显示语言原文（不做多语言适配，选择什么就显示什么）
     @State private var appLanguage = LanguageManager.getCurrentAppLanguageNative()
     @State private var aiLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.aiLanguage)
-    @State private var sourceLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.sourceLanguage)
+    @State private var sourceLanguage = LanguageManager.getSecondSubtitleLanguageName()
     @State private var learningLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.learningLanguage)
     
     @State private var showAppLanguageSelection = false
@@ -96,7 +96,7 @@ struct LanguageSettingsView: View {
         .onAppear {
             appLanguage = LanguageManager.getCurrentAppLanguageNative()
             aiLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.aiLanguage)
-            sourceLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.sourceLanguage)
+            sourceLanguage = LanguageManager.getSecondSubtitleLanguageName()
             learningLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.learningLanguage)
         }
         .sheet(isPresented: $showAppLanguageSelection) {
@@ -280,7 +280,8 @@ struct LanguageSelectionSheet: View {
         case .ai:
             LanguageManager.setAILanguage(key)
         case .source:
-            LanguageManager.setSourceLanguage(key)
+            // 第二字幕语言：与字幕设置界面共用 subtitle_second_language（存原文名）
+            LanguageManager.setSecondSubtitleLanguageName(LanguageManager.nativeLanguageName(for: key))
         case .learning:
             LanguageManager.setLearningLanguage(key)
         case .youtube, .secondSubtitle:

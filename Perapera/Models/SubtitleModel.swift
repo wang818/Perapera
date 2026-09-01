@@ -17,6 +17,9 @@ struct ASRData: Codable {
     let AudioDuration: Double?
     let Result: String?
     let ResultDetail: [ASRResultDetail]?
+    /// 该视频译文所用的语言代码（与 App「第二字幕」设置一致，如 zh-Hans/ja/en/ko）。
+    /// 翻译时由 AliyunMTManager 写入，供播放加载时判断是否需要按当前设置重翻。
+    var TranslationLanguage: String?
 }
 
 /// 整句读音（来自 /reading 服务或本地转换）
@@ -152,6 +155,19 @@ class SubtitleManager {
     func loadSubtitles(for videoId: String) -> SubtitleData? {
         let allSubtitles = loadAllSubtitles()
         return allSubtitles.first { $0.videoId == videoId }
+    }
+
+    // MARK: - 读取指定视频的译文语言代码
+    /// 从 ASR JSON 文件读取该视频译文所用的语言代码（翻译时写入的 TranslationLanguage）。
+    /// 用于播放加载时判断是否需要按当前 App「第二字幕」设置重翻。无文件 / 无记录则返回 nil。
+    func loadTranslationLanguage(for videoId: String) -> String? {
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let jsonFilePath = documentsPath.appendingPathComponent("\(videoId).json")
+        guard let data = try? Data(contentsOf: jsonFilePath) else { return nil }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let asr = try? decoder.decode(ASRResponse.self, from: data) else { return nil }
+        return asr.Response.Data?.TranslationLanguage
     }
     
     // MARK: - 删除字幕

@@ -243,6 +243,22 @@ class VideoPlayerViewModel: ObservableObject {
 
             let hasCompletedTranslation = self.areSubtitlesFullyTranslated(loadedSubtitles)
             self.applyLoadedSubtitles(loadedSubtitles, hasCompletedTranslation: hasCompletedTranslation)
+
+            // 同步第二字幕语言：若已存译文语言与当前 App「第二字幕」设置不一致，
+            // 则按当前设置后台重新翻译该视频（translateASRJSON 内部已读 ASRConfig.translationTargetLanguage）。
+            // 仅当开启「显示两种字幕」且非正在处理中的视频时才触发，避免重复/冲突。
+            let showTwo = UserDefaults.standard.object(forKey: "subtitle_show_two") as? Bool ?? true
+            if showTwo,
+               !loadedSubtitles.isEmpty,
+               !self.isProcessingYouTubePipeline {
+                let currentLang = LanguageManager.getSecondSubtitleLanguageCode()
+                let storedLang = SubtitleManager.shared.loadTranslationLanguage(for: videoId)
+                if storedLang != currentLang {
+                    print("🔄 第二字幕语言不一致（存储: \(storedLang ?? "无") / 设置: \(currentLang)），按当前设置重新翻译")
+                    let recognizedText = loadedSubtitles.map { $0.originalText }.joined(separator: "\n")
+                    self.translateRecognitionResult(videoId: videoId, recognizedText: recognizedText)
+                }
+            }
         }
     }
 

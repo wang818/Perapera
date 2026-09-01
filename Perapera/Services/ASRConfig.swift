@@ -57,12 +57,20 @@ struct ASRConfig {
     
     // MARK: - Translation Configuration
     
-    /// 翻译目标语言代码
+    /// 翻译目标语言代码（来自「第二字幕」设置，缺省简体中文）
     /// zh-CN: 简体中文
     /// ja-JP: 日语
     /// en-US: 英语
     /// ko-KR: 韩语
-    static let translationTargetLanguage = "zh-CN"
+    static var translationTargetLanguage: String {
+        switch LanguageManager.getSecondSubtitleLanguageCode() {
+        case "zh-Hans", "zh-Hant": return "zh-CN"
+        case "ja": return "ja-JP"
+        case "en": return "en-US"
+        case "ko": return "ko-KR"
+        default: return "zh-CN"
+        }
+    }
     
     /// 翻译目标语言显示名称
     static var translationLanguageName: String {

@@ -65,6 +65,10 @@ class AliyunMTManager {
         let sourceLang = AliyunMTConfig.sourceLanguage
         let targetLang = AliyunMTConfig.targetLanguage
 
+        // 记录本次译文所用语言（统一用 App「第二字幕」语言代码），随 JSON 写回，
+        // 供播放加载时比对是否需要按当前设置重翻
+        data["TranslationLanguage"] = LanguageManager.getSecondSubtitleLanguageCode()
+
         print("📝 Aliyun MT 翻译: \(totalSentences) 句, \(sourceLang) → \(targetLang)")
 
         // 2. 收集需要翻译的句子

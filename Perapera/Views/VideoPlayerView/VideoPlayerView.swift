@@ -533,16 +533,19 @@ struct SentenceCardView: View {
     let onTap: () -> Void
     
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
-    
+
+    /// 「同时显示两种字幕」开关：开启显示译文（第二种字幕），关闭则只显示原文、隐藏译文
+    @AppStorage("subtitle_show_two") private var showTwoSubtitles = true
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             if let words = subtitle.words {
                 // 词级别显示：假名 + 原文 + romaji
                 WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
-                
+
                 // 整句翻译 - 优先使用 subtitle.translatedText（Tencent MT 整句翻译），fallback 到逐词翻译拼接
                 let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
-                if !sentenceTranslation.isEmpty {
+                if showTwoSubtitles, !sentenceTranslation.isEmpty {
                     Text(sentenceTranslation)
                         .font(.system(size: isActive ? 13.5 : 13))
                         .foregroundColor(Color.ex.text1)
@@ -557,7 +560,7 @@ struct SentenceCardView: View {
                     .font(.system(size: isActive ? 22 : 20, weight: .bold))
                     .foregroundColor(isActive ? greenDark : Color.ex.text1)
                 
-                if !subtitle.translatedText.isEmpty {
+                if showTwoSubtitles, !subtitle.translatedText.isEmpty {
                     Text(subtitle.translatedText)
                         .font(.system(size: isActive ? 13.5 : 13))
                         .foregroundColor(Color.ex.text1)

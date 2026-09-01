@@ -93,7 +93,68 @@ class LanguageManager {
         }
         return getCurrentAppLanguage()
     }
-    
+
+    // MARK: - 第二字幕语言（与字幕设置界面的 subtitle_second_language 共用同一存储）
+    /// 该设置同时被「语言设置」与「字幕设置」两处编辑，二者读写的是同一个值。
+    /// 存储格式为 nativeLanguageNames 的「原文名」（如「简体中文」「English」「日本語」），
+    /// 便于界面直接展示，需要时再反向映射回语言代码供翻译目标使用。
+    private static let secondSubtitleKey = "subtitle_second_language"
+
+    /// 读取第二字幕语言（原文名），缺省回退「简体中文」
+    static func getSecondSubtitleLanguageName() -> String {
+        guard let stored = PUserDefault.getVauleForKey(key: secondSubtitleKey) as? String, !stored.isEmpty else {
+            return "简体中文"
+        }
+        return stored
+    }
+
+    /// 写入第二字幕语言（原文名）
+    static func setSecondSubtitleLanguageName(_ name: String) {
+        PUserDefault.setValueForKey(name, key: secondSubtitleKey)
+    }
+
+    /// 第二字幕语言对应的语言代码（供翻译目标语言映射使用）
+    static func getSecondSubtitleLanguageCode() -> String {
+        let name = getSecondSubtitleLanguageName()
+        if let entry = nativeLanguageNames.first(where: { $0.value == name }) {
+            return entry.key
+        }
+        return "zh-Hans"
+    }
+
+    // MARK: - 第二字幕默认值（首次启动按设备系统语言初始化）
+    /// 根据「本机系统语言」推导第二字幕的默认语言（原文名）。
+    /// 直接取系统首选语言在 nativeLanguageNames 中对应的母语写法
+    /// （如 法语→Français、德语→Deutsch、简体中文→简体中文）；
+    /// 仅当系统语言完全不在应用支持的语言列表内时，才回落「简体中文」兜底。
+    private static func deviceLanguageBasedSecondSubtitleName() -> String {
+        let raw = Locale.preferredLanguages.first ?? "en"
+        // 完整匹配（如 zh-Hans / zh-Hant / pt-PT）
+        if let name = nativeLanguageNames[raw] {
+            return name
+        }
+        // 仅取语言码匹配（如 fr-FR → fr → Français）
+        let base = raw.components(separatedBy: "-").first?.lowercased() ?? raw.lowercased()
+        if let name = nativeLanguageNames[base] {
+            return name
+        }
+        // 系统语言不在应用支持列表内时的兜底（通常不会触发）
+        return "简体中文"
+    }
+
+    /// 首次启动时为第二字幕写入「设备系统语言」对应的默认值，并持久化到本地。
+    /// - 仅当本地尚未存储过该值（全新安装）时写入；已存过（含用户改过的）一律跳过，绝不覆盖。
+    /// - 需在 App 启动最早阶段（PeraperaApp.init）调用一次。
+    static func ensureSecondSubtitleDefault() {
+        guard let stored = PUserDefault.getVauleForKey(key: secondSubtitleKey) as? String,
+              !stored.isEmpty else {
+            let defaultName = deviceLanguageBasedSecondSubtitleName()
+            PUserDefault.setValueForKey(defaultName, key: secondSubtitleKey)
+            return
+        }
+        // 已存在值，保持不动（包含用户后续修改过的结果）
+    }
+
     static func currentLanguageCode() -> String {
          if let storedLanguageCode = UserDefaults.standard.string(forKey: AppKeys.appLanguage) {
             let normalized = normalizeCode(storedLanguageCode)
