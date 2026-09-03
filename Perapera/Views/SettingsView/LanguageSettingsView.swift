@@ -4,31 +4,145 @@ import RxSwift
 import Moya
 
 /// 目标语言选择界面的接口数据源：
-/// GET https://www.perapera.cc/api/v1/common/support_lang，返回 [{"name": "日本語", "lang": "ja"}]
+/// GET https://www.perapera.cc/api/v1/common/target_lang，返回 [{"name": "日本語", "lang": "ja"}]
+/// 本地缓存优先：进入界面先展示上次缓存的数据，再请求接口刷新到最新并覆盖缓存；
 /// 接口数据只存在本 VM 内、只供目标语言列表使用，绝不回写 LanguageManager；
 /// 设置界面各行的显示固定读 LanguageManager.nativeLanguageNames，两套数据不共享。
 final class LearningLanguageAPIViewModel: ObservableObject {
     /// 接口返回的语言列表（仅本界面使用）
     @Published var supportLangs: [SupportLanguageModel] = []
     private let disposeBag = DisposeBag()
-    private var hasFetched = false
+    private let cacheKey = "cache_target_lang"
 
-    /// 请求接口；成功后只刷新本界面列表，失败静默保持本地兜底
+    /// 进入界面时调用：先展示本地缓存（无缓存则为空，等接口返回），再请求接口更新到最新
     func fetchIfNeeded() {
-        guard !hasFetched, supportLangs.isEmpty else {
-            hasFetched = true
-            return
+        if let cached = LearningLanguageAPIViewModel.loadCache(cacheKey), !cached.isEmpty {
+            supportLangs = cached
         }
-        hasFetched = true
+        appApi.rx.request(.targetLang)
+            .asObservable()
+            .mapArray(SupportLanguageModel.self)
+            .subscribe(onNext: { [weak self] models in
+                guard let self = self, !models.isEmpty else { return }
+                self.supportLangs = models
+                LearningLanguageAPIViewModel.saveCache(models, cacheKey)
+            }, onError: { _ in
+            })
+            .disposed(by: disposeBag)
+    }
+
+    // MARK: - 本地缓存（JSON Data 形式存入 UserDefaults）
+    private static func loadCache(_ key: String) -> [SupportLanguageModel]? {
+        guard let data = PUserDefault.getVauleForKey(key: key) as? Data,
+              let array = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] else {
+            return nil
+        }
+        return array.compactMap { dict -> SupportLanguageModel? in
+            let model = SupportLanguageModel()
+            model.name = dict["name"] as? String ?? ""
+            model.lang = dict["lang"] as? String ?? ""
+            return model
+        }
+    }
+
+    private static func saveCache(_ models: [SupportLanguageModel], _ key: String) {
+        let array: [[String: Any]] = models.map { ["name": $0.name, "lang": $0.lang] }
+        guard let data = try? JSONSerialization.data(withJSONObject: array) else { return }
+        PUserDefault.setValueForKey(data, key: key)
+    }
+}
+
+/// User interface（App Language）选择界面的接口数据源：
+/// GET https://www.perapera.cc/api/v1/common/support_lang，返回 [{"name": "日本語", "lang": "ja"}]
+/// 本地缓存优先：进入界面先展示上次缓存的数据，再请求接口刷新到最新并覆盖缓存。
+final class AppLanguageSupportViewModel: ObservableObject {
+    /// 接口返回的语言列表（仅本界面使用）
+    @Published var supportLangs: [SupportLanguageModel] = []
+    private let disposeBag = DisposeBag()
+    private let cacheKey = "cache_support_lang"
+
+    /// 进入界面时调用：先展示本地缓存（无缓存则为空，等接口返回），再请求接口更新到最新
+    func fetchIfNeeded() {
+        if let cached = AppLanguageSupportViewModel.loadCache(cacheKey), !cached.isEmpty {
+            supportLangs = cached
+        }
         appApi.rx.request(.supportLang)
             .asObservable()
             .mapArray(SupportLanguageModel.self)
             .subscribe(onNext: { [weak self] models in
                 guard let self = self, !models.isEmpty else { return }
                 self.supportLangs = models
+                AppLanguageSupportViewModel.saveCache(models, cacheKey)
             }, onError: { _ in
             })
             .disposed(by: disposeBag)
+    }
+
+    // MARK: - 本地缓存（JSON Data 形式存入 UserDefaults）
+    private static func loadCache(_ key: String) -> [SupportLanguageModel]? {
+        guard let data = PUserDefault.getVauleForKey(key: key) as? Data,
+              let array = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] else {
+            return nil
+        }
+        return array.compactMap { dict -> SupportLanguageModel? in
+            let model = SupportLanguageModel()
+            model.name = dict["name"] as? String ?? ""
+            model.lang = dict["lang"] as? String ?? ""
+            return model
+        }
+    }
+
+    private static func saveCache(_ models: [SupportLanguageModel], _ key: String) {
+        let array: [[String: Any]] = models.map { ["name": $0.name, "lang": $0.lang] }
+        guard let data = try? JSONSerialization.data(withJSONObject: array) else { return }
+        PUserDefault.setValueForKey(data, key: key)
+    }
+}
+
+/// Second Subtitle（第二字幕语言）选择界面的接口数据源：
+/// GET https://www.perapera.cc/api/v1/common/support_second_lang，返回 [{"name": "日本語", "lang": "ja"}]
+/// 本地缓存优先：进入界面先展示上次缓存的数据，再请求接口刷新到最新并覆盖缓存。
+final class SecondSubtitleSupportViewModel: ObservableObject {
+    /// 接口返回的语言列表（仅本界面使用）
+    @Published var supportLangs: [SupportLanguageModel] = []
+    private let disposeBag = DisposeBag()
+    private let cacheKey = "cache_support_second_lang"
+
+    /// 进入界面时调用：先展示本地缓存（无缓存则为空，等接口返回），再请求接口更新到最新
+    func fetchIfNeeded() {
+        if let cached = SecondSubtitleSupportViewModel.loadCache(cacheKey), !cached.isEmpty {
+            supportLangs = cached
+        }
+        appApi.rx.request(.supportSecondLang)
+            .asObservable()
+            .mapArray(SupportLanguageModel.self)
+            .subscribe(onNext: { [weak self] models in
+                guard let self = self, !models.isEmpty else { return }
+                self.supportLangs = models
+                SecondSubtitleSupportViewModel.saveCache(models, cacheKey)
+            }, onError: { _ in
+            })
+            .disposed(by: disposeBag)
+    }
+
+    // MARK: - 本地缓存（JSON Data 形式存入 UserDefaults）
+    private static func loadCache(_ key: String) -> [SupportLanguageModel]? {
+        guard let data = PUserDefault.getVauleForKey(key: key) as? Data,
+              let array = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] else {
+            return nil
+        }
+        return array.compactMap { dict -> SupportLanguageModel? in
+            let model = SupportLanguageModel()
+            model.name = dict["name"] as? String ?? ""
+            model.lang = dict["lang"] as? String ?? ""
+            return model
+        }
+    }
+
+    private static func saveCache(_ models: [SupportLanguageModel], _ key: String) {
+        let array: [[String: Any]] = models.map { ["name": $0.name, "lang": $0.lang] }
+        guard let data = try? JSONSerialization.data(withJSONObject: array) else { return }
+        PUserDefault.setValueForKey(data, key: key)
     }
 }
 
@@ -168,6 +282,13 @@ enum LanguageSelectionType {
     case secondSubtitle
 }
 
+/// 列表行数据模型：封装语言代码与显示名，遵循 Identifiable 以直接用于 ForEach
+private struct LanguageOption: Identifiable {
+    let id: String    // 语言代码（lang），作唯一标识
+    let key: String   // 语言代码
+    let value: String // 显示名
+}
+
 struct LanguageSelectionSheet: View {
     @Binding var isPresented: Bool
     @Binding var currentLanguage: String
@@ -175,17 +296,28 @@ struct LanguageSelectionSheet: View {
 
     // 目标语言（.learning）专用接口数据源，与本地数据不共享
     @StateObject private var learningVM = LearningLanguageAPIViewModel()
+    // User interface（.app）专用接口数据源（本地缓存优先 + 后台刷新）
+    @StateObject private var appSupportVM = AppLanguageSupportViewModel()
+    // Second Subtitle（.source）专用接口数据源（本地缓存优先 + 后台刷新）
+    @StateObject private var secondSubVM = SecondSubtitleSupportViewModel()
 
-    private var languages: [(key: String, value: String)] {
-        // 目标语言：数据只来自 support_lang 接口，不读本地任何数据。
-        // 接口未返回前列表为空（无本地兜底），返回后直接渲染接口数据。
-        if type == .learning {
-            return learningVM.supportLangs.map { ($0.lang, $0.name) }
+    private var languages: [LanguageOption] {
+        switch type {
+        case .app:
+            // User interface：数据来自 common/support_lang 接口（本地优先 + 后台刷新）
+            return appSupportVM.supportLangs.map { LanguageOption(id: $0.lang, key: $0.lang, value: $0.name) }
+        case .source:
+            // Second Subtitle：数据来自 common/support_second_lang 接口（本地优先 + 后台刷新）
+            return secondSubVM.supportLangs.map { LanguageOption(id: $0.lang, key: $0.lang, value: $0.name) }
+        case .learning:
+            // 目标语言：数据来自 common/target_lang 接口（本地优先 + 后台刷新）
+            return learningVM.supportLangs.map { LanguageOption(id: $0.lang, key: $0.lang, value: $0.name) }
+        default:
+            // 其余类型（AI / YouTube / 第二字幕设置等）：数据一律来自本地 nativeLanguageNames。
+            // 注意：不读 LanguageManager.supportLanguages / languageNames ——
+            // 这两份数据会被 support_lang 接口回写污染，用户界面不能用。
+            return LanguageManager.nativeLanguageNames.sorted(by: { $0.key < $1.key }).map { LanguageOption(id: $0.key, key: $0.key, value: $0.value) }
         }
-        // 其余类型：数据一律来自本地 nativeLanguageNames。
-        // 注意：不读 LanguageManager.supportLanguages / languageNames ——
-        // 这两份数据会被 support_lang 接口回写污染，用户界面不能用。
-        return LanguageManager.nativeLanguageNames.sorted(by: { $0.key < $1.key })
     }
     
     var body: some View {
@@ -204,48 +336,37 @@ struct LanguageSelectionSheet: View {
             
             ScrollView {
                 VStack(spacing: 15) {
-                    ForEach(languages, id: \.key) { key, value in
-                        Button(action: {
-                            updateLanguage(key: key, type: type)
-                            // App Language / 目标语言：行右侧显示数据源为 nativeLanguageNames（语言原文），
-                            // 与列表来源（本地表或接口）无关，保证用户界面数据始终来自本地；
-                            // 其余类型保持列表展示名（本地化名）。
-                            currentLanguage = (type == .app || type == .learning)
-                                ? LanguageManager.nativeLanguageName(for: key)
-                                : value
-                            isPresented = false
-                        }) {
-                            HStack {
-                                Text(value)
-                                    .font(.headline)
-                                    .foregroundColor(.ex.text1)
-                                Spacer()
-                                // 勾选判断用语言代码比对：
-                                // App Language → 当前 App 语言代码；目标语言 → 已存语言代码；
-                                // 其余类型保持显示名比对
-                                let isSelected = (type == .app)
-                                    ? (LanguageManager.currentLanguageCode() == key)
-                                    : (type == .learning)
-                                        ? ((PUserDefault.getVauleForKey(key: AppKeys.learningLanguage) as? String) == key)
-                                        : (currentLanguage == value)
-                                if isSelected {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.blue)
-                                }
+                    ForEach(languages, id: \.id) { option in
+                        LanguageOptionRow(
+                            option: option,
+                            type: type,
+                            currentLanguage: $currentLanguage,
+                            isPresented: $isPresented,
+                            onSelect: {
+                                updateLanguage(key: option.key, type: type)
+                                // App Language / 目标语言：行右侧显示数据源为 nativeLanguageNames（语言原文），
+                                // 与列表来源（本地表或接口）无关，保证用户界面数据始终来自本地；
+                                // 其余类型（AI / YouTube / 第二字幕设置）保持列表展示名（本地化名）。
+                                currentLanguage = (type == .app || type == .learning || type == .source)
+                                    ? LanguageManager.nativeLanguageName(for: option.key)
+                                    : option.value
+                                isPresented = false
                             }
-                            .padding()
-                            .background(Color.ex("bg2"))
-                            .cornerRadius(10)
-                        }
-                        .padding(.horizontal, 25)
+                        )
                     }
                 }
                 .padding(.bottom, 30)
             }
         }
         .onAppear {
-            // 只有目标语言界面调用 support_lang 接口（数据不共享、不回写）
-            if type == .learning {
+            // User interface：进入即展示本地缓存，同时请求接口更新到最新
+            if type == .app {
+                appSupportVM.fetchIfNeeded()
+            } else if type == .source {
+                // Second Subtitle：进入即展示本地缓存，同时请求接口更新到最新
+                secondSubVM.fetchIfNeeded()
+            } else if type == .learning {
+                // 目标语言：进入即展示本地缓存，同时请求接口更新到最新
                 learningVM.fetchIfNeeded()
             }
         }
@@ -288,6 +409,49 @@ struct LanguageSelectionSheet: View {
             // Handled via Binding in SubtitleSettingsView, no global manager update needed here
             // or if we want to sync with UserDefaults keys manually:
             break
+        }
+    }
+}
+
+/// 语言选择列表的单个行（抽出为独立 View，避免 ForEach 内容闭包过大
+/// 触发 SwiftUI 类型推断退化到 Binding 重载的已知编译问题）。
+private struct LanguageOptionRow: View {
+    let option: LanguageOption
+    let type: LanguageSelectionType
+    @Binding var currentLanguage: String
+    @Binding var isPresented: Bool
+    let onSelect: () -> Void
+
+    var body: some View {
+        Button(action: onSelect) {
+            HStack {
+                Text(option.value)
+                    .font(.headline)
+                    .foregroundColor(.ex.text1)
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.blue)
+                }
+            }
+            .padding()
+            .background(Color.ex("bg2"))
+            .cornerRadius(10)
+        }
+        .padding(.horizontal, 25)
+    }
+
+    private var isSelected: Bool {
+        switch type {
+        case .app:
+            return LanguageManager.currentLanguageCode() == option.key
+        case .source:
+            // 第二字幕语言：按已存的语言代码比对
+            return LanguageManager.getSecondSubtitleLanguageCode() == option.key
+        case .learning:
+            return (PUserDefault.getVauleForKey(key: AppKeys.learningLanguage) as? String) == option.key
+        default:
+            return currentLanguage == option.value
         }
     }
 }

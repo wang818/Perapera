@@ -13,6 +13,8 @@ enum AppAPIEndPoint {
     case userInfo
     case zendeskNotice(page: String, pagesize: String)
     case supportLang
+    case supportSecondLang
+    case targetLang
     case sendCaptcha(email: String)
     case login(email: String, captcha: String)
     case ytAudio(url: String)
@@ -39,6 +41,8 @@ extension AppAPIEndPoint: TargetType {
         case .userInfo: return "/user/info"
         case .zendeskNotice: return ""
         case .supportLang: return "common/support_lang"
+        case .supportSecondLang: return "common/support_second_lang"
+        case .targetLang: return "common/target_lang"
         case .sendCaptcha : return "auth/sendCaptcha"
         case .login : return "auth/login"
         case .ytAudio: return "common/yt_audio"
@@ -60,6 +64,8 @@ extension AppAPIEndPoint: TargetType {
         switch self {
         case .zendeskNotice: return .get
         case .supportLang: return .get
+        case .supportSecondLang: return .get
+        case .targetLang: return .get
         case .sendCaptcha: return .get
         case .ytAudio: return .get
         case .ytInfo: return .get
