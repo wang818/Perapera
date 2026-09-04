@@ -69,8 +69,8 @@
 "settings_faq_title" = "الأسئلة الشائعة";
 "settings_about_perapera_title" = "حول Perapera";
 
-"settings_lang_app_title" = "واجهة المستخدم";
-"settings_lang_app_subtitle" = "لغة واجهة المستخدم";
+"settings_lang_app_title" = "إعدادات اللغة";
+"settings_lang_app_subtitle" = "لغة واجهة التطبيق والمحتوى";
 "settings_lang_ai_title" = "شرح الذكاء الاصطناعي";
 "settings_lang_ai_subtitle" = "لغة شرح الذكاء الاصطناعي";
 "settings_lang_source_title" = "الترجمة الثانية";

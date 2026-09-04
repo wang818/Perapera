@@ -76,8 +76,8 @@
 "settings_faq_title" = "よくある質問";
 "settings_about_perapera_title" = "Peraperaについて";
  
- "settings_lang_app_title" = "ユーザーインターフェース";
-"settings_lang_app_subtitle" = "ユーザーインターフェース言語";
+ "settings_lang_app_title" = "言語設定";
+"settings_lang_app_subtitle" = "アプリとコンテンツの言語";
 "settings_lang_ai_title" = "AI解説";
 "settings_lang_ai_subtitle" = "AI解説の言語";
 "settings_lang_source_title" = "第2字幕";

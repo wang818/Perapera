@@ -69,8 +69,8 @@
 "settings_faq_title" = "SSS";
 "settings_about_perapera_title" = "Perapera Hakkında";
 
-"settings_lang_app_title" = "Kullanıcı Arayüzü";
-"settings_lang_app_subtitle" = "Kullanıcı Arayüzü Dili";
+"settings_lang_app_title" = "Dil Ayarları";
+"settings_lang_app_subtitle" = "Uygulama Arayüzü ve İçerik Dili";
 "settings_lang_ai_title" = "Yapay Zeka Açıklaması";
 "settings_lang_ai_subtitle" = "Yapay Zeka Açıklama Dili";
 "settings_lang_source_title" = "İkinci Altyazı";

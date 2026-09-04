@@ -69,8 +69,8 @@
 "settings_faq_title" = "FAQ";
 "settings_about_perapera_title" = "Tungkol sa Perapera";
 
-"settings_lang_app_title" = "User Interface";
-"settings_lang_app_subtitle" = "Wika ng User Interface";
+"settings_lang_app_title" = "Mga Setting ng Wika";
+"settings_lang_app_subtitle" = "Wika ng App at Nilalaman";
 "settings_lang_ai_title" = "Paliwanag ng AI";
 "settings_lang_ai_subtitle" = "Wika ng Paliwanag ng AI";
 "settings_lang_source_title" = "Pangalawang Subtitle";

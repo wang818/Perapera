@@ -76,8 +76,8 @@
 "settings_faq_title" = "FAQ";
 "settings_about_perapera_title" = "About Perapera";
  
- "settings_lang_app_title" = "User Interface";
-"settings_lang_app_subtitle" = "User Interface Language";
+ "settings_lang_app_title" = "Language Settings";
+"settings_lang_app_subtitle" = "App Interface and Content Language";
 "settings_lang_ai_title" = "AI Explanation";
 "settings_lang_ai_subtitle" = "AI Explanation Language";
 "settings_lang_source_title" = "Second Subtitle";

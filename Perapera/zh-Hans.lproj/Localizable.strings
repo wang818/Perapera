@@ -76,8 +76,8 @@
 "settings_faq_title" = "常见问题";
 "settings_about_perapera_title" = "关于Perapera";
  
- "settings_lang_app_title" = "用户界面";
-"settings_lang_app_subtitle" = "用户界面语言";
+ "settings_lang_app_title" = "语言设置";
+"settings_lang_app_subtitle" = "界面与内容语言";
 "settings_lang_ai_title" = "AI讲解";
 "settings_lang_ai_subtitle" = "AI讲解语言";
 "settings_lang_source_title" = "第二字幕";

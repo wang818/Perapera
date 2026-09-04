@@ -69,8 +69,8 @@
 "settings_faq_title" = "คำถามที่พบบ่อย";
 "settings_about_perapera_title" = "เกี่ยวกับ Perapera";
 
-"settings_lang_app_title" = "ส่วนต่อประสานผู้ใช้";
-"settings_lang_app_subtitle" = "ภาษาของส่วนต่อประสานผู้ใช้";
+"settings_lang_app_title" = "การตั้งค่าภาษา";
+"settings_lang_app_subtitle" = "ภาษาของแอปและเนื้อหา";
 "settings_lang_ai_title" = "คำอธิบาย AI";
 "settings_lang_ai_subtitle" = "ภาษาคำอธิบาย AI";
 "settings_lang_source_title" = "คำบรรยายที่สอง";

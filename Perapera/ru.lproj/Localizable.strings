@@ -69,8 +69,8 @@
 "settings_faq_title" = "FAQ";
 "settings_about_perapera_title" = "О Perapera";
 
-"settings_lang_app_title" = "Интерфейс пользователя";
-"settings_lang_app_subtitle" = "Язык интерфейса пользователя";
+"settings_lang_app_title" = "Языковые настройки";
+"settings_lang_app_subtitle" = "Язык интерфейса и контента";
 "settings_lang_ai_title" = "Объяснение ИИ";
 "settings_lang_ai_subtitle" = "Язык объяснения ИИ";
 "settings_lang_source_title" = "Вторые субтитры";
