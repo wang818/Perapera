@@ -208,10 +208,11 @@ struct LanguageSettingsView: View {
         .navigationTitle("settings_language_title".localized())
         .listStyle(InsetGroupedListStyle())
         .onAppear {
-            appLanguage = LanguageManager.getCurrentAppLanguageNative()
-            aiLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.aiLanguage)
-            sourceLanguage = LanguageManager.getSecondSubtitleLanguageName()
-            learningLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.learningLanguage)
+            refreshLanguageDisplay()
+            // Open the page: load server settings (server is source of truth on open).
+            UserSettingsManager.shared.fetchAndApply {
+                self.refreshLanguageDisplay()
+            }
         }
         .sheet(isPresented: $showAppLanguageSelection) {
             LanguageSelectionSheet(
@@ -241,6 +242,13 @@ struct LanguageSettingsView: View {
                 type: .learning
             )
         }
+    }
+
+    private func refreshLanguageDisplay() {
+        appLanguage = LanguageManager.getCurrentAppLanguageNative()
+        aiLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.aiLanguage)
+        sourceLanguage = LanguageManager.getSecondSubtitleLanguageName()
+        learningLanguage = LanguageManager.nativeName(forSettingKey: AppKeys.learningLanguage)
     }
 
     private func languageRow(title: String, subtitle: String, currentValue: String, action: @escaping () -> Void) -> some View {
@@ -397,8 +405,10 @@ struct LanguageSelectionSheet: View {
     private func updateLanguage(key: String, type: LanguageSelectionType) {
         switch type {
         case .app:
+            // App Language stays local-only (not synced to users_setting).
             LanguageManager.setAppLanguage(key)
         case .ai:
+            // AI explanation stays local-only (row currently hidden).
             LanguageManager.setAILanguage(key)
         case .source:
             // 第二字幕语言：与字幕设置界面共用 subtitle_second_language（存原文名）
@@ -410,6 +420,23 @@ struct LanguageSelectionSheet: View {
             // or if we want to sync with UserDefaults keys manually:
             break
         }
+
+        // Only the second-subtitle and target-language rows are synced to the
+        // backend. App Language and AI explanation are local-only.
+        guard UserManager.shared.isLoggedIn else { return }
+        let field: UserSettingLanguageField
+        let value: String
+        switch type {
+        case .source:
+            field = .source
+            value = LanguageManager.getSecondSubtitleLanguageCode()
+        case .learning:
+            field = .learning
+            value = (PUserDefault.getVauleForKey(key: AppKeys.learningLanguage) as? String) ?? "en"
+        default:
+            return
+        }
+        UserSettingsManager.shared.saveField(field, value: value)
     }
 }
 

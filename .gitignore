@@ -73,3 +73,5 @@ Perapera/Services/HunyuanConfig.local.swift
 Perapera/Services/AliyunConfig.local.swift
 
 .codegraph/
+
+.workbuddy

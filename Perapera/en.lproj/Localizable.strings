@@ -59,8 +59,8 @@
 "%d min" = "%d min";
 
 "settings_general_header" = "General";
-"settings_language_title" = "App Language";
-"settings_language_subtitle" = "Choose app language";
+"settings_language_title" = "Language";
+"settings_language_subtitle" = "Setting the languages";
 "settings_alphabet_title" = "Subtitle Preferences";
 "settings_alphabet_subtitle" = "Manage subtitle display settings";
 "settings_theme_title" = "Theme";

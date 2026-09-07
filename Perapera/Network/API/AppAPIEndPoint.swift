@@ -28,6 +28,8 @@ enum AppAPIEndPoint {
     case deleteAccount
     case currentUser
     case refreshAccessToken
+    case userSettingGet
+    case userSettingUpdate(parameters: [String: Any])
 }
 
 extension AppAPIEndPoint: TargetType {
@@ -55,6 +57,8 @@ extension AppAPIEndPoint: TargetType {
         case .iapProductEntitlement(let productID): return "iap/products/\(productID)/entitlement"
         case .deleteAccount: return "users/delete_account"
         case .currentUser: return "users/me"
+        case .userSettingGet: return "users/users_setting"
+        case .userSettingUpdate: return "users/users_setting"
         case .refreshAccessToken: return "auth/refresh"
 
         }
@@ -73,6 +77,8 @@ extension AppAPIEndPoint: TargetType {
         case .iapProducts: return .get
         case .iapProductEntitlement: return .get
         case .currentUser: return .get
+        case .userSettingGet: return .get
+        case .userSettingUpdate: return .put
         case .deleteAccount: return .delete
         case .refreshAccessToken: return .post
         default: return .post
@@ -103,6 +109,8 @@ extension AppAPIEndPoint: TargetType {
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         case .iapNotifications(let payload):
             return .requestParameters(parameters: payload, encoding: JSONEncoding.default)
+        case .userSettingUpdate(let parameters):
+            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
 
         default:
             return .requestPlain
@@ -135,7 +143,7 @@ extension AppAPIEndPoint: TargetType {
 
     private var requiresAuthorization: Bool {
         switch self {
-        case .userInfo, .ytAudio, .ytInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement, .deleteAccount, .currentUser:
+        case .userInfo, .ytAudio, .ytInfo, .iapVerify, .iapStatus, .iapProducts, .iapRestore, .iapProductEntitlement, .deleteAccount, .currentUser, .userSettingGet, .userSettingUpdate:
             return true
         default:
             return false

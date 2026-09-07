@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		031F7CBBB1AC48B0836E5530 /* ReadingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700EC4C510D041ED8ED4F489 /* ReadingAPI.swift */; };
+		1844FCA4304EAF25009F9D36 /* UserSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1844FCA3304EAF24009F9D36 /* UserSettingsManager.swift */; };
+		1844FCA6304EAFAC009F9D36 /* UserSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1844FCA5304EAFAC009F9D36 /* UserSettingModel.swift */; };
 		184C06CA2FB815F1001114A3 /* YTAudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06C92FB815DD001114A3 /* YTAudioModel.swift */; };
 		184C06CC2FB815F1001114A5 /* YTBasicInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */; };
 		1889F1272EF9214800886186 /* PeraperaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889F1262EF9214800886186 /* PeraperaApp.swift */; };
@@ -113,6 +115,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1844FCA3304EAF24009F9D36 /* UserSettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
+		1844FCA5304EAFAC009F9D36 /* UserSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingModel.swift; sourceTree = "<group>"; };
 		184C06C92FB815DD001114A3 /* YTAudioModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YTAudioModel.swift; sourceTree = "<group>"; };
 		184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YTBasicInfoModel.swift; sourceTree = "<group>"; };
 		1889F1232EF9214800886186 /* Perapera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Perapera.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -332,6 +336,7 @@
 		EC2D827330234B99003977CA /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				1844FCA3304EAF24009F9D36 /* UserSettingsManager.swift */,
 				EC2D826030234B99003977CA /* AliyunASRBridge.h */,
 				EC2D826130234B99003977CA /* AliyunASRBridge.m */,
 				EC2D826230234B99003977CA /* AliyunASRManager.swift */,
@@ -494,6 +499,7 @@
 		ECACBF082F0B59880090F990 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1844FCA5304EAFAC009F9D36 /* UserSettingModel.swift */,
 				184C06C92FB815DD001114A3 /* YTAudioModel.swift */,
 				184C06CB2FB815F1001114A4 /* YTBasicInfoModel.swift */,
 				F1A2B3C4D5E6F70809101111 /* IAPModel.swift */,
@@ -775,6 +781,7 @@
 				EC2D827C30234B99003977CA /* HunyuanConfig.swift in Sources */,
 				EC2D827D30234B99003977CA /* TencentMTConfig.swift in Sources */,
 				EC2D827E30234B99003977CA /* ASRManager.swift in Sources */,
+				1844FCA6304EAFAC009F9D36 /* UserSettingModel.swift in Sources */,
 				EC2D827F30234B99003977CA /* AliyunASRManager.swift in Sources */,
 				EC2D828030234B99003977CA /* ASRManagerFactory.swift in Sources */,
 				EC2D828130234B99003977CA /* AliyunMTManager.swift in Sources */,
@@ -795,6 +802,7 @@
 				EC7FEF022F284BCA0007BCA6 /* UserManager.swift in Sources */,
 				ECACBF122F0B59880090F990 /* Observable+HandyJSON.swift in Sources */,
 				EC7FEF082F2854920007BCA6 /* SubtitleSettingsView.swift in Sources */,
+				1844FCA4304EAF25009F9D36 /* UserSettingsManager.swift in Sources */,
 				ECACBF132F0B59880090F990 /* XHUDManager.swift in Sources */,
 				ECACBF142F0B59880090F990 /* EXZendeskNoticeModel.swift in Sources */,
 				ECACBF152F0B59880090F990 /* EXTracking.swift in Sources */,
