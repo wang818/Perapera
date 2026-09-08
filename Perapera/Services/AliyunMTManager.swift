@@ -68,6 +68,8 @@ class AliyunMTManager {
         // 记录本次译文所用语言（统一用 App「第二字幕」语言代码），随 JSON 写回，
         // 供播放加载时比对是否需要按当前设置重翻
         data["TranslationLanguage"] = LanguageManager.getSecondSubtitleLanguageCode()
+        // 记录视频源语言（语音识别语言）代码，随 JSON 一并保存
+        data["SourceLanguage"] = sourceLang
 
         print("📝 Aliyun MT 翻译: \(totalSentences) 句, \(sourceLang) → \(targetLang)")
 
@@ -148,8 +150,8 @@ class AliyunMTManager {
                             if let wordText = word["Word"] as? String {
                                 let trimmed = wordText.trimmingCharacters(in: .whitespacesAndNewlines)
                                 if !trimmed.isEmpty && !self.isPunctuationOrSymbol(trimmed) {
-                                    updatedWord["Translation"] = translatedText
-                                    // 词级读音优先保留 ASR 阶段 /reading 已写入的值，缺失才本地兜底
+                                    // 词级读音优先保留 ASR 阶段 /reading 已写入的值，缺失才本地兜底。
+                                    // 词级 Translation 由后续逐词翻译阶段写入（不再复用整句译文）。
                                     let existingReading = updatedWord["Reading"] as? String
                                     if existingReading == nil || existingReading!.isEmpty {
                                         updatedWord["Reading"] = JapaneseTextConverter.shared.toRomaji(wordText)
@@ -177,7 +179,7 @@ class AliyunMTManager {
 
                 completedCount += 1
                 if completedCount % 20 == 0 || completedCount == items.count {
-                    print("  ✅ Aliyun MT 进度: \(completedCount)/\(items.count)")
+                    print("  ✅ Aliyun MT 整句进度: \(completedCount)/\(items.count)")
                 }
                 progress?(min(completedCount, totalSentences), totalSentences, 0)
 
@@ -190,17 +192,122 @@ class AliyunMTManager {
             if hadErrors {
                 print("⚠️ 部分句子翻译失败，继续保存已翻译的内容")
             }
-            data["ResultDetail"] = resultDetail
-            response["Data"] = data
-            jsonObject["Response"] = response
 
-            if let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) {
-                print("✅ Aliyun MT 翻译完成: \(totalSentences) 句")
-                completion(.success(finalData))
-            } else {
-                completion(.failure(NSError(domain: Self.errorDomain, code: -3,
-                                            userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+            // 逐词翻译阶段：对每个非标点词单独翻译（按第二语言），写入 Words[].Translation，
+            // 供播放器点击词显示第二语言词义。
+            self.translateWordsInResultDetail(resultDetail, sourceLang: sourceLang, targetLang: targetLang) { wordResultDetail in
+                data["ResultDetail"] = wordResultDetail
+                response["Data"] = data
+                jsonObject["Response"] = response
+
+                if let finalData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) {
+                    print("✅ Aliyun MT 翻译完成: \(totalSentences) 句（含逐词翻译）")
+                    completion(.success(finalData))
+                } else {
+                    completion(.failure(NSError(domain: Self.errorDomain, code: -3,
+                                                userInfo: [NSLocalizedDescriptionKey: "无法序列化最终 JSON"])))
+                }
             }
+        }
+    }
+
+    /// 逐词翻译阶段：遍历所有句子的所有词，对非标点词按目标语言（第二语言）单独翻译，
+    /// 写入每个词字典的 `Translation` 字段。复用与整句翻译一致的限流（45 QPS / 10 并发）。
+    /// - Parameters:
+    ///   - resultDetail: 已完成整句翻译的 ResultDetail 数组（会被深拷贝后修改并回调）
+    ///   - sourceLang / targetLang: 源/目标语言代码
+    ///   - completion: 主线程无关，在后台队列回调翻译后的 ResultDetail 数组
+    private func translateWordsInResultDetail(
+        _ resultDetail: [[String: Any]],
+        sourceLang: String,
+        targetLang: String,
+        completion: @escaping ([[String: Any]]) -> Void
+    ) {
+        // 收集待翻译的词：记录其句子索引、词索引、词文本
+        struct WordRef {
+            let sentenceIndex: Int
+            let wordIndex: Int
+            let text: String
+        }
+        var refs: [WordRef] = []
+        for (sIdx, detail) in resultDetail.enumerated() {
+            guard let words = detail["Words"] as? [[String: Any]] else { continue }
+            for (wIdx, word) in words.enumerated() {
+                guard let text = word["Word"] as? String else { continue }
+                let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.isEmpty || isPunctuationOrSymbol(trimmed) { continue }
+                refs.append(WordRef(sentenceIndex: sIdx, wordIndex: wIdx, text: trimmed))
+            }
+        }
+
+        // 没有需要逐词翻译的词，直接返回原数组
+        guard !refs.isEmpty else {
+            completion(resultDetail)
+            return
+        }
+
+        var mutated = resultDetail
+        let total = refs.count
+        let maxConcurrency = 10
+        let semaphore = DispatchSemaphore(value: maxConcurrency)
+        let group = DispatchGroup()
+        let writeQueue = DispatchQueue(label: "com.perapera.alimt.wordwrite")
+        let rateLock = NSLock()
+        var requestTimestamps: [Date] = []
+        var completedCount = 0
+
+        func waitForWordRateLimit() {
+            rateLock.lock()
+            let now = Date()
+            requestTimestamps = requestTimestamps.filter { now.timeIntervalSince($0) < 1.0 }
+            if requestTimestamps.count >= 45 {
+                if let oldest = requestTimestamps.first {
+                    let wait = 1.0 - now.timeIntervalSince(oldest) + 0.01
+                    if wait > 0 {
+                        rateLock.unlock()
+                        Thread.sleep(forTimeInterval: wait)
+                        rateLock.lock()
+                    }
+                }
+            }
+            requestTimestamps.append(Date())
+            rateLock.unlock()
+        }
+
+        for ref in refs {
+            group.enter()
+            semaphore.wait()
+            waitForWordRateLimit()
+
+            translate(text: ref.text, source: sourceLang, target: targetLang) { [weak self] result in
+                guard let self = self else {
+                    semaphore.signal()
+                    group.leave()
+                    return
+                }
+                if case .success(let wordTranslation) = result {
+                    let trimmed = wordTranslation.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty {
+                        writeQueue.sync {
+                            if var words = mutated[ref.sentenceIndex]["Words"] as? [[String: Any]],
+                               ref.wordIndex < words.count {
+                                words[ref.wordIndex]["Translation"] = trimmed
+                                mutated[ref.sentenceIndex]["Words"] = words
+                            }
+                        }
+                    }
+                }
+                completedCount += 1
+                if completedCount % 50 == 0 || completedCount == total {
+                    print("  🔤 逐词翻译进度: \(completedCount)/\(total)")
+                }
+                semaphore.signal()
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .global()) {
+            completion(mutated)
         }
     }
 

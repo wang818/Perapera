@@ -610,6 +610,9 @@ struct WordWrapView: View {
     let currentTime: Double
     let subtitleStartTime: Double
 
+    /// 被点击的词（用于弹词义浮层）
+    @State private var selectedWord: WordTiming?
+
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
 
     /// 聚焦模式（辅助功能）：与字幕设置界面的 `subtitle_focus_mode` 开关同步（默认开启）。
@@ -664,6 +667,14 @@ struct WordWrapView: View {
             }
         }
         .frame(minHeight: estimatedTotalHeight(maxWidth: UIScreen.main.bounds.width - 56))
+        .sheet(isPresented: Binding(
+            get: { selectedWord != nil },
+            set: { if !$0 { selectedWord = nil } }
+        )) {
+            if let word = selectedWord {
+                WordMeaningSheet(word: word)
+            }
+        }
     }
 
     // MARK: - 按可用宽度分行
@@ -761,6 +772,14 @@ struct WordWrapView: View {
                 .lineLimit(1)
         }
         .fixedSize() // 防止单词被截断
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // 点击词：弹词义浮层（仅非空词且有翻译内容时）
+            if !isBlankWord, let translation = word.translation,
+               !translation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                selectedWord = word
+            }
+        }
     }
 
     /// 句内所有词文本拼接后是否整句平假名（可混入标点/长音符）
@@ -793,6 +812,78 @@ struct WordWrapView: View {
     private func isWordCurrent(_ word: WordTiming) -> Bool {
         // word.startTime/endTime 已经是绝对时间（秒），不需要再加 subtitleStartTime
         return currentTime >= word.startTime && currentTime <= word.endTime
+    }
+}
+
+// MARK: - 词义弹窗（点击字幕中的词显示第二语言意思）
+struct WordMeaningSheet: View {
+    let word: WordTiming
+
+    @Environment(\.presentationMode) private var presentationMode
+
+    private var translation: String {
+        let t = word.translation?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return t.isEmpty ? "(暂无翻译)" : t
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            // 标题
+            HStack {
+                Text("单词释义")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.primary)
+                Spacer()
+                Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.top, 20)
+
+            // 原文词
+            VStack(alignment: .leading, spacing: 6) {
+                Text("原文")
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                Text(word.word)
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundColor(.primary)
+            }
+
+            // 读音（假名 + 罗马音）
+            if let furigana = word.furigana, !furigana.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("读音")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                    Text(furigana)
+                        .font(.system(size: 16))
+                        .foregroundColor(.primary)
+                    if let reading = word.reading, !reading.isEmpty {
+                        Text(reading)
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+
+            // 第二语言词义
+            VStack(alignment: .leading, spacing: 6) {
+                Text("释义")
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                Text(translation)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(Color.Ex.main)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 24)
+        .padding(.bottom, 20)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

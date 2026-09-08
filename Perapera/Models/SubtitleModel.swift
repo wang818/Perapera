@@ -20,6 +20,9 @@ struct ASRData: Codable {
     /// 该视频译文所用的语言代码（与 App「第二字幕」设置一致，如 zh-Hans/ja/en/ko）。
     /// 翻译时由 AliyunMTManager 写入，供播放加载时判断是否需要按当前设置重翻。
     var TranslationLanguage: String?
+    /// 视频源语言（语音识别所用语言）代码，如 ja/en/zh。
+    /// 由 ASR 识别引擎模型类型推导，翻译时随 JSON 一并写入。
+    var SourceLanguage: String?
 }
 
 /// 整句读音（来自 /reading 服务或本地转换）

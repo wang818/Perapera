@@ -100,4 +100,35 @@ struct ASRConfig {
     static func generateRequestURL() -> URL? {
         return URL(string: "https://\(apiHost)/")
     }
+
+    /// 视频源语言代码（语音识别语言），由引擎模型类型推导。
+    /// 与 AliyunMTConfig.sourceLanguage 保持一致。
+    static var sourceLanguageCode: String {
+        switch engineModelType {
+        case "16k_ja": return "ja"
+        case "16k_en": return "en"
+        case "16k_zh", "16k_zh_video": return "zh"
+        case "16k_ca": return "zh"
+        default: return "auto"
+        }
+    }
+
+    /// 向 ASR 原始响应的 `Response.Data` 层注入「视频源语言」字段（`SourceLanguage`），
+    /// 用于在识别文件里持久化「该视频是什么语言」。注入失败（无法解析）时返回原数据不变。
+    /// - Parameter jsonData: ASR 原始响应 JSON Data（结构 `{"Response":{"Data":{...}}}`）
+    /// - Returns: 注入 SourceLanguage 后的 JSON Data
+    static func injectSourceLanguage(into jsonData: Data) -> Data {
+        guard var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+              var response = jsonObject["Response"] as? [String: Any],
+              var data = response["Data"] as? [String: Any] else {
+            return jsonData
+        }
+        data["SourceLanguage"] = sourceLanguageCode
+        response["Data"] = data
+        jsonObject["Response"] = response
+        guard let out = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+            return jsonData
+        }
+        return out
+    }
 }

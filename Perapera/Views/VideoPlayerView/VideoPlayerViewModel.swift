@@ -778,7 +778,9 @@ class VideoPlayerViewModel: ObservableObject {
         let fileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
 
         do {
-            try rawJSON.write(to: fileURL)
+            // 在原始 ASR 响应的 Data 层写入「视频源语言」字段，与翻译阶段写入的「第二语言」一起持久化
+            let jsonWithSourceLanguage = ASRConfig.injectSourceLanguage(into: rawJSON)
+            try jsonWithSourceLanguage.write(to: fileURL)
             print("💾 ASR JSON 已保存：\(fileURL.path)")
             DispatchQueue.main.async {
                 self.pipelineStatusMessage = "识别成功，开始翻译…"

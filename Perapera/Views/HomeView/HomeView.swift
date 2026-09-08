@@ -1141,8 +1141,12 @@ struct HomeView: View {
             // 生成文件路径：videoId.json
             let fileURL = documentsDirectory.appendingPathComponent("\(videoId).json")
             
-            // 直接写入原始 JSON 数据
-            try rawJSON.write(to: fileURL)
+            // 在原始 ASR 响应的 Data 层写入「视频源语言」字段（语音识别语言），
+            // 与翻译阶段写入的「第二语言」字段一起持久化到识别文件。
+            let jsonWithSourceLanguage = ASRConfig.injectSourceLanguage(into: rawJSON)
+            
+            // 直接写入 JSON 数据
+            try jsonWithSourceLanguage.write(to: fileURL)
             
             print("\n" + String(repeating: "=", count: 60))
             print("💾 ASR 原始 JSON 已保存")
