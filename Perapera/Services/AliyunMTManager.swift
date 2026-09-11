@@ -62,14 +62,21 @@ class AliyunMTManager {
         }
 
         let totalSentences = resultDetail.count
-        let sourceLang = AliyunMTConfig.sourceLanguage
+        // 翻译源语言：优先用识别阶段已写入的真实语言；否则用 "auto" 让阿里云 MT 自动检测
+        // （阿里云 fun-asr 不返回语言检测结果，故英文/中文等多语言视频需靠 MT auto 检测，
+        //   响应里的 DetectedLanguage 会写回 SourceLanguage，避免一律按日语处理）。
+        let existingSource = (data["SourceLanguage"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        let sourceLang = existingSource ?? "auto"
         let targetLang = AliyunMTConfig.targetLanguage
 
         // 记录本次译文所用语言（统一用 App「第二字幕」语言代码），随 JSON 写回，
         // 供播放加载时比对是否需要按当前设置重翻
         data["TranslationLanguage"] = LanguageManager.getSecondSubtitleLanguageCode()
-        // 记录视频源语言（语音识别语言）代码，随 JSON 一并保存
-        data["SourceLanguage"] = sourceLang
+        // 记录视频源语言（语音识别语言）代码。若尚未确定（auto 检测中），暂先占位，
+        // 整句翻译回调里会据 MT 返回的 DetectedLanguage 更新为真实语言。
+        if existingSource == nil {
+            data["SourceLanguage"] = "auto"
+        }
 
         print("📝 Aliyun MT 翻译: \(totalSentences) 句, \(sourceLang) → \(targetLang)")
 
@@ -140,10 +147,19 @@ class AliyunMTManager {
                 guard let self = self else { return }
 
                 switch result {
-                case .success(let translatedText):
+                case .success(let translated):
                     writeQueue.sync {
                         var detail = resultDetail[item.index]
-                        detail["TranslatedText"] = translatedText
+                        detail["TranslatedText"] = translated.translated
+
+                        // 捕获阿里云 MT 自动检测出的源语言（source 传 auto 时返回），
+                        // 用于写回 SourceLanguage（真实视频语言）。
+                        if let detected = translated.detectedLanguage, !detected.isEmpty {
+                            let current = (data["SourceLanguage"] as? String) ?? ""
+                            if current.isEmpty || current == "auto" {
+                                data["SourceLanguage"] = detected
+                            }
+                        }
 
                         let updatedWords = item.words.map { word -> [String: Any] in
                             var updatedWord = word
@@ -195,7 +211,12 @@ class AliyunMTManager {
 
             // 逐词翻译阶段：对每个非标点词单独翻译（按第二语言），写入 Words[].Translation，
             // 供播放器点击词显示第二语言词义。
-            self.translateWordsInResultDetail(resultDetail, sourceLang: sourceLang, targetLang: targetLang) { wordResultDetail in
+            // 源语言取整句翻译阶段检测到的真实语言（data["SourceLanguage"]），
+            // 若仍为 auto（未检测到）则继续用 auto。
+            let wordSourceLang = ((data["SourceLanguage"] as? String) ?? "").isEmpty
+                ? "auto"
+                : ((data["SourceLanguage"] as? String) ?? "auto")
+            self.translateWordsInResultDetail(resultDetail, sourceLang: wordSourceLang, targetLang: targetLang) { wordResultDetail in
                 data["ResultDetail"] = wordResultDetail
                 response["Data"] = data
                 jsonObject["Response"] = response
@@ -286,7 +307,7 @@ class AliyunMTManager {
                     return
                 }
                 if case .success(let wordTranslation) = result {
-                    let trimmed = wordTranslation.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let trimmed = wordTranslation.translated.trimmingCharacters(in: .whitespacesAndNewlines)
                     if !trimmed.isEmpty {
                         writeQueue.sync {
                             if var words = mutated[ref.sentenceIndex]["Words"] as? [[String: Any]],
@@ -317,7 +338,7 @@ class AliyunMTManager {
         text: String,
         source: String,
         target: String,
-        completion: @escaping (Result<String, Error>) -> Void
+        completion: @escaping (Result<(translated: String, detectedLanguage: String?), Error>) -> Void
     ) {
         let accessKeyId = AliyunConfig.accessKeyId
         let accessKeySecret = AliyunConfig.accessKeySecret
@@ -395,7 +416,8 @@ class AliyunMTManager {
                     return
                 }
 
-                completion(.success(translated))
+                let detected = result.Data?.DetectedLanguage
+                completion(.success((translated: translated, detectedLanguage: detected)))
 
             } catch {
                 if let responseStr = String(data: data, encoding: .utf8) {

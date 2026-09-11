@@ -172,6 +172,19 @@ class SubtitleManager {
         guard let asr = try? decoder.decode(ASRResponse.self, from: data) else { return nil }
         return asr.Response.Data?.TranslationLanguage
     }
+
+    // MARK: - 读取指定视频的源语言代码
+    /// 从 ASR JSON 文件读取该视频的源语言（语音识别语言，识别时写入的 SourceLanguage）。
+    /// 用于播放页判断是否日语源视频（仅日语才显示上方片假名注音）。无文件 / 无记录则返回 nil。
+    func loadSourceLanguage(for videoId: String) -> String? {
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let jsonFilePath = documentsPath.appendingPathComponent("\(videoId).json")
+        guard let data = try? Data(contentsOf: jsonFilePath) else { return nil }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let asr = try? decoder.decode(ASRResponse.self, from: data) else { return nil }
+        return asr.Response.Data?.SourceLanguage
+    }
     
     // MARK: - 删除字幕
     func deleteSubtitles(for videoId: String) {

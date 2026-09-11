@@ -41,6 +41,10 @@ class VideoPlayerViewModel: ObservableObject {
     // 处理前置条件提示（用于未登录 / 时长不足）
     @Published var localProcessBlockedMessage: String?
 
+    // 视频源语言是否为日语（由 ASR 文件 SourceLanguage 判断，默认日语，兼容旧数据）。
+    // 仅日语源视频才在字幕词上方显示片假名注音。
+    @Published var isJapaneseSource: Bool = true
+
     private let disposeBag = DisposeBag()
 
     var playbackSpeedText: String {
@@ -243,6 +247,15 @@ class VideoPlayerViewModel: ObservableObject {
 
             let hasCompletedTranslation = self.areSubtitlesFullyTranslated(loadedSubtitles)
             self.applyLoadedSubtitles(loadedSubtitles, hasCompletedTranslation: hasCompletedTranslation)
+
+            // 读取视频源语言，判断是否日语（仅日语源视频才显示上方片假名注音）。
+            // nil（旧数据无记录）或 "auto"（未检测到）时默认按日语处理，兼容当前日语学习主场景。
+            let sourceLang = SubtitleManager.shared.loadSourceLanguage(for: videoId)
+            let normalized = (sourceLang ?? "").lowercased()
+            self.isJapaneseSource = normalized.isEmpty || normalized == "auto" || normalized == "ja"
+            if let sourceLang = sourceLang {
+                print("🌐 视频源语言：\(sourceLang)（isJapaneseSource=\(self.isJapaneseSource)）")
+            }
 
             // 同步第二字幕语言：若已存译文语言与当前 App「第二字幕」设置不一致，
             // 则按当前设置后台重新翻译该视频（translateASRJSON 内部已读 ASRConfig.translationTargetLanguage）。

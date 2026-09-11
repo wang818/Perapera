@@ -384,6 +384,7 @@ struct VideoPlayerView: View {
                             subtitle: subtitle,
                             isActive: viewModel.currentSubtitleIndex == index,
                             currentTime: viewModel.currentTime,
+                            isJapanese: viewModel.isJapaneseSource,
                             onTap: {
                                 viewModel.seek(to: subtitle.startTime)
                             }
@@ -530,6 +531,7 @@ struct SentenceCardView: View {
     let subtitle: SubtitleItem
     let isActive: Bool
     let currentTime: Double
+    let isJapanese: Bool
     let onTap: () -> Void
     
     private let greenDark = Color(red: 0.30, green: 0.45, blue: 0.26)
@@ -552,8 +554,8 @@ struct SentenceCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             if let words = subtitle.words {
-                // 词级别显示：假名 + 原文 + romaji
-                WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime)
+                // 词级别显示：片假名(仅日语) + 原文 + 发音
+                WordWrapView(words: words, isSentenceActive: isActive, currentTime: currentTime, subtitleStartTime: subtitle.startTime, isJapanese: isJapanese)
 
                 // 整句翻译 - 优先使用 subtitle.translatedText（Tencent MT 整句翻译），fallback 到逐词翻译拼接
                 let sentenceTranslation = !subtitle.translatedText.isEmpty ? subtitle.translatedText : words.compactMap { $0.translation }.joined()
@@ -609,6 +611,8 @@ struct WordWrapView: View {
     let isSentenceActive: Bool
     let currentTime: Double
     let subtitleStartTime: Double
+    /// 视频源语言是否为日语：仅日语源视频才在词上方显示片假名注音。
+    let isJapanese: Bool
 
     /// 被点击的词（用于弹词义浮层）
     @State private var selectedWord: WordTiming?
@@ -618,9 +622,9 @@ struct WordWrapView: View {
     /// 聚焦模式（辅助功能）：与字幕设置界面的 `subtitle_focus_mode` 开关同步（默认开启）。
     /// 仅控制「当前读到的词外部的光圈」是否显示；字幕高亮与逐词跟读为默认常驻效果，不受开关影响。
     @AppStorage("subtitle_focus_mode") private var focusMode: Bool = true
-    /// 振假名（日语主字幕辅助注音）：与字幕设置 `subtitle_show_furigana` 同步（默认开启）。
+    /// 片假名注音（仅日语源视频）：与字幕设置 `subtitle_show_furigana` 同步（默认开启）。
     @AppStorage("subtitle_show_furigana") private var showFurigana: Bool = true
-    /// 罗马音（日语主字幕辅助注音）：与字幕设置 `subtitle_show_romaji` 同步（默认开启）。
+    /// 发音（假名读音）：与字幕设置 `subtitle_show_romaji` 同步（默认开启）。
     @AppStorage("subtitle_show_romaji") private var showRomaji: Bool = true
     /// 词性（日语主字幕辅助）：与字幕设置 `subtitle_show_pos` 同步（默认开启）；控制当前词底部下划线是否显示。
     @AppStorage("subtitle_show_pos") private var showPOS: Bool = true
@@ -702,11 +706,11 @@ struct WordWrapView: View {
     private func estimatedWordWidth(_ word: WordTiming) -> CGFloat {
         let original = word.word as NSString
         let furigana = (word.furigana ?? " ") as NSString
-        let reading = (word.reading ?? " ") as NSString
 
         let fSize = furigana.size(withAttributes: [.font: UIFont.systemFont(ofSize: 10)])
         let oSize = original.size(withAttributes: [.font: UIFont.systemFont(ofSize: 22, weight: .bold)])
-        let rSize = reading.size(withAttributes: [.font: UIFont.systemFont(ofSize: 9)])
+        // 下方发音与上方片假名均为假名，宽度与 furigana 相当，用 furigana 宽度近似即可
+        let rSize = furigana.size(withAttributes: [.font: UIFont.systemFont(ofSize: 9)])
 
         return ceil(max(fSize.width, oSize.width + 10, rSize.width))
     }
@@ -724,15 +728,25 @@ struct WordWrapView: View {
         // 聚焦模式（辅助功能）：仅控制当前词外部的「光圈」是否显示，与字幕设置 `subtitle_focus_mode` 同步。
         let showAperture = focusMode && isWordActive
 
-        // 空词（ASR 词间空格占位符，Word 为空格/空白）：不渲染任何注音（上方平假名 + 下方罗马音），也不画下划线，仅保留原文占位
+        // 空词（ASR 词间空格占位符，Word 为空格/空白）：不渲染任何注音（上方片假名 + 下方发音），也不画下划线，仅保留原文占位
         let isBlankWord = word.word.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 
-        // 整句字幕已是平假名 → 全部词的上方注音都隐藏；
-        // 否则仅当单个词本身是平假名（允许混入标点等）时隐藏该词的上方注音
-        let furiganaText = (!showFurigana || isBlankWord)
-            ? " "
-            : ((sentenceAllHiragana || isHiraganaWord(word.word)) ? " " : (word.furigana ?? " "))
-        let readingText = (!showRomaji || isBlankWord) ? " " : (word.reading ?? " ")
+        // 发音（假名读音，下方显示）：词级 Furigana（平假名）
+        let readingText: String = {
+            guard showRomaji, !isBlankWord else { return " " }
+            let h = (word.furigana ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            return h.isEmpty ? " " : h
+        }()
+
+        // 上方片假名注音：仅日语源视频显示；整句已是平假名或单词本身是平假名时隐藏（无需注音）。
+        // 由词级平假名读音转片假名得到。
+        let furiganaText: String = {
+            guard isJapanese, showFurigana, !isBlankWord else { return " " }
+            if sentenceAllHiragana || isHiraganaWord(word.word) { return " " }
+            let h = (word.furigana ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !h.isEmpty else { return " " }
+            return Self.hiraganaToKatakana(h)
+        }()
 
         // 下划线颜色：按句内全局词序轮换 10 色（空词不画线，但索引照常递增）
         let underlineColor = Self.underlineColors[index % Self.underlineColors.count]
@@ -807,6 +821,13 @@ struct WordWrapView: View {
 
     private func isHiraganaWord(_ text: String) -> Bool {
         Self.isHiraganaText(text)
+    }
+
+    /// 平假名 → 片假名（用于日语源视频的词上方片假名注音）。
+    private static func hiraganaToKatakana(_ hiragana: String) -> String {
+        let mutable = NSMutableString(string: hiragana)
+        CFStringTransform(mutable, nil, kCFStringTransformHiraganaKatakana, false)
+        return mutable as String
     }
 
     private func isWordCurrent(_ word: WordTiming) -> Bool {

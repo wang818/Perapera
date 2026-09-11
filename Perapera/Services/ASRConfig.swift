@@ -102,25 +102,27 @@ struct ASRConfig {
     }
 
     /// 视频源语言代码（语音识别语言），由引擎模型类型推导。
-    /// 与 AliyunMTConfig.sourceLanguage 保持一致。
+    /// 注意：识别已改用阿里云 fun-asr（多语言自动识别，不返回语言检测结果），
+    /// 真实语言由翻译阶段经阿里云 MT 的 auto 检测（DetectedLanguage）确定。
+    /// 因此识别保存阶段统一写 "auto"（语言待检测），避免用写死的引擎模型误标语言。
     static var sourceLanguageCode: String {
-        switch engineModelType {
-        case "16k_ja": return "ja"
-        case "16k_en": return "en"
-        case "16k_zh", "16k_zh_video": return "zh"
-        case "16k_ca": return "zh"
-        default: return "auto"
-        }
+        return "auto"
     }
 
     /// 向 ASR 原始响应的 `Response.Data` 层注入「视频源语言」字段（`SourceLanguage`），
     /// 用于在识别文件里持久化「该视频是什么语言」。注入失败（无法解析）时返回原数据不变。
+    /// 若 Data 层已有非空 SourceLanguage（如翻译阶段检测出的真实语言），则保留不覆盖；
+    /// 否则写入 "auto"（语言待后续翻译阶段检测）。
     /// - Parameter jsonData: ASR 原始响应 JSON Data（结构 `{"Response":{"Data":{...}}}`）
     /// - Returns: 注入 SourceLanguage 后的 JSON Data
     static func injectSourceLanguage(into jsonData: Data) -> Data {
         guard var jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               var response = jsonObject["Response"] as? [String: Any],
               var data = response["Data"] as? [String: Any] else {
+            return jsonData
+        }
+        // 已存在非空 SourceLanguage（真实检测值）→ 保留，不覆盖
+        if let existing = data["SourceLanguage"] as? String, !existing.isEmpty {
             return jsonData
         }
         data["SourceLanguage"] = sourceLanguageCode
