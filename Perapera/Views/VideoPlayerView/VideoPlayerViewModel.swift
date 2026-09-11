@@ -137,10 +137,20 @@ class VideoPlayerViewModel: ObservableObject {
         // 获取视频时长
         playerItem.asset.loadValuesAsynchronously(forKeys: ["duration"]) { [weak self] in
             DispatchQueue.main.async {
-                if let duration = self?.player?.currentItem?.asset.duration {
-                    self?.duration = CMTimeGetSeconds(duration)
+                guard let self = self else { return }
+                if let cmTime = self.player?.currentItem?.asset.duration {
+                    let seconds = CMTimeGetSeconds(cmTime)
+                    if seconds.isFinite && seconds > 0 {
+                        self.duration = seconds
+                        // 自愈：若记录里还缺时长，顺便回写，后续列表/配额判断直接可用
+                        if (self.video.duration ?? 0) <= 0 {
+                            self.video = self.video.withDuration(seconds)
+                            VideoStorageManager.shared.updateVideoDuration(id: self.video.id, duration: seconds)
+                            NotificationCenter.default.post(name: NSNotification.Name("HomeViewShouldRefreshVideos"), object: nil)
+                        }
+                    }
                 }
-                self?.isLoading = false
+                self.isLoading = false
             }
         }
 
@@ -509,10 +519,16 @@ class VideoPlayerViewModel: ObservableObject {
     /// 启动本地视频流水线（独立于 YouTube 流水线）
     /// 点击按钮时先拉取最新 userInfo，再判断剩余时间是否足够，避免用陈旧/空快照误判弹窗
     func startLocalAudioPipelineFromButton() {
-        guard !isProcessingYouTubePipeline else { return }
+        print("▶️ [本地处理] 点击「开始处理」isProcessing=\(isProcessingYouTubePipeline)")
+
+        guard !isProcessingYouTubePipeline else {
+            print("⚠️ [本地处理] 已有处理任务进行中，忽略本次点击")
+            return
+        }
 
         // 1) 必须登录
         guard UserManager.shared.isLoggedIn else {
+            print("⚠️ [本地处理] 未登录，拦截")
             localProcessBlockedMessage = "local_video_blocked_login_required".localized()
             NotificationCenter.default.post(name: .peraperaRequestShowLogin, object: nil)
             return
@@ -527,24 +543,106 @@ class VideoPlayerViewModel: ObservableObject {
 
     /// 用最新 userInfo 判断本地视频时长是否超出剩余可处理时长
     private func checkLocalVideoQuotaAndRun() {
-        // 视频时长（分钟）必须 ≤ 用户剩余分钟数（monthly + point）
-        let videoMinutes = Int((video.duration ?? 0) / 60.0 + 0.5)
-        let userInfo = UserManager.shared.currentUserInfo
-        let availableMinutes = (userInfo?.monthly_card_minutes ?? 0) + (userInfo?.point_card_minutes ?? 0)
+        print("🧮 [本地处理] 进入配额判断，video.duration=\(video.duration.map { String($0) } ?? "nil")")
 
-        if videoMinutes <= 0 {
+        // 优先使用已持久化的时长
+        if let duration = video.duration, duration > 0 {
+            evaluateLocalVideoQuota(videoDuration: duration)
+            return
+        }
+
+        // 时长缺失（旧数据 / 之前未读到）→ 就地读文件补全，而不是直接拦截用户
+        print("🧮 [本地处理] 记录中无有效时长，改为从本地文件读取")
+        resolveLocalVideoDurationAndRun()
+    }
+
+    /// 从本地文件（优先已转好的音频）读取时长，成功后再做配额判断
+    private func resolveLocalVideoDurationAndRun() {
+        let videoURL = video.actualVideoURL
+        let audioURL = video.audioURL
+
+        // 读取优先级：已转好的音频（时长即实际计费口径）→ 视频文件本身
+        var candidates: [URL] = []
+        if FileManager.default.fileExists(atPath: audioURL.path) { candidates.append(audioURL) }
+        if FileManager.default.fileExists(atPath: videoURL.path) { candidates.append(videoURL) }
+
+        print("🧮 [本地处理] 候选文件: \(candidates.map { $0.lastPathComponent })")
+
+        guard !candidates.isEmpty else {
+            print("❌ [本地处理] 音频与视频文件都不存在")
+            localProcessBlockedMessage = "local_video_file_missing".localized()
+            return
+        }
+
+        isProcessingYouTubePipeline = true
+        resolveDuration(from: candidates) { [weak self] seconds in
+            guard let self = self else { return }
+            guard let seconds = seconds, seconds > 0 else {
+                print("❌ [本地处理] 所有候选文件都读不到时长，拦截")
+                self.isProcessingYouTubePipeline = false
+                self.localProcessBlockedMessage = "local_video_blocked_no_duration".localized()
+                return
+            }
+
+            print("✅ [本地处理] 读取到时长: \(seconds)s（\(videoURL.lastPathComponent)）")
+
+            // 回填并持久化，避免下次再读
+            self.video = self.video.withDuration(seconds)
+            self.duration = seconds
+            VideoStorageManager.shared.updateVideoDuration(id: self.video.id, duration: seconds)
+            NotificationCenter.default.post(name: NSNotification.Name("HomeViewShouldRefreshVideos"), object: nil)
+
+            self.evaluateLocalVideoQuota(videoDuration: seconds)
+        }
+    }
+
+    /// 依次尝试候选文件读取时长，全部失败则回调 nil
+    private func resolveDuration(from urls: [URL], completion: @escaping (Double?) -> Void) {
+        guard let first = urls.first else {
+            completion(nil)
+            return
+        }
+        MediaDurationLoader.load(of: first) { [weak self] seconds in
+            if let seconds = seconds, seconds > 0 {
+                completion(seconds)
+            } else {
+                self?.resolveDuration(from: Array(urls.dropFirst()), completion: completion)
+            }
+        }
+    }
+
+    /// 依据视频时长与剩余可处理时长决定是否放行
+    private func evaluateLocalVideoQuota(videoDuration: Double) {
+        isProcessingYouTubePipeline = false
+
+        // 时长为 0 / NaN / 无穷：视为读取失败，不允许处理
+        guard videoDuration > 0, videoDuration.isFinite else {
+            print("❌ [本地处理] 时长非法(\(videoDuration))，拦截")
             localProcessBlockedMessage = "local_video_blocked_no_duration".localized()
             return
         }
+
+        // 视频时长（分钟）必须 ≤ 用户剩余分钟数（monthly + point）。
+        // 口径与服务端 quota_service.check_quota_available 保持一致：向上取整（ceil），
+        // 不足 1 分钟按 1 分钟计。原先用「四舍五入」，会把 < 30 秒的视频算成 0 分而误拦截。
+        let videoMinutes = max(1, Int(ceil(videoDuration / 60.0)))
+        let userInfo = UserManager.shared.currentUserInfo
+        let availableMinutes = (userInfo?.monthly_card_minutes ?? 0) + (userInfo?.point_card_minutes ?? 0)
+
+        print("🧮 [本地处理] 时长=\(videoDuration)s(向上取整 \(videoMinutes)分), 可用=\(availableMinutes)分")
+
         if availableMinutes <= 0 {
+            print("❌ [本地处理] 剩余可处理时长为 0，拦截")
             localProcessBlockedMessage = "local_video_blocked_no_minutes".localized()
             return
         }
         if videoMinutes > availableMinutes {
+            print("❌ [本地处理] 视频 \(videoMinutes) 分 > 可用 \(availableMinutes) 分，拦截")
             localProcessBlockedMessage = String(format: "local_video_blocked_over_minutes".localized(), videoMinutes, availableMinutes)
             return
         }
 
+        print("✅ [本地处理] 配额校验通过，启动音频提取流水线")
         runLocalAudioPipeline()
     }
 

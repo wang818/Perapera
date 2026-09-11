@@ -211,10 +211,10 @@ struct HomeView: View {
                 }
                 .onAppear {
                     loadVideos()
-                    DispatchQueue.global(qos: .background).async {
-                        let hasChanges = VideoStorageManager.shared.refreshVideoDurations()
+                    // 异步补全旧数据缺失的视频时长（内部已切到后台线程，完成后回主线程）
+                    VideoStorageManager.shared.refreshVideoDurations { hasChanges in
                         guard hasChanges else { return }
-                        DispatchQueue.main.async { loadVideos() }
+                        loadVideos()
                     }
                 }
                 .onChange(of: viewModel.youtubeAudioError) { newValue in
@@ -714,8 +714,10 @@ struct HomeView: View {
 
     /// 根据会员剩余时间 + 音频时长判断是否允许开始翻译
     private func canStartTranslation(for video: VideoItem) -> TranslationBlockReason? {
-        let duration = video.duration
-        return PurchaseManager.shared.translationBlockedReason(audioDurationSeconds: duration!)
+        // 时长缺失（旧数据 / 元数据未读到）时按 0 处理：
+        // PurchaseManager 对 <= 0 直接放行，避免因时长未知而崩溃或误拦截用户。
+        let audioDuration = video.duration ?? 0
+        return PurchaseManager.shared.translationBlockedReason(audioDurationSeconds: audioDuration)
     }
 
     /// 展示会员时间不足提示

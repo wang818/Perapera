@@ -142,6 +142,183 @@ struct VideoItem: Codable, Hashable, Identifiable {
             return localVideoURL
         }
     }
+
+    /// 返回一个仅替换了「时长」字段的新实例（其余字段原样保留）。
+    func withDuration(_ seconds: Double) -> VideoItem {
+        VideoItem(
+            id: id,
+            name: name,
+            posterImageData: posterImageData,
+            videoURL: videoURL,
+            createdAt: createdAt,
+            isYouTube: isYouTube,
+            duration: seconds,
+            youtubeVideoID: youtubeVideoID,
+            author: author,
+            numberOfViews: numberOfViews,
+            videoDescription: videoDescription,
+            channelID: channelID,
+            category: category,
+            publishedTime: publishedTime,
+            keywords: keywords,
+            thumbnailURL: thumbnailURL
+        )
+    }
+}
+
+// MARK: - 媒体时长读取
+enum MediaDurationLoader {
+    /// 可靠地异步读取媒体文件时长（三级兜底）。
+    ///
+    /// 为什么不能直接用 `AVURLAsset.duration`：这个同步属性已废弃，当 mp4 的 `moov`
+    /// 元数据位于文件末尾（许多录制/下载/转码工具会这样写）、文件较大或需要异步加载时，
+    /// 它会直接返回 `.indefinite`（即 NaN），导致时长读成 nil。
+    ///
+    /// 读取顺序：
+    /// 1. `AVURLAsset` + `loadValuesAsynchronously(forKeys:)`（官方推荐，覆盖绝大多数文件）
+    /// 2. FFprobe 解析容器元数据
+    /// 3. 纯 Swift 解析 MP4/MOV 的 `moov → mvhd` box（不依赖任何第三方库）
+    /// - Parameters:
+    ///   - url: 本地媒体文件 URL
+    ///   - completion: 主线程回调；读取失败或时长非法时返回 nil
+    static func load(of url: URL, completion: @escaping (Double?) -> Void) {
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            DispatchQueue.main.async { completion(nil) }
+            return
+        }
+
+        // 要求精确时长，避免只拿到估算值
+        let asset = AVURLAsset(url: url, options: [AVURLAssetPreferPreciseDurationAndTimingKey: true])
+        asset.loadValuesAsynchronously(forKeys: ["duration"]) {
+            var error: NSError?
+            let status = asset.statusOfValue(forKey: "duration", error: &error)
+
+            if status == .loaded {
+                let value = CMTimeGetSeconds(asset.duration)
+                if value.isFinite && value > 0 {
+                    DispatchQueue.main.async { completion(value) }
+                    return
+                }
+            }
+
+            // 兜底 2：FFprobe 解析容器元数据（同步阻塞，此时已在后台队列，可接受）
+            print("⚠️ AVAsset 读取时长失败(\(status.rawValue))，改用 FFprobe: \(url.lastPathComponent) \(error?.localizedDescription ?? "")")
+            let probed = AudioConverter.shared.getMediaDurationSeconds(url: url)
+            if probed > 0 {
+                DispatchQueue.main.async { completion(probed) }
+                return
+            }
+
+            // 兜底 3：直接解析 mp4/mov 的 mvhd box（纯 Swift，无任何依赖）
+            print("⚠️ FFprobe 也读不到时长，改用 mvhd 解析: \(url.lastPathComponent)")
+            let parsed = mp4Duration(of: url)
+            DispatchQueue.main.async { completion(parsed) }
+        }
+    }
+
+    /// 纯 Swift 解析 MP4/MOV 容器时长：读取顶层 `moov` box 内的 `mvhd` box。
+    ///
+    /// `mvhd` 中保存了 `timescale`（每秒刻度数）与 `duration`（刻度数），
+    /// 二者相除即秒数。该方式不依赖 AVFoundation / FFmpeg，对 `moov` 位于文件末尾的
+    /// 文件同样有效（按 box 头顺序 seek，不会整文件读入内存）。
+    /// - Returns: 秒数（> 0），解析失败返回 nil
+    static func mp4Duration(of url: URL) -> Double? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+
+        guard let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
+              let totalSize = (attrs[.size] as? NSNumber)?.uint64Value, totalSize > 0 else {
+            return nil
+        }
+
+        /// 在 [start, end) 范围内顺序扫描 box，返回指定 type 的「载荷区间」
+        func findBox(_ type: String, in start: UInt64, to end: UInt64) -> (offset: UInt64, size: UInt64)? {
+            var cursor = start
+            while cursor + 8 <= end {
+                handle.seek(toFileOffset: cursor)
+                let header = handle.readData(ofLength: 8)
+                guard header.count == 8 else { return nil }
+
+                var boxSize = UInt64(header.beUInt32(at: 0))
+                let boxType = header.beString(at: 4, length: 4)
+                var headerSize: UInt64 = 8
+
+                if boxSize == 1 {
+                    // 64 位 largesize
+                    let ext = handle.readData(ofLength: 8)
+                    guard ext.count == 8 else { return nil }
+                    boxSize = ext.beUInt64(at: 0)
+                    headerSize = 16
+                } else if boxSize == 0 {
+                    // 延伸到文件末尾
+                    boxSize = end - cursor
+                }
+
+                guard boxSize >= headerSize, cursor + boxSize <= end else { return nil }
+
+                if boxType == type {
+                    return (cursor + headerSize, boxSize - headerSize)
+                }
+                cursor += boxSize
+            }
+            return nil
+        }
+
+        guard let moov = findBox("moov", in: 0, to: totalSize) else { return nil }
+        guard let mvhd = findBox("mvhd", in: moov.offset, to: moov.offset + moov.size) else { return nil }
+
+        handle.seek(toFileOffset: mvhd.offset)
+        let payload = handle.readData(ofLength: 32)
+        guard payload.count >= 20 else { return nil }
+
+        let version = payload[0]
+        let timescale: UInt32
+        let duration: UInt64
+
+        if version == 1 {
+            // version 1：creation(8) modification(8) timescale(4) duration(8)
+            guard payload.count >= 32 else { return nil }
+            timescale = payload.beUInt32(at: 20)
+            duration = payload.beUInt64(at: 24)
+        } else {
+            // version 0：creation(4) modification(4) timescale(4) duration(4)
+            timescale = payload.beUInt32(at: 12)
+            duration = UInt64(payload.beUInt32(at: 16))
+        }
+
+        guard timescale > 0, duration > 0 else { return nil }
+
+        let seconds = Double(duration) / Double(timescale)
+        return (seconds.isFinite && seconds > 0) ? seconds : nil
+    }
+}
+
+// MARK: - 大端读取辅助
+private extension Data {
+    func beUInt32(at offset: Int) -> UInt32 {
+        guard offset + 4 <= count else { return 0 }
+        let base = startIndex + offset
+        return (UInt32(self[base]) << 24)
+            | (UInt32(self[base + 1]) << 16)
+            | (UInt32(self[base + 2]) << 8)
+            | UInt32(self[base + 3])
+    }
+
+    func beUInt64(at offset: Int) -> UInt64 {
+        guard offset + 8 <= count else { return 0 }
+        let base = startIndex + offset
+        var value: UInt64 = 0
+        for i in 0..<8 {
+            value = (value << 8) | UInt64(self[base + i])
+        }
+        return value
+    }
+
+    func beString(at offset: Int, length: Int) -> String {
+        guard offset + length <= count else { return "" }
+        let base = startIndex + offset
+        return String(bytes: self[base..<(base + length)], encoding: .ascii) ?? ""
+    }
 }
 
 // MARK: - Video Storage Manager
@@ -222,17 +399,12 @@ class VideoStorageManager {
         // 压缩图片
         let compressedImageData = compressImage(posterImage)
         
-        // 获取视频时长
-        let asset = AVURLAsset(url: sourceURL)
-        let duration = CMTimeGetSeconds(asset.duration)
-        let durationSeconds = duration.isNaN ? nil : duration
-        
         let newVideo = VideoItem(
             name: name,
             posterImageData: compressedImageData,
             videoURL: "", // 本地视频不需要存储原始 URL
             isYouTube: false,
-            duration: durationSeconds
+            duration: nil // 时长稍后从已落盘的本地文件异步补全
         )
         
         // 复制视频文件到 Documents 目录
@@ -260,12 +432,36 @@ class VideoStorageManager {
             videos.insert(newVideo, at: 0)
             saveVideos(videos)
             
+            // 从已落盘的本地文件异步读取时长：
+            // 源 URL（相册 / 文件 App 的临时文件）常常无法同步取到时长，落盘后再读最稳。
+            MediaDurationLoader.load(of: newVideo.localVideoURL) { [weak self] seconds in
+                guard let self = self, let seconds = seconds else { return }
+                self.updateVideoDuration(id: newVideo.id, duration: seconds)
+                NotificationCenter.default.post(name: NSNotification.Name("HomeViewShouldRefreshVideos"), object: nil)
+            }
+            
             return newVideo
             
         } catch {
             print("❌ 复制视频文件失败: \(error.localizedDescription)")
             return nil
         }
+    }
+    
+    // MARK: - 补全/更新单个视频的时长
+    func updateVideoDuration(id: String, duration: Double) {
+        guard duration.isFinite, duration > 0 else { return }
+        
+        var videos = loadVideos()
+        guard let index = videos.firstIndex(where: { $0.id == id }) else { return }
+        
+        let video = videos[index]
+        // 已有合法时长则不重复写入
+        if let existing = video.duration, existing > 0 { return }
+        
+        videos[index] = video.withDuration(duration)
+        saveVideos(videos)
+        print("✅ 已补全视频时长: \(video.name) - \(duration)s")
     }
     
     // MARK: - 删除视频
@@ -332,50 +528,46 @@ class VideoStorageManager {
         saveVideos(videos)
     }
     
-    // MARK: - 刷新视频时长（针对旧数据）
-    @discardableResult
-    func refreshVideoDurations() -> Bool {
-        var videos = loadVideos()
-        var hasChanges = false
-        
-        for i in 0..<videos.count {
-            let video = videos[i]
-            if video.duration == nil && !video.isYouTube {
-                        // 如果是本地视频，尝试获取时长
-                        let asset = AVURLAsset(url: video.actualVideoURL)
-                        let duration = CMTimeGetSeconds(asset.duration)
+    // MARK: - 刷新视频时长（针对旧数据 / 之前未能读到的记录）
+    /// 异步逐个补全「缺失或为 0」的视频时长，完成后在主线程回调是否有变更。
+    ///
+    /// 关键点：不再使用已废弃的同步 `AVURLAsset.duration`（对 moov 在文件末尾等
+    /// 场景恒返回 NaN），统一走 `MediaDurationLoader` 的异步加载。
+    func refreshVideoDurations(completion: ((Bool) -> Void)? = nil) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            var videos = self.loadVideos()
+            let indices = videos.indices.filter { (videos[$0].duration ?? 0) <= 0 }
+            guard !indices.isEmpty else {
+                DispatchQueue.main.async { completion?(false) }
+                return
+            }
 
-                        if !duration.isNaN && duration > 0 {
-                            let updatedVideo = VideoItem(
-                                id: video.id,
-                                name: video.name,
-                                posterImageData: video.posterImageData,
-                                videoURL: video.videoURL,
-                                createdAt: video.createdAt,
-                                isYouTube: video.isYouTube,
-                                duration: duration,
-                                youtubeVideoID: video.youtubeVideoID,
-                                author: video.author,
-                                numberOfViews: video.numberOfViews,
-                                videoDescription: video.videoDescription,
-                                channelID: video.channelID,
-                                category: video.category,
-                                publishedTime: video.publishedTime,
-                                keywords: video.keywords,
-                                thumbnailURL: video.thumbnailURL
-                            )
-                            videos[i] = updatedVideo
-                            hasChanges = true
-                            print("✅ 已更新视频时长: \(video.name) - \(duration)s")
-                        }
+            var hasChanges = false
+
+            func process(_ cursor: Int) {
+                guard cursor < indices.count else {
+                    DispatchQueue.main.async {
+                        if hasChanges { self.saveVideos(videos) }
+                        completion?(hasChanges)
                     }
+                    return
+                }
+
+                let index = indices[cursor]
+                let video = videos[index]
+
+                MediaDurationLoader.load(of: video.actualVideoURL) { seconds in
+                    if let seconds = seconds, seconds > 0 {
+                        videos[index] = video.withDuration(seconds)
+                        hasChanges = true
+                        print("✅ 已更新视频时长: \(video.name) - \(seconds)s")
+                    }
+                    process(cursor + 1)
+                }
+            }
+
+            process(0)
         }
-        
-        if hasChanges {
-            saveVideos(videos)
-        }
-        
-        return hasChanges
     }
     
     // MARK: - 清空所有视频

@@ -223,11 +223,22 @@ class AudioConverter {
     
     // MARK: - 获取视频时长
     private func getVideoDuration(url: URL) -> Double {
+        getMediaDurationSeconds(url: url)
+    }
+
+    /// 用 FFprobe 读取媒体文件时长（秒）。
+    ///
+    /// FFprobe 直接解析容器元数据，对「`moov` 位于文件末尾」等 `AVURLAsset.duration`
+    /// 读不到时长的 mp4 也能正确返回，因此作为时长读取的可靠兜底来源。
+    /// - Important: 该方法为**同步阻塞**调用，请在后台线程使用。
+    /// - Returns: 成功返回秒数（> 0），失败返回 0
+    func getMediaDurationSeconds(url: URL) -> Double {
         let session = FFprobeKit.getMediaInformation(url.path)
-        if let mediaInfo = session?.getMediaInformation() {
-            if let durationString = mediaInfo.getDuration() {
-                return Double(durationString) ?? 0
-            }
+        if let mediaInfo = session?.getMediaInformation(),
+           let durationString = mediaInfo.getDuration(),
+           let seconds = Double(durationString),
+           seconds.isFinite, seconds > 0 {
+            return seconds
         }
         return 0
     }
