@@ -11,6 +11,8 @@ struct HomeView: View {
     @State private var showingYoutubeAlert = false
     /// 待删除视频（用于弹确认框）
     @State private var pendingDeleteVideo: VideoItem?
+    /// 当前左滑展开的列表行 id（保证同时只有一行处于展开状态）
+    @State private var openSwipeRowID: String?
     /// 全屏播放页（本地视频）呈现目标
     @State private var fullScreenPlayerVideo: VideoItem?
     @State private var showingFileImporter = false
@@ -146,31 +148,38 @@ struct HomeView: View {
                                     .padding(.bottom, 8)
 
                                 ForEach(items) { video in
-                                    VideoRowView(
-                                        video: video,
-                                        onDelete: { requestDeleteVideo(video) },
-                                        onConvertAudio: { convertAudioForVideo(video) },
-                                        onStartRecognition: { startRecognitionForVideo(video) },
-                                        onStartTranslation: { startTranslationForVideo(video) }
-                                    )
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        navigateToVideo(video)
-                                    }
-                                    // 左滑删除
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            requestDeleteVideo(video)
-                                        } label: {
-                                            Label("home_video_delete".localized(), systemImage: "trash")
+                                    // 左滑删除：ScrollView + VStack 列表不支持 List 的 swipeActions，
+                                    // 故用自定义 SwipeToDeleteRow 实现左滑露出删除按钮 / 全滑触发删除。
+                                    SwipeToDeleteRow(
+                                        id: video.id,
+                                        openRowID: $openSwipeRowID,
+                                        onDelete: { requestDeleteVideo(video) }
+                                    ) {
+                                        VideoRowView(
+                                            video: video,
+                                            onDelete: { requestDeleteVideo(video) },
+                                            onConvertAudio: { convertAudioForVideo(video) },
+                                            onStartRecognition: { startRecognitionForVideo(video) },
+                                            onStartTranslation: { startTranslationForVideo(video) }
+                                        )
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            // 有行处于展开状态时，点击先收起；否则进入播放页
+                                            if openSwipeRowID != nil {
+                                                withAnimation(.easeOut(duration: 0.22)) {
+                                                    openSwipeRowID = nil
+                                                }
+                                            } else {
+                                                navigateToVideo(video)
+                                            }
                                         }
-                                    }
-                                    // 长按菜单
-                                    .contextMenu {
-                                        Button(role: .destructive) {
-                                            requestDeleteVideo(video)
-                                        } label: {
-                                            Label("home_video_delete".localized(), systemImage: "trash")
+                                        // 长按菜单
+                                        .contextMenu {
+                                            Button(role: .destructive) {
+                                                requestDeleteVideo(video)
+                                            } label: {
+                                                Label("home_video_delete".localized(), systemImage: "trash")
+                                            }
                                         }
                                     }
                                 }
@@ -1304,6 +1313,132 @@ struct VideoPicker: UIViewControllerRepresentable {
     }
 }
 
+// MARK: - 左滑删除容器
+/// 在非 List 容器（ScrollView + VStack）中实现「左滑露出删除按钮」。
+/// - 单行展开：由 `openRowID` 统一控制，同一时刻最多一行处于展开状态；
+/// - 全滑删除：向左滑动超过阈值时直接触发 `onDelete`（与系统 allowsFullSwipe 行为一致）；
+/// - 点击收起：行展开时点击内容由调用方负责收起（见 HomeView 中 onTapGesture）。
+struct SwipeToDeleteRow<Content: View>: View {
+    /// 当前行唯一标识（与 openRowID 比对判断是否展开）
+    let id: String
+    /// 全局展开行 id（保证互斥，只允许一行展开）
+    @Binding var openRowID: String?
+    /// 删除按钮宽度（露出距离）
+    var buttonWidth: CGFloat = 76
+    /// 点击删除按钮 / 全滑触发
+    let onDelete: () -> Void
+    /// 行内容
+    let content: () -> Content
+
+    init(
+        id: String,
+        openRowID: Binding<String?>,
+        buttonWidth: CGFloat = 76,
+        onDelete: @escaping () -> Void,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.id = id
+        self._openRowID = openRowID
+        self.buttonWidth = buttonWidth
+        self.onDelete = onDelete
+        self.content = content
+    }
+
+    /// 当前水平偏移（0 为收起，-buttonWidth 为展开）
+    @State private var offset: CGFloat = 0
+    /// 手势开始时的偏移基准
+    @State private var dragStartOffset: CGFloat = 0
+    /// 是否处于拖拽中（用于只记录一次起始偏移）
+    @State private var isDragging: Bool = false
+
+    /// 允许的最大滑动距离（用于全滑手感）
+    private var maxReveal: CGFloat { buttonWidth * 1.8 }
+    /// 触发全滑删除的阈值
+    private var fullSwipeThreshold: CGFloat { buttonWidth * 1.5 }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            // 底层：删除按钮（随行偏移后从右侧露出）
+            Button(action: {
+                close()
+                onDelete()
+            }) {
+                VStack(spacing: 4) {
+                    Image(systemName: "trash")
+                        .font(.system(size: 18, weight: .semibold))
+                    Text("home_video_delete".localized())
+                        .font(.system(size: 12, weight: .medium))
+                }
+                .foregroundColor(.white)
+                .frame(width: buttonWidth)
+                .frame(maxHeight: .infinity)
+                .background(Color.red.opacity(0.92))
+                .cornerRadius(14)
+            }
+            .buttonStyle(PlainButtonStyle())
+
+            // 上层：行内容（可水平拖动）
+            content()
+                .offset(x: offset)
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 15)
+                        .onChanged { value in
+                            let w = value.translation.width
+                            let h = value.translation.height
+                            // 仅处理水平方向为主的拖动，避免影响纵向滚动
+                            guard abs(w) > abs(h) else { return }
+                            if !isDragging {
+                                isDragging = true
+                                dragStartOffset = offset
+                            }
+                            let proposed = dragStartOffset + w
+                            offset = min(0, max(-maxReveal, proposed))
+                        }
+                        .onEnded { value in
+                            let w = value.translation.width
+                            let h = value.translation.height
+                            guard isDragging else { return }
+                            isDragging = false
+                            // 纵向为主的拖动不改变展开状态
+                            guard abs(w) > abs(h) else { return }
+
+                            if offset <= -fullSwipeThreshold || w <= -fullSwipeThreshold {
+                                // 全滑：收起并触发删除（删除确认由调用方负责）
+                                close()
+                                onDelete()
+                            } else if offset < -buttonWidth * 0.5 {
+                                open()
+                            } else {
+                                close()
+                            }
+                        }
+                )
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 10)
+        .onChange(of: openRowID) { newValue in
+            // 其他行展开时，收起当前行
+            withAnimation(.easeOut(duration: 0.22)) {
+                offset = (newValue == id) ? -buttonWidth : 0
+            }
+        }
+    }
+
+    private func open() {
+        withAnimation(.easeOut(duration: 0.22)) {
+            offset = -buttonWidth
+        }
+        openRowID = id
+    }
+
+    private func close() {
+        withAnimation(.easeOut(duration: 0.22)) {
+            offset = 0
+        }
+        if openRowID == id { openRowID = nil }
+    }
+}
+
 // MARK: - Video Row View
 struct VideoRowView: View {
     let video: VideoItem
@@ -1407,8 +1542,7 @@ struct VideoRowView: View {
         .padding(10)
         .background(Color.Ex.bg3)
         .cornerRadius(14)
-        .padding(.horizontal, 20)
-        .padding(.bottom, 10)
+        // 注意：水平/底部外边距由外层 SwipeToDeleteRow 统一提供（保证左滑删除按钮与卡片边缘对齐）
     }
 
     private func formatDuration(_ seconds: Double) -> String {
